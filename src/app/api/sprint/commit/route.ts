@@ -308,7 +308,7 @@ export async function POST(request: Request) {
     .filter((row) => row && row.id);
 
   const eventsLog = Array.isArray(game.events_log) ? [...game.events_log] : [];
-  const isQuarterEnd = game.current_sprint === 3;
+  const isQuarterEnd = currentSprint === 3;
   let nextQuarter = game.current_quarter;
   let nextSprintNumber = game.current_sprint;
   let nextCeoFocus = ceoFocus;
