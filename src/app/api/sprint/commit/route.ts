@@ -121,6 +121,67 @@ const mergeBacklog = (
   return backlog;
 };
 
+type RetroTemplate = {
+  id: string;
+  archetype: string;
+  conditions?: Record<string, string | boolean>;
+  template: string;
+};
+
+const outcomeSummary = (text?: string) => {
+  if (!text) return "a mixed outcome";
+  const [first] = text.split(".");
+  return first?.trim() ? `${first.trim()}.` : text;
+};
+
+const chooseRetroTemplate = (
+  templates: RetroTemplate[],
+  context: {
+    successCount: number;
+    total: number;
+    hasCatastrophe: boolean;
+    isOverbooked: boolean;
+  }
+) => {
+  if (templates.length === 0) return null;
+  const ratio = context.total === 0 ? 0 : context.successCount / context.total;
+  const successCount =
+    context.successCount === context.total
+      ? "all"
+      : context.successCount === 0
+      ? "none"
+      : ratio >= 0.7
+      ? "most"
+      : ratio >= 0.4
+      ? "some"
+      : "few";
+
+  return (
+    templates.find((template) => {
+      const conditions = template.conditions ?? {};
+      if (
+        typeof conditions.success_count === "string" &&
+        conditions.success_count !== successCount
+      ) {
+        return false;
+      }
+      if (
+        typeof conditions.has_catastrophe === "boolean" &&
+        conditions.has_catastrophe !== context.hasCatastrophe
+      ) {
+        return false;
+      }
+      if (
+        typeof conditions.is_overbooked === "boolean" &&
+        conditions.is_overbooked !== context.isOverbooked
+      ) {
+        return false;
+      }
+      return true;
+    }) ?? null
+  );
+};
+
 export async function POST(request: Request) {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
@@ -285,12 +346,43 @@ export async function POST(request: Request) {
     )
   ).length;
   const failures = total - successes;
+  const hasCatastrophe = ticketOutcomes.some(
+    (ticket) => ticket.outcome === "catastrophe"
+  );
+
+  const { data: narrativeRows } = await supabase
+    .from("narrative_templates")
+    .select("payload");
+
+  const retroTemplates = (narrativeRows ?? [])
+    .map((row) => row.payload as RetroTemplate)
+    .filter((row) => row?.group === "sprint_retro_templates");
+
+  const template = chooseRetroTemplate(retroTemplates, {
+    successCount: successes,
+    total,
+    hasCatastrophe,
+    isOverbooked
+  });
+
+  const bestTicket =
+    ticketOutcomes.find((ticket) => ticket.outcome === "clear_success") ??
+    ticketOutcomes[0];
 
   const retro = {
     sprint_number: game.current_sprint,
     ticket_outcomes: ticketOutcomes,
     metric_deltas: metricDeltas,
-    narrative: `Sprint resolved. ${successes} of ${total} tickets landed with some impact. ${failures} slipped or failed.`
+    narrative:
+      template?.template
+        ?.replace("{tickets_shipped}", String(successes))
+        ?.replace("{tickets_committed}", String(total))
+        ?.replace("{best_ticket_title}", bestTicket?.title ?? "a key ticket")
+        ?.replace(
+          "{best_ticket_outcome_summary}",
+          outcomeSummary(bestTicket?.outcome_narrative)
+        ) ??
+      `Sprint resolved. ${successes} of ${total} tickets landed with some impact. ${failures} slipped or failed.`
   };
 
   await supabase

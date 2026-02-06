@@ -39,7 +39,13 @@ type SprintState = {
   committed?: Ticket[];
   retro?: {
     narrative: string;
-    ticket_outcomes: Array<{ id: string; outcome: string; outcome_narrative: string }>;
+    ticket_outcomes: Array<{
+      id: string;
+      title: string;
+      outcome: string;
+      outcome_narrative: string;
+    }>;
+    metric_deltas?: Record<string, number>;
   };
 };
 
@@ -287,13 +293,34 @@ export default function Home() {
             <div className="item">
               <h3>Metrics Snapshot</h3>
               <div className="row">
-                <span className="badge">Team {metrics.team_sentiment}</span>
-                <span className="badge">CEO {metrics.ceo_sentiment}</span>
-                <span className="badge">Sales {metrics.sales_sentiment}</span>
-                <span className="badge">CTO {metrics.cto_sentiment}</span>
-                <span className="badge">Self-Serve {metrics.self_serve_growth}</span>
-                <span className="badge">Enterprise {metrics.enterprise_growth}</span>
-                <span className="badge">Tech Debt {metrics.tech_debt}</span>
+                <div className="metric-card">
+                  <span>Team</span>
+                  <div className="metric-value">{metrics.team_sentiment}</div>
+                </div>
+                <div className="metric-card">
+                  <span>CEO</span>
+                  <div className="metric-value">{metrics.ceo_sentiment}</div>
+                </div>
+                <div className="metric-card">
+                  <span>Sales</span>
+                  <div className="metric-value">{metrics.sales_sentiment}</div>
+                </div>
+                <div className="metric-card">
+                  <span>CTO</span>
+                  <div className="metric-value">{metrics.cto_sentiment}</div>
+                </div>
+                <div className="metric-card">
+                  <span>Self-Serve</span>
+                  <div className="metric-value">{metrics.self_serve_growth}</div>
+                </div>
+                <div className="metric-card">
+                  <span>Enterprise</span>
+                  <div className="metric-value">{metrics.enterprise_growth}</div>
+                </div>
+                <div className="metric-card">
+                  <span>Tech Debt</span>
+                  <div className="metric-value">{metrics.tech_debt}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -378,6 +405,41 @@ export default function Home() {
           <div className="item">
             <h3>Retro</h3>
             <p className="retro">{retro.narrative}</p>
+            {retro.metric_deltas && (
+              <div className="row" style={{ marginTop: 12 }}>
+                {Object.entries(retro.metric_deltas).map(([metric, delta]) => (
+                  <span key={metric} className="badge">
+                    {metric.replace(/_/g, " ")} {delta > 0 ? `+${delta}` : delta}
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="list">
+              {retro.ticket_outcomes?.map((ticket) => {
+                const outcomeLabel = ticket.outcome.replace(/_/g, " ");
+                const outcomeClass =
+                  ticket.outcome === "clear_success"
+                    ? "success"
+                    : ticket.outcome === "partial_success"
+                    ? "partial"
+                    : ticket.outcome === "unexpected_impact"
+                    ? "unexpected"
+                    : "failure";
+                return (
+                  <div key={ticket.id} className="item">
+                    <div className="row" style={{ justifyContent: "space-between" }}>
+                      <div>
+                        <h3>{ticket.title}</h3>
+                        <p>{ticket.outcome_narrative}</p>
+                      </div>
+                      <span className={`badge outcome ${outcomeClass}`}>
+                        {outcomeLabel}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 

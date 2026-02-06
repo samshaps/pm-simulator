@@ -1,12 +1,17 @@
 :root {
   color-scheme: light;
-  --bg: #f5f2ed;
-  --text: #1f1c17;
-  --muted: #6d6a64;
-  --panel: #ffffff;
-  --border: #e6e0d8;
+  --bg: #f1ede7;
+  --bg-deep: #efe7dc;
+  --text: #201b16;
+  --muted: #6a625b;
+  --panel: rgba(255, 255, 255, 0.94);
+  --border: #e3dbd2;
   --accent: #a6672b;
   --accent-dark: #7d4a1d;
+  --success: #2f7d5b;
+  --warning: #b07125;
+  --danger: #9a3b2f;
+  --info: #2f5e7d;
 }
 
 * {
@@ -17,10 +22,11 @@ html,
 body {
   padding: 0;
   margin: 0;
-  background: var(--bg);
+  background: radial-gradient(circle at top left, #fff8ee, transparent 45%),
+    radial-gradient(circle at 30% 20%, rgba(166, 103, 43, 0.12), transparent 55%),
+    linear-gradient(135deg, var(--bg), var(--bg-deep));
   color: var(--text);
-  font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  font-family: var(--font-sans), "IBM Plex Sans", system-ui, sans-serif;
 }
 
 main {
@@ -37,12 +43,15 @@ main {
   border-radius: 18px;
   padding: 32px;
   box-shadow: 0 24px 60px rgba(31, 28, 23, 0.08);
+  backdrop-filter: blur(10px);
+  animation: floatIn 0.6s ease-out;
 }
 
 h1 {
   font-size: clamp(2rem, 5vw, 3rem);
   letter-spacing: -0.02em;
   margin: 0 0 12px;
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
 }
 
 p {
@@ -112,6 +121,7 @@ select {
   border-radius: 12px;
   padding: 14px;
   background: #fff;
+  animation: riseIn 0.4s ease-out;
 }
 
 .item h3 {
@@ -128,4 +138,66 @@ select {
   border-left: 3px solid var(--accent);
   padding-left: 12px;
   color: var(--text);
+}
+
+.outcome {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.outcome.success {
+  color: var(--success);
+}
+
+.outcome.partial {
+  color: var(--info);
+}
+
+.outcome.unexpected {
+  color: var(--warning);
+}
+
+.outcome.failure {
+  color: var(--danger);
+}
+
+.metric-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff8ef;
+}
+
+.metric-card span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.metric-value {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
