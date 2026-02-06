@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { SESSION_COOKIE_NAME } from "@/lib/session";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;

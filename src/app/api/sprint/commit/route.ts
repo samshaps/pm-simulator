@@ -452,7 +452,7 @@ export async function POST(request: Request) {
     }
   }
 
-  await supabase
+  const { data: updatedGame, error: updateError } = await supabase
     .from("games")
     .update({
       metrics_state: updatedMetrics,
@@ -462,15 +462,24 @@ export async function POST(request: Request) {
       rng_seed: rng.state(),
       updated_at: new Date().toISOString()
     })
-    .eq("id", game.id);
+    .eq("id", game.id)
+    .select("current_quarter, current_sprint, metrics_state, difficulty, id")
+    .single();
+
+  if (updateError || !updatedGame) {
+    return NextResponse.json(
+      { error: "Failed to advance game state." },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({
     game: {
-      id: game.id,
-      difficulty: game.difficulty,
-      current_quarter: nextQuarter,
-      current_sprint: nextSprintNumber,
-      metrics_state: updatedMetrics
+      id: updatedGame.id,
+      difficulty: updatedGame.difficulty,
+      current_quarter: updatedGame.current_quarter,
+      current_sprint: updatedGame.current_sprint,
+      metrics_state: updatedGame.metrics_state
     },
     sprint: nextSprint,
     retro,
