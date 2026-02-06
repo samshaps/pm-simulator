@@ -171,6 +171,8 @@ export async function POST(request: Request) {
     );
   }
 
+  const currentSprint = Number(game.current_sprint);
+  const currentQuarter = Number(game.current_quarter);
   const rng = createRng(game.rng_seed);
   const { data: quarterRow } = await supabase
     .from("quarters")
@@ -323,19 +325,19 @@ export async function POST(request: Request) {
           .eq("number", game.current_quarter);
         eventsLog.push({
           type: "ceo_focus_shift",
-          quarter: game.current_quarter,
-          sprint: game.current_sprint,
+          quarter: currentQuarter,
+          sprint: currentSprint,
           new_focus: shifted
         });
       }
     }
-    nextSprintNumber = game.current_sprint + 1;
+    nextSprintNumber = currentSprint + 1;
   } else {
     const { data: quarterSprints } = await supabase
       .from("sprints")
       .select("retro")
       .eq("game_id", game.id)
-      .eq("quarter", game.current_quarter);
+      .eq("quarter", currentQuarter);
 
     let catastropheCount = 0;
     let hasUxSuccess = false;
@@ -358,7 +360,7 @@ export async function POST(request: Request) {
       hasUxSuccess
     );
     quarterlyReview = computeQuarterlyReview(
-      game.current_quarter,
+      currentQuarter,
       updatedMetrics,
       productPulse,
       catastropheCount
@@ -372,10 +374,10 @@ export async function POST(request: Request) {
         ceo_focus: ceoFocus
       })
       .eq("game_id", game.id)
-      .eq("number", game.current_quarter);
+      .eq("number", currentQuarter);
 
-    if (game.current_quarter < 4) {
-      nextQuarter = game.current_quarter + 1;
+    if (currentQuarter < 4) {
+      nextQuarter = currentQuarter + 1;
       nextSprintNumber = 1;
       nextCeoFocus = selectCeoFocus(updatedMetrics, rng);
 
@@ -399,7 +401,7 @@ export async function POST(request: Request) {
   let nextSprint = null;
   const canGenerateNext =
     ticketTemplates.length > 0 &&
-    (!isQuarterEnd || game.current_quarter < 4);
+    (!isQuarterEnd || currentQuarter < 4);
 
   if (canGenerateNext) {
     const { data: existing } = await supabase
@@ -467,8 +469,12 @@ export async function POST(request: Request) {
     .single();
 
   if (updateError || !updatedGame) {
+    console.error("Failed to advance game state", updateError);
     return NextResponse.json(
-      { error: "Failed to advance game state." },
+      {
+        error: "Failed to advance game state.",
+        details: updateError?.message ?? "Unknown error"
+      },
       { status: 500 }
     );
   }
