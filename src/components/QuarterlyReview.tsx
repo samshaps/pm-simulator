@@ -130,7 +130,7 @@ export default function QuarterlyReview() {
           {/* Continue Button */}
           <div className={styles.actionSection}>
             <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleContinue}>
-              {calibrationOutcome === 'terminated' ? 'Return to Home' : 'Start Next Quarter'}
+              {(calibrationOutcome as CalibrationOutcome) === 'terminated' ? 'Return to Home' : 'Start Next Quarter'}
             </button>
           </div>
         </div>
