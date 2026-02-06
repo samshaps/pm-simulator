@@ -126,6 +126,7 @@ type RetroTemplate = {
   archetype: string;
   conditions?: Record<string, string | boolean>;
   template: string;
+  group?: string;
 };
 
 const outcomeSummary = (text?: string) => {
