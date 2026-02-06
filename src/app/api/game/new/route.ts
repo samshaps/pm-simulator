@@ -8,7 +8,7 @@ import type { Difficulty } from "@/lib/types";
 const ALLOWED_DIFFICULTIES: Difficulty[] = ["easy", "normal", "hard"];
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   let sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
   if (!sessionId) {

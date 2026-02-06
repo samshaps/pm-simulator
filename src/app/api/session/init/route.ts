@@ -4,7 +4,7 @@ import { SESSION_COOKIE_MAX_AGE, SESSION_COOKIE_NAME } from "@/lib/session";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function POST() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   let sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
   if (!sessionId) {
