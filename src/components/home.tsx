@@ -275,13 +275,31 @@ export default function Home() {
           </div>
         )}
 
-        {sprint?.backlog?.length ? (
+        {quarterSummary && (
+          <div className="item">
+            <h3>Quarter {quarterSummary.quarter} Summary</h3>
+            {quarterSummary.product_pulse && (
+              <p className="retro">{quarterSummary.product_pulse.narrative}</p>
+            )}
+            {quarterSummary.quarterly_review && (
+              <p className="retro">{quarterSummary.quarterly_review.narrative}</p>
+            )}
+            <div className="row" style={{ marginTop: 12 }}>
+              <button onClick={() => setQuarterSummary(null)}>
+                Continue to Q{gameMeta?.current_quarter ?? quarterSummary.quarter + 1} · Sprint{" "}
+                {gameMeta?.current_sprint ?? 1}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!quarterSummary && sprint?.backlog?.length ? (
           <div>
             <div className="row">
-          <span className="badge">Capacity {capacity}</span>
-          <span className="badge">
-            Selected {selectedEffort}/{capacity} (max {maxCapacity})
-          </span>
+              <span className="badge">Capacity {capacity}</span>
+              <span className="badge">
+                Selected {selectedEffort}/{capacity} (max {maxCapacity})
+              </span>
           {quarter?.ceo_focus && (
             <span className="badge">CEO focus: {quarter.ceo_focus}</span>
           )}
@@ -320,18 +338,6 @@ export default function Home() {
           <div className="item">
             <h3>Retro</h3>
             <p className="retro">{retro.narrative}</p>
-          </div>
-        )}
-        {quarterSummary?.product_pulse && (
-          <div className="item">
-            <h3>Quarter {quarterSummary.quarter} Product Pulse</h3>
-            <p className="retro">{quarterSummary.product_pulse.narrative}</p>
-          </div>
-        )}
-        {quarterSummary?.quarterly_review && (
-          <div className="item">
-            <h3>Quarter {quarterSummary.quarter} Review</h3>
-            <p className="retro">{quarterSummary.quarterly_review.narrative}</p>
           </div>
         )}
       </div>
