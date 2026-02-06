@@ -47,5 +47,12 @@ export async function GET() {
     );
   }
 
-  return NextResponse.json({ game, sprint });
+  const { data: quarter } = await supabase
+    .from("quarters")
+    .select("ceo_focus, product_pulse, quarterly_review")
+    .eq("game_id", game.id)
+    .eq("number", game.current_quarter)
+    .maybeSingle();
+
+  return NextResponse.json({ game, sprint, quarter });
 }

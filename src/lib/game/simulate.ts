@@ -24,8 +24,26 @@ export type TicketTemplate = {
   outcomes: Record<Outcome, string>;
 };
 
+export type CeoFocus = "self_serve" | "enterprise" | "tech_debt";
+
+export type ProductPulse = {
+  churn: "positive" | "mixed" | "concerning";
+  support_load: "positive" | "mixed" | "concerning";
+  customer_sentiment: "positive" | "mixed" | "concerning";
+  narrative: string;
+};
+
+export type QuarterlyReview = {
+  quarter: number;
+  raw_score: number;
+  rating: "strong" | "solid" | "mixed" | "below_expectations";
+  narrative: string;
+  factors: Record<string, number | string>;
+};
+
 export type TicketInstance = TicketTemplate & {
   ceo_aligned?: boolean;
+  is_mandatory?: boolean;
   outcome?: Outcome;
   outcome_narrative?: string;
   metric_impacts?: Partial<Record<MetricKey, number>>;
@@ -73,6 +91,136 @@ export function computeEffectiveCapacity(metrics: MetricsState): number {
   if (cto > 80) capacity += 4;
 
   return Math.max(8, capacity);
+}
+
+export function selectCeoFocus(metrics: MetricsState, rng: Rng): CeoFocus {
+  const weights: Record<CeoFocus, number> = {
+    self_serve: 35,
+    enterprise: 35,
+    tech_debt: 30
+  };
+
+  if (metrics.self_serve_growth < 35) weights.self_serve += 20;
+  if (metrics.enterprise_growth < 35) weights.enterprise += 20;
+  if (metrics.tech_debt > 65) weights.tech_debt += 20;
+
+  const total = weights.self_serve + weights.enterprise + weights.tech_debt;
+  let roll = rng.next() * total;
+  for (const focus of Object.keys(weights) as CeoFocus[]) {
+    roll -= weights[focus];
+    if (roll <= 0) return focus;
+  }
+  return "self_serve";
+}
+
+export function focusToCategory(focus: CeoFocus): string {
+  if (focus === "enterprise") return "enterprise_feature";
+  if (focus === "tech_debt") return "tech_debt_reduction";
+  return "self_serve_feature";
+}
+
+export function shouldShiftFocus(rng: Rng, difficulty: Difficulty): boolean {
+  const chance =
+    difficulty === "easy" ? 0.05 : difficulty === "hard" ? 0.15 : 0.1;
+  return rng.next() < chance;
+}
+
+export function deriveProductPulse(
+  metrics: MetricsState,
+  hasCatastrophe: boolean,
+  hasUxSuccess: boolean
+): ProductPulse {
+  const churn =
+    metrics.nps > 60 && (metrics.self_serve_growth > 50 || metrics.enterprise_growth > 50)
+      ? "positive"
+      : metrics.nps < 35 ||
+        (metrics.self_serve_growth < 30 && metrics.enterprise_growth < 30)
+      ? "concerning"
+      : "mixed";
+
+  const support_load =
+    metrics.tech_debt < 40 && !hasCatastrophe
+      ? "positive"
+      : metrics.tech_debt > 65 || hasCatastrophe
+      ? "concerning"
+      : "mixed";
+
+  const customer_sentiment =
+    metrics.nps > 60 && hasUxSuccess
+      ? "positive"
+      : metrics.nps < 35
+      ? "concerning"
+      : "mixed";
+
+  return {
+    churn,
+    support_load,
+    customer_sentiment,
+    narrative: `Churn looks ${churn}. Support load is ${support_load}. Customer sentiment feels ${customer_sentiment}.`
+  };
+}
+
+export function computeQuarterlyReview(
+  quarter: number,
+  metrics: MetricsState,
+  pulse: ProductPulse,
+  catastropheCount: number
+): QuarterlyReview {
+  const ceoAlignment =
+    metrics.ceo_sentiment > 70
+      ? 38
+      : metrics.ceo_sentiment >= 50
+      ? 27
+      : metrics.ceo_sentiment >= 30
+      ? 14
+      : 6;
+
+  const growthUp =
+    metrics.self_serve_growth > 55 && metrics.enterprise_growth > 55
+      ? 22
+      : metrics.self_serve_growth > 55 || metrics.enterprise_growth > 55
+      ? 16
+      : metrics.self_serve_growth < 35 || metrics.enterprise_growth < 35
+      ? 4
+      : 9;
+
+  const stability =
+    catastropheCount === 0 ? 13 : catastropheCount === 1 ? 8 : 3;
+
+  const pulseScore =
+    pulse.churn === "positive" &&
+    pulse.support_load === "positive" &&
+    pulse.customer_sentiment === "positive"
+      ? 19
+      : pulse.churn === "concerning" ||
+        pulse.support_load === "concerning" ||
+        pulse.customer_sentiment === "concerning"
+      ? 5
+      : 10;
+
+  const rawScore = ceoAlignment + growthUp + stability + pulseScore;
+
+  const rating =
+    rawScore >= 75
+      ? "strong"
+      : rawScore >= 55
+      ? "solid"
+      : rawScore >= 35
+      ? "mixed"
+      : "below_expectations";
+
+  return {
+    quarter,
+    raw_score: rawScore,
+    rating,
+    narrative: `Quarter ${quarter} review: ${rating.replace("_", " ")}. Alignment and growth were ${rawScore >= 55 ? "adequate" : "inconsistent"}.`,
+    factors: {
+      ceo_alignment_score: ceoAlignment,
+      growth_trajectory_score: growthUp,
+      stability_score: stability,
+      pulse_health_score: pulseScore
+    }
+  };
 }
 
 export function generateBacklog(
@@ -358,4 +506,3 @@ export function applyOutcome(
 
   return { updated, deltas };
 }
-

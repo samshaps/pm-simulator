@@ -5,7 +5,13 @@ import {
   computeEffectiveCapacity,
   createRng,
   generateBacklog,
+  selectCeoFocus,
+  focusToCategory,
+  shouldShiftFocus,
+  deriveProductPulse,
+  computeQuarterlyReview,
   rollOutcome,
+  type CeoFocus,
   type TicketInstance,
   type TicketTemplate
 } from "@/lib/game/simulate";
@@ -24,6 +30,92 @@ type TicketOutcome = TicketInstance & {
 };
 
 const clampMetric = (value: number) => Math.max(0, Math.min(100, value));
+
+type HijackSource = "sales" | "cto" | "ceo";
+
+const successOutcomes = new Set([
+  "clear_success",
+  "partial_success",
+  "unexpected_impact"
+]);
+
+const pickHijackTickets = (
+  templates: TicketTemplate[],
+  metrics: MetricsState,
+  ceoFocus: CeoFocus,
+  rng: ReturnType<typeof createRng>
+) => {
+  const candidates: Array<{
+    source: HijackSource;
+    sentiment: number;
+    chance: number;
+    category: string;
+  }> = [];
+
+  if (metrics.sales_sentiment < 25) {
+    candidates.push({
+      source: "sales",
+      sentiment: metrics.sales_sentiment,
+      chance: 0.4,
+      category: "sales_request"
+    });
+  }
+  if (metrics.cto_sentiment < 25) {
+    candidates.push({
+      source: "cto",
+      sentiment: metrics.cto_sentiment,
+      chance: 0.5,
+      category: "tech_debt_reduction"
+    });
+  }
+  if (metrics.ceo_sentiment < 30) {
+    candidates.push({
+      source: "ceo",
+      sentiment: metrics.ceo_sentiment,
+      chance: 0.2,
+      category: focusToCategory(ceoFocus)
+    });
+  }
+
+  candidates.sort((a, b) => a.sentiment - b.sentiment);
+  const selected = candidates.slice(0, 2);
+
+  const forced: TicketInstance[] = [];
+  const events: Array<Record<string, string | number>> = [];
+
+  for (const candidate of selected) {
+    if (rng.next() > candidate.chance) continue;
+    const pool = templates.filter(
+      (ticket) => ticket.category === candidate.category
+    );
+    if (pool.length === 0) continue;
+    const picked = rng.pick(pool);
+    forced.push({ ...picked, is_mandatory: true });
+    events.push({
+      type: "roadmap_hijack",
+      source: candidate.source,
+      category: candidate.category
+    });
+  }
+
+  return { forced, events };
+};
+
+const mergeBacklog = (
+  backlog: TicketInstance[],
+  forced: TicketInstance[]
+) => {
+  const map = new Map(backlog.map((ticket) => [ticket.id, ticket]));
+  for (const ticket of forced) {
+    if (map.has(ticket.id)) {
+      map.set(ticket.id, { ...map.get(ticket.id)!, is_mandatory: true });
+    } else {
+      backlog.unshift(ticket);
+      map.set(ticket.id, ticket);
+    }
+  }
+  return backlog;
+};
 
 export async function POST(request: Request) {
   const cookieStore = await cookies();
@@ -55,7 +147,7 @@ export async function POST(request: Request) {
   const { data: game } = await supabase
     .from("games")
     .select(
-      "id, difficulty, current_quarter, current_sprint, metrics_state, rng_seed"
+      "id, difficulty, current_quarter, current_sprint, metrics_state, rng_seed, events_log"
     )
     .eq("id", session.active_game_id)
     .maybeSingle();
@@ -77,6 +169,26 @@ export async function POST(request: Request) {
       { error: "Sprint not initialized." },
       { status: 404 }
     );
+  }
+
+  const rng = createRng(game.rng_seed);
+  const { data: quarterRow } = await supabase
+    .from("quarters")
+    .select("id, ceo_focus")
+    .eq("game_id", game.id)
+    .eq("number", game.current_quarter)
+    .maybeSingle();
+
+  let ceoFocus: CeoFocus =
+    (quarterRow?.ceo_focus as CeoFocus | undefined) ??
+    selectCeoFocus(game.metrics_state as MetricsState, rng);
+
+  if (!quarterRow) {
+    await supabase.from("quarters").insert({
+      game_id: game.id,
+      number: game.current_quarter,
+      ceo_focus: ceoFocus
+    });
   }
 
   const backlog = (sprint.backlog ?? []) as TicketTemplate[];
@@ -108,7 +220,6 @@ export async function POST(request: Request) {
     );
   }
 
-  const rng = createRng(game.rng_seed);
   let updatedMetrics = { ...(game.metrics_state as MetricsState) };
   const metricDeltas: Record<string, number> = {};
   const ticketOutcomes: TicketOutcome[] = [];
@@ -117,12 +228,13 @@ export async function POST(request: Request) {
   const isOverbooked = totalEffort > effectiveCapacity;
 
   for (const ticket of selectedTickets) {
+    const ceoAligned = ticket.category === focusToCategory(ceoFocus);
     const outcome = rollOutcome(rng, {
       techDebt: updatedMetrics.tech_debt,
       teamSentiment: updatedMetrics.team_sentiment,
       isOverbooked,
       isMoonshot: ticket.category === "moonshot",
-      ceoAligned: false,
+      ceoAligned,
       difficulty: game.difficulty
     });
 
@@ -183,9 +295,6 @@ export async function POST(request: Request) {
     })
     .eq("id", sprint.id);
 
-  const nextSprintNumber =
-    game.current_sprint < 3 ? game.current_sprint + 1 : game.current_sprint;
-
   const { data: templates } = await supabase
     .from("ticket_templates")
     .select("payload");
@@ -194,31 +303,144 @@ export async function POST(request: Request) {
     .map((row) => row.payload as TicketTemplate)
     .filter((row) => row && row.id);
 
+  const eventsLog = Array.isArray(game.events_log) ? [...game.events_log] : [];
+  const isQuarterEnd = game.current_sprint === 3;
+  let nextQuarter = game.current_quarter;
+  let nextSprintNumber = game.current_sprint;
+  let nextCeoFocus = ceoFocus;
+  let productPulse = null;
+  let quarterlyReview = null;
+
+  if (!isQuarterEnd) {
+    if (shouldShiftFocus(rng, game.difficulty)) {
+      const shifted = selectCeoFocus(updatedMetrics, rng);
+      if (shifted !== ceoFocus) {
+        nextCeoFocus = shifted;
+        await supabase
+          .from("quarters")
+          .update({ ceo_focus: shifted })
+          .eq("game_id", game.id)
+          .eq("number", game.current_quarter);
+        eventsLog.push({
+          type: "ceo_focus_shift",
+          quarter: game.current_quarter,
+          sprint: game.current_sprint,
+          new_focus: shifted
+        });
+      }
+    }
+    nextSprintNumber = game.current_sprint + 1;
+  } else {
+    const { data: quarterSprints } = await supabase
+      .from("sprints")
+      .select("retro")
+      .eq("game_id", game.id)
+      .eq("quarter", game.current_quarter);
+
+    let catastropheCount = 0;
+    let hasUxSuccess = false;
+    for (const row of quarterSprints ?? []) {
+      const outcomes = row?.retro?.ticket_outcomes ?? [];
+      for (const outcome of outcomes) {
+        if (outcome?.outcome === "catastrophe") catastropheCount += 1;
+        if (
+          outcome?.category === "ux_improvement" &&
+          successOutcomes.has(outcome?.outcome)
+        ) {
+          hasUxSuccess = true;
+        }
+      }
+    }
+
+    productPulse = deriveProductPulse(
+      updatedMetrics,
+      catastropheCount > 0,
+      hasUxSuccess
+    );
+    quarterlyReview = computeQuarterlyReview(
+      game.current_quarter,
+      updatedMetrics,
+      productPulse,
+      catastropheCount
+    );
+
+    await supabase
+      .from("quarters")
+      .update({
+        product_pulse: productPulse,
+        quarterly_review: quarterlyReview,
+        ceo_focus: ceoFocus
+      })
+      .eq("game_id", game.id)
+      .eq("number", game.current_quarter);
+
+    if (game.current_quarter < 4) {
+      nextQuarter = game.current_quarter + 1;
+      nextSprintNumber = 1;
+      nextCeoFocus = selectCeoFocus(updatedMetrics, rng);
+
+      const { data: nextQuarterRow } = await supabase
+        .from("quarters")
+        .select("id")
+        .eq("game_id", game.id)
+        .eq("number", nextQuarter)
+        .maybeSingle();
+
+      if (!nextQuarterRow) {
+        await supabase.from("quarters").insert({
+          game_id: game.id,
+          number: nextQuarter,
+          ceo_focus: nextCeoFocus
+        });
+      }
+    }
+  }
+
   let nextSprint = null;
-  if (game.current_sprint < 3 && ticketTemplates.length > 0) {
+  const canGenerateNext =
+    ticketTemplates.length > 0 &&
+    (!isQuarterEnd || game.current_quarter < 4);
+
+  if (canGenerateNext) {
     const { data: existing } = await supabase
       .from("sprints")
       .select("id, effective_capacity, backlog")
       .eq("game_id", game.id)
-      .eq("quarter", game.current_quarter)
+      .eq("quarter", nextQuarter)
       .eq("number", nextSprintNumber)
       .maybeSingle();
 
     if (existing) {
       nextSprint = existing;
     } else {
-      const backlog = generateBacklog(
+      let backlog = generateBacklog(
         ticketTemplates,
         updatedMetrics,
         rng,
         rng.int(7, 10)
       );
+      const hijacks = pickHijackTickets(
+        ticketTemplates,
+        updatedMetrics,
+        nextCeoFocus,
+        rng
+      );
+      if (hijacks.events.length) {
+        eventsLog.push(
+          ...hijacks.events.map((event) => ({
+            ...event,
+            quarter: nextQuarter,
+            sprint: nextSprintNumber
+          }))
+        );
+      }
+      backlog = mergeBacklog(backlog, hijacks.forced);
       const nextCapacity = computeEffectiveCapacity(updatedMetrics);
       const { data: inserted } = await supabase
         .from("sprints")
         .insert({
           game_id: game.id,
-          quarter: game.current_quarter,
+          quarter: nextQuarter,
           number: nextSprintNumber,
           effective_capacity: nextCapacity,
           backlog,
@@ -234,7 +456,9 @@ export async function POST(request: Request) {
     .from("games")
     .update({
       metrics_state: updatedMetrics,
+      current_quarter: nextQuarter,
       current_sprint: nextSprintNumber,
+      events_log: eventsLog,
       rng_seed: rng.state(),
       updated_at: new Date().toISOString()
     })
@@ -244,11 +468,16 @@ export async function POST(request: Request) {
     game: {
       id: game.id,
       difficulty: game.difficulty,
-      current_quarter: game.current_quarter,
+      current_quarter: nextQuarter,
       current_sprint: nextSprintNumber,
       metrics_state: updatedMetrics
     },
     sprint: nextSprint,
-    retro
+    retro,
+    quarter: {
+      ceo_focus: nextCeoFocus,
+      product_pulse: productPulse,
+      quarterly_review: quarterlyReview
+    }
   });
 }

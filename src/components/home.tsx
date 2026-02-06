@@ -23,6 +23,7 @@ type Ticket = {
   description: string;
   category: string;
   effort: number;
+  is_mandatory?: boolean;
 };
 
 type SprintState = {
@@ -36,6 +37,21 @@ type SprintState = {
   };
 };
 
+type QuarterState = {
+  ceo_focus?: string;
+  product_pulse?: {
+    churn: string;
+    support_load: string;
+    customer_sentiment: string;
+    narrative: string;
+  } | null;
+  quarterly_review?: {
+    rating: string;
+    raw_score: number;
+    narrative: string;
+  } | null;
+};
+
 export default function Home() {
   const [state, setState] = useState<SessionState | null>(null);
   const [loadState, setLoadState] = useState<LoadState>("idle");
@@ -47,6 +63,7 @@ export default function Home() {
   const [metrics, setMetrics] = useState<MetricsState | null>(null);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [retro, setRetro] = useState<SprintState["retro"] | null>(null);
+  const [quarter, setQuarter] = useState<QuarterState | null>(null);
 
   const loadSprint = async () => {
     try {
@@ -59,9 +76,11 @@ export default function Home() {
       const data = await res.json();
       setSprint(data.sprint);
       setMetrics(data.game.metrics_state);
+      setQuarter(data.quarter ?? null);
     } catch {
       setSprint(null);
       setMetrics(null);
+      setQuarter(null);
     }
   };
 
@@ -95,6 +114,7 @@ export default function Home() {
       });
       const data = (await res.json()) as SessionState & {
         activeSprint?: SprintState;
+        ceoFocus?: string;
       };
       setState(data);
       if (data.activeSprint) {
@@ -126,6 +146,7 @@ export default function Home() {
       }
       setRetro(data.retro);
       setMetrics(data.game.metrics_state);
+      setQuarter(data.quarter ?? null);
       setSelected({});
       await loadSprint();
       setLoadState("ready");
@@ -215,27 +236,31 @@ export default function Home() {
         {sprint?.backlog?.length ? (
           <div>
             <div className="row">
-              <span className="badge">Capacity {capacity}</span>
-              <span className="badge">
-                Selected {selectedEffort}/{capacity} (max {maxCapacity})
-              </span>
-            </div>
-            <div className="list">
-              {sprint.backlog.map((ticket) => (
-                <label key={ticket.id} className="item">
-                  <div className="row" style={{ justifyContent: "space-between" }}>
-                    <div>
-                      <h3>{ticket.title}</h3>
-                      <p>{ticket.description}</p>
-                    </div>
-                    <div className="row">
-                      <span className="badge">{ticket.category}</span>
-                      <span className="badge">{ticket.effort} pts</span>
-                      <input
-                        type="checkbox"
-                        checked={Boolean(selected[ticket.id])}
-                        onChange={(event) =>
-                          setSelected((prev) => ({
+          <span className="badge">Capacity {capacity}</span>
+          <span className="badge">
+            Selected {selectedEffort}/{capacity} (max {maxCapacity})
+          </span>
+          {quarter?.ceo_focus && (
+            <span className="badge">CEO focus: {quarter.ceo_focus}</span>
+          )}
+        </div>
+        <div className="list">
+          {sprint.backlog.map((ticket) => (
+            <label key={ticket.id} className="item">
+              <div className="row" style={{ justifyContent: "space-between" }}>
+                <div>
+                  <h3>{ticket.title}</h3>
+                  <p>{ticket.description}</p>
+                </div>
+                <div className="row">
+                  <span className="badge">{ticket.category}</span>
+                  <span className="badge">{ticket.effort} pts</span>
+                  {ticket.is_mandatory && <span className="badge">Mandatory</span>}
+                  <input
+                    type="checkbox"
+                    checked={Boolean(selected[ticket.id])}
+                    onChange={(event) =>
+                      setSelected((prev) => ({
                             ...prev,
                             [ticket.id]: event.target.checked
                           }))
@@ -253,6 +278,18 @@ export default function Home() {
           <div className="item">
             <h3>Retro</h3>
             <p className="retro">{retro.narrative}</p>
+          </div>
+        )}
+        {quarter?.product_pulse && (
+          <div className="item">
+            <h3>Product Pulse</h3>
+            <p className="retro">{quarter.product_pulse.narrative}</p>
+          </div>
+        )}
+        {quarter?.quarterly_review && (
+          <div className="item">
+            <h3>Quarterly Review</h3>
+            <p className="retro">{quarter.quarterly_review.narrative}</p>
           </div>
         )}
       </div>

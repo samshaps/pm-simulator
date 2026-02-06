@@ -5,6 +5,7 @@ import {
   computeEffectiveCapacity,
   createRng,
   generateBacklog,
+  selectCeoFocus,
   type TicketTemplate
 } from "@/lib/game/simulate";
 import { SESSION_COOKIE_MAX_AGE, SESSION_COOKIE_NAME } from "@/lib/session";
@@ -79,6 +80,7 @@ export async function POST(request: Request) {
     .filter((row) => row && row.id);
 
   const rng = createRng(newGameRecord.rng_seed);
+  const ceoFocus = selectCeoFocus(newGameRecord.metrics_state, rng);
   const backlog = generateBacklog(ticketTemplates, newGameRecord.metrics_state, rng, rng.int(7, 10));
   const effectiveCapacity = computeEffectiveCapacity(newGameRecord.metrics_state);
 
@@ -92,6 +94,20 @@ export async function POST(request: Request) {
       committed: []
     });
   }
+  const { data: existingQuarter } = await supabase
+    .from("quarters")
+    .select("id")
+    .eq("game_id", game.id)
+    .eq("number", newGameRecord.current_quarter)
+    .maybeSingle();
+
+  if (!existingQuarter) {
+    await supabase.from("quarters").insert({
+      game_id: game.id,
+      number: newGameRecord.current_quarter,
+      ceo_focus: ceoFocus
+    });
+  }
   await supabase
     .from("games")
     .update({ rng_seed: rng.state() })
@@ -101,6 +117,7 @@ export async function POST(request: Request) {
     sessionId,
     activeGameId: game.id,
     activeGame: game,
+    ceoFocus,
     activeSprint: {
       quarter: newGameRecord.current_quarter,
       number: newGameRecord.current_sprint,
