@@ -13,6 +13,12 @@ type SessionState = {
     current_sprint: number;
     metrics_state?: MetricsState;
   } | null;
+  completedGames?: Array<{
+    game_id: string;
+    difficulty: "easy" | "normal" | "hard";
+    final_rating: string;
+    completed_at: string;
+  }>;
 };
 
 type LoadState = "idle" | "loading" | "ready" | "error";
@@ -80,6 +86,11 @@ export default function Home() {
   const [retro, setRetro] = useState<SprintState["retro"] | null>(null);
   const [quarter, setQuarter] = useState<QuarterState | null>(null);
   const [quarterSummary, setQuarterSummary] = useState<QuarterSummary>(null);
+  const [yearEndReview, setYearEndReview] = useState<{
+    final_rating: string;
+    final_score: number;
+    narrative: string;
+  } | null>(null);
   const [gameMeta, setGameMeta] = useState<{
     difficulty: "easy" | "normal" | "hard";
     current_quarter: number;
@@ -148,6 +159,7 @@ export default function Home() {
         setSprint(data.activeSprint);
       }
       setQuarterSummary(null);
+      setYearEndReview(null);
       if (data.activeGame) {
         setGameMeta({
           difficulty: data.activeGame.difficulty,
@@ -183,11 +195,23 @@ export default function Home() {
       setMetrics(data.game.metrics_state);
       setQuarter(data.quarter ?? null);
       setQuarterSummary(data.quarter_summary ?? null);
+      setYearEndReview(data.year_end_review ?? null);
       setGameMeta({
         difficulty: data.game.difficulty,
         current_quarter: data.game.current_quarter,
         current_sprint: data.game.current_sprint
       });
+      if (data.year_end_review) {
+        const sessionRes = await fetch("/api/session/init", { method: "POST" });
+        if (sessionRes.ok) {
+          const sessionData = (await sessionRes.json()) as SessionState;
+          setState(sessionData);
+        } else {
+          setState((prev) =>
+            prev ? { ...prev, activeGameId: null, activeGame: null } : prev
+          );
+        }
+      }
       setSelected({});
       await loadSprint();
       setLoadState("ready");
@@ -275,7 +299,23 @@ export default function Home() {
           </div>
         )}
 
-        {quarterSummary && (
+        {yearEndReview && (
+          <div className="item">
+            <h3>Year-End Review</h3>
+            <p className="retro">{yearEndReview.narrative}</p>
+            <div className="row">
+              <span className="badge">Final Rating: {yearEndReview.final_rating}</span>
+              <span className="badge">Score: {yearEndReview.final_score}</span>
+            </div>
+            <div className="row" style={{ marginTop: 12 }}>
+              <button onClick={() => setYearEndReview(null)}>
+                Back to Home
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!yearEndReview && quarterSummary && (
           <div className="item">
             <h3>Quarter {quarterSummary.quarter} Summary</h3>
             {quarterSummary.product_pulse && (
@@ -293,7 +333,7 @@ export default function Home() {
           </div>
         )}
 
-        {!quarterSummary && sprint?.backlog?.length ? (
+        {!yearEndReview && !quarterSummary && sprint?.backlog?.length ? (
           <div>
             <div className="row">
               <span className="badge">Capacity {capacity}</span>
@@ -340,6 +380,23 @@ export default function Home() {
             <p className="retro">{retro.narrative}</p>
           </div>
         )}
+
+        {state?.completedGames?.length ? (
+          <div className="item">
+            <h3>Completed Runs</h3>
+            <div className="list">
+              {state.completedGames.map((game) => (
+                <div key={game.game_id} className="row">
+                  <span className="badge">{game.final_rating}</span>
+                  <span className="badge">{game.difficulty}</span>
+                  <span className="badge">
+                    {new Date(game.completed_at).toLocaleDateString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     </main>
   );

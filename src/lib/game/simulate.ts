@@ -41,6 +41,20 @@ export type QuarterlyReview = {
   factors: Record<string, number | string>;
 };
 
+export type YearEndReview = {
+  quarterly_scores: number[];
+  raw_composite: number;
+  calibration_modifier: number;
+  final_score: number;
+  final_rating:
+    | "exceeds_expectations"
+    | "meets_expectations_strong"
+    | "meets_expectations"
+    | "needs_improvement"
+    | "does_not_meet_expectations";
+  narrative: string;
+};
+
 export type TicketInstance = TicketTemplate & {
   ceo_aligned?: boolean;
   is_mandatory?: boolean;
@@ -221,6 +235,72 @@ export function computeQuarterlyReview(
       stability_score: stability,
       pulse_health_score: pulseScore
     }
+  };
+}
+
+export function computeYearEndReview(
+  difficulty: Difficulty,
+  quarterlyScores: number[],
+  rng: Rng
+): YearEndReview {
+  const scores = quarterlyScores.slice(0, 4);
+  while (scores.length < 4) scores.push(50);
+
+  const avg =
+    scores.reduce((sum, value) => sum + value, 0) / scores.length;
+  const strictlyImproving =
+    scores[0] < scores[1] && scores[1] < scores[2] && scores[2] < scores[3];
+  const strictlyDeclining =
+    scores[0] > scores[1] && scores[1] > scores[2] && scores[2] > scores[3];
+  const range = Math.max(...scores) - Math.min(...scores);
+
+  let trajectoryBonus = 50;
+  if (strictlyImproving) trajectoryBonus = 90;
+  else if (strictlyDeclining) trajectoryBonus = 10;
+  else if (range <= 10) trajectoryBonus = 50;
+  else if (scores[3] > scores[0]) trajectoryBonus = 70;
+  else if (scores[3] < scores[0]) trajectoryBonus = 30;
+
+  let consistencyBonus = 55;
+  if (range <= 15) consistencyBonus = 85;
+  else if (range > 25) consistencyBonus = 20;
+
+  const rawComposite =
+    avg * 0.5 + trajectoryBonus * 0.25 + consistencyBonus * 0.25;
+
+  const calibrationRange =
+    difficulty === "easy"
+      ? { min: -8, max: 12 }
+      : difficulty === "hard"
+      ? { min: -18, max: 10 }
+      : { min: -15, max: 15 };
+  const calibrationModifier = rng.int(
+    calibrationRange.min,
+    calibrationRange.max
+  );
+  const finalScore = Math.max(
+    0,
+    Math.min(100, Math.round(rawComposite + calibrationModifier))
+  );
+
+  const finalRating =
+    finalScore >= 85
+      ? "exceeds_expectations"
+      : finalScore >= 70
+      ? "meets_expectations_strong"
+      : finalScore >= 45
+      ? "meets_expectations"
+      : finalScore >= 25
+      ? "needs_improvement"
+      : "does_not_meet_expectations";
+
+  return {
+    quarterly_scores: scores,
+    raw_composite: Math.round(rawComposite),
+    calibration_modifier: calibrationModifier,
+    final_score: finalScore,
+    final_rating: finalRating,
+    narrative: `Year-end review: ${finalRating.replace(/_/g, " ")}. Calibration applied.`
   };
 }
 

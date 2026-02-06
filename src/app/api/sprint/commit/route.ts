@@ -10,10 +10,12 @@ import {
   shouldShiftFocus,
   deriveProductPulse,
   computeQuarterlyReview,
+  computeYearEndReview,
   rollOutcome,
   type CeoFocus,
   type ProductPulse,
   type QuarterlyReview,
+  type YearEndReview,
   type TicketInstance,
   type TicketTemplate
 } from "@/lib/game/simulate";
@@ -314,6 +316,7 @@ export async function POST(request: Request) {
   let nextCeoFocus = ceoFocus;
   let productPulse: ProductPulse | null = null;
   let quarterlyReview: QuarterlyReview | null = null;
+  let yearEndReview: YearEndReview | null = null;
   let quarterSummary: {
     quarter: number;
     product_pulse: ProductPulse | null;
@@ -407,7 +410,57 @@ export async function POST(request: Request) {
           ceo_focus: nextCeoFocus
         });
       }
+    } else {
+      const { data: quarterRows } = await supabase
+        .from("quarters")
+        .select("number, quarterly_review")
+        .eq("game_id", game.id)
+        .order("number", { ascending: true });
+
+      const scores: number[] = [];
+      for (const row of quarterRows ?? []) {
+        const score = row?.quarterly_review?.raw_score;
+        if (typeof score === "number") {
+          scores.push(score);
+        }
+      }
+      if (scores.length < 4) {
+        scores.push(quarterlyReview.raw_score);
+      }
+
+      yearEndReview = computeYearEndReview(game.difficulty, scores, rng);
+
+      await supabase.from("year_end_review").upsert({
+        game_id: game.id,
+        review: yearEndReview
+      });
+
+      const { data: sessionRow } = await supabase
+        .from("sessions")
+        .select("completed_games")
+        .eq("id", sessionId)
+        .maybeSingle();
+
+      const completed = Array.isArray(sessionRow?.completed_games)
+        ? [...sessionRow.completed_games]
+        : [];
+      completed.push({
+        game_id: game.id,
+        difficulty: game.difficulty,
+        final_rating: yearEndReview.final_rating,
+        completed_at: new Date().toISOString()
+      });
+
+      await supabase
+        .from("sessions")
+        .update({
+          active_game_id: null,
+          completed_games: completed,
+          last_active: new Date().toISOString()
+        })
+        .eq("id", sessionId);
     }
+  }
   }
 
   let nextSprint = null;
@@ -474,7 +527,8 @@ export async function POST(request: Request) {
       current_sprint: nextSprintNumber,
       events_log: eventsLog,
       rng_seed: rng.state(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      state: currentQuarter >= 4 && isQuarterEnd ? "completed" : "in_progress"
     })
     .eq("id", game.id)
     .select("current_quarter, current_sprint, metrics_state, difficulty, id")
@@ -506,6 +560,7 @@ export async function POST(request: Request) {
       product_pulse: productPulse,
       quarterly_review: quarterlyReview
     },
-    quarter_summary: quarterSummary
+    quarter_summary: quarterSummary,
+    year_end_review: yearEndReview
   });
 }

@@ -30,7 +30,7 @@ export async function POST() {
       },
       { onConflict: "id" }
     )
-    .select("id, active_game_id")
+    .select("id, active_game_id, completed_games")
     .single();
 
   if (error) {
@@ -53,6 +53,7 @@ export async function POST() {
   return NextResponse.json({
     sessionId,
     activeGameId: session?.active_game_id ?? null,
-    activeGame
+    activeGame,
+    completedGames: session?.completed_games ?? []
   });
 }
