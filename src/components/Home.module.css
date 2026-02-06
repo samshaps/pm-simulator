@@ -1,0 +1,337 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+.container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 960px;
+  padding: 60px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* ── Title Block ── */
+.titleBlock {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.titleSub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--purple-primary);
+  margin-bottom: 8px;
+}
+
+.titleMain {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 72px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  color: var(--text-primary);
+  line-height: 1;
+  text-shadow: 0 0 60px rgba(124, 92, 191, 0.2);
+}
+
+/* ── Tagline ── */
+.tagline {
+  text-align: center;
+  max-width: 620px;
+  margin-bottom: 44px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.tagline em {
+  font-style: normal;
+  color: var(--purple-light);
+}
+
+/* ── Action Buttons ── */
+.actions {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 52px;
+}
+
+.btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 14px 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.btnPrimary {
+  background: var(--purple-primary);
+  color: white;
+  border: 1px solid var(--purple-primary);
+  box-shadow: 0 0 20px rgba(124, 92, 191, 0.25);
+}
+
+.btnPrimary:hover {
+  background: var(--purple-light);
+  box-shadow: 0 0 30px rgba(124, 92, 191, 0.4);
+}
+
+.btnSecondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.btnSecondary:hover {
+  border-color: var(--border-active);
+  color: var(--text-primary);
+  background: var(--purple-glow);
+}
+
+.btnDisabled {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid rgba(107, 105, 128, 0.2);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ── Difficulty Section ── */
+.difficultySection {
+  width: 100%;
+  margin-bottom: 52px;
+}
+
+.sectionLabel {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.difficultyCards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.diffCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 28px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.diffCard:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-active);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.diffCard.selected {
+  border-color: var(--purple-primary);
+  background: var(--bg-card-hover);
+  box-shadow: 0 0 0 1px var(--purple-primary), 0 8px 32px rgba(124, 92, 191, 0.15);
+}
+
+.diffCardTitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.diffCardDifficulty {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.diffCardTag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--purple-light);
+  background: var(--purple-glow);
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  padding: 3px 12px;
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+
+.diffCardDesc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* ── Past Runs Section ── */
+.pastRunsSection {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.pastRunsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pastRunsLine {
+  height: 1px;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, var(--border-subtle));
+}
+
+.pastRunsLine:last-child {
+  background: linear-gradient(90deg, var(--border-subtle), transparent);
+}
+
+.pastRunsTitle {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.pastRunsTable {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(124, 92, 191, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.pastRunRow {
+  display: grid;
+  grid-template-columns: 1fr 140px 200px 120px;
+  align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.pastRunRow:last-child {
+  border-bottom: none;
+}
+
+.pastRunRow:hover {
+  background: rgba(124, 92, 191, 0.05);
+}
+
+.pastRunRow.header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: rgba(0,0,0,0.2);
+}
+
+.pastRunRow.header:hover {
+  background: rgba(0,0,0,0.2);
+}
+
+.runDate {
+  color: var(--text-secondary);
+}
+
+.runDifficulty {
+  color: var(--text-secondary);
+}
+
+.runRating {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.ratingExceeds {
+  color: var(--success-green);
+}
+
+.ratingMeets {
+  color: var(--purple-light);
+}
+
+.ratingNeeds {
+  color: var(--warning-amber);
+}
+
+.ratingDoesNot {
+  color: var(--danger-red);
+}
+
+.runOutcome {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ── Empty Past Runs ── */
+.pastRunsEmpty {
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ── Settings ── */
+.settingsIcon {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  color: var(--text-dim);
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.settingsIcon:hover {
+  opacity: 1;
+}
+
+.settingsIcon svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ── Version ── */
+.versionTag {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+  margin-top: 8px;
+  opacity: 0.4;
+}

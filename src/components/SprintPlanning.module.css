@@ -1,0 +1,688 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+.pageContainer {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── TOP BAR ── */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 52px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoIcon {
+  width: 28px;
+  height: 28px;
+  background: var(--purple-primary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 14px;
+  color: white;
+}
+
+.logoText {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.quarterBadge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--purple-light);
+  background: var(--purple-glow);
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  padding: 4px 12px;
+  letter-spacing: 0.5px;
+}
+
+/* ── METRICS BAR ── */
+.metricsBar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.metricItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  transition: background 0.15s;
+  cursor: default;
+}
+
+.metricItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.metricLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.3px;
+}
+
+.metricFace {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.metricTrend {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.trendFlat {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.trendUp {
+  color: var(--green);
+  background: var(--green-dim);
+}
+
+.trendDown {
+  color: var(--red);
+  background: var(--red-dim);
+}
+
+.trendSurge {
+  color: var(--green);
+  background: var(--green-dim);
+}
+
+.trendDecline {
+  color: var(--red);
+  background: var(--red-dim);
+}
+
+.trendMounting {
+  color: var(--amber);
+  background: var(--amber-dim);
+}
+
+.metricDivider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-subtle);
+  margin: 0 6px;
+}
+
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--purple-dim), var(--purple-primary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
+
+/* ── CEO FOCUS BANNER ── */
+.ceoFocusBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 24px;
+  background: linear-gradient(
+    90deg,
+    rgba(124, 92, 191, 0.08),
+    rgba(124, 92, 191, 0.15),
+    rgba(124, 92, 191, 0.08)
+  );
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.ceoFocusLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.ceoFocusValue {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--purple-light);
+  background: var(--purple-glow);
+  border: 1px solid var(--border-active);
+  padding: 3px 14px;
+  border-radius: 100px;
+}
+
+.ceoFocusHint {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ── MAIN CONTENT ── */
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── LEFT PANEL: BACKLOG ── */
+.backlogPanel {
+  padding: 20px 20px 20px 24px;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.panelTitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.panelCount {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.panelSubtitle {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+/* ── TICKET CARD ── */
+.ticketCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.ticketCard:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-active);
+  transform: translateX(2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.ticketCard.committed {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ticketCard.committed:hover {
+  transform: none;
+}
+
+.ticketCard.mandatory {
+  border-left: 3px solid var(--red);
+  background: linear-gradient(90deg, rgba(248, 113, 113, 0.06), var(--bg-card));
+}
+
+.ticketCard.ceoAligned {
+  border-left: 3px solid var(--purple-light);
+}
+
+.ticketTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.ticketTitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.ticketEffort {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.ticketTags {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ticketCategory {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.catEnterprise {
+  color: var(--blue);
+  background: var(--blue-dim);
+}
+
+.catSelfServe {
+  color: var(--green);
+  background: var(--green-dim);
+}
+
+.catTechDebt {
+  color: var(--amber);
+  background: var(--amber-dim);
+}
+
+.catUx {
+  color: var(--cyan);
+  background: var(--cyan-dim);
+}
+
+.catSales {
+  color: var(--orange);
+  background: var(--orange-dim);
+}
+
+.catMonetization {
+  color: var(--pink);
+  background: var(--pink-dim);
+}
+
+.catInfra {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.catMoonshot {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.12);
+}
+
+.ticketCeoTag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--purple-light);
+  background: var(--purple-glow);
+  border: 1px solid rgba(124, 92, 191, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.ticketMandatoryTag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--red);
+  background: var(--red-dim);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.ticketDesc {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* ── RIGHT PANEL: SPRINT ── */
+.sprintPanel {
+  padding: 20px 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* ── CAPACITY BAR ── */
+.capacitySection {
+  margin-bottom: 20px;
+}
+
+.capacityHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.capacityLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.capacityNumbers {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.capacityNumbers .used {
+  color: var(--purple-light);
+  font-weight: 700;
+}
+
+.capacityBarTrack {
+  height: 10px;
+  background: var(--bg-card);
+  border-radius: 100px;
+  position: relative;
+  overflow: visible;
+}
+
+.capacityBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple-dim), var(--purple-primary));
+  border-radius: 100px;
+  transition: width 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.capacityBarFill.overbooked {
+  background: linear-gradient(90deg, var(--purple-dim), var(--purple-primary), var(--amber));
+}
+
+.capacityBarFill.danger {
+  background: linear-gradient(90deg, var(--purple-dim), var(--purple-primary), var(--red));
+}
+
+.capacityBarLimit {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--text-dim);
+  z-index: 3;
+  border-radius: 1px;
+}
+
+.capacityBarStretch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 3px,
+    rgba(251, 191, 36, 0.1) 3px,
+    rgba(251, 191, 36, 0.1) 6px
+  );
+  border-radius: 0 100px 100px 0;
+  z-index: 1;
+}
+
+.capacityLabelsRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.capacitySublabel {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.3px;
+}
+
+.capacitySublabel.warn {
+  color: var(--amber);
+}
+
+/* ── COMMITTED SECTION ── */
+.committedSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.committedHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.committedTitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.committedCount {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.dropZone {
+  flex: 1;
+  min-height: 120px;
+  border: 2px dashed rgba(124, 92, 191, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  background: rgba(124, 92, 191, 0.03);
+}
+
+.dropZoneIcon {
+  font-size: 24px;
+  opacity: 0.3;
+}
+
+.dropZoneText {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.committedTickets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.committedTicket {
+  background: var(--bg-card);
+  border: 1px solid var(--border-active);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.committedTicketLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.committedTicketTitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.committedTicketEffort {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.committedTicketRemove {
+  font-size: 18px;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.committedTicketRemove:hover {
+  color: var(--red);
+  background: var(--red-dim);
+}
+
+/* ── BOTTOM BAR ── */
+.bottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.bottomBarLeft {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.bottomBarRight {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+}
+
+.btnGhost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.btnGhost:hover {
+  border-color: var(--border-active);
+  color: var(--text-primary);
+  background: var(--purple-glow);
+}
+
+.btnPrimary {
+  background: var(--purple-primary);
+  color: white;
+  box-shadow: 0 0 16px rgba(124, 92, 191, 0.25);
+}
+
+.btnPrimary:hover {
+  background: var(--purple-light);
+  box-shadow: 0 0 24px rgba(124, 92, 191, 0.4);
+}
+
+/* ── SCROLLBAR ── */
+.backlogPanel::-webkit-scrollbar,
+.sprintPanel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.backlogPanel::-webkit-scrollbar-track,
+.sprintPanel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.backlogPanel::-webkit-scrollbar-thumb,
+.sprintPanel::-webkit-scrollbar-thumb {
+  background: rgba(124, 92, 191, 0.2);
+  border-radius: 3px;
+}
+
+.backlogPanel::-webkit-scrollbar-thumb:hover,
+.sprintPanel::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 92, 191, 0.4);
+}
