@@ -17,6 +17,13 @@ export default function QuarterlyReview() {
 
   const calibrationOutcome: CalibrationOutcome = "survived";
 
+  const calibrationText: Record<CalibrationOutcome, string> = {
+    survived: 'Survived',
+    promoted: 'Promoted',
+    pip: 'PIP',
+    terminated: 'Terminated'
+  };
+
   const narrative = "You navigated Q2 with the pragmatism of someone who's read the employee handbook. Your focus on enterprise priorities aligned with the CEO's goals, boosting revenue metrics and keeping Sales temporarily satisfied. However, your tendency to overcommit left the team feeling stretched, and tech debt accumulated faster than anyone acknowledged in standups. The CTO noticed. Your manager noticed. You survived calibration, but you're not getting promoted this cycle.";
 
   const finalMetrics = [
@@ -86,10 +93,7 @@ export default function QuarterlyReview() {
             <div className={`${styles.calibrationCard} ${styles[calibrationOutcome]}`}>
               <div className={styles.calibrationLabel}>Calibration Outcome</div>
               <div className={styles.calibrationValue}>
-                {calibrationOutcome === 'survived' && 'Survived'}
-                {calibrationOutcome === 'promoted' && 'Promoted'}
-                {calibrationOutcome === 'pip' && 'PIP'}
-                {calibrationOutcome === 'terminated' && 'Terminated'}
+                {calibrationText[calibrationOutcome]}
               </div>
               <div className={styles.calibrationDesc}>
                 {calibrationNarrative[calibrationOutcome]}
