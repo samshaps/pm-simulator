@@ -64,6 +64,11 @@ export default function Home() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [retro, setRetro] = useState<SprintState["retro"] | null>(null);
   const [quarter, setQuarter] = useState<QuarterState | null>(null);
+  const [gameMeta, setGameMeta] = useState<{
+    difficulty: "easy" | "normal" | "hard";
+    current_quarter: number;
+    current_sprint: number;
+  } | null>(null);
 
   const loadSprint = async () => {
     try {
@@ -77,10 +82,16 @@ export default function Home() {
       setSprint(data.sprint);
       setMetrics(data.game.metrics_state);
       setQuarter(data.quarter ?? null);
+      setGameMeta({
+        difficulty: data.game.difficulty,
+        current_quarter: data.game.current_quarter,
+        current_sprint: data.game.current_sprint
+      });
     } catch {
       setSprint(null);
       setMetrics(null);
       setQuarter(null);
+      setGameMeta(null);
     }
   };
 
@@ -120,6 +131,13 @@ export default function Home() {
       if (data.activeSprint) {
         setSprint(data.activeSprint);
       }
+      if (data.activeGame) {
+        setGameMeta({
+          difficulty: data.activeGame.difficulty,
+          current_quarter: data.activeGame.current_quarter,
+          current_sprint: data.activeGame.current_sprint
+        });
+      }
       await loadSprint();
       setLoadState("ready");
     } catch (err) {
@@ -147,6 +165,11 @@ export default function Home() {
       setRetro(data.retro);
       setMetrics(data.game.metrics_state);
       setQuarter(data.quarter ?? null);
+      setGameMeta({
+        difficulty: data.game.difficulty,
+        current_quarter: data.game.current_quarter,
+        current_sprint: data.game.current_sprint
+      });
       setSelected({});
       await loadSprint();
       setLoadState("ready");
@@ -180,9 +203,10 @@ export default function Home() {
         </p>
         <div className="row" style={{ marginBottom: 16 }}>
           <span className="badge">{activeLabel}</span>
-          {state?.activeGame && (
+          {(gameMeta ?? state?.activeGame) && (
             <span className="badge">
-              Q{state.activeGame.current_quarter} · Sprint {state.activeGame.current_sprint}
+              Q{(gameMeta ?? state?.activeGame)?.current_quarter} · Sprint{" "}
+              {(gameMeta ?? state?.activeGame)?.current_sprint}
             </span>
           )}
         </div>
