@@ -461,7 +461,6 @@ export async function POST(request: Request) {
         .eq("id", sessionId);
     }
   }
-  }
 
   let nextSprint = null;
   const canGenerateNext =
