@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>PM Simulator — Home</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #1a1a28;
+    --bg-card-hover: #222236;
+    --purple-primary: #7c5cbf;
+    --purple-light: #9b7dd4;
+    --purple-dim: #5a3f8a;
+    --purple-glow: rgba(124, 92, 191, 0.15);
+    --purple-glow-strong: rgba(124, 92, 191, 0.3);
+    --text-primary: #e8e6f0;
+    --text-secondary: #9896a8;
+    --text-dim: #6b6980;
+    --border-subtle: rgba(124, 92, 191, 0.2);
+    --border-active: rgba(124, 92, 191, 0.6);
+    --success-green: #4ade80;
+    --warning-amber: #fbbf24;
+    --danger-red: #f87171;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* ── Subtle grid background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      linear-gradient(rgba(124, 92, 191, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124, 92, 191, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 960px;
+    padding: 60px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Title Block ── */
+  .title-block {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .title-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--purple-primary);
+    margin-bottom: 8px;
+  }
+
+  .title-main {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: 8px;
+    color: var(--text-primary);
+    line-height: 1;
+    text-shadow: 0 0 60px rgba(124, 92, 191, 0.2);
+  }
+
+  /* ── Tagline ── */
+  .tagline {
+    text-align: center;
+    max-width: 620px;
+    margin-bottom: 44px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .tagline em {
+    font-style: normal;
+    color: var(--purple-light);
+  }
+
+  /* ── Action Buttons ── */
+  .actions {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 52px;
+  }
+
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 14px 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    background: var(--purple-primary);
+    color: white;
+    border: 1px solid var(--purple-primary);
+    box-shadow: 0 0 20px rgba(124, 92, 191, 0.25);
+  }
+  .btn-primary:hover {
+    background: var(--purple-light);
+    box-shadow: 0 0 30px rgba(124, 92, 191, 0.4);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .btn-secondary:hover {
+    border-color: var(--border-active);
+    color: var(--text-primary);
+    background: var(--purple-glow);
+  }
+
+  .btn-disabled {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid rgba(107, 105, 128, 0.2);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* ── Difficulty Section ── */
+  .difficulty-section {
+    width: 100%;
+    margin-bottom: 52px;
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .difficulty-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .diff-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .diff-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-active);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .diff-card.selected {
+    border-color: var(--purple-primary);
+    background: var(--bg-card-hover);
+    box-shadow: 0 0 0 1px var(--purple-primary), 0 8px 32px rgba(124, 92, 191, 0.15);
+  }
+
+  .diff-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .diff-card-difficulty {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .diff-card-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--purple-light);
+    background: var(--purple-glow);
+    border: 1px solid var(--border-subtle);
+    border-radius: 100px;
+    padding: 3px 12px;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+  }
+
+  .diff-card-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  /* ── Past Runs Section ── */
+  .past-runs-section {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .past-runs-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .past-runs-line {
+    height: 1px;
+    width: 60px;
+    background: linear-gradient(90deg, transparent, var(--border-subtle));
+  }
+  .past-runs-line:last-child {
+    background: linear-gradient(90deg, var(--border-subtle), transparent);
+  }
+
+  .past-runs-title {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .past-runs-table {
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(124, 92, 191, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .past-run-row {
+    display: grid;
+    grid-template-columns: 1fr 140px 200px 120px;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+    transition: background 0.15s;
+  }
+
+  .past-run-row:last-child { border-bottom: none; }
+  .past-run-row:hover { background: rgba(124, 92, 191, 0.05); }
+
+  .past-run-row.header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: rgba(0,0,0,0.2);
+  }
+  .past-run-row.header:hover { background: rgba(0,0,0,0.2); }
+
+  .run-date { color: var(--text-secondary); }
+  .run-difficulty { color: var(--text-secondary); }
+
+  .run-rating {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .rating-exceeds { color: var(--success-green); }
+  .rating-meets { color: var(--purple-light); }
+  .rating-needs { color: var(--warning-amber); }
+  .rating-does-not { color: var(--danger-red); }
+
+  .run-outcome {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* ── Empty Past Runs ── */
+  .past-runs-empty {
+    text-align: center;
+    padding: 32px 24px;
+    color: var(--text-dim);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  /* ── Settings ── */
+  .settings-icon {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    color: var(--text-dim);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    z-index: 10;
+  }
+  .settings-icon:hover { opacity: 1; }
+  .settings-icon svg { width: 22px; height: 22px; }
+
+  /* ── Version ── */
+  .version-tag {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    margin-top: 8px;
+    opacity: 0.4;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Title -->
+    <div class="title-block">
+      <div class="title-sub">Product Management</div>
+      <div class="title-main">SIMULATOR</div>
+    </div>
+
+    <!-- Tagline (FIXED: centers on evaluation, not product quality) -->
+    <div class="tagline">
+      The game where your performance review has a <em>casual relationship</em>
+      with your actual performance. Make decisions, manage stakeholders, and discover
+      that doing everything right is no guarantee of anything.
+      Will you cement your legacy or get deactivated on Slack?
+    </div>
+
+    <!-- Action Buttons (FIXED: "Continue" instead of "Load Game") -->
+    <div class="actions">
+      <button class="btn btn-primary">New Game</button>
+      <button class="btn btn-secondary">Continue</button>
+      <!-- When no save exists, use: -->
+      <!-- <button class="btn btn-disabled" disabled>Continue</button> -->
+    </div>
+
+    <!-- Difficulty Selection -->
+    <div class="difficulty-section">
+      <div class="section-label">Choose your manager</div>
+
+      <div class="difficulty-cards">
+        <!-- Easy -->
+        <div class="diff-card">
+          <div class="diff-card-title">Good Manager</div>
+          <div class="diff-card-difficulty">Easy</div>
+          <div class="diff-card-desc">
+            A gentle introduction. Your manager actively sets you up for success,
+            shields you from politics, and only changes priorities when absolutely necessary.
+            You'll still lose. It'll just feel less personal.
+          </div>
+        </div>
+
+        <!-- Normal (selected) -->
+        <div class="diff-card selected">
+          <div class="diff-card-title">OK Manager</div>
+          <div class="diff-card-difficulty">Normal</div>
+          <div class="diff-card-tag">Recommended</div>
+          <div class="diff-card-desc">
+            The standard PM experience. Your manager keeps things steady,
+            mostly remembers your name, and forwards you calendar invites
+            without context. Priorities shift. Nobody explains why.
+          </div>
+        </div>
+
+        <!-- Hard -->
+        <div class="diff-card">
+          <div class="diff-card-title">Bad Manager</div>
+          <div class="diff-card-difficulty">Hard</div>
+          <div class="diff-card-desc">
+            For seasoned PMs. Your manager is literally and figuratively out to lunch.
+            Priorities change based on LinkedIn posts. Tech debt starts high.
+            Your team is already tired. Good luck.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Past Runs (ADDED: CompletedGameSummary from data model) -->
+    <div class="past-runs-section">
+      <div class="past-runs-header">
+        <div class="past-runs-line"></div>
+        <div class="past-runs-title">Past Runs</div>
+        <div class="past-runs-line"></div>
+      </div>
+
+      <div class="past-runs-table">
+        <div class="past-run-row header">
+          <span>Date</span>
+          <span>Difficulty</span>
+          <span>Final Rating</span>
+          <span></span>
+        </div>
+
+        <div class="past-run-row">
+          <span class="run-date">Jan 28, 2026</span>
+          <span class="run-difficulty">OK Manager</span>
+          <span class="run-rating rating-meets">Meets Expectations</span>
+          <span class="run-outcome">Survived calibration</span>
+        </div>
+
+        <div class="past-run-row">
+          <span class="run-date">Jan 15, 2026</span>
+          <span class="run-difficulty">Bad Manager</span>
+          <span class="run-rating rating-does-not">Does Not Meet</span>
+          <span class="run-outcome">Deactivated on Slack</span>
+        </div>
+
+        <div class="past-run-row">
+          <span class="run-date">Jan 3, 2026</span>
+          <span class="run-difficulty">Good Manager</span>
+          <span class="run-rating rating-exceeds">Exceeds Expectations</span>
+          <span class="run-outcome">Got lucky in calibration</span>
+        </div>
+
+        <!-- Empty state alternative:
+        <div class="past-runs-empty">
+          No completed runs yet. Your permanent record is spotless. For now.
+        </div>
+        -->
+      </div>
+    </div>
+
+    <div class="version-tag">v1.0 — your decisions matter (loosely)</div>
+  </div>
+
+  <!-- Settings -->
+  <div class="settings-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+    </svg>
+  </div>
+</body>
+</html>

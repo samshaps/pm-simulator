@@ -1,0 +1,187 @@
+PM Simulator — v1 PRD
+1. Product Vision
+PM Simulator is a single-player strategy game about being evaluated (not about building the best product!).
+Players act as a Product Manager at a SaaS company. They choose work for their team to pursue under specific constraints, incomplete information, and shifting priorities. Outcomes are probabilistic and interpretations are subjective. Just like being a real PM!
+
+2. Design Principles
+This is fun first and a simulator second.
+The game should be fun to play and inspire a feeling of “just one more run.” The second it starts to feel like actual product work is the second we lose the user.
+There is a casual relationship between decisions and outcomes.
+Outcomes in the game (ticket impact results, QBR, reviews) should feel rational, but by no means guaranteed up front.
+Everything is a tradeoff.
+There’s no such thing as a free win. Prioritizing one thing means hurting something else.
+Don’t lose them in the details.
+Players should be able to derive insights and make decisions super fast. Don’t bury them in metrics and descriptions.
+
+3. Game Structure
+Time Horizon
+One game = one year
+One year = four quarters
+One quarter = three month-long sprints
+Win Condition
+Finish the year with a strong performance review (note: on a bell-curve)
+
+4. Core Gameplay Loops
+Sprint Loop
+Game randomly generates a backlog of tickets
+Player reviews backlog of tickets
+Player selects tickets within sprint capacity
+Player commits sprint
+Game rolls outcomes and generates retro
+Player views sprint retro
+Quarter Loop
+Player receives product pulse with new insights / guidance
+Player receives quarterly rating 
+
+5. Screens
+Screen 1: Start Menu / Home
+Purpose: Establish tone and stakes.
+New Game or Saved Game
+Difficulty selection
+Light narrative setup
+
+Screen 2: Kanban Board (Main Gameplay)
+Purpose: Make decisions under uncertainty.
+What Players See
+Unallocated team effort measured in points
+Swim lanes with Todo, In Progress, and Done labels
+Tickets populating each swimlane
+Key metrics + trending indicators: 
+Metrics
+Player-visible metrics include the following:
+Team sentiment: Represents morale and willingness to execute. Has an impact on chances of ticket success and available team capacity.
+CEO sentiment:  Represents confidence in the PM. Has an impact on performance review ratings. 
+Sales sentiment: Represents satisfaction with enterprise delivery. Has an impact on enterprise growth and freedom of choice within the tickets. 
+Self-serve growth: Represents user and subscription momentum. 
+Enterprise growth: Represents large deals and strategic traction. 
+Tech debt: Represents system health and fragility. Has an impact on chances of ticket success and freedom of choice within the tickets.
+There are also metrics influencing outcomes that the player cannot see:
+NPS: Influenced by UX changes (too many is bad), pricing and monetization efforts, and tech debt levels. Current state of NPS shows up indirectly in product pulses and occasional random events.
+Velocity: Derived from team sentiment and tech debt.
+All metrics are shown as directional trends, not absolutes. We will display them as relative trend ranges possibly with an arrow for the growth + tech debt metrics and the display of a face for the sentiment metrics with varying degrees of emotion depending on the current level.
+Tickets
+Presentation is as follows:
+Titles
+Effort cost
+Short descriptions including tradeoffs (will likely improve X but hurt Y)
+Ticket outcomes:
+All tickets resolve with a degree of uncertainty. 
+Possible outcomes include
+Clear success
+Partial success
+Unexpected impact
+Soft failure
+Catastrophe
+
+9. Stakeholder Archetypes
+Team
+Factors affecting sentiment
+CTO and CEO sentiment
+Overbooking sprint team capacity with stretch goals
+Tech debt
+Sentiment impact
+Chance of individual ticket success
+Available sprint capacity
+Sales
+Factors affecting sentiment
+Recency of tickets prioritized for enterprise needs
+Sentiment impact
+Positive trend fuels enterprise growth
+Negative trend hurts enterprise growth and increases likelihood of roadmap hijack
+CTO
+Factors affecting sentiment
+Tech debt
+Sentiment impact
+Positive trends may lend additional resources in the form of temporary extra engineering help (Office of the CTO)
+Negative trends increase likelihood of tech deb specific roadmap hijacks
+CEO
+Factor affecting sentiment
+The CEO has one active priority focus. This focus shifts more or less quarterly. However, random events can immediately shift the focus. The focus can be one of the following: 
+Self-Serve Growth
+Enterprise Growth
+Tech debt
+Random events that shift the focus include things like conference attendance, board meetings, “scrolling through LinkedIn and read something interesting”
+Sentiment impact
+Sentiment toward the PM throughout the quarter has a weight on review outcome.
+Tickets aligned with current CEO focus:
+Higher likelihood of success
+Larger sentiment upside
+Misaligned tickets:
+Reduced upside
+Higher downside sensitivity
+
+10. Sprint Retro
+Purpose: Reveal consequences.
+Sprint Retro Shows
+Which tickets shipped, partially shipped, or failed
+Narrative explanations
+Directional changes to metrics and sentiment
+Any triggered events
+
+11. Quarterly Product Pulse (Quarterly)
+A qualitative diagnostic of customer reality.
+Components
+Churn
+Support Load
+Customer Sentiment
+Each shown as:
+Positive
+Mixed
+Concerning
+
+
+
+12. Reviews & Evaluation
+Quarterly Review
+Narrative feedback
+References:
+Trends
+Product Pulse
+Alignment with CEO priorities\
+Volatility and surprises
+Year-End Review
+Aggregated interpretation across quarters
+Calibration applied
+Bell-curve outcomes enforced
+Players may:
+Do “well” and receive an average outcome
+Do questionable things and still advance
+
+13. Tone & Presentation
+Dry
+Cynical
+Realistic
+Recognizable corporate language
+
+14. Explicitly Out of Scope for v1
+Timers
+
+
+Delayed multi-quarter effects
+
+
+Exact metric visibility
+
+
+Optimization-friendly dashboards
+
+
+Multiplayer or competitive modes
+
+
+
+15. v1 Success Criteria (Updated)
+v1 is successful if players:
+Debate whether a decision was “actually right”
+
+
+Feel outcomes were defensible but frustrating
+
+
+Replay to see how interpretation changes
+
+
+Say “this feels uncomfortably accurate”
+
+
+

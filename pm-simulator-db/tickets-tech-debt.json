@@ -1,0 +1,619 @@
+[
+  {
+    "id": "td_001",
+    "title": "Legacy Auth Service Migration",
+    "description": "The authentication microservice is running on deprecated OAuth 1.0 libraries and requires vendor-specific patches to stay functional. Migrating to a modern OAuth 2.0 stack will reduce security vulnerabilities and unblock future SSO integrations. This will take three weeks and solve nothing visible.",
+    "category": "tech_debt_reduction",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-8, -10],
+      "partial": [-3, -6]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-2, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "The security team stopped asking why we're still using OAuth 1.0. No incident occurred that didn't occur before.",
+      "partial_success": "OAuth 2.0 is mostly working. The vendor-specific patches are still needed for one legacy customer, which defeats the entire purpose but is nobody's problem yet.",
+      "unexpected_impact": "New OAuth stack is 300ms faster per auth request, which exposed a different bottleneck in session storage that now looks catastrophic.",
+      "soft_failure": "Partial rollout works fine, but rollback is impossible without downtime. The team is now intimately familiar with OAuth 2.0 error codes.",
+      "catastrophe": "The new libraries don't support the obscure multi-tenant customer who represents 8% of MRR. Seventeen emergency calls happened. Now we're running both stacks."
+    }
+  },
+  {
+    "id": "td_002",
+    "title": "Payment Module Refactor",
+    "description": "The payment processing code is entangled across three services with no clear separation of concerns. Refactoring into a dedicated payment service will reduce the blast radius of payment bugs and allow for easier PCI compliance audits. This is invisible work that nobody will celebrate.",
+    "category": "tech_debt_reduction",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-10, -12],
+      "partial": [-4, -7]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [5, 6],
+      "partial": [2, 4]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-2, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "The payment service is now a discrete unit. The auditors noticed. Everyone else is unaware this happened.",
+      "partial_success": "Two of three services are refactored. The third has a customer-specific hack that nobody understood, so it stayed. Payment still works.",
+      "unexpected_impact": "Refactoring exposed that we're storing credit card data in the wrong place. Now we have two compliance problems instead of one hidden one.",
+      "soft_failure": "The refactored service is elegant. It has never been deployed to production because the previous system is too risky to replace.",
+      "catastrophe": "A race condition in the new service causes double-charges for 3 hours. Support was flooded. We reverted and now maintain both systems indefinitely."
+    }
+  },
+  {
+    "id": "td_003",
+    "title": "Database Connection Pooling",
+    "description": "The application opens a new database connection per request instead of reusing a pool, causing connection exhaustion during traffic spikes. Implementing connection pooling will reduce latency and prevent cascading failures. The fix is boring but necessary.",
+    "category": "tech_debt_reduction",
+    "effort": 3,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-5, -7],
+      "partial": [-2, -4]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [3, 4],
+      "partial": [1, 2]
+    },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "P99 query latency dropped 15%. The infrastructure team mentioned it during a standup. This is as good as it gets.",
+      "partial_success": "Connection pool is implemented but slightly misconfigured. It works anyway, like a calculator with one broken button nobody uses.",
+      "unexpected_impact": "Connection pooling revealed that we have dozens of leaked connections from error states. Fixing those is now someone else's problem.",
+      "soft_failure": "Pool size is too small for the actual traffic pattern. We've just shifted the problem from connection creation to connection waiting.",
+      "catastrophe": "The pooling library has a memory leak. Every deploy added RAM pressure until production OOMed during a peak hour."
+    }
+  },
+  {
+    "id": "td_004",
+    "title": "Upgrade ORM Version",
+    "description": "The ORM library is three major versions behind and no longer receives security patches. Upgrading will take two weeks and break nothing, theoretically. The new version has 15% faster query times that nobody will notice.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-6, -8],
+      "partial": [-2, -5]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [1, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-2, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "Security team satisfied. Vulnerability scan turned green. The migration syntax changes are now standard practice.",
+      "partial_success": "Most tests pass with the new version. Three integration tests are deprecated and skipped. They probably didn't matter anyway.",
+      "unexpected_impact": "The new ORM is faster, which exposed that our N+1 query problem is worse than suspected. Now we know how bad it is.",
+      "soft_failure": "Upgrade is complete. Two custom query hooks broke and we've had to vendor-patch the new version, negating all benefits.",
+      "catastrophe": "A migration path data corruption bug in the new version silently modified 500 customer records before we noticed. Rollback and manual recovery took three days."
+    }
+  },
+  {
+    "id": "td_005",
+    "title": "Add Monitoring & Alerting",
+    "description": "Critical services have no visibility into resource usage or error rates until customers complain. Adding comprehensive monitoring and alert thresholds will allow us to know about problems before support does. This is work that pays off in absence.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-7, -8],
+      "partial": [-3, -5]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-1, -2],
+      "partial": [-1, -1]
+    },
+    "outcomes": {
+      "clear_success": "We now catch issues 20 minutes before support does. The pager vibrates slightly less. This is progress.",
+      "partial_success": "Monitoring is live for core services. The less critical services are still flying blind, but they haven't failed yet, so it's fine.",
+      "unexpected_impact": "Metrics revealed that we have constant low-level errors nobody ever noticed because they were silent. Panic followed. Work tickets multiplied.",
+      "soft_failure": "Alerting is configured but overly sensitive. The team is now trained to ignore alerts. We've created the exact problem we were trying to solve.",
+      "catastrophe": "Monitoring infrastructure crashed during the traffic spike it was supposed to warn us about, making the incident both invisible and worse."
+    }
+  },
+  {
+    "id": "td_006",
+    "title": "Improve Test Coverage",
+    "description": "Test coverage is 52%, which means half the codebase is untested and ready to surprise everyone in production. Increasing to 75%+ will catch regressions earlier. This is tedious work with no visible outcome.",
+    "category": "tech_debt_reduction",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-7, -9],
+      "partial": [-4, -6]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Coverage is now 74%. A few untested edge cases have become someone else's problem. The build pipeline is slightly slower but more honest.",
+      "partial_success": "Coverage reached 68%. The remaining untested code is 'too hard to test' or in legacy modules, depending on morale.",
+      "unexpected_impact": "New tests revealed that a 'stable' module has a latent bug that only appears under specific conditions. Now we know. Now we have to fix it.",
+      "soft_failure": "Tests are written but brittle. They require constant fixes. The coverage number improved but the actual safety did not.",
+      "catastrophe": "Tests pass in CI but fail intermittently in production. The test suite became so complex that debugging test failures takes longer than fixing the actual bugs."
+    }
+  },
+  {
+    "id": "td_007",
+    "title": "CI/CD Pipeline Optimization",
+    "description": "The deployment pipeline takes 35 minutes, of which 24 minutes is unnecessary. Optimizing parallelization and removing redundant steps will cut deployment time to 12 minutes. This saves time nobody will consciously notice.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-6, -8],
+      "partial": [-2, -4]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [3, 5],
+      "partial": [1, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-1, -2],
+      "partial": [-1, -1]
+    },
+    "outcomes": {
+      "clear_success": "Deploys now complete in 12 minutes. Engineers are microscopically less frustrated. Nothing else changed.",
+      "partial_success": "Pipeline is down to 18 minutes. The remaining bottleneck is a test suite we can't parallelize without rewriting it.",
+      "unexpected_impact": "Optimization revealed a hidden race condition in the build cache layer. Builds now fail mysteriously but faster.",
+      "soft_failure": "Pipeline optimization introduced a subtle ordering bug. Tests sometimes pass, sometimes fail, depending on execution order.",
+      "catastrophe": "The 'optimized' pipeline skipped a critical validation step. A malformed deployment went to production and took down the API for four hours."
+    }
+  },
+  {
+    "id": "td_008",
+    "title": "Dependency Version Updates",
+    "description": "The dependency tree has 47 packages with security vulnerabilities, most of which are transitive dependencies from packages we don't directly use. Updating everything will fix nothing visible but will satisfy security audits.",
+    "category": "tech_debt_reduction",
+    "effort": 3,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-4, -6],
+      "partial": [-2, -3]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [2, 4],
+      "partial": [1, 2]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-1, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "Dependency audit passed. The security team removed this from the risk register. Quiet victory.",
+      "partial_success": "Most dependencies updated. Three packages broke compatibility and had to be pinned to old versions, so the vulnerabilities are still there.",
+      "unexpected_impact": "A 'safe' transitive dependency update changed internal behavior. A subtle bug in error handling now surfaces intermittently.",
+      "soft_failure": "All dependencies updated successfully. A week later, a security advisory was published for something we just installed.",
+      "catastrophe": "A 'minor version' update of a core library contained a breaking change that only manifested in production with specific traffic patterns. Rollback and three days of paging."
+    }
+  },
+  {
+    "id": "td_009",
+    "title": "Remove Deprecated Endpoints",
+    "description": "Six API endpoints were deprecated 18 months ago and are no longer documented, but they're still live and occasionally used by a customer nobody can identify. Removing them will reduce code complexity and prevent accidental dependencies.",
+    "category": "tech_debt_reduction",
+    "effort": 3,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-5, -7],
+      "partial": [-2, -4]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [3, 4],
+      "partial": [1, 2]
+    },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Four deprecated endpoints removed. Code is measurably less confusing. The other two endpoints have customer dependencies we discovered too late.",
+      "partial_success": "Endpoints marked for deprecation. Customers have 90 days to migrate. Only two of six will actually do so.",
+      "unexpected_impact": "Removing an endpoint revealed that internal services were also calling it. The codebase was more tangled than it looked.",
+      "soft_failure": "One endpoint is removed. Five remain because we're not sure who's using them and the audit trail is too old to check.",
+      "catastrophe": "We removed an endpoint that a major customer's integration was silently calling via a typo in their code. They caught our deprecation notice, but by then it was production."
+    }
+  },
+  {
+    "id": "td_010",
+    "title": "Consolidate Logging Infrastructure",
+    "description": "Logs are written to five different services (file, syslog, application DB, third-party SaaS, and Slack in one engineer's DM). Consolidating to one logging platform will make debugging possible. This work is invisible unless something breaks.",
+    "category": "tech_debt_reduction",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-8, -10],
+      "partial": [-3, -6]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-2, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "Logs are now in one queryable system. Incident debugging is 40% faster. This is the definition of quietly effective.",
+      "partial_success": "Most logs consolidated. Legacy services still write to the old systems because re-instrumenting them would take another month.",
+      "unexpected_impact": "Consolidated logs revealed that we're logging sensitive data at INFO level. Now we know. GDPR wants to know too.",
+      "soft_failure": "Logging infrastructure is unified. The ingestion cost is higher than expected and the search performance is worse than the scattered system.",
+      "catastrophe": "The new logging service crashed during peak traffic. We lost visibility into what was happening. The incident was invisible until customers complained."
+    }
+  },
+  {
+    "id": "td_011",
+    "title": "Fix N+1 Query Problem",
+    "description": "The report generation query runs a database hit for each row, creating exponential query volume. Fixing this will reduce report generation time from 45 seconds to 2 seconds. The speedup will go unnoticed because people don't run reports.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-7, -8],
+      "partial": [-3, -5]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Report generation is now instant. Zero users noticed. The database is quietly grateful.",
+      "partial_success": "N+1 problem is fixed for the main report. Three edge case reports still have the issue but they're rarely used.",
+      "unexpected_impact": "Fixing the query revealed that the underlying data model is fundamentally wrong. The fix is correct but only temporarily masks a bigger problem.",
+      "soft_failure": "The new query is fast but uses so much memory that running multiple reports simultaneously crashes the server.",
+      "catastrophe": "The optimized query has a subtle bug in the join logic that causes reports to show zero data for 15% of customers. It looks correct. Nobody noticed for two weeks."
+    }
+  },
+  {
+    "id": "td_012",
+    "title": "Migrate to New CDN",
+    "description": "The legacy CDN is being sunset and charges are increasing 3x. Moving to a modern provider will reduce costs and improve asset delivery latency. This will take two weeks and save money that will go to something else.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-6, -8],
+      "partial": [-2, -4]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [3, 5],
+      "partial": [1, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-1, -2],
+      "partial": [-1, -1]
+    },
+    "outcomes": {
+      "clear_success": "CDN migration complete. Bandwidth costs dropped 60%. Finance will never acknowledge this or reduce budget accordingly.",
+      "partial_success": "New CDN is live for images. Video content is still on the old CDN because the billing relationship is complicated.",
+      "unexpected_impact": "The new CDN is faster but caches more aggressively, causing stale content to persist for hours after updates.",
+      "soft_failure": "Migration succeeded but the new CDN's API has different rate limits. We're hitting them during peak hours.",
+      "catastrophe": "The CDN handoff left a brief DNS inconsistency. For 40 minutes, 30% of users were hitting the old CDN and the new one simultaneously, seeing inconsistent state."
+    }
+  },
+  {
+    "id": "td_013",
+    "title": "Containerize Remaining Services",
+    "description": "Three services are still running on bare VMs using custom deploy scripts that nobody fully understands. Containerizing them will enable Kubernetes migration and horizontal scaling. This solves a problem only infrastructure feels.",
+    "category": "tech_debt_reduction",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-9, -12],
+      "partial": [-4, -7]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [5, 6],
+      "partial": [2, 4]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-2, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "All services containerized. Infrastructure can now manage them programmatically. The org chart doesn't reflect this structural improvement.",
+      "partial_success": "Two services containerized. The third has OS-level dependencies that don't play well with containers, so it stayed as is.",
+      "unexpected_impact": "Containerization revealed that the custom deploy scripts were doing critical things that nobody documented. Replicating them took another week.",
+      "soft_failure": "Services are containerized and running, but performance degraded slightly due to containerization overhead. We can't remove it without re-platforming.",
+      "catastrophe": "A misconfigured volume mount caused data loss during a container restart. Two hours of downtime and a customer refund."
+    }
+  },
+  {
+    "id": "td_014",
+    "title": "API Versioning Cleanup",
+    "description": "The API has seven versions in production, four of which are deprecated but still maintained for backward compatibility. Consolidating to three versions will reduce the test matrix and code complexity. This change will be felt as slowness by nobody.",
+    "category": "tech_debt_reduction",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-7, -9],
+      "partial": [-3, -5]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-1, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "API is now three versions instead of seven. Test suite runs 40% faster. This efficiency is noted and forgotten.",
+      "partial_success": "Deprecated versions marked for removal. Customers have six months. Only one will actually migrate, and they'll do it at the deadline.",
+      "unexpected_impact": "Removing old API versions exposed inconsistencies in data handling between versions that nobody knew about.",
+      "soft_failure": "Consolidation completed but introduced subtle behavior changes in rarely-used endpoints. Customers will notice this next month.",
+      "catastrophe": "API version consolidation broke serialization for a custom field type. A customer's integration silently corrupted their data for three hours before we caught it."
+    }
+  },
+  {
+    "id": "td_015",
+    "title": "Cache Invalidation Refactor",
+    "description": "Cache invalidation is done via timestamp-based TTL across a distributed system, causing inconsistent state. Implementing explicit invalidation will prevent stale data. This is work that Phil Karlton warned us about.",
+    "category": "tech_debt_reduction",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-8, -10],
+      "partial": [-4, -6]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Cache is now consistent. Data races no longer cause stale reads. The system is measurably more correct.",
+      "partial_success": "Explicit invalidation is implemented for critical caches. Less important caches still use TTL and occasionally serve stale data.",
+      "unexpected_impact": "The new invalidation system is correct but slower. We've traded correctness for throughput. We can't change back.",
+      "soft_failure": "Invalidation refactor complete. A cascade of invalidations under high load now causes thundering herd problems.",
+      "catastrophe": "A bug in the invalidation logic caused cache poisoning where stale data was cached indefinitely. A customer's reporting data stayed wrong for a week."
+    }
+  },
+  {
+    "id": "td_016",
+    "title": "Remove Dead Code",
+    "description": "The codebase has 8,000 lines of unreachable code from old features. Removing it will improve compile times marginally and eliminate the cognitive load of knowing it exists. This is boring code archaeology.",
+    "category": "tech_debt_reduction",
+    "effort": 3,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-4, -6],
+      "partial": [-2, -3]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [2, 3],
+      "partial": [1, 2]
+    },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Dead code removed. The codebase is 3% smaller and slightly cleaner. This feels good in an abstract way.",
+      "partial_success": "Most dead code identified and removed. Three modules looked dead but are called from tests that nobody runs.",
+      "unexpected_impact": "Code that looked dead turned out to be called via reflection. Removing it broke a plugin system nobody knew existed.",
+      "soft_failure": "Dead code is removed but git history is complicated by the deletions. Reviewing old changes is now harder.",
+      "catastrophe": "We removed code that was 'obviously dead' but was actually called by a customer's custom extension. Support incident."
+    }
+  },
+  {
+    "id": "td_017",
+    "title": "Schema Migration Tooling",
+    "description": "Database migrations are applied manually and tracked in a spreadsheet. Implementing a migration framework will automate this and prevent human error. The system will break in new and automated ways.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-6, -8],
+      "partial": [-2, -4]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [3, 5],
+      "partial": [1, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-1, -2],
+      "partial": [-1, -1]
+    },
+    "outcomes": {
+      "clear_success": "Migrations now apply automatically. Human error eliminated. The database is now unreliable in more efficient ways.",
+      "partial_success": "Migration framework is implemented. Complex migrations still require manual intervention, but simple ones are automated.",
+      "unexpected_impact": "Automated migrations run faster, which exposed race conditions in schema changes that were hidden by slower manual processes.",
+      "soft_failure": "Migrations work correctly but roll back slowly. A failed migration takes hours to undo.",
+      "catastrophe": "An automated migration ran twice due to an idempotency bug, creating duplicate columns. Recovery required manual database edits and a full re-test cycle."
+    }
+  },
+  {
+    "id": "td_018",
+    "title": "Rate Limiter Refactor",
+    "description": "Rate limiting is implemented as random backoff in client code, which is ineffective. Building a proper centralized rate limiter will prevent API abuse and distributed attacks. This invisible shield won't be tested until it fails.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-7, -8],
+      "partial": [-3, -5]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-1, -2],
+      "partial": [-1, -1]
+    },
+    "outcomes": {
+      "clear_success": "Rate limiter is in place. Abuse attempts are rejected gracefully. The API is marginally safer in ways nobody observes.",
+      "partial_success": "Rate limiter works for most traffic. Legacy integrations bypass it due to exceptions we granted.",
+      "unexpected_impact": "The new limiter is too strict. Legitimate traffic spikes now trigger rate limits. We've blocked our own customers.",
+      "soft_failure": "Rate limiter is implemented but doesn't coordinate across instances. Each server counts independently, making the limit ineffective at scale.",
+      "catastrophe": "A bug in the rate limiter state storage caused the counter to never reset. Every client was rate limited indefinitely."
+    }
+  },
+  {
+    "id": "td_019",
+    "title": "Session Management Overhaul",
+    "description": "Session tokens are stored in-memory and lost on restart. Implementing persistent session storage will prevent user logout on deployments. This is annoying enough to matter but small enough that we've tolerated it.",
+    "category": "tech_debt_reduction",
+    "effort": 3,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-5, -7],
+      "partial": [-2, -4]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [3, 4],
+      "partial": [1, 2]
+    },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Sessions persist across deployments. Users no longer get logged out on Tuesday mornings. Quiet satisfaction.",
+      "partial_success": "Persistent session storage implemented. Migration failed and old sessions were lost, but only for 3% of users.",
+      "unexpected_impact": "Persistent sessions revealed how many users have accounts with default passwords because they now stay logged in forever.",
+      "soft_failure": "Session persistence is working. The storage backend is slow and lookups add 100ms to every request.",
+      "catastrophe": "A session storage bug caused sessions from different customers to collide. User A could access User B's account. Incident duration: 90 minutes."
+    }
+  },
+  {
+    "id": "td_020",
+    "title": "Error Handling Standardization",
+    "description": "Error handling is inconsistent across services. Some return stacktraces, some return coded errors, some return nothing. Standardizing on a common format will make debugging possible. This is work that improves systems nobody interacts with.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-6, -8],
+      "partial": [-2, -4]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [3, 4],
+      "partial": [1, 2]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-1, -2],
+      "partial": [-1, -1]
+    },
+    "outcomes": {
+      "clear_success": "Error handling is now standardized. Debugging is possible. Log analysis tools now work. This is infrastructure improvement.",
+      "partial_success": "Core services have standardized error handling. Legacy modules still throw random exceptions.",
+      "unexpected_impact": "Standardized error codes revealed that we're returning sensitive information in error messages. GDPR compliance became someone's problem.",
+      "soft_failure": "Error handling standardized but the new format is verbose. Log storage costs increased 30%.",
+      "catastrophe": "A bug in the error standardization layer caused all errors to return the same generic message. Debugging became impossible."
+    }
+  },
+  {
+    "id": "td_021",
+    "title": "Secrets Management Migration",
+    "description": "Secrets are stored in environment variables and config files, which are risky and auditable. Implementing a centralized secrets manager will reduce exposure and improve compliance. This is trust-building work that only matters if nothing goes wrong.",
+    "category": "tech_debt_reduction",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-8, -12],
+      "partial": [-4, -7]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [5, 6],
+      "partial": [2, 4]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-2, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "Secrets are now centralized and auditable. The compliance team is satisfied. The risk profile improved in ways nobody will verify until it's tested.",
+      "partial_success": "Most secrets migrated. Legacy services still use environment variables because they don't support the new manager.",
+      "unexpected_impact": "Centralizing secrets revealed that we had multiple copies of each secret, some of which were out of sync.",
+      "soft_failure": "Secrets manager is in place but adds latency to startup. Services now take 30 seconds longer to boot.",
+      "catastrophe": "A secrets manager outage cascaded to all services. Everything tried to fetch secrets at once, causing a stampede. Total downtime: 45 minutes."
+    }
+  },
+  {
+    "id": "td_022",
+    "title": "Background Job Queue Upgrade",
+    "description": "The job queue runs on an outdated library with no visibility into failure rates or retry logic. Upgrading to a modern queue system will improve reliability and debugging. Jobs will still fail, just more transparently.",
+    "category": "tech_debt_reduction",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [-8, -10],
+      "partial": [-3, -5]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [4, 5],
+      "partial": [2, 3]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [-2, -3],
+      "partial": [-1, -2]
+    },
+    "outcomes": {
+      "clear_success": "Job queue now has visibility into retry logic and failure rates. Silent failures are now obviously failing. This is data-driven misery.",
+      "partial_success": "New job queue is live for new jobs. Old jobs still run on the legacy system because refactoring them is expensive.",
+      "unexpected_impact": "The new queue's visibility revealed that 15% of jobs are silently failing and being retried indefinitely. This was always true but was previously invisible.",
+      "soft_failure": "Queue upgrade is complete. It's slower than the old system and performance degradation cascades to the entire platform.",
+      "catastrophe": "The new queue lost an entire batch of jobs during an upgrade. Email notifications, report generation, and billing all stopped. The data loss was permanent."
+    }
+  }
+]

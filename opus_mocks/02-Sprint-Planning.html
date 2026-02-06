@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>PM Simulator — Sprint Planning</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #1a1a28;
+    --bg-card-hover: #222236;
+    --bg-panel: #0f0f18;
+    --purple-primary: #7c5cbf;
+    --purple-light: #9b7dd4;
+    --purple-dim: #5a3f8a;
+    --purple-glow: rgba(124, 92, 191, 0.15);
+    --purple-glow-strong: rgba(124, 92, 191, 0.3);
+    --text-primary: #e8e6f0;
+    --text-secondary: #9896a8;
+    --text-dim: #6b6980;
+    --border-subtle: rgba(124, 92, 191, 0.15);
+    --border-active: rgba(124, 92, 191, 0.5);
+    --green: #4ade80;
+    --green-dim: rgba(74, 222, 128, 0.15);
+    --amber: #fbbf24;
+    --amber-dim: rgba(251, 191, 36, 0.15);
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.15);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96, 165, 250, 0.15);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34, 211, 238, 0.12);
+    --orange: #fb923c;
+    --orange-dim: rgba(251, 146, 60, 0.15);
+    --pink: #f472b6;
+    --pink-dim: rgba(244, 114, 182, 0.12);
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 52px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: var(--purple-primary);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800; font-size: 14px; color: white;
+  }
+  .logo-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 700; color: var(--text-primary);
+    letter-spacing: 0.5px;
+  }
+
+  .quarter-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--purple-light);
+    background: var(--purple-glow);
+    border: 1px solid var(--border-subtle);
+    border-radius: 100px;
+    padding: 4px 12px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── METRICS BAR ── */
+  .metrics-bar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .metric-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    transition: background 0.15s;
+    cursor: default;
+  }
+  .metric-item:hover { background: rgba(255,255,255,0.04); }
+
+  .metric-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.3px;
+  }
+
+  .metric-face {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .metric-trend {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .trend-flat { color: var(--text-secondary); background: rgba(255,255,255,0.05); }
+  .trend-up { color: var(--green); background: var(--green-dim); }
+  .trend-down { color: var(--red); background: var(--red-dim); }
+  .trend-surge { color: var(--green); background: var(--green-dim); }
+  .trend-decline { color: var(--red); background: var(--red-dim); }
+  .trend-mounting { color: var(--amber); background: var(--amber-dim); }
+
+  .metric-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-subtle);
+    margin: 0 6px;
+  }
+
+  .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--purple-dim), var(--purple-primary));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: white;
+  }
+
+  /* ── CEO FOCUS BANNER ── */
+  .ceo-focus-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 24px;
+    background: linear-gradient(90deg, rgba(124, 92, 191, 0.08), rgba(124, 92, 191, 0.15), rgba(124, 92, 191, 0.08));
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .ceo-focus-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .ceo-focus-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--purple-light);
+    background: var(--purple-glow);
+    border: 1px solid var(--border-active);
+    padding: 3px 14px;
+    border-radius: 100px;
+  }
+
+  .ceo-focus-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── LEFT PANEL: BACKLOG ── */
+  .backlog-panel {
+    padding: 20px 20px 20px 24px;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .panel-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .panel-count {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .panel-subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  /* ── TICKET CARD ── */
+  .ticket-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: grab;
+    transition: all 0.15s ease;
+    position: relative;
+  }
+
+  .ticket-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-active);
+    transform: translateX(2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+
+  .ticket-card.mandatory {
+    border-left: 3px solid var(--red);
+    background: linear-gradient(90deg, rgba(248, 113, 113, 0.06), var(--bg-card));
+  }
+
+  .ticket-card.ceo-aligned {
+    border-left: 3px solid var(--purple-light);
+  }
+
+  .ticket-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+
+  .ticket-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  .ticket-effort {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.06);
+    padding: 2px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .ticket-tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .ticket-category {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .cat-enterprise { color: var(--blue); background: var(--blue-dim); }
+  .cat-self-serve { color: var(--green); background: var(--green-dim); }
+  .cat-tech-debt { color: var(--amber); background: var(--amber-dim); }
+  .cat-ux { color: var(--cyan); background: var(--cyan-dim); }
+  .cat-sales { color: var(--orange); background: var(--orange-dim); }
+  .cat-monetization { color: var(--pink); background: var(--pink-dim); }
+  .cat-infra { color: var(--text-secondary); background: rgba(255,255,255,0.06); }
+  .cat-moonshot { color: #c084fc; background: rgba(192, 132, 252, 0.12); }
+
+  .ticket-ceo-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--purple-light);
+    background: var(--purple-glow);
+    border: 1px solid rgba(124, 92, 191, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .ticket-mandatory-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    background: var(--red-dim);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .ticket-desc {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+  }
+
+  .ticket-desc .tradeoff {
+    color: var(--amber);
+    font-weight: 500;
+  }
+
+  /* ── RIGHT PANEL: SPRINT ── */
+  .sprint-panel {
+    padding: 20px 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  /* ── CAPACITY BAR ── */
+  .capacity-section {
+    margin-bottom: 20px;
+  }
+
+  .capacity-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .capacity-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .capacity-numbers {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .capacity-numbers .used {
+    color: var(--purple-light);
+    font-weight: 700;
+  }
+
+  .capacity-bar-track {
+    height: 10px;
+    background: var(--bg-card);
+    border-radius: 100px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .capacity-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple-dim), var(--purple-primary));
+    border-radius: 100px;
+    transition: width 0.3s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .capacity-bar-fill.overbooked {
+    background: linear-gradient(90deg, var(--purple-dim), var(--purple-primary), var(--amber));
+  }
+
+  .capacity-bar-fill.danger {
+    background: linear-gradient(90deg, var(--purple-dim), var(--purple-primary), var(--red));
+  }
+
+  /* The "stretch zone" marker */
+  .capacity-bar-limit {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 2px;
+    background: var(--text-dim);
+    z-index: 3;
+    border-radius: 1px;
+  }
+
+  .capacity-bar-stretch {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 3px,
+      rgba(251, 191, 36, 0.1) 3px,
+      rgba(251, 191, 36, 0.1) 6px
+    );
+    border-radius: 0 100px 100px 0;
+    z-index: 1;
+  }
+
+  .capacity-labels-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+
+  .capacity-sublabel {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.3px;
+  }
+
+  .capacity-sublabel.warn {
+    color: var(--amber);
+  }
+
+  /* ── COMMITTED SECTION ── */
+  .committed-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .committed-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .committed-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .committed-count {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .drop-zone {
+    flex: 1;
+    min-height: 120px;
+    border: 2px dashed rgba(124, 92, 191, 0.2);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    background: rgba(124, 92, 191, 0.03);
+  }
+
+  .drop-zone-icon {
+    font-size: 24px;
+    opacity: 0.3;
+  }
+
+  .drop-zone-text {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .committed-tickets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .committed-ticket {
+    background: var(--bg-card);
+    border: 1px solid var(--border-active);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .committed-ticket-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .committed-ticket-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .committed-ticket-effort {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .committed-ticket-remove {
+    font-size: 14px;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .committed-ticket-remove:hover {
+    color: var(--red);
+    background: var(--red-dim);
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .bottom-bar-left {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .bottom-bar-right {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 10px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .btn-ghost:hover {
+    border-color: var(--border-active);
+    color: var(--text-primary);
+    background: var(--purple-glow);
+  }
+
+  .btn-primary {
+    background: var(--purple-primary);
+    color: white;
+    box-shadow: 0 0 16px rgba(124, 92, 191, 0.25);
+  }
+  .btn-primary:hover {
+    background: var(--purple-light);
+    box-shadow: 0 0 24px rgba(124, 92, 191, 0.4);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(124, 92, 191, 0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(124, 92, 191, 0.4); }
+</style>
+</head>
+<body>
+
+  <!-- ══════════ TOP BAR ══════════ -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="logo">
+        <div class="logo-icon">PM</div>
+        <span class="logo-text">PM Simulator</span>
+      </div>
+      <div class="quarter-badge">Q2 &mdash; Sprint 1 of 3</div>
+    </div>
+
+    <!-- METRICS BAR (FIXED: all 7 visible metrics, faces for sentiment, arrows for growth) -->
+    <div class="metrics-bar">
+      <!-- Sentiment Metrics: displayed as face tiers -->
+      <div class="metric-item" title="Team Sentiment: Neutral (55/100)">
+        <span class="metric-label">Team</span>
+        <span class="metric-face">😐</span>
+      </div>
+      <div class="metric-item" title="CEO Sentiment: Neutral (48/100)">
+        <span class="metric-label">CEO</span>
+        <span class="metric-face">😐</span>
+      </div>
+      <div class="metric-item" title="Sales Sentiment: Unhappy (38/100)">
+        <span class="metric-label">Sales</span>
+        <span class="metric-face">😟</span>
+      </div>
+      <!-- FIXED: CTO Sentiment was MISSING from original mock -->
+      <div class="metric-item" title="CTO Sentiment: Neutral (52/100)">
+        <span class="metric-label">CTO</span>
+        <span class="metric-face">😐</span>
+      </div>
+
+      <div class="metric-divider"></div>
+
+      <!-- Growth Metrics: displayed as trend arrows (FIXED: no percentages) -->
+      <div class="metric-item" title="Self-Serve Growth: Flat (45/100)">
+        <span class="metric-label">Self-Serve</span>
+        <span class="metric-trend trend-flat">Flat &rarr;</span>
+      </div>
+      <div class="metric-item" title="Enterprise Growth: Declining (38/100)">
+        <span class="metric-label">Enterprise</span>
+        <span class="metric-trend trend-down">Declining &darr;</span>
+      </div>
+
+      <div class="metric-divider"></div>
+
+      <!-- Tech Debt: inverted arrow scale -->
+      <div class="metric-item" title="Tech Debt: Mounting (48/100)">
+        <span class="metric-label">Tech Debt</span>
+        <span class="metric-trend trend-mounting">Mounting &rarr;</span>
+      </div>
+    </div>
+
+    <div class="top-bar-right">
+      <div class="avatar">S</div>
+    </div>
+  </div>
+
+  <!-- ══════════ CEO FOCUS BANNER (ADDED: critical missing element) ══════════ -->
+  <div class="ceo-focus-banner">
+    <span class="ceo-focus-label">CEO Focus this Quarter:</span>
+    <span class="ceo-focus-value">Enterprise Growth</span>
+    <span class="ceo-focus-hint">&mdash; aligned tickets get +12% success chance</span>
+  </div>
+
+  <!-- ══════════ MAIN CONTENT ══════════ -->
+  <div class="main-content">
+
+    <!-- ── LEFT: BACKLOG ── -->
+    <div class="backlog-panel">
+      <div class="panel-header">
+        <span class="panel-title">Backlog</span>
+        <span class="panel-count">8 tickets</span>
+      </div>
+      <div class="panel-subtitle">Available work. Choose wisely. Or don't.</div>
+
+      <!-- Ticket 1: Self-Serve Feature -->
+      <div class="ticket-card">
+        <div class="ticket-top-row">
+          <span class="ticket-title">Revamp Dashboard Analytics</span>
+          <span class="ticket-effort">6 pts</span>
+        </div>
+        <div class="ticket-tags">
+          <span class="ticket-category cat-self-serve">Self-Serve Feature</span>
+        </div>
+        <div class="ticket-desc">
+          Rebuild the analytics dashboard with better funnels and cohort views.
+          Should boost self-serve signups. <span class="tradeoff">Will increase tech debt &mdash; quick-and-dirty is the only way to hit the timeline.</span>
+        </div>
+      </div>
+
+      <!-- Ticket 2: Enterprise Feature (CEO-aligned) -->
+      <div class="ticket-card ceo-aligned">
+        <div class="ticket-top-row">
+          <span class="ticket-title">SSO for Acme Corp</span>
+          <span class="ticket-effort">7 pts</span>
+        </div>
+        <div class="ticket-tags">
+          <span class="ticket-category cat-enterprise">Enterprise</span>
+          <span class="ticket-ceo-tag">&#9733; CEO Aligned</span>
+        </div>
+        <div class="ticket-desc">
+          Implement SAML-based SSO for Acme Corp's 2,000-seat deployment.
+          Sales has been promising this for six weeks. <span class="tradeoff">Platform team can't touch self-serve while this ships.</span>
+        </div>
+      </div>
+
+      <!-- Ticket 3: Tech Debt -->
+      <div class="ticket-card">
+        <div class="ticket-top-row">
+          <span class="ticket-title">Fix Auth Service Memory Leak</span>
+          <span class="ticket-effort">4 pts</span>
+        </div>
+        <div class="ticket-tags">
+          <span class="ticket-category cat-tech-debt">Tech Debt</span>
+        </div>
+        <div class="ticket-desc">
+          Auth service memory usage doubles every 48 hours. Currently mitigated by
+          restarting it nightly. <span class="tradeoff">No direct growth impact. CTO will notice if you don't.</span>
+        </div>
+      </div>
+
+      <!-- Ticket 4: UX Improvement -->
+      <div class="ticket-card">
+        <div class="ticket-top-row">
+          <span class="ticket-title">Redesign Settings Page</span>
+          <span class="ticket-effort">4 pts</span>
+        </div>
+        <div class="ticket-tags">
+          <span class="ticket-category cat-ux">UX Improvement</span>
+        </div>
+        <div class="ticket-desc">
+          The settings page has 47 options on a single scroll. Users can't find anything.
+          Restructure into logical sections. <span class="tradeoff">Low risk, minimal tradeoff. Nobody will thank you.</span>
+        </div>
+      </div>
+
+      <!-- Ticket 5: Sales Request (CEO-aligned) -->
+      <div class="ticket-card ceo-aligned">
+        <div class="ticket-top-row">
+          <span class="ticket-title">Custom Export for GlobalTech</span>
+          <span class="ticket-effort">6 pts</span>
+        </div>
+        <div class="ticket-tags">
+          <span class="ticket-category cat-sales">Sales Request</span>
+          <span class="ticket-ceo-tag">&#9733; CEO Aligned</span>
+        </div>
+        <div class="ticket-desc">
+          GlobalTech needs a custom CSV export with 14 specific columns by end of month.
+          <span class="tradeoff">Will add tech debt and make the team question your priorities. Sales will love you briefly.</span>
+        </div>
+      </div>
+
+      <!-- Ticket 6: Monetization -->
+      <div class="ticket-card">
+        <div class="ticket-top-row">
+          <span class="ticket-title">Add Usage-Based Billing</span>
+          <span class="ticket-effort">5 pts</span>
+        </div>
+        <div class="ticket-tags">
+          <span class="ticket-category cat-monetization">Monetization</span>
+        </div>
+        <div class="ticket-desc">
+          Introduce metered billing for API usage. Could unlock new revenue.
+          <span class="tradeoff">Users will not be delighted. NPS will feel it.</span>
+        </div>
+      </div>
+
+      <!-- Ticket 7: Infrastructure -->
+      <div class="ticket-card">
+        <div class="ticket-top-row">
+          <span class="ticket-title">Migrate to New CDN</span>
+          <span class="ticket-effort">5 pts</span>
+        </div>
+        <div class="ticket-tags">
+          <span class="ticket-category cat-infra">Infrastructure</span>
+        </div>
+        <div class="ticket-desc">
+          Current CDN contract expires next quarter. Migration reduces latency and costs.
+          <span class="tradeoff">Invisible to users. Invisible to leadership. The team finds it boring.</span>
+        </div>
+      </div>
+
+      <!-- Ticket 8: Moonshot -->
+      <div class="ticket-card">
+        <div class="ticket-top-row">
+          <span class="ticket-title">AI-Powered Search</span>
+          <span class="ticket-effort">9 pts</span>
+        </div>
+        <div class="ticket-tags">
+          <span class="ticket-category cat-moonshot">Moonshot</span>
+        </div>
+        <div class="ticket-desc">
+          Replace keyword search with semantic AI search across all content.
+          Could be transformative. Could also be a hallucination factory.
+          <span class="tradeoff">Massive effort, high failure risk, potential tech debt bomb. But imagine the demo.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── RIGHT: SPRINT COMMITTED ── -->
+    <div class="sprint-panel">
+
+      <!-- Sprint Capacity (FIXED: shows stretch zone) -->
+      <div class="capacity-section">
+        <div class="capacity-header">
+          <span class="capacity-label">Sprint Capacity</span>
+          <span class="capacity-numbers"><span class="used">13</span> / 21 pts used</span>
+        </div>
+        <!-- Capacity bar: fill at 13/21 = 62%, limit line at 100% (21pts), stretch zone 100-125% -->
+        <div class="capacity-bar-track">
+          <!-- The "stretch zone" hatched area from 100% to 125% -->
+          <div class="capacity-bar-stretch" style="left: 80%; right: 0;"></div>
+          <!-- The normal capacity limit marker -->
+          <div class="capacity-bar-limit" style="left: 80%;"></div>
+          <!-- Fill bar (13 of max 26.25 display range, so ~49.5% of visual track) -->
+          <div class="capacity-bar-fill" style="width: 49.5%;"></div>
+        </div>
+        <div class="capacity-labels-row">
+          <span class="capacity-sublabel">0 pts</span>
+          <span class="capacity-sublabel" style="position:relative; left:-10%;">21 pts capacity</span>
+          <span class="capacity-sublabel warn">26 pts max (stretch)</span>
+        </div>
+      </div>
+
+      <!-- Committed Tickets -->
+      <div class="committed-section">
+        <div class="committed-header">
+          <span class="committed-title">Committed</span>
+          <span class="committed-count">2 tickets &mdash; 8 pts remaining</span>
+        </div>
+
+        <!-- Tickets already dragged in -->
+        <div class="committed-tickets">
+          <div class="committed-ticket">
+            <div class="committed-ticket-left">
+              <span class="ticket-category cat-enterprise" style="font-size:9px;">Enterprise</span>
+              <span class="committed-ticket-title">SSO for Acme Corp</span>
+              <span class="committed-ticket-effort">7 pts</span>
+            </div>
+            <span class="committed-ticket-remove">&times;</span>
+          </div>
+
+          <div class="committed-ticket">
+            <div class="committed-ticket-left">
+              <span class="ticket-category cat-sales" style="font-size:9px;">Sales</span>
+              <span class="committed-ticket-title">Custom Export for GlobalTech</span>
+              <span class="committed-ticket-effort">6 pts</span>
+            </div>
+            <span class="committed-ticket-remove">&times;</span>
+          </div>
+        </div>
+
+        <!-- Drop zone for more -->
+        <div class="drop-zone">
+          <div class="drop-zone-icon">&#8615;</div>
+          <div class="drop-zone-text">Drag tickets here to commit them</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════ BOTTOM BAR ══════════ -->
+  <div class="bottom-bar">
+    <div class="bottom-bar-left">
+      Sales is at 38 and dropping. CEO wants enterprise. Tech debt is creeping up. Only 21 points. Classic PM trap.
+    </div>
+    <div class="bottom-bar-right">
+      <button class="btn btn-ghost">Reset Sprint</button>
+      <button class="btn btn-ghost">Reconsider Scope</button>
+      <button class="btn btn-primary">Start Sprint</button>
+    </div>
+  </div>
+
+</body>
+</html>

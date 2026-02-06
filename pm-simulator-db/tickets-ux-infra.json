@@ -1,0 +1,602 @@
+[
+  {
+    "id": "ux_001",
+    "title": "Accessibility Audit Phase 1",
+    "description": "WCAG 2.1 AA compliance review of core user flows. Identify missing alt text, aria labels, and keyboard navigation gaps across dashboard and settings.",
+    "category": "ux_improvement",
+    "effort": 3,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [3, 5], "partial": [1, 2] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [1, 2], "partial": [0, 1] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Three users with screen readers moved from 'frustrated' to 'functional.' The rest of the user base will never know this happened.",
+      "partial_success": "Alt text was added to 60% of images. The decorative ones are still screaming into the void.",
+      "unexpected_impact": "Discovered that 8% of users have color-only form validation errors. Fixed that too, but nobody asked.",
+      "soft_failure": "WCAG compliance achieved in staging environment. Production is a different legal question we're not discussing.",
+      "catastrophe": "The audit revealed the settings page is completely inaccessible. Fixing it properly will cost 40 hours nobody budgeted."
+    }
+  },
+  {
+    "id": "ux_002",
+    "title": "Mobile Responsive Fixes",
+    "description": "Address layout breaks on 375px and below viewports. Fix sticky headers, button hit targets, and modal overflow issues on iOS and Android.",
+    "category": "ux_improvement",
+    "effort": 4,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [2, 3], "partial": [1, 1] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Mobile NPS improved 3 points. Mobile users are now only mostly frustrated instead of completely so.",
+      "partial_success": "Buttons are now tappable. The modals still overflow, but we call that 'a scrolling experience.'",
+      "unexpected_impact": "Users on 6-inch phones report better navigation. Users on 5.4-inch phones report the same problems in different places.",
+      "soft_failure": "Responsive design is now 'mostly compliant.' There's a tablet breakpoint nobody owns anymore.",
+      "catastrophe": "The sticky header fix broke form input focus on iPhone 12. Support is handling escalations; we're calling it a Safari quirk."
+    }
+  },
+  {
+    "id": "ux_003",
+    "title": "Loading State Clarity",
+    "description": "Replace vague spinners with contextual loading messages. Add skeleton screens to data-heavy pages and clarify estimated wait times.",
+    "category": "ux_improvement",
+    "effort": 3,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [4, 6], "partial": [1, 3] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [1, 3], "partial": [0, 1] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Users stopped asking 'is it loading?' in support. They now just ask 'how much longer?' which feels like progress.",
+      "partial_success": "Skeleton screens exist on three pages. The other twelve pages still have spinners that could mean anything.",
+      "unexpected_impact": "One user thanked us for the loading message. Accounting for a full workday was apparently novel.",
+      "soft_failure": "Loading states are more informative, but faster load times would be more informative still.",
+      "catastrophe": "Estimated wait times are hardcoded to 5 seconds. Queries that take 45 seconds now look broken."
+    }
+  },
+  {
+    "id": "ux_004",
+    "title": "Error Messages Rewrite",
+    "description": "Replace technical error strings with actionable user guidance. Include specific next steps and relevant support links in all validation and API errors.",
+    "category": "ux_improvement",
+    "effort": 4,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [2, 4], "partial": [1, 2] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Support ticket volume dropped 12% for common error scenarios. Leadership will attribute this to something else.",
+      "partial_success": "Form validation errors are now human-readable. API errors still look like stack traces because that's a different system.",
+      "unexpected_impact": "Users learned what a webhook is. The error message for that was better than our documentation.",
+      "soft_failure": "Error handling improved in the happy path. The unhappy path is still mostly mystifying.",
+      "catastrophe": "New error copy went live with placeholder support links. Support got flooded with reports that we broke navigation."
+    }
+  },
+  {
+    "id": "ux_005",
+    "title": "Color Contrast Audit",
+    "description": "Ensure all text meets WCAG AA contrast ratios (4.5:1 for body text, 3:1 for large text). Remap palette for dark mode parity.",
+    "category": "ux_improvement",
+    "effort": 3,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [3, 5], "partial": [1, 3] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-1, -2], "partial": [-1, -1] },
+    "outcomes": {
+      "clear_success": "Users with low vision can now read the interface. The design team's subtle gray-on-light-gray aesthetic is now merely subtle.",
+      "partial_success": "Primary text passed AA. Secondary labels still fail on specific monitors and also are secondary so nobody checks.",
+      "unexpected_impact": "The new palette accidentally makes the app look more professional. Everyone thinks we rebranded.",
+      "soft_failure": "Contrast is compliant in light mode. Dark mode is 'aspirationally accessible.'",
+      "catastrophe": "Remapping colors broke custom user themes. Users with red-green colorblindness lost all meaningful contrast in data visualizations."
+    }
+  },
+  {
+    "id": "ux_006",
+    "title": "Keyboard Navigation Improvements",
+    "description": "Implement tab order logic, focus indicators, and keyboard shortcuts for common actions. Add Skip to Content link on all pages.",
+    "category": "ux_improvement",
+    "effort": 4,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [5, 7], "partial": [2, 4] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [2, 3], "partial": [1, 2] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Power users discovered keyboard shortcuts. One person is now 200% more efficient at a task nobody should optimize for.",
+      "partial_success": "Tab order is logical on forms. Tab order on the navigation is still mysterious.",
+      "unexpected_impact": "A user without a mouse suddenly had a better experience. Everyone else is using the mouse, so this is invisible.",
+      "soft_failure": "Keyboard navigation works in the main flow. Deep modals still have focus traps.",
+      "catastrophe": "The Tab key now skips through 47 hidden elements before reaching content. Keyboard navigation is technically faster than it was, if you have patience."
+    }
+  },
+  {
+    "id": "ux_007",
+    "title": "Settings Page Redesign",
+    "description": "Reorganize controls by feature area instead of alphabetically. Add preview panels for theme and layout changes. Group related toggles.",
+    "category": "ux_improvement",
+    "effort": 5,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [2, 5], "partial": [1, 3] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Users found settings 40% faster. Settings are still where 60% of bugs happen, but at least users get there intentionally now.",
+      "partial_success": "Settings are organized logically. The preview panel only works for themes, not for notification frequency or data retention.",
+      "unexpected_impact": "Three users discovered features they didn't know existed. Two of them were unintentional.",
+      "soft_failure": "The redesign is an improvement over the previous chaos. It's still not self-explanatory.",
+      "catastrophe": "Settings is now so inviting that users are tweaking advanced options they don't understand. Support volume increased 8%."
+    }
+  },
+  {
+    "id": "ux_008",
+    "title": "Empty State Design System",
+    "description": "Create consistent messaging and illustrations for blank pages, zero-result searches, and no-data scenarios. Include onboarding hints for first-time contexts.",
+    "category": "ux_improvement",
+    "effort": 3,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [1, 3], "partial": [0, 1] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "First-time users are no longer confused by blank screens. They're still confused by the next screen, but that's different.",
+      "partial_success": "Empty states now have helpful messages on 70% of pages. The remaining 30% still show nothing, which is somehow clearer.",
+      "unexpected_impact": "The new illustrations became a meme internally. The design team's intent doesn't matter anymore.",
+      "soft_failure": "Empty states are no longer bleak. They're now minimally encouraging in a way that feels passive-aggressive.",
+      "catastrophe": "The 'no data' illustration is offensive to roughly half the company. HR is in a thread about it that's way too long."
+    }
+  },
+  {
+    "id": "ux_009",
+    "title": "Onboarding Tooltip Pass",
+    "description": "Audit and refresh contextual tooltips on first-time feature discovery. Standardize tone, timing, and dismissal behavior across product.",
+    "category": "ux_improvement",
+    "effort": 3,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [4, 6], "partial": [1, 2] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [1, 2], "partial": [0, 1] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Tooltips are now consistent and helpful. New users still skip through them without reading because they're new users.",
+      "partial_success": "Timing is improved on critical flows. Half the tooltips still pop up when the user is in the middle of something else.",
+      "unexpected_impact": "Someone customized tooltips for their account. This broke the experiment metrics, but they're happy.",
+      "soft_failure": "Tooltips are better explained but less discoverable. The tradeoff feels wrong but mathematically probably isn't.",
+      "catastrophe": "A tooltip bug shows the same message on different features. Users think the features are the same. Three support tickets so far."
+    }
+  },
+  {
+    "id": "ux_010",
+    "title": "Search UX Overhaul",
+    "description": "Add autocomplete suggestions, result previews, and filter chips. Implement fuzzy matching and recent search history. Show relevance ranking.",
+    "category": "ux_improvement",
+    "effort": 5,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [6, 8], "partial": [3, 5] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [2, 4], "partial": [1, 3] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Search success rate improved 28%. Users still sometimes get zero results and blame the product, not the query.",
+      "partial_success": "Autocomplete works beautifully. Fuzzy matching catches 85% of misspellings. The remaining 15% are user typos, not our problem.",
+      "unexpected_impact": "Users discovered they can search for things that don't exist in the product. They're mad we made it too easy.",
+      "soft_failure": "Search is faster but still not fast enough. Users can perceive a 200ms delay with supernatural accuracy.",
+      "catastrophe": "Recent search history includes internal admin queries that leaked into user autocomplete suggestions. Privacy incident, low severity, still an incident."
+    }
+  },
+  {
+    "id": "ux_011",
+    "title": "Form Validation Redesign",
+    "description": "Move validation to real-time inline feedback instead of submit-time walls. Add success states for completed fields. Clarify required vs. optional.",
+    "category": "ux_improvement",
+    "effort": 4,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [4, 6], "partial": [2, 4] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [2, 3], "partial": [1, 2] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Form abandonment dropped 15%. Users still have to fill out fields they think are optional but aren't.",
+      "partial_success": "Real-time validation works on text inputs. Dropdowns still validate on submit because the codebase is old.",
+      "unexpected_impact": "A user wrote a thank-you email about instant email validation. This is the only positive feedback we'll get on this ticket.",
+      "soft_failure": "Validation is friendlier. Users still can't tell if a red field means 'wrong' or 'required' without trying.",
+      "catastrophe": "The success checkmarks are so green and cheerful that users submit incomplete forms thinking they're done. Form completion rate went up; actual completion rate went down."
+    }
+  },
+  {
+    "id": "ux_012",
+    "title": "Dark Mode Implementation",
+    "description": "Implement system preference detection and user toggle for dark mode. Audit color palette for WCAG compliance in both modes. Add persistent user preference.",
+    "category": "ux_improvement",
+    "effort": 5,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-2, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "NPS from night-shift users improved 5 points. Everyone else is happy we finally have dark mode because it makes the product look premium.",
+      "partial_success": "Dark mode exists and works. Some components weren't updated, so you get light buttons on dark backgrounds, which is a choice.",
+      "unexpected_impact": "Power consumption on OLED devices decreased. Nobody will ever measure or acknowledge this.",
+      "soft_failure": "Dark mode is available but buggy in PDF exports. Exporting to PDF in dark mode is not a common use case, but someone is doing it.",
+      "catastrophe": "Dark mode broke the custom theme system completely. Users with saved themes are now living in an unusable gray void."
+    }
+  },
+  {
+    "id": "ux_013",
+    "title": "Notification Center Redesign",
+    "description": "Consolidate notifications from multiple sources into a unified center. Add filtering by type and priority. Implement notification preferences UI.",
+    "category": "ux_improvement",
+    "effort": 4,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [4, 7], "partial": [2, 3] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [2, 4], "partial": [1, 1] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Notification overload dropped 40%. Users are now just overwhelmed by fewer notifications instead of more.",
+      "partial_success": "The notification center is unified. Preferences only control 60% of notification types because the other 40% are system-critical.",
+      "unexpected_impact": "Users discovered they can silence notifications. Several people are now not seeing critical alerts they actually needed.",
+      "soft_failure": "Notifications are better organized. Delivery still happens in random order due to queue architecture.",
+      "catastrophe": "The notification preferences UI is so good at hiding alerts that a critical security notification went unseen for two weeks."
+    }
+  },
+  {
+    "id": "ux_014",
+    "title": "Page Transition Animations",
+    "description": "Add smooth fade and slide transitions between major sections. Ensure animations respect prefers-reduced-motion. Keep motion under 300ms.",
+    "category": "ux_improvement",
+    "effort": 3,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [3, 5], "partial": [1, 3] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Navigation feels smoother. Users on 2G connections experience brief freezes, which is technically animated.",
+      "partial_success": "Transitions are smooth on modern browsers. Safari 2019 still looks choppy, but that's not our target audience.",
+      "unexpected_impact": "One user with vestibular disorder disabled motion and thanked us. Everyone else got a nice visual polish.",
+      "soft_failure": "Animations are under 300ms. Actual perceived delay is higher due to browser rendering, but metrics look good.",
+      "catastrophe": "Animations caused a layout shift on mobile. CLS score went up, complaints went up, performance didn't change."
+    }
+  },
+  {
+    "id": "ux_015",
+    "title": "Data Table Redesign",
+    "description": "Improve sortable columns, add column visibility toggle, implement sticky headers. Add row hover states and improve mobile card view for large tables.",
+    "category": "ux_improvement",
+    "effort": 5,
+    "primary_metric": "nps",
+    "primary_impact": { "success": [5, 8], "partial": [3, 5] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [2, 5], "partial": [1, 2] },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Data-heavy workflows are 30% faster. Analysts are now impatient about the other 70% of the product.",
+      "partial_success": "Tables are now beautiful and functional. Sorting 500,000 rows still takes six seconds, but the experience feels snappier.",
+      "unexpected_impact": "The column visibility toggle is so good that users hid critical columns and forgot they were hidden.",
+      "soft_failure": "Tables work great on desktop. Mobile card view is a half-measure that's better than nothing but not ideal.",
+      "catastrophe": "Sticky headers broke absolutely-positioned elements inside cells. A critical reporting table is now unusable in ways that don't appear in testing."
+    }
+  },
+  {
+    "id": "inf_001",
+    "title": "CDN Migration Plan",
+    "description": "Migrate static assets from self-hosted to global CDN. Implement cache headers and versioning. Reduce origin load and improve global latency by 40-60%.",
+    "category": "infrastructure",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-6, -9], "partial": [-3, -6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "APAC regions load 50% faster. The team is quietly pleased and immediately has three new ideas for things that could break.",
+      "partial_success": "Most assets are on CDN. SVG files are still self-hosted because nobody owns the icon system anymore.",
+      "unexpected_impact": "Cache invalidation is now a problem we can see. Before, it was a problem we couldn't measure.",
+      "soft_failure": "CDN works but edge cases exist. Users in certain geographic regions randomly get stale assets for reasons we don't understand yet.",
+      "catastrophe": "A CDN misconfiguration cached the API response. Every user saw the same data for 45 minutes. The team deployed a fix at 3 AM on Saturday."
+    }
+  },
+  {
+    "id": "inf_002",
+    "title": "Auto-Scaling Configuration",
+    "description": "Set up horizontal pod autoscaling based on CPU and memory thresholds. Configure burst limits and cooldown periods. Test during peak hours.",
+    "category": "infrastructure",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-5, -8], "partial": [-2, -5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -2], "partial": [-1, -1] },
+    "outcomes": {
+      "clear_success": "The system now scales automatically during traffic spikes. The team can sleep during peak hours, which is somehow terrifying.",
+      "partial_success": "Auto-scaling works for stateless services. Stateful services still scale manually because that's more fun.",
+      "unexpected_impact": "Cost increased during test spike. We're calling this a 'valuable learning' about what the system can handle.",
+      "soft_failure": "Scaling works but takes 90 seconds to activate. Most spikes last 45 seconds.",
+      "catastrophe": "A cascading failure caused rapid scale-out followed by rapid scale-in. 47 pods started and died in six minutes. The team was paged four times."
+    }
+  },
+  {
+    "id": "inf_003",
+    "title": "Database Read Replicas",
+    "description": "Deploy read replicas for reporting and analytics queries. Implement connection pooling and replica failover. Offload 40% of read traffic from primary.",
+    "category": "infrastructure",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-7, -10], "partial": [-3, -7] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Primary database CPU dropped 35%. The team is discussing next quarter's optimization ideas instead of firefighting.",
+      "partial_success": "Read replicas work for analytics. Data consistency adds 2-5 seconds of lag, which breaks reporting freshness expectations.",
+      "unexpected_impact": "A user discovered they could query stale data from the replica. They built a workflow around it and complained when we fixed it.",
+      "soft_failure": "Replicas work most of the time. During network partitions, you get to choose between stale data and no data.",
+      "catastrophe": "A replica got out of sync with the primary. For 40 minutes, analytics reported completely fabricated numbers. Nobody noticed until the CFO asked about it."
+    }
+  },
+  {
+    "id": "inf_004",
+    "title": "Disaster Recovery Testing",
+    "description": "Implement monthly DR drills simulating complete region failure. Test database restore, failover procedures, and RTO/RPO metrics. Document playbooks.",
+    "category": "infrastructure",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-5, -7], "partial": [-2, -4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -2], "partial": [-1, -1] },
+    "outcomes": {
+      "clear_success": "We discovered we could recover in 45 minutes. During the actual failure, it took 12 hours. We're still analyzing why.",
+      "partial_success": "DR playbooks exist. Half of them are outdated and reference systems that don't exist anymore.",
+      "unexpected_impact": "The first drill broke production. Everyone learned something valuable about the importance of testing in staging.",
+      "soft_failure": "Recovery procedures work. They require manual steps and require people who know the system, so they're fragile by nature.",
+      "catastrophe": "A restore test corrupted the backup. We spent 36 hours discovering that our disaster recovery plan was itself a disaster."
+    }
+  },
+  {
+    "id": "inf_005",
+    "title": "Load Balancer Optimization",
+    "description": "Tune connection limits, timeouts, and health check parameters. Implement connection draining for graceful shutdowns. Add request tracing headers.",
+    "category": "infrastructure",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-5, -8], "partial": [-2, -4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -2], "partial": [-1, -1] },
+    "outcomes": {
+      "clear_success": "Request routing is more efficient. Failed connections drop by 60%. Users experience fewer timeouts that aren't actually timeouts.",
+      "partial_success": "Health checks are better. False positives still happen during GC pauses in production.",
+      "unexpected_impact": "Request tracing headers revealed that users are sending malformed requests we never noticed. Everything still works.",
+      "soft_failure": "Load balancer is optimized. Deployment still causes brief connection resets because deploys happen during peak traffic.",
+      "catastrophe": "The new timeout setting was too aggressive. Long-running reports started failing. We didn't notice for four hours."
+    }
+  },
+  {
+    "id": "inf_006",
+    "title": "Log Aggregation Pipeline",
+    "description": "Centralize logs from all services into distributed logging platform. Implement structured logging format. Set up retention, archival, and search indexes.",
+    "category": "infrastructure",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-7, -10], "partial": [-3, -6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Log searchability improved from nonexistent to actually useful. Debugging is now 40% less painful.",
+      "partial_success": "Most services log correctly. The legacy services still write unstructured logs that make parsing impossible.",
+      "unexpected_impact": "You can now see exactly how often users hit error paths. The numbers are higher than anyone expected.",
+      "soft_failure": "Centralized logging works. Retaining six months of logs costs more than expected.",
+      "catastrophe": "The logging pipeline started dropping events under load. The irony of losing logs while fixing logging is not lost on the team."
+    }
+  },
+  {
+    "id": "inf_007",
+    "title": "Container Orchestration Migration",
+    "description": "Migrate from manual container management to Kubernetes. Set up stateful sets, config maps, and persistent volumes. Plan gradual service migration.",
+    "category": "infrastructure",
+    "effort": 7,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-8, -12], "partial": [-4, -7] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Kubernetes is now running 80% of services. The infrastructure team has job security for five more years debugging YAML.",
+      "partial_success": "Container orchestration works. PersistentVolumes still have claim issues that require manual intervention.",
+      "unexpected_impact": "Kubernetes is so good at managing resources that developers stopped thinking about their resource usage.",
+      "soft_failure": "Services migrate smoothly. One stateful service got stuck in a CrashLoopBackOff for three hours and confused everyone.",
+      "catastrophe": "A misconfigured StatefulSet replica caused data corruption. Recovery took 18 hours. Everyone learned Kubernetes is powerful in ways they didn't expect."
+    }
+  },
+  {
+    "id": "inf_008",
+    "title": "Blue-Green Deployment Setup",
+    "description": "Implement blue-green deployment strategy for zero-downtime releases. Automate traffic switching and rollback procedures. Update CI/CD pipeline.",
+    "category": "infrastructure",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-6, -9], "partial": [-3, -5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Deployments happen without downtime. Release anxiety dropped significantly. Nobody mentioned that releases are now twice as long.",
+      "partial_success": "Blue-green works for stateless services. Stateful services still require manual coordination.",
+      "unexpected_impact": "The ability to rollback instantly made developers more confident about shipping. Bug fix velocity increased 25%.",
+      "soft_failure": "Zero-downtime deployments work. Database migrations still require downtime windows.",
+      "catastrophe": "A deployment went to green, users hit the new code, and the new code had a critical bug that only appeared under load. Rollback took 90 seconds. That 90 seconds felt eternal."
+    }
+  },
+  {
+    "id": "inf_009",
+    "title": "Service Mesh Implementation",
+    "description": "Deploy service mesh for inter-service communication, circuit breaking, and observability. Start with canary rollout to 20% of traffic. Monitor latency impact.",
+    "category": "infrastructure",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-7, -10], "partial": [-3, -7] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Circuit breakers prevent cascading failures. The infrastructure is now resilient in ways that are impossible to appreciate during good times.",
+      "partial_success": "Service mesh deployed to 20% of traffic. The remaining 80% is waiting for someone to debug why latency is slightly higher.",
+      "unexpected_impact": "Service mesh added 50ms to request latency. We're calling this 'the cost of resilience.'",
+      "soft_failure": "The service mesh works but adds complexity. Only two people understand its configuration.",
+      "catastrophe": "A service mesh rule misconfiguration caused traffic to loop. For eight minutes, services were talking to themselves. Infinite retry loops eventually crashed."
+    }
+  },
+  {
+    "id": "inf_010",
+    "title": "API Gateway Deployment",
+    "description": "Deploy centralized API gateway for routing, rate limiting, and authentication. Replace direct service endpoints. Implement request/response transformations.",
+    "category": "infrastructure",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-6, -9], "partial": [-3, -5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "API gateway is now the single point of control. Rate limiting works. Developers immediately want to bypass it for their special cases.",
+      "partial_success": "Gateway routes traffic correctly. Authentication still happens at the service level too because gradual migration is incomplete.",
+      "unexpected_impact": "Gateway metrics revealed that 30% of API traffic is from unknown sources. We're in an information discovery phase now.",
+      "soft_failure": "The gateway works. It's another layer in the stack that can fail between user and service.",
+      "catastrophe": "The gateway's rate limiter was too strict. Legitimate bulk operations got rate limited. Users got 429 errors for an hour during migration."
+    }
+  },
+  {
+    "id": "inf_011",
+    "title": "Distributed Caching Layer",
+    "description": "Deploy Redis cluster for distributed caching. Implement cache invalidation strategy and cache-aside patterns. Target 70% cache hit ratio.",
+    "category": "infrastructure",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-6, -9], "partial": [-3, -6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -2], "partial": [-1, -1] },
+    "outcomes": {
+      "clear_success": "Database load dropped 35%. Cache hit ratio is 75%. Latency on cached queries dropped from 200ms to 5ms.",
+      "partial_success": "Caching works beautifully. Cache invalidation is still wrong in three places.",
+      "unexpected_impact": "Redis became a single point of failure. We're not prepared for that failure.",
+      "soft_failure": "Caching increases hits. Stale data is occasionally served but it's cache-level stale, so it's acceptable.",
+      "catastrophe": "Redis ran out of memory during a traffic spike. Everything that relies on Redis went to cache misses. Database melted. Eight-hour incident."
+    }
+  },
+  {
+    "id": "inf_012",
+    "title": "Observability Platform Upgrade",
+    "description": "Implement distributed tracing across all services. Upgrade metrics platform with better cardinality handling. Add synthetic monitoring for critical paths.",
+    "category": "infrastructure",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-7, -10], "partial": [-3, -7] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Distributed tracing lets us see request paths through the entire system. Debugging time dropped 40%. Alerts are now fired before users notice problems.",
+      "partial_success": "Tracing works for most paths. Async tasks don't have good trace context.",
+      "unexpected_impact": "Observability data revealed that 15% of requests are timing out at layer seven. We didn't know that before.",
+      "soft_failure": "Platform is more observable. Some teams still don't know how to read the dashboards.",
+      "catastrophe": "Cardinality explosion from high-dimensional metrics overloaded the metrics database. The monitoring platform became the thing we had to monitor."
+    }
+  },
+  {
+    "id": "inf_013",
+    "title": "Backup Automation Enhancement",
+    "description": "Implement incremental backups and automated retention policies. Test weekly restores to staging. Document recovery procedures and SLA.",
+    "category": "infrastructure",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-5, -8], "partial": [-2, -4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -2], "partial": [-1, -1] },
+    "outcomes": {
+      "clear_success": "Backups are now automated and verified weekly. Recovery time is predictable. The team sleeps better.",
+      "partial_success": "Backups work automatically. Retention policies are still deleting backups older than 30 days, which seemed short until you needed them.",
+      "unexpected_impact": "Incremental backups saved 60% of storage costs. Someone is proposing we reinvest in other infrastructure.",
+      "soft_failure": "Automated backups are reliable. They run at random times and occasionally slow down production.",
+      "catastrophe": "A backup restore test corrupted data. We now have both the original problem AND corrupted data. The backup was the safety net that turned out to be on fire."
+    }
+  },
+  {
+    "id": "inf_014",
+    "title": "Performance Profiling Tools",
+    "description": "Implement continuous profiling in production. Set up CPU and memory flame graphs. Integrate with observability platform. Automate bottleneck detection.",
+    "category": "infrastructure",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-5, -7], "partial": [-2, -5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -1], "partial": [-1, -1] },
+    "outcomes": {
+      "clear_success": "Profiling revealed that one function was consuming 35% of CPU. It took two hours to fix. That was worth the entire project.",
+      "partial_success": "Profiling works but overhead is noticeable. We only enable it during off-peak hours.",
+      "unexpected_impact": "Flame graphs are beautiful and interesting. Engineers want to stare at them. Productivity might have decreased.",
+      "soft_failure": "Profiling is accurate. You have to know how to read it.",
+      "catastrophe": "The profiling overhead caused a timeout cascade during a traffic spike. We turned it off. We lost visibility to fix the problem that the profiler would have shown us."
+    }
+  },
+  {
+    "id": "inf_015",
+    "title": "Network Security Audit",
+    "description": "Review firewall rules, network segmentation, and ingress policies. Implement network policies for pod-to-pod communication. Audit TLS certificates and rotation.",
+    "category": "infrastructure",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": { "success": [-7, -10], "partial": [-3, -6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -3], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Network is now segmented properly. TLS certificates are rotating automatically. Security is measurably better.",
+      "partial_success": "Network policies exist. Debugging why traffic is blocked takes longer than implementing the rules did.",
+      "unexpected_impact": "The audit found services talking to things they shouldn't. Breaking those connections revealed unused dependencies.",
+      "soft_failure": "Security posture improved. Operational complexity increased proportionally.",
+      "catastrophe": "A network policy typo isolated a critical service. Database connections failed. Incident lasted 35 minutes while we debugged why connectivity wasn't working."
+    }
+  }
+]

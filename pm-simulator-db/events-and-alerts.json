@@ -1,0 +1,616 @@
+{
+  "random_events": [
+    {
+      "id": "evt_r_001",
+      "title": "CEO Attended a Conference",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.08,
+      "description": "The CEO returned from a three-day tech summit energized and full of ideas that were novel in 2019. All sentiment metrics reset toward corporate baseline as the entire company recalibrates expectations.",
+      "metric_effects": {
+        "ceo_sentiment": 0
+      },
+      "ceo_focus_shift": "random",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_002",
+      "title": "Board Meeting Prep",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 1.0,
+      "description": "Executive preparation begins for quarterly board presentation. The CEO's focus immediately shifts to whichever growth metric looks worst on the spreadsheet.",
+      "metric_effects": {
+        "ceo_sentiment": -5
+      },
+      "ceo_focus_shift": "weakest_growth_metric",
+      "forced_ticket_category": null,
+      "quarter_restriction": [1, 2, 3]
+    },
+    {
+      "id": "evt_r_003",
+      "title": "Competitor Launches Feature",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.10,
+      "description": "A competitor just shipped something that was theoretically impossible last week. The CEO has pivoted to demanding we ship an equivalent self-serve experience immediately.",
+      "metric_effects": {
+        "self_serve_growth": -5
+      },
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_004",
+      "title": "Key Client Threatens Churn",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.08,
+      "description": "Your largest contract is now in active churn conversations. Sales is requesting an emergency feature to save the deal, and they are not asking politely.",
+      "metric_effects": {
+        "enterprise_growth": -5,
+        "sales_sentiment": -8
+      },
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": "sales_request",
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_005",
+      "title": "Positive Press Coverage",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.06,
+      "description": "TechCrunch mentioned the product favorably in a morning briefing. Self-serve signups have been inexplicably strong all day, and the CEO is pretending this proves their strategy was correct all along.",
+      "metric_effects": {
+        "self_serve_growth": 8,
+        "ceo_sentiment": 5
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_006",
+      "title": "Senior Engineer Quits",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "Your most experienced engineer has accepted a role at a well-funded competitor. The team morale has entered freefall and sprint capacity will be constrained for the next two weeks as knowledge transfer fails to occur.",
+      "metric_effects": {
+        "team_sentiment": -8,
+        "sprint_capacity": -3
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null,
+      "sprint_duration": 2,
+      "trigger_condition_override": "team_sentiment < 30"
+    },
+    {
+      "id": "evt_r_007",
+      "title": "Security Incident",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.04,
+      "description": "A customer discovered an edge case that exposed non-sensitive data during normal operations. The legal team is now involved and tech debt has become everyone's least favorite priority.",
+      "metric_effects": {
+        "tech_debt": 10,
+        "ceo_sentiment": -3,
+        "team_sentiment": -3,
+        "sales_sentiment": -3
+      },
+      "ceo_focus_shift": "tech_debt",
+      "forced_ticket_category": "tech_debt_reduction",
+      "quarter_restriction": null,
+      "trigger_condition_override": "tech_debt > 70"
+    },
+    {
+      "id": "evt_r_008",
+      "title": "CEO Scrolled LinkedIn",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.10,
+      "description": "The CEO spent forty minutes on LinkedIn this morning and now is convinced that the company needs to pivot toward whatever trend has seventeen thousand likes. Focus has shifted based on algorithmic whimsy.",
+      "metric_effects": {},
+      "ceo_focus_shift": "random",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_009",
+      "title": "Surprise All-Hands",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.06,
+      "description": "An unexpected town hall meeting was called this morning. Depending on what the CEO chose to communicate, team sentiment has either improved or deteriorated significantly.",
+      "metric_effects": {},
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null,
+      "trigger_condition_logic": "if ceo_sentiment > 60 then team_sentiment +5; else if ceo_sentiment < 40 then team_sentiment -5"
+    },
+    {
+      "id": "evt_r_010",
+      "title": "Acquisition Rumor",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.03,
+      "description": "Someone's cousin heard from a friend that the company might be acquired. All sentiment metrics have plummeted as employees contemplate whether their options will matter.",
+      "metric_effects": {
+        "ceo_sentiment": -5,
+        "team_sentiment": -5,
+        "sales_sentiment": -5
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": [3, 4]
+    },
+    {
+      "id": "evt_r_011",
+      "title": "Investor Demo Request",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "A Series B investor wants to see the product in action next sprint. The CEO is stressed about optics and has demanded that the most visually impressive self-serve feature ship immediately.",
+      "metric_effects": {
+        "ceo_sentiment": -3
+      },
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": "self_serve_feature",
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_012",
+      "title": "Customer Success Story Goes Viral",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.04,
+      "description": "A customer published a detailed case study showing productivity gains of 40 percent. Self-serve signups jumped, the sales team is energized, and NPS moved in the right direction.",
+      "metric_effects": {
+        "self_serve_growth": 6,
+        "nps": 5,
+        "sales_sentiment": 3
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_013",
+      "title": "Regulator Inquiry",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.03,
+      "description": "A government agency sent a formal information request regarding data handling practices. The CEO is now extremely stressed and compliance has become non-negotiable.",
+      "metric_effects": {
+        "ceo_sentiment": -8
+      },
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": "enterprise_feature",
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_014",
+      "title": "Engineering Blog Post Blows Up",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.04,
+      "description": "The engineering team published a technical deep-dive that attracted substantial discussion on Hacker News. Team morale increased and self-serve growth benefited from the positive brand association.",
+      "metric_effects": {
+        "team_sentiment": 6,
+        "self_serve_growth": 3
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_015",
+      "title": "Key Hire Joins",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "A proven senior engineer from a well-known company started today. The team's capacity and morale have both improved as the possibility of shipping at higher velocity returns.",
+      "metric_effects": {
+        "team_sentiment": 5,
+        "sprint_capacity": 2
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null,
+      "sprint_duration": 2
+    },
+    {
+      "id": "evt_r_016",
+      "title": "Pricing Backlash on Twitter",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.04,
+      "description": "A vocal user base has begun coordinating criticism of recent pricing changes. NPS has declined, self-serve growth has stalled, and the CEO is questioning whether monetization was a strategic error.",
+      "metric_effects": {
+        "nps": -8,
+        "self_serve_growth": -4,
+        "ceo_sentiment": -5
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_017",
+      "title": "Strategic Partnership Opportunity",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "A large enterprise vendor wants to integrate the product into their platform. The CEO sees significant revenue potential and has refocused entirely on enterprise go-to-market.",
+      "metric_effects": {
+        "enterprise_growth": 5,
+        "ceo_sentiment": 3
+      },
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_018",
+      "title": "CEO's Kid Used the Product",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.06,
+      "description": "The CEO's child downloaded the free tier during the weekend and had a delightful experience. The CEO is now convinced that self-serve is the path to profitability and all strategic questions should be evaluated through this lens.",
+      "metric_effects": {
+        "ceo_sentiment": 3
+      },
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_019",
+      "title": "Quarterly Business Review Moved Up",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "The board changed the schedule without warning and the QBR is now in ten days instead of thirty. The CEO's stress levels have increased noticeably.",
+      "metric_effects": {
+        "ceo_sentiment": -4
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_020",
+      "title": "Slack Outage",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.08,
+      "description": "The company's communication platform went down for four hours and it was the most peaceful productivity everyone had experienced in months. Team sentiment improved unexpectedly.",
+      "metric_effects": {
+        "team_sentiment": 3
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    }
+  ],
+  "threshold_events": [
+    {
+      "id": "evt_t_001",
+      "title": "Engineering Revolt",
+      "trigger_type": "threshold",
+      "trigger_condition": "team_sentiment < 15",
+      "description": "The engineering team has reached critical dissatisfaction. Productivity will suffer significantly for the next sprint as the organization grapples with retention risk and morale collapse.",
+      "metric_effects": {
+        "sprint_capacity": -50,
+        "tech_debt": 5
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "sprint_duration": 1
+    },
+    {
+      "id": "evt_t_002",
+      "title": "Sales Goes Rogue",
+      "trigger_type": "threshold",
+      "trigger_condition": "sales_sentiment < 15",
+      "description": "The sales organization has lost confidence in product strategy. Forced feature requests will dominate the next two sprints as the team attempts damage control.",
+      "metric_effects": {
+        "enterprise_growth": -5
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": "sales_request",
+      "sprint_duration": 2
+    },
+    {
+      "id": "evt_t_003",
+      "title": "CTO Escalation",
+      "trigger_type": "threshold",
+      "trigger_condition": "cto_sentiment < 15",
+      "description": "The CTO has made formal complaints to executive leadership about technical direction. The CEO has mandated tech debt reduction for the remainder of the quarter.",
+      "metric_effects": {},
+      "ceo_focus_shift": "tech_debt",
+      "forced_ticket_category": null
+    },
+    {
+      "id": "evt_t_004",
+      "title": "Viral Moment",
+      "trigger_type": "threshold",
+      "trigger_condition": "self_serve_growth > 85",
+      "description": "The self-serve product has achieved unexpected market traction and is experiencing rapid adoption. However, the increased load has exposed significant technical debt that now requires immediate attention.",
+      "metric_effects": {
+        "self_serve_growth": 10,
+        "tech_debt": 8,
+        "nps": -10
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null
+    },
+    {
+      "id": "evt_t_005",
+      "title": "Whale Client Signs",
+      "trigger_type": "threshold",
+      "trigger_condition": "enterprise_growth > 85",
+      "description": "A major enterprise customer has signed a substantial multi-year contract. The sales team is energized and implementation requirements will drive product roadmap priorities for the next two sprints.",
+      "metric_effects": {
+        "enterprise_growth": 10,
+        "sales_sentiment": 10
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": "enterprise_feature",
+      "sprint_duration": 2
+    },
+    {
+      "id": "evt_t_006",
+      "title": "Technical Meltdown",
+      "trigger_type": "threshold",
+      "trigger_condition": "tech_debt > 90",
+      "description": "System reliability has degraded to unacceptable levels and customers are experiencing frequent outages. The next two sprints will be consumed by stabilization efforts and all sentiment metrics have declined sharply.",
+      "metric_effects": {
+        "sprint_capacity": -40,
+        "ceo_sentiment": -10,
+        "team_sentiment": -8,
+        "sales_sentiment": -8,
+        "cto_sentiment": -8
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "sprint_duration": 2
+    },
+    {
+      "id": "evt_t_007",
+      "title": "Team Renaissance",
+      "trigger_type": "threshold",
+      "trigger_condition": "team_sentiment > 90",
+      "description": "The team is operating at peak cohesion and motivation. Ticket success rates and velocity have both improved as people are eager to ship and collaborate.",
+      "metric_effects": {
+        "sprint_capacity": 5,
+        "ticket_success_rate_bonus": 10
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "sprint_duration": 2
+    },
+    {
+      "id": "evt_t_008",
+      "title": "CEO Loses Confidence",
+      "trigger_type": "threshold",
+      "trigger_condition": "ceo_sentiment < 15",
+      "description": "The CEO is in crisis mode and has lost faith in the current strategy. A pet project will be demanded every sprint for the remainder of the quarter, consuming resources regardless of roadmap alignment.",
+      "metric_effects": {},
+      "ceo_focus_shift": null,
+      "forced_ticket_category": "ceo_pet_project",
+      "sprint_duration": null
+    },
+    {
+      "id": "evt_t_009",
+      "title": "NPS Crisis",
+      "trigger_type": "threshold",
+      "trigger_condition": "nps < 20",
+      "description": "Customer satisfaction has reached critical lows and churn conversations are accelerating. A dedicated UX improvement initiative must be prioritized immediately.",
+      "metric_effects": {
+        "self_serve_growth": -10,
+        "ceo_sentiment": -8
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": "ux_improvement"
+    },
+    {
+      "id": "evt_t_010",
+      "title": "Product-Market Fit Signal",
+      "trigger_type": "threshold",
+      "trigger_condition": "self_serve_growth > 85 AND enterprise_growth > 70",
+      "description": "The product has achieved strong traction across both market segments simultaneously. All stakeholders are energized and confidence in strategy has increased significantly.",
+      "metric_effects": {
+        "ceo_sentiment": 10,
+        "team_sentiment": 5,
+        "sales_sentiment": 5,
+        "cto_sentiment": 5
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null
+    }
+  ],
+  "ceo_focus_shifts": [
+    {
+      "id": "ceo_shift_01",
+      "trigger_context": "board_meeting",
+      "new_focus": "enterprise",
+      "text": "The board asked pointed questions about enterprise pipeline and willingness to fund a dedicated segment. The CEO has refocused on landing larger contracts."
+    },
+    {
+      "id": "ceo_shift_02",
+      "trigger_context": "conference",
+      "new_focus": "tech_debt",
+      "text": "A keynote speaker spent thirty minutes explaining why infrastructure investment is strategically important. The CEO is now convinced this applies here."
+    },
+    {
+      "id": "ceo_shift_03",
+      "trigger_context": "competitor",
+      "new_focus": "self_serve",
+      "text": "A competitor's self-serve metrics are growing faster. The CEO has decided this is the only metric that matters."
+    },
+    {
+      "id": "ceo_shift_04",
+      "trigger_context": "linkedin",
+      "new_focus": "tech_debt",
+      "text": "Someone with a large following posted about technical debt and the CEO spent two hours reading replies. Strategy has shifted accordingly."
+    },
+    {
+      "id": "ceo_shift_05",
+      "trigger_context": "client_pressure",
+      "new_focus": "enterprise",
+      "text": "The largest customer demanded a feature that only benefits enterprise deployments. The CEO decided to optimize the entire roadmap around retention."
+    },
+    {
+      "id": "ceo_shift_06",
+      "trigger_context": "internal_data",
+      "new_focus": "self_serve",
+      "text": "The quarterly analysis showed that self-serve users have the highest NPS. The CEO now believes this segment is the path to scale."
+    },
+    {
+      "id": "ceo_shift_07",
+      "trigger_context": "random",
+      "new_focus": "tech_debt",
+      "text": "For reasons that cannot be adequately explained, the CEO has become obsessed with reducing technical debt. Pray it is temporary."
+    },
+    {
+      "id": "ceo_shift_08",
+      "trigger_context": "board_meeting",
+      "new_focus": "self_serve",
+      "text": "Board members questioned whether the business model could scale without a self-serve product. The CEO has pivoted completely."
+    },
+    {
+      "id": "ceo_shift_09",
+      "trigger_context": "client_pressure",
+      "new_focus": "tech_debt",
+      "text": "A enterprise customer mentioned they could not recommend the product to peers due to stability concerns. Technical debt is now a revenue risk."
+    },
+    {
+      "id": "ceo_shift_10",
+      "trigger_context": "conference",
+      "new_focus": "self_serve",
+      "text": "A successful founder described their path to profitability through self-serve adoption. The CEO believes this is the exact blueprint to follow."
+    },
+    {
+      "id": "ceo_shift_11",
+      "trigger_context": "linkedin",
+      "new_focus": "enterprise",
+      "text": "An acquihire announcement has the CEO convinced that enterprise focus leads to exits. The company's strategy has shifted accordingly."
+    },
+    {
+      "id": "ceo_shift_12",
+      "trigger_context": "internal_data",
+      "new_focus": "enterprise",
+      "text": "Enterprise customers have three times the lifetime value. This data point now drives all strategic decisions."
+    },
+    {
+      "id": "ceo_shift_13",
+      "trigger_context": "random",
+      "new_focus": "self_serve",
+      "text": "The CEO saw their child using the free tier and now believes consumer-friendly design is the secret to dominance. Priorities have been rearranged."
+    },
+    {
+      "id": "ceo_shift_14",
+      "trigger_context": "competitor",
+      "new_focus": "enterprise",
+      "text": "A competitor raised a large Series B focusing on enterprise. The CEO has responded by shifting all resources toward competing in that segment."
+    },
+    {
+      "id": "ceo_shift_15",
+      "trigger_context": "random",
+      "new_focus": "any",
+      "text": "No clear reason exists for the strategic pivot that just occurred. Assume the CEO read something on the internet and move forward."
+    }
+  ],
+  "metric_threshold_alerts": [
+    {
+      "id": "alert_001",
+      "metric": "team_sentiment",
+      "transition": "neutral_to_unhappy",
+      "direction": "worsening",
+      "text": "Team morale has slipped below neutral territory. Retention risk is increasing and productivity will begin to suffer if sentiment continues to decline."
+    },
+    {
+      "id": "alert_002",
+      "metric": "team_sentiment",
+      "transition": "unhappy_to_very_unhappy",
+      "direction": "worsening",
+      "text": "The team is now dangerously unhappy. Immediate managerial intervention is required before attrition becomes unmanageable."
+    },
+    {
+      "id": "alert_003",
+      "metric": "team_sentiment",
+      "transition": "neutral_to_happy",
+      "direction": "improving",
+      "text": "Team morale has improved to positive levels. Velocity and ticket quality should increase as people are more engaged in their work."
+    },
+    {
+      "id": "alert_004",
+      "metric": "ceo_sentiment",
+      "transition": "neutral_to_happy",
+      "direction": "improving",
+      "text": "The CEO is in a positive frame of mind and less likely to demand disruptive strategic shifts. This is the ideal window for long-term planning."
+    },
+    {
+      "id": "alert_005",
+      "metric": "ceo_sentiment",
+      "transition": "neutral_to_unhappy",
+      "direction": "worsening",
+      "text": "The CEO is stressed and questioning the current strategy. Expect increased scrutiny, focus shifts, and potential disruptive demands."
+    },
+    {
+      "id": "alert_006",
+      "metric": "sales_sentiment",
+      "transition": "neutral_to_happy",
+      "direction": "improving",
+      "text": "The sales team believes in the product direction and is optimistic about pipeline. Expect reduced forced feature requests and better collaboration."
+    },
+    {
+      "id": "alert_007",
+      "metric": "sales_sentiment",
+      "transition": "neutral_to_unhappy",
+      "direction": "worsening",
+      "text": "Sales confidence in product strategy has declined. Expect escalated demands for customer-specific features and increased frustration with roadmap alignment."
+    },
+    {
+      "id": "alert_008",
+      "metric": "cto_sentiment",
+      "transition": "neutral_to_happy",
+      "direction": "improving",
+      "text": "The CTO is satisfied with technical strategy and priorities. Infrastructure investments are being made at an appropriate pace."
+    },
+    {
+      "id": "alert_009",
+      "metric": "cto_sentiment",
+      "transition": "neutral_to_unhappy",
+      "direction": "worsening",
+      "text": "The CTO is frustrated with technical direction and mounting debt. Escalation to executive leadership is becoming likely."
+    },
+    {
+      "id": "alert_010",
+      "metric": "self_serve_growth",
+      "transition": "flat_to_growing",
+      "direction": "improving",
+      "text": "Self-serve adoption has reached positive growth trajectory. This segment is now contributing meaningfully to overall company metrics."
+    },
+    {
+      "id": "alert_011",
+      "metric": "self_serve_growth",
+      "transition": "flat_to_declining",
+      "direction": "worsening",
+      "text": "Self-serve growth has reversed into decline. Customer acquisition in this segment is no longer meeting targets."
+    },
+    {
+      "id": "alert_012",
+      "metric": "enterprise_growth",
+      "transition": "flat_to_growing",
+      "direction": "improving",
+      "text": "Enterprise segment is now showing positive growth momentum. Sales pipeline is converting at acceptable rates."
+    },
+    {
+      "id": "alert_013",
+      "metric": "enterprise_growth",
+      "transition": "flat_to_declining",
+      "direction": "worsening",
+      "text": "Enterprise sales momentum has stalled. Pipeline conversion rates are declining and churn conversations are increasing."
+    },
+    {
+      "id": "alert_014",
+      "metric": "tech_debt",
+      "transition": "manageable_to_mounting",
+      "direction": "worsening",
+      "text": "Technical debt is accumulating faster than it can be paid down. System reliability concerns are beginning to surface."
+    },
+    {
+      "id": "alert_015",
+      "metric": "tech_debt",
+      "transition": "mounting_to_critical",
+      "direction": "worsening",
+      "text": "Technical debt has reached critical levels and is now a business risk. Immediate infrastructure investment is required or reliability will fail."
+    }
+  ]
+}

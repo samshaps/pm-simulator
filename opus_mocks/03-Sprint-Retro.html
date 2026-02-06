@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>PM Simulator — Sprint Retro</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #1a1a28;
+    --bg-card-hover: #222236;
+    --purple-primary: #7c5cbf;
+    --purple-light: #9b7dd4;
+    --purple-dim: #5a3f8a;
+    --purple-glow: rgba(124, 92, 191, 0.15);
+    --text-primary: #e8e6f0;
+    --text-secondary: #9896a8;
+    --text-dim: #6b6980;
+    --border-subtle: rgba(124, 92, 191, 0.15);
+    --border-active: rgba(124, 92, 191, 0.5);
+    --green: #4ade80;
+    --green-dim: rgba(74, 222, 128, 0.12);
+    --amber: #fbbf24;
+    --amber-dim: rgba(251, 191, 36, 0.12);
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.1);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96, 165, 250, 0.12);
+    --orange: #fb923c;
+    --orange-dim: rgba(251, 146, 60, 0.12);
+    --cyan: #22d3ee;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 52px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: var(--purple-primary);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800; font-size: 14px; color: white;
+  }
+  .logo-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 700; color: var(--text-primary);
+  }
+
+  .quarter-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--purple-light);
+    background: var(--purple-glow);
+    border: 1px solid var(--border-subtle);
+    border-radius: 100px;
+    padding: 4px 12px;
+  }
+
+  .top-bar-right {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--purple-dim), var(--purple-primary));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: white;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .left-panel {
+    padding: 24px 20px 24px 28px;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .right-panel {
+    padding: 24px 28px 24px 20px;
+    overflow-y: auto;
+  }
+
+  /* ── SECTION LABELS ── */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  /* ── LEFT: RETRO SUMMARY ── */
+  .retro-header {
+    margin-bottom: 20px;
+  }
+
+  .retro-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .retro-subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── NARRATIVE CARD ── */
+  .narrative-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+
+  .narrative-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  /* ── METRIC CHANGES ── */
+  .metric-changes-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+
+  .metric-changes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .metric-change-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .metric-change-name {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .metric-change-delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .delta-up { color: var(--green); }
+  .delta-down { color: var(--red); }
+  .delta-warn { color: var(--amber); }
+
+  /* ── RETRO NOTES ── */
+  .retro-notes {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+
+  .retro-notes textarea {
+    width: 100%;
+    min-height: 60px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    resize: vertical;
+    outline: none;
+    margin-top: 8px;
+  }
+
+  .retro-notes textarea:focus {
+    border-color: var(--border-active);
+  }
+
+  .retro-notes textarea::placeholder {
+    color: var(--text-dim);
+  }
+
+  /* ── RIGHT: TICKET OUTCOMES ── */
+  .results-header {
+    margin-bottom: 20px;
+  }
+
+  .results-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .results-subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ── COLLAPSIBLE OUTCOME CARD ── */
+  .outcome-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .outcome-card:hover {
+    border-color: var(--border-active);
+  }
+
+  .outcome-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+    gap: 10px;
+    user-select: none;
+  }
+
+  .outcome-card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .outcome-chevron {
+    font-size: 12px;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
+  }
+
+  .outcome-card.expanded .outcome-chevron {
+    transform: rotate(90deg);
+  }
+
+  .outcome-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .outcome-card-category {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .cat-enterprise { color: var(--blue); background: var(--blue-dim); }
+  .cat-sales { color: var(--orange); background: var(--orange-dim); }
+  .cat-tech-debt { color: var(--amber); background: var(--amber-dim); }
+
+  .outcome-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .badge-success {
+    color: var(--green);
+    background: var(--green-dim);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+  }
+
+  .badge-partial {
+    color: var(--amber);
+    background: var(--amber-dim);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  .badge-failure {
+    color: var(--orange);
+    background: var(--orange-dim);
+    border: 1px solid rgba(251, 146, 60, 0.2);
+  }
+
+  .badge-catastrophe {
+    color: var(--red);
+    background: var(--red-dim);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+  }
+
+  .badge-unexpected {
+    color: var(--cyan);
+    background: rgba(34, 211, 238, 0.1);
+    border: 1px solid rgba(34, 211, 238, 0.2);
+  }
+
+  /* ── EXPANDED DETAIL ── */
+  .outcome-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+
+  .outcome-card.expanded .outcome-detail {
+    max-height: 400px;
+  }
+
+  .outcome-detail-inner {
+    padding: 0 16px 16px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .outcome-effort {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 12px;
+    margin-bottom: 10px;
+  }
+
+  .outcome-narrative {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 6px;
+    border-left: 2px solid rgba(255,255,255,0.06);
+    margin-bottom: 12px;
+  }
+
+  .outcome-impacts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .outcome-impact-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .impact-positive { color: var(--green); background: var(--green-dim); }
+  .impact-negative { color: var(--red); background: var(--red-dim); }
+  .impact-warning { color: var(--amber); background: var(--amber-dim); }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .bottom-bar-left {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .bottom-bar-right {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 10px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .btn-ghost:hover {
+    border-color: var(--border-active);
+    color: var(--text-primary);
+    background: var(--purple-glow);
+  }
+
+  .btn-primary {
+    background: var(--purple-primary);
+    color: white;
+    box-shadow: 0 0 16px rgba(124, 92, 191, 0.25);
+  }
+  .btn-primary:hover {
+    background: var(--purple-light);
+    box-shadow: 0 0 24px rgba(124, 92, 191, 0.4);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(124, 92, 191, 0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(124, 92, 191, 0.4); }
+</style>
+</head>
+<body>
+
+  <!-- ══════════ TOP BAR ══════════ -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="logo">
+        <div class="logo-icon">PM</div>
+        <span class="logo-text">PM Simulator</span>
+      </div>
+      <div class="quarter-badge">Q2 &mdash; Sprint 1 Retro</div>
+    </div>
+    <div class="top-bar-right">
+      <div class="avatar">S</div>
+    </div>
+  </div>
+
+  <!-- ══════════ MAIN CONTENT ══════════ -->
+  <div class="main-content">
+
+    <!-- ── LEFT PANEL ── -->
+    <div class="left-panel">
+
+      <div class="retro-header">
+        <div class="retro-title">Sprint 4 Retro</div>
+        <div class="retro-subtitle">Q2 &mdash; Sprint 1 of 3 &bull; 3 tickets committed</div>
+      </div>
+
+      <!-- Sprint Narrative -->
+      <div class="narrative-card">
+        <div class="section-label">Sprint Summary</div>
+        <div class="narrative-text">
+          SSO is partially live &mdash; Acme Corp can use it, the other accounts are &ldquo;in progress.&rdquo;
+          The custom export for GlobalTech was a clean win and sales is feeling heard for the first time
+          this quarter. The auth memory leak fix, unfortunately, introduced a new one. Tech debt is quietly
+          getting worse. The dashboard? Nobody&rsquo;s looked at it in two sprints.
+        </div>
+      </div>
+
+      <!-- Metric Changes -->
+      <div class="metric-changes-card">
+        <div class="section-label">Metric Changes This Sprint</div>
+        <div class="metric-changes-grid">
+          <div class="metric-change-item">
+            <span class="metric-change-name">Team Sentiment</span>
+            <span class="metric-change-delta delta-down">&darr; Dipped</span>
+          </div>
+          <div class="metric-change-item">
+            <span class="metric-change-name">CEO Sentiment</span>
+            <span class="metric-change-delta delta-up">&uarr; Improving</span>
+          </div>
+          <div class="metric-change-item">
+            <span class="metric-change-name">Sales Sentiment</span>
+            <span class="metric-change-delta delta-up">&uarr;&uarr; Surging</span>
+          </div>
+          <div class="metric-change-item">
+            <span class="metric-change-name">CTO Sentiment</span>
+            <span class="metric-change-delta delta-down">&darr; Dipped</span>
+          </div>
+          <div class="metric-change-item">
+            <span class="metric-change-name">Self-Serve Growth</span>
+            <span class="metric-change-delta delta-down">&darr; Declining</span>
+          </div>
+          <div class="metric-change-item">
+            <span class="metric-change-name">Enterprise Growth</span>
+            <span class="metric-change-delta delta-up">&uarr;&uarr; Surging</span>
+          </div>
+          <div class="metric-change-item">
+            <span class="metric-change-name">Tech Debt</span>
+            <span class="metric-change-delta delta-warn">&uarr; Worsening</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Retro Notes -->
+      <div class="retro-notes">
+        <div class="section-label">Your Retro Notes (optional)</div>
+        <textarea placeholder="What would you do differently? Nobody reads these, but it helps to pretend someone will."></textarea>
+      </div>
+
+    </div>
+
+    <!-- ── RIGHT PANEL: TICKET OUTCOMES ── -->
+    <div class="right-panel">
+
+      <div class="results-header">
+        <div class="results-title">Ticket Outcomes</div>
+        <div class="results-subtitle">What happened to your carefully considered choices.</div>
+      </div>
+
+      <!-- Outcome 1: Clear Success (collapsed by default) -->
+      <div class="outcome-card" onclick="this.classList.toggle('expanded')">
+        <div class="outcome-card-header">
+          <div class="outcome-card-header-left">
+            <span class="outcome-chevron">&#9656;</span>
+            <span class="outcome-card-title">Custom Export for GlobalTech</span>
+            <span class="outcome-card-category cat-sales">Sales</span>
+          </div>
+          <span class="outcome-badge badge-success">Clear Success</span>
+        </div>
+        <div class="outcome-detail">
+          <div class="outcome-detail-inner">
+            <div class="outcome-effort">6 pts &bull; Sales Request</div>
+            <div class="outcome-narrative">
+              The export shipped on time with all 14 columns. GlobalTech signed a
+              two-year renewal the same week. The head of Sales mentioned you by name in
+              a revenue call. Positively. This hasn&rsquo;t happened before and may not happen again.
+            </div>
+            <div class="outcome-impacts">
+              <span class="outcome-impact-chip impact-positive">&uarr; Enterprise Growth</span>
+              <span class="outcome-impact-chip impact-positive">&uarr;&uarr; Sales Sentiment</span>
+              <span class="outcome-impact-chip impact-warning">&uarr; Tech Debt</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outcome 2: Partial Success (expanded to show one open state) -->
+      <div class="outcome-card expanded" onclick="this.classList.toggle('expanded')">
+        <div class="outcome-card-header">
+          <div class="outcome-card-header-left">
+            <span class="outcome-chevron">&#9656;</span>
+            <span class="outcome-card-title">SSO for Acme Corp</span>
+            <span class="outcome-card-category cat-enterprise">Enterprise</span>
+          </div>
+          <span class="outcome-badge badge-partial">Partial Success</span>
+        </div>
+        <div class="outcome-detail">
+          <div class="outcome-detail-inner">
+            <div class="outcome-effort">7 pts &bull; Enterprise Feature</div>
+            <div class="outcome-narrative">
+              SSO works for basic OIDC flows but SAML attribute mapping requires manual
+              configuration per client. Acme Corp can use it; the other accounts are &ldquo;on the roadmap.&rdquo;
+              Sales is satisfied enough to stop complaining in steering meetings.
+              Self-serve roadmap remains frozen.
+            </div>
+            <div class="outcome-impacts">
+              <span class="outcome-impact-chip impact-positive">&uarr; Enterprise Growth</span>
+              <span class="outcome-impact-chip impact-positive">&uarr; Sales Sentiment</span>
+              <span class="outcome-impact-chip impact-negative">&darr; Team Sentiment</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outcome 3: Soft Failure (collapsed) -->
+      <div class="outcome-card" onclick="this.classList.toggle('expanded')">
+        <div class="outcome-card-header">
+          <div class="outcome-card-header-left">
+            <span class="outcome-chevron">&#9656;</span>
+            <span class="outcome-card-title">Fix Auth Service Memory Leak</span>
+            <span class="outcome-card-category cat-tech-debt">Tech Debt</span>
+          </div>
+          <span class="outcome-badge badge-failure">Soft Failure</span>
+        </div>
+        <div class="outcome-detail">
+          <div class="outcome-detail-inner">
+            <div class="outcome-effort">4 pts &bull; Tech Debt Reduction</div>
+            <div class="outcome-narrative">
+              The auth refactor ran long. The original memory leak is patched but a new one
+              was introduced in the session handler. The nightly restart schedule continues.
+              The team is pretending this is fine. The CTO is not pretending.
+            </div>
+            <div class="outcome-impacts">
+              <span class="outcome-impact-chip impact-warning">&uarr; Tech Debt</span>
+              <span class="outcome-impact-chip impact-negative">&darr; Team Sentiment</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ══════════ BOTTOM BAR ══════════ -->
+  <div class="bottom-bar">
+    <div class="bottom-bar-left">
+      CEO is happier. Sales is recovering. But tech debt jumped and self-serve is stagnating. Classic PM trap.
+    </div>
+    <div class="bottom-bar-right">
+      <button class="btn btn-ghost">View Game Log</button>
+      <button class="btn btn-primary">Continue to Sprint 5</button>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,882 @@
+[
+  {
+    "id": "sr_001",
+    "title": "Custom Reporting for Acme",
+    "description": "Acme's procurement team needs quarterly reports in XLSX format with their specific KPI layout. We told them we'd have it by Q1. Engineering says 'depends what you mean by custom.'",
+    "category": "sales_request",
+    "effort": 5,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Acme's buyer declared it 'acceptable' in Slack. The renewal is now not actively at risk, which Finance calls a win.",
+      "partial_success": "The reports generate fine, but they're querying 47 different tables. The procurement team got what they needed, but support now owns a 1-off bespoke view.",
+      "unexpected_impact": "A competitor copied the UI. Sales got 2 demo requests from Acme's competitors wanting the 'same thing.' Unforced error.",
+      "soft_failure": "Report generation takes 3 minutes. Acme's CFO opened it once in a meeting and closed it. It exists. Nobody checks it.",
+      "catastrophe": "The XLSX export includes 6 months of deleted user data that should have been redacted. Legal got a call from Acme's compliance officer. The renewal is frozen pending a data audit."
+    }
+  },
+  {
+    "id": "sr_002",
+    "title": "Demo Environment Isolation",
+    "description": "Three enterprise prospects want to see 'clean' data—not their competitors' workflows in the shared demo. Sales committed to a sandbox. It's complicated.",
+    "category": "sales_request",
+    "effort": 6,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "All three prospects closed. Sales sent a Venmo request as a joke. Infrastructure is now four 'temporary' Docker instances from 2021.",
+      "partial_success": "Two prospects got sandboxes and are in trials. The third's data got mixed up for a day. They're still moving forward, but cautious.",
+      "unexpected_impact": "A prospect demanded to 'test at production scale.' You spun them an environment with 2M records and a $1800 AWS bill. They used it for 4 hours.",
+      "soft_failure": "One prospect's sandbox environment didn't sync custom fields. Sales blamed engineering. Engineering blamed the data migration script. The deal slowed to a crawl.",
+      "catastrophe": "A demo environment accidentally exposed PII from a different customer's test account. Legal and Sales had a very tense call. The prospect is now defining everything in their SLA as 'critical.'"
+    }
+  },
+  {
+    "id": "sr_003",
+    "title": "Salesforce Integration",
+    "description": "TechCorp's entire workflow lives in Salesforce. They need real-time sync or they won't move. Deal size: $400k. Engineering estimates 8 weeks.",
+    "category": "sales_request",
+    "effort": 7,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "TechCorp signed. The integration became the flagship reference. Sales uses 'Salesforce-native' in every pitch deck now.",
+      "partial_success": "Integration works, but sync runs on 30-minute intervals instead of real-time. TechCorp accepted it. Feels like a compromise that cost you 6 weeks.",
+      "unexpected_impact": "The integration is so tight that TechCorp's Salesforce admins are now part of your escalation chain. Your support queue got longer, not shorter.",
+      "soft_failure": "Sync breaks every time TechCorp runs their monthly data cleanup. They're in trial. The relationship is tense. Deal is marked 'at risk.'",
+      "catastrophe": "The Salesforce API rate limits got exceeded mid-quarter. 47 hours of unsync'd data. TechCorp's sales team thought deals had closed when they hadn't. They fired the integration and demanded a refund."
+    }
+  },
+  {
+    "id": "sr_004",
+    "title": "CSV Export for Apex",
+    "description": "Apex Finance needs to export all their analytics to CSV for their legacy reporting tool (which nobody has touched since 2019). It's a deal condition.",
+    "category": "sales_request",
+    "effort": 5,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "CSV exports. Apex is happy. They're now a referenceable customer. The feature took 80 lines of code and zero follow-up questions.",
+      "partial_success": "CSV works. The column ordering is wrong compared to what Apex's legacy system expects. They manually reordered. They're signed, but grumbling.",
+      "unexpected_impact": "Three other customers immediately asked for CSV export. Sales said yes to all of them. You now have an undocumented feature with four separate requirements.",
+      "soft_failure": "The export hangs on datasets larger than 50k rows. Apex's dataset is 120k rows. They tried once, it failed, they stopped trying.",
+      "catastrophe": "The CSV includes unformatted database timestamps instead of human-readable dates. Apex's legacy system couldn't parse it. Deal fell apart because 'your product can't actually integrate with anything.'"
+    }
+  },
+  {
+    "id": "sr_005",
+    "title": "Dedicated Success Portal",
+    "description": "GlobalTech (800-seat enterprise) demands a private portal for onboarding assets, documentation, and training videos. We promised it in the contract.",
+    "category": "sales_request",
+    "effort": 6,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "GlobalTech's onboarding was 40% faster than previous enterprise cohorts. They're now pushing for co-marketing. Success team has a new template.",
+      "partial_success": "Portal built and deployed. 60% of GlobalTech's users found it. They want us to email about it more. It exists. It's fine.",
+      "unexpected_impact": "GlobalTech started using the portal to document their own internal processes. They want to customize it. They want their logo. This is becoming a sub-product.",
+      "soft_failure": "The portal was built but never publicized internally at GlobalTech. They find the email buried in spam. 3 months in, only 15 users have accessed it.",
+      "catastrophe": "A support video accidentally went live with internal passwords visible in the background. GlobalTech's security team escalated to their board. You're now on a mandatory audit schedule and the contract has a $50k indemnity clause."
+    }
+  },
+  {
+    "id": "sr_006",
+    "title": "Custom SLA Monitoring",
+    "description": "BigBank's legal team will only sign if we provide real-time SLA alerts and breach reporting. Infrastructure to build, customer to implement. Nobody has estimated it yet.",
+    "category": "sales_request",
+    "effort": 7,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "BigBank signed a $1.2M three-year deal. The SLA monitoring dashboard is so comprehensive that the Finance team uses it for vendor management.",
+      "partial_success": "SLA monitoring works, but alerts sometimes arrive 5 minutes late. BigBank accepted it. There's a standing monthly review call where they note the latency but don't escalate.",
+      "unexpected_impact": "BigBank's ops team now treats your SLA dashboard as the source of truth for system health. They've filed three formal incidents based on non-critical alerts.",
+      "soft_failure": "The SLA dashboard only tracks uptime, not performance SLAs. BigBank wanted P95 latency alerts. You built uptime. They're using it grudgingly.",
+      "catastrophe": "A calculation bug caused the system to show you in breach for 18 hours straight (you weren't). BigBank's finance department initiated a breach inquiry and demanded a $200k credit. The relationship is now litigious."
+    }
+  },
+  {
+    "id": "sr_007",
+    "title": "White-Glove Onboarding Flow",
+    "description": "Citadel Fund needs a bespoke, guided setup with pre-filled configurations and handoff to a dedicated success manager. Sales promised it. It's a strategic account.",
+    "category": "sales_request",
+    "effort": 6,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Citadel went live in 10 days. Success team has a repeatable playbook. Sales is now selling 'white-glove' as a premium tier for strategic accounts.",
+      "partial_success": "Onboarding took 3 weeks instead of the promised 10 days. Citadel is live and functional. They didn't complain, but they didn't rave either.",
+      "unexpected_impact": "Citadel loved the experience so much they want it for a new team launching next quarter. Success team is now stuck delivering one-off bespoke experiences.",
+      "soft_failure": "The pre-filled configurations covered 70% of Citadel's use case. They spent 2 weeks customizing the rest themselves. The white-glove feeling wore off fast.",
+      "catastrophe": "The success manager assigned to Citadel left the company. Citadel demanded a replacement who knew their setup. Nobody else did. They're threatening to switch platforms and citing 'key person risk.'"
+    }
+  },
+  {
+    "id": "sr_008",
+    "title": "Competitor Displacement Feature",
+    "description": "Vertex has been using a competitor. They'll switch to us for $500k if we can import their data and migrate their workflows. Sales is very confident. Data schema is completely different.",
+    "category": "sales_request",
+    "effort": 8,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [6, 10], "partial": [3, 6] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Vertex migrated cleanly. 99.8% data accuracy. They're now a case study. Sales closed three similar deals in the next quarter using this as a reference.",
+      "partial_success": "Data migrated with 98% accuracy. Vertex lost 2k historical records in the translation layer. They're live but annoyed about the data gap.",
+      "unexpected_impact": "The migration tool was so good that Vertex's data ops team started using it to audit data quality. They found inconsistencies in their own system. They're now demanding we validate their entire history.",
+      "soft_failure": "Migration took twice as long as estimated. Vertex went live but with reduced feature set until manual remapping was done. They're live but feel like second-class citizens.",
+      "catastrophe": "A foreign key constraint issue during migration corrupted 15% of Vertex's workflow history. Their team spent 3 weeks rebuilding. They sued for breach of contract and incompetence. The case is still in discovery."
+    }
+  },
+  {
+    "id": "sr_009",
+    "title": "Compliance Audit Export",
+    "description": "Heritage Insurance needs SOC 2 audit trail exports in a specific format their auditors require. It's a deal condition and a renewal risk. We don't even have the data model yet.",
+    "category": "sales_request",
+    "effort": 5,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Export tool built in 3 weeks. Heritage's auditors approved it. They signed for three more years. Finance loves the renewal confidence.",
+      "partial_success": "Export works but is missing 4 event types Heritage's auditors questioned. Compliance team approved it anyway with caveats. Heritage is nervous about next audit.",
+      "unexpected_impact": "The audit export uncovered 12 months of logging gaps in your infrastructure. Heritage didn't notice, but now you know about it, and it's in their contract.",
+      "soft_failure": "The export runs, but Heritage's auditors said the format was 'non-standard.' They had to manually validate it anyway. Export exists but adds zero audit value.",
+      "catastrophe": "The audit export included PII that should have been hashed. Auditors flagged it. Heritage's board demanded immediate remediation. You're now in a remediation agreement with monthly check-ins and renewal held hostage."
+    }
+  },
+  {
+    "id": "sr_010",
+    "title": "Data Migration Toolkit",
+    "description": "Three pending deals (each $250k+) are all requesting data migration from legacy systems. Sales wants a one-time tool to handle all three. Engineering hasn't committed to timelines.",
+    "category": "sales_request",
+    "effort": 7,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "All three deals signed. The migration tool is now a standard product feature. Post-sales is running 15 migrations a quarter with it.",
+      "partial_success": "Two of three deals closed using the tool. The third needed manual intervention. Tool works but isn't as generic as hoped. Team is maintaining it.",
+      "unexpected_impact": "The toolkit is now the bottleneck for all enterprise onboarding. You've built what sounds like infrastructure but it's really a bespoke service in disguise.",
+      "soft_failure": "The migration tool works for 60% of the source systems. The other 40% needed custom code. Each deal had custom code. You've sold a feature that's mostly custom services.",
+      "catastrophe": "A migration went wrong mid-process, leaving customer data in an inconsistent state. Customer demanded a full rollback. You had to rebuild their old system to restore from backup. They're suing for downtime costs."
+    }
+  },
+  {
+    "id": "sr_011",
+    "title": "Priority Support Tier",
+    "description": "Meridian Health is a 1000-seat account. They want 2-hour response SLA and a dedicated support contact. Sales committed. Support team is already understaffed.",
+    "category": "sales_request",
+    "effort": 5,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Meridian's satisfaction scores jumped 35 points. Support team has a dedicated Slack channel for escalations. Account is rock solid.",
+      "partial_success": "Response time hits 2 hours 80% of the time. Meridian is satisfied. Support team is exhausted. They're billing an extra $200/hr for the privilege.",
+      "unexpected_impact": "Meridian's team found the dedicated support contact and now routes all questions through them, even non-urgent ones. Your support person is now a full-time Meridian resource.",
+      "soft_failure": "Response time is reliably 2 hours, but the dedicated contact doesn't have escalation authority. Meridian has to wait another 2 hours for actual resolution. They're frustrated.",
+      "catastrophe": "Your dedicated support contact got hired away by Meridian. They're now demanding backpay for time spent on-site. You're defending a breach of contract claim and Meridian left a hostile Glassdoor review."
+    }
+  },
+  {
+    "id": "sr_012",
+    "title": "Webhook Customization",
+    "description": "Logistics Co. needs custom webhook payloads and retry logic that doesn't exist in the product. Deal is stalled pending this. Sales promised 'we can do it.'",
+    "category": "sales_request",
+    "effort": 6,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Custom webhooks shipped. Logistics Co. integrates with their warehouse system flawlessly. They're a case study in the Integration category.",
+      "partial_success": "Webhook payloads are customizable, but retry logic is limited to exponential backoff. Logistics Co. accepted it and built a wrapper. They're live.",
+      "unexpected_impact": "Two other customers immediately want custom webhooks for their own systems. You've created a new product category. Sales is selling 'webhook customization' as a premium feature.",
+      "soft_failure": "Custom webhooks work 90% of the time. Retry logic fails silently in edge cases. Logistics Co. built in error handling. They're not thrilled.",
+      "catastrophe": "A webhook retry loop got stuck in an infinite loop and hammered Logistics Co.'s API, causing their system to crash. They had 4 hours of downtime. They're claiming material damages and demanding a refund."
+    }
+  },
+  {
+    "id": "sr_013",
+    "title": "Partnership API Access",
+    "description": "DataFlow Partners wants raw API access to build their own integration layer on top of you. It's strategic but requires security review and rate limiting design.",
+    "category": "sales_request",
+    "effort": 6,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "DataFlow built an integration layer. You're now positioned as an enterprise platform. Three other integrators have inquired about API access.",
+      "partial_success": "API access granted with rate limits. DataFlow can build, but they're constrained by throttling during peak hours. They're working around it.",
+      "unexpected_impact": "DataFlow is now the only company customers call for advanced integrations. You've created a middleman that controls access to your product.",
+      "soft_failure": "API documentation was incomplete. DataFlow had to reverse-engineer half the API. They built something, but it's brittle and they're frustrated.",
+      "catastrophe": "DataFlow accidentally exposed your full API spec in a public GitHub repo. Competitors scraped it. You had to issue an emergency security patch and rotate all API keys. Incident response cost $40k."
+    }
+  },
+  {
+    "id": "sr_014",
+    "title": "Renewal Automation Workflows",
+    "description": "Synapse Corp. wants to automate their renewal process within your product—reminders, approvals, stakeholder routing. It's a $600k contract condition.",
+    "category": "sales_request",
+    "effort": 7,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "Synapse's renewal automation runs flawlessly. They renewed in 2 weeks instead of 3 months. They're pushing for co-marketing.",
+      "partial_success": "Automation works but requires manual intervention at approval stage. Synapse is live and reducing cycle time by 30%. It's good enough.",
+      "unexpected_impact": "Synapse's automation is so effective that their procurement team wants to use it for their vendors too. You've built what sounds like internal tooling.",
+      "soft_failure": "Automation works but doesn't integrate with their email system. Stakeholder routing is manual. Cycle time improved 15%. Synapse is using it but it feels half-built.",
+      "catastrophe": "A bug in the approval logic auto-approved a renewal at the wrong renewal date. Synapse's finance team caught it, but not before it hit their books. They're demanding compensation for the accounting rework."
+    }
+  },
+  {
+    "id": "sr_015",
+    "title": "Account Hierarchy Modeling",
+    "description": "Constellation Group operates 47 subsidiary companies. They need an account hierarchy that lets a parent administrator manage all of them. It's a $2M deal.",
+    "category": "sales_request",
+    "effort": 8,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [6, 10], "partial": [3, 6] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Account hierarchy works perfectly. Constellation signed. It became a product feature. Three other multi-subsidiary prospects are now in pipeline.",
+      "partial_success": "Hierarchy works for 95% of Constellation's use case. They have two subsidiaries with custom structures. Manual work still required, but acceptable.",
+      "unexpected_impact": "Constellation's hierarchy is so complex that support tickets about it are 4x the average length. Support team is now specialists in organizational structure.",
+      "soft_failure": "Hierarchy UI is unintuitive. Constellation's admins need weekly training. It works, but it's not elegant.",
+      "catastrophe": "A bug in permission inheritance leaked one subsidiary's data to another. Constellation's legal team is involved. GDPR violations are being assessed. You're in mandatory compliance review."
+    }
+  },
+  {
+    "id": "sr_016",
+    "title": "Territory Mapping Module",
+    "description": "Regional distributors need to map customer territories and prevent overlapping assignments. Sales promised it. It's a non-negotiable for three simultaneous deals.",
+    "category": "sales_request",
+    "effort": 5,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Territory mapping deployed. All three deals signed. Support team had minimal onboarding questions. Feature is stable.",
+      "partial_success": "Territory mapping works but can't handle complex overlaps (e.g., national accounts with regional sub-assignments). Two deals signed. One deal needed workarounds.",
+      "unexpected_impact": "Territory mapping became so useful that customers started using it for internal resource allocation. You've accidentally built a workforce management tool.",
+      "soft_failure": "Territory mapping works but requires significant manual data entry during setup. One customer abandoned it after a week and went back to spreadsheets.",
+      "catastrophe": "A bulk import of territories overwrote the entire database instead of inserting. You had to rebuild from backups. Customers lost 3 days of territory assignments. Incident response cost $25k in emergency labor."
+    }
+  },
+  {
+    "id": "sr_017",
+    "title": "Champion Tracking System",
+    "description": "Enterprise buyers want to track internal champions and stakeholders within their organization. Sales needs this for account planning. Engineering is skeptical.",
+    "category": "sales_request",
+    "effort": 6,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 4] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Champion tracking shipped. Account management team uses it religiously. Four enterprise renewals cited 'champion network' as a key factor.",
+      "partial_success": "Champion tracking works for organizational structure but doesn't integrate with email or calendar data. Useful but requires manual upkeep.",
+      "unexpected_impact": "Customer success started using champion tracking to identify at-risk relationships. Early warning system became more valuable than the original use case.",
+      "soft_failure": "Champion tracking exists but has low adoption. Account managers find it faster to track champions in CRM notes. Feature is technically present but unused.",
+      "catastrophe": "A bug exposed champion names and contact info in an API response that accidentally got indexed by Google. Customer's internal org chart was publicly searchable. Compliance and PR nightmare."
+    }
+  },
+  {
+    "id": "sr_018",
+    "title": "Custom Billing Ledger",
+    "description": "Zenith Financial Services needs a custom billing ledger that reconciles with their own accounting system. Deal is $350k. Finance wants it too, but it's complex.",
+    "category": "sales_request",
+    "effort": 7,
+    "primary_metric": "sales_sentiment",
+    "primary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 5] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "Custom billing ledger integrates perfectly with Zenith's accounting system. Perfect reconciliation every month. Deal signed. Finance team loves it.",
+      "partial_success": "Ledger works with minor reconciliation differences (usually <$500/month). Zenith accepts it. Finance calls it 'acceptable variance.'",
+      "unexpected_impact": "Your billing system is now the source of truth for Zenith's revenue recognition. Your team owns their accounting integrity. It's a huge responsibility.",
+      "soft_failure": "Ledger generates correct numbers but Zenith's finance team needs a weekly review call to explain the methodology. It works but requires hand-holding.",
+      "catastrophe": "A ledger calculation error overstated Zenith's usage by $200k. Finance didn't catch it for two months. When discovered, it triggered an audit of all billing. You're in breach investigation."
+    }
+  },
+  {
+    "id": "mon_001",
+    "title": "Usage-Based Pricing Model",
+    "description": "Move from seat-based to usage-based pricing to capture value from power users. Finance projects 23% ARR uplift. Early-stage users will see price increases. Risky but potentially lucrative.",
+    "category": "monetization",
+    "effort": 6,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 6] },
+    "secondary_metric": "ceo_sentiment",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 3] },
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-4, -7], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Usage-based pricing rolled out. Power users pay more, but adoption increased 18%. Net ARR up 21%. NPS dropped 6 points but growth offset it.",
+      "partial_success": "Pricing model went live. 12% of users upgraded. Mid-market is paying more. NPS dropped 8 points. Growth is there but churn ticked up 2%.",
+      "unexpected_impact": "Power users optimized their workflows to game the metrics. You had to define 'usage' three times. The model is now more complex than originally designed.",
+      "soft_failure": "Usage-based pricing confused the market. Sales had to spend 4x longer on pricing discussions. Conversion rate dipped 20%. You're reverting the model.",
+      "catastrophe": "An edge case in usage calculation made some customers' bills 5x higher than expected. 47 customers opened disputes simultaneously. You did emergency audits, issued credits, and NPS dropped 18 points. Stock price took a hit."
+    }
+  },
+  {
+    "id": "mon_002",
+    "title": "Seat-Based Licensing Tiers",
+    "description": "Introduce per-seat pricing with feature differentiation by tier. Enterprise gets everything, Pro gets most things, Basic gets foundations. Finance estimates 18% uplift. Users hate paying per person.",
+    "category": "monetization",
+    "effort": 5,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [5, 9], "partial": [2, 5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -6], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Seat-based model shipped. Enterprise deals got structure. Upsell velocity increased 25%. Per-seat monetization is now repeatable.",
+      "partial_success": "Seat-based pricing exists but most customers buy 'one-size-fits-all' Pro tier anyway. Feature gates aren't effective. Revenue grew 8% but not the projected 18%.",
+      "unexpected_impact": "Customers started rotating users between seats to avoid per-seat charges. You had to add usage tracking to prevent seat-sharing. The friction is causing complaints.",
+      "soft_failure": "Seat-based model confused SMB customers. Sales team is educating constantly. Conversion dropped 15%. You're considering a hybrid approach.",
+      "catastrophe": "A loophole in the seat licensing allowed customers to pay for 5 seats and have 50 users access them (on shared accounts). Enterprise customers exploited it. Revenue was lower than before. You had to renegotiate terms retroactively with major accounts."
+    }
+  },
+  {
+    "id": "mon_003",
+    "title": "Premium Feature Gating",
+    "description": "Gate advanced features (workflows, integrations, advanced reporting) behind a 'Premium' or 'Enterprise' tier. Free tier stays functional but limited. Expected 15% upgrade rate.",
+    "category": "monetization",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [4, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Feature gates deployed. 18% of free users upgraded. Net new MRR $80k/month. NPS dipped 4 points but growth justified it.",
+      "partial_success": "Feature gating works. 11% upgrade rate. Revenue grew $45k/month. Users complain, but adoption is sustainable.",
+      "unexpected_impact": "Free tier users found workarounds to access gated features (using API calls directly). You had to add API-level feature checks. Security review required.",
+      "soft_failure": "Feature gating reduced feature discovery. Users didn't know what they could access. Engagement dropped 20%. Upgrade rate was only 6%.",
+      "catastrophe": "A critical bug made all gated features accessible to free users for 8 hours. 10k free users discovered advanced features. Upgrade rate collapsed to 2%. You had to apologize publicly and roll back to feature parity."
+    }
+  },
+  {
+    "id": "mon_004",
+    "title": "In-App Upsell Prompts",
+    "description": "Add contextual upsell prompts when users hit free tier limits. Estimated 8-12% conversion. UX team hates it. Product team is reluctant.",
+    "category": "monetization",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [4, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Upsell prompts deployed. 10% conversion on first interaction. Revenue impact positive. Users tolerate the prompts. NPS impact minimal.",
+      "partial_success": "Prompts are live. 6% conversion rate. They're not annoying enough to cause churn, but they're not effective either. Revenue impact $20k/month.",
+      "unexpected_impact": "Upsell prompts triggered at the wrong moments (mid-workflow). Users got interrupted and abandoned. You had to manually tune the timing.",
+      "soft_failure": "Prompts are there but users skip them 95% of the time. Conversion is 0.5%. They're noise. You removed them.",
+      "catastrophe": "Upsell prompts triggered in bulk at the same time for 50k users. It looked like a widespread outage. Support was flooded. NPS dropped 12 points. You got roasted on Twitter as 'aggressive selling.'"
+    }
+  },
+  {
+    "id": "mon_005",
+    "title": "Annual Plan Discount Optimization",
+    "description": "Test annual prepay discounts (5%, 10%, 15%, 20%) to drive upfront revenue and reduce churn. Modeling shows each 5% discount drives 8% net increase in annual subscriptions.",
+    "category": "monetization",
+    "effort": 5,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 9], "partial": [2, 5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -6], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Annual plans with 15% discount increased annual subscriptions 22%. Net revenue up 16%. Churn dropped 2%. CFO is happy.",
+      "partial_success": "Annual plans work. 12% of users upgraded to annual. Net revenue up 8%. It's working but not as effectively as modeled.",
+      "unexpected_impact": "Customers locked in at annual pricing started churning right at renewal because they're committed. You lost the month-to-month churn signal.",
+      "soft_failure": "Annual discount campaign had low uptake (3%). Most users don't think in annual terms. Revenue impact minimal.",
+      "catastrophe": "Customers who bought annual plans at 20% discount hit product limits mid-year and demanded refunds. You processed $300k in refunds. Annual unit economics became negative."
+    }
+  },
+  {
+    "id": "mon_006",
+    "title": "Premium Support Tier",
+    "description": "Offer dedicated support, Slack integration, and priority queuing for $500/month add-on. Targeting mid-market. Expected adoption 10-15%.",
+    "category": "monetization",
+    "effort": 5,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [5, 9], "partial": [2, 5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -6], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Premium support tier launched. 14% adoption. $420k ARR. Support team has structured tier-1 and tier-2. Customer satisfaction up for premium users.",
+      "partial_success": "Premium support exists. 8% adoption. It's profitable but support team is stretched covering both tiers. Sustainability is questionable.",
+      "unexpected_impact": "Premium support users started demanding escalation on non-critical issues. Your support SLAs became a liability instead of a feature.",
+      "soft_failure": "Premium support had 5% adoption. Most customers didn't see value. Revenue is minimal. You're considering deprecating it.",
+      "catastrophe": "A premium support customer's dedicated Slack channel leaked sensitive conversation when a team member accidentally shared it publicly. Compliance issue. Customer sued for data breach. You discontinued the tier."
+    }
+  },
+  {
+    "id": "mon_007",
+    "title": "Add-On Marketplace",
+    "description": "Launch a partner add-on marketplace (integrations, templates, extensions). Revenue share 30/70 split. Potential recurring revenue from ecosystem plays. Huge upside if partners build.",
+    "category": "monetization",
+    "effort": 6,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-4, -7], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Marketplace launched with 12 partners. Generated $60k MRR by month 6. Ecosystem grew organically. Partners are incentivized to sell.",
+      "partial_success": "Marketplace exists with 5 partners. Generating $15k MRR. Adoption is slower than hoped. Partners are lukewarm.",
+      "unexpected_impact": "A partner built a competing product in the marketplace and undermined your direct sales. You had to add policies to prevent it.",
+      "soft_failure": "Marketplace launched with no partners. Revenue was $0 for 4 months. You manually recruited 2 partners. Still generating minimal revenue.",
+      "catastrophe": "A marketplace partner's add-on had a security vulnerability that compromised customer data. Your marketplace was liable. Legal fees exceeded projected marketplace revenue for the entire year."
+    }
+  },
+  {
+    "id": "mon_008",
+    "title": "Consumption Metering System",
+    "description": "Build consumption metering infrastructure to track 10+ product dimensions (API calls, storage, compute minutes, etc.). Enables granular usage-based pricing. High complexity.",
+    "category": "monetization",
+    "effort": 7,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 7] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-4, -8], "partial": [-2, -5] },
+    "outcomes": {
+      "clear_success": "Metering system built and deployed. Enterprise customers transparently see their consumption. Upsell conversations became data-driven. ARR up 28%.",
+      "partial_success": "Metering works for 8 of 10 intended dimensions. Coverage is 80%. Enterprise customers can see consumption but it's incomplete.",
+      "unexpected_impact": "Transparent consumption made price-sensitive customers paranoid. They started optimizing usage to minimize costs, which reduced engagement.",
+      "soft_failure": "Metering system is buggy. Readings are sometimes off by 5-10%. Customers don't trust the metrics. Usage-based pricing got delayed.",
+      "catastrophe": "Metering calculation errors underbilled customers by $500k over 6 months. When discovered, you had to issue credits and apologize. Customers demanded refunds. Two large accounts left."
+    }
+  },
+  {
+    "id": "mon_009",
+    "title": "Overage Charges Implementation",
+    "description": "Add overage charges when users exceed plan limits (API calls, storage, users). Expects 8-12% of accounts will trigger overages. Revenue upside significant but friction high.",
+    "category": "monetization",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [4, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Overages live. 10% of accounts triggered them. Revenue $35k/month. Users adjust their usage. NPS dipped 3 points.",
+      "partial_success": "Overages implemented. 6% of accounts triggered charges. Revenue $18k/month. Users are frustrated but not churning.",
+      "unexpected_impact": "Customers started sandbagging their usage estimates during signup to avoid overage charges. Sales accuracy metrics got worse.",
+      "soft_failure": "Overages triggered only 2% of the time. Revenue is $5k/month. Customers are careful enough that overages are rare.",
+      "catastrophe": "An overage calculation bug charged one customer $47k for a single month. They discovered it when the bill arrived. They threatened to sue. You issued a credit and they churned anyway."
+    }
+  },
+  {
+    "id": "mon_010",
+    "title": "Enterprise Pricing Restructure",
+    "description": "Move enterprise from per-seat to consumption-based with negotiated minimums. Simplifies sales, improves margins for usage-heavy accounts. But requires renegotiating active contracts.",
+    "category": "monetization",
+    "effort": 6,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-4, -7], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Enterprise repricing complete. 80% of accounts renegotiated. Margins improved 18%. Enterprise sales cycles shortened by 3 weeks.",
+      "partial_success": "Repricing done. 60% of accounts renegotiated. Margins up 10%. 20% of accounts are in contract dispute.",
+      "unexpected_impact": "Some customers interpreted repricing as a betrayal. NPS dropped 9 points in enterprise segment. Churn ticked up.",
+      "soft_failure": "Repricing negotiated but most customers negotiated better terms. Margin improvement was only 3%. Not worth the disruption.",
+      "catastrophe": "Repricing conversations went nuclear with two $1M+ accounts. They hired lawyers. Accounts are in legal review. One is threatening to leave. Media picked up the story as 'price gouging.'"
+    }
+  },
+  {
+    "id": "mon_011",
+    "title": "Payment Method Expansion",
+    "description": "Add wire transfers, ACH, invoice-based billing, and crypto payment options. Removes friction for enterprise and international buyers. Requires banking and compliance work.",
+    "category": "monetization",
+    "effort": 5,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [5, 9], "partial": [2, 5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -6], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "All payment methods live. Enterprise close rate improved 22% (no payment method friction). International deals accelerated. Feature is now standard.",
+      "partial_success": "Wire and ACH working. Invoice billing half-implemented. Adoption is good but not transformative.",
+      "unexpected_impact": "Crypto payments attracted customers in unstable currencies. Payment volatility became a reconciliation nightmare.",
+      "soft_failure": "Payment methods exist but adoption is minimal. Most customers still use cards. Compliance overhead wasn't worth the benefit.",
+      "catastrophe": "A wire transfer to an incorrect account number resulted in $250k of customer payment going to the wrong party. You had to trace and recover the funds. Legal nightmare. Policy is now 'verified accounts only.'"
+    }
+  },
+  {
+    "id": "mon_012",
+    "title": "Dunning Flow Optimization",
+    "description": "Improve failed payment recovery with smart retry logic, email campaigns, and alternative payment methods. Current recovery rate is 60%. Target 75%+.",
+    "category": "monetization",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [4, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Dunning optimization live. Recovery rate 76%. Churn reduced by 2%. Revenue impact $40k/month.",
+      "partial_success": "Dunning live. Recovery rate 70%. Revenue $20k/month. It's better but not as much as hoped.",
+      "unexpected_impact": "Dunning emails were too aggressive. Some customers complained and churned. You had to soften the messaging.",
+      "soft_failure": "Dunning flow barely moved the needle. Recovery rate 62%. Too much complexity for minimal gain.",
+      "catastrophe": "A dunning email with the wrong customer name went to a large enterprise account. Confusion ensued. Customer felt disrespected. Account was at risk until you personally apologized."
+    }
+  },
+  {
+    "id": "mon_013",
+    "title": "Trial-to-Paid Conversion Optimization",
+    "description": "Redesign trial experience: onboarding, feature highlights, purchase prompts at optimal moments. Current conversion is 8%. Target 12%+.",
+    "category": "monetization",
+    "effort": 5,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 9], "partial": [2, 5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -6], "partial": [-2, -4] },
+    "outcomes": {
+      "clear_success": "Trial redesign complete. Conversion 13%. Free-to-paid funnel is now optimized. MRR from trials up 48%.",
+      "partial_success": "Trial conversion 10.5%. It's improved but not dramatically. Small wins. Revenue up 20%.",
+      "unexpected_impact": "Trial users skipped features because purchase prompts appeared too early. Activation decreased even though conversion improved.",
+      "soft_failure": "Trial redesign had minimal impact. Conversion is 8.5%. Most people trying the product still don't buy.",
+      "catastrophe": "A trial variant accidentally extended trial duration indefinitely. 3k users never got charged. Discovery happened at month 3. Revenue was $200k lower than projected."
+    }
+  },
+  {
+    "id": "mon_014",
+    "title": "Pricing Page Redesign",
+    "description": "Redesign pricing page for clarity, add comparison tables, calculators, and social proof. Current pricing page conversion is 12%. Target 16%+.",
+    "category": "monetization",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [4, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "nps",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-1, -3] },
+    "outcomes": {
+      "clear_success": "Pricing page redesigned. Conversion 15%. Comparison tables drove clarity. Revenue from new signups up 25%.",
+      "partial_success": "Redesigned page is cleaner. Conversion 13%. Marginal improvement. ROI is there but small.",
+      "unexpected_impact": "Comparison tables made your product look more expensive relative to competitors. Negotiation power decreased.",
+      "soft_failure": "Redesign didn't move the needle. Conversion still 12%. Looks nicer but same results.",
+      "catastrophe": "Pricing calculator had a bug that showed prices 10x lower than actual. Customers signed up expecting $50/month and got billed $500. Disputes flooded support. You had to manually override 200 accounts."
+    }
+  },
+  {
+    "id": "ms_001",
+    "title": "AI-Powered Feature Suggestions",
+    "description": "Build an ML model that suggests product features based on user behavior, competitor moves, and usage patterns. Real-time, contextual recommendations. High risk: model hallucinations, user confusion. High upside: engagement +30%, feature discovery +40%.",
+    "category": "moonshot",
+    "effort": 9,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [9, 13], "partial": [4, 7] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 6], "partial": [2, 4] },
+    "outcomes": {
+      "clear_success": "AI suggestions deployed. Engagement jumped 28%. Users loved personalized recommendations. Feature discovery up 35%. Self-serve growth exceeded projections. Model accuracy 94%.",
+      "partial_success": "AI suggestions work. Engagement up 15%. Model accuracy is 78%. Users find it helpful but not transformative.",
+      "unexpected_impact": "AI started suggesting features that directly competed with your roadmap. Users wanted features before product strategy intended them.",
+      "soft_failure": "Model accuracy was 64%. Suggestions felt random. Users turned the feature off. Engagement impact minimal.",
+      "catastrophe": "Model suggested a 'delete all data' feature to 50k users (hallucination from competitor scraping). Support got flooded with confused users. Churn spiked 8%. You had to retrain the model and issue an apology."
+    }
+  },
+  {
+    "id": "ms_002",
+    "title": "Real-Time Collaboration Layer",
+    "description": "Add multi-user real-time collaboration (Figma-style cursors, live commenting, simultaneous editing). Major technical lift. Very high risk: infrastructure, data consistency. Upside: team adoption +80%, new segment unlock (design teams, agencies).",
+    "category": "moonshot",
+    "effort": 10,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [10, 14], "partial": [5, 7] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 7], "partial": [3, 5] },
+    "outcomes": {
+      "clear_success": "Real-time collaboration live. Team adoption jumped 75%. New customer segment (design agencies) is signing. Feature became flagship differentiator. Churn in multi-user accounts dropped 12%.",
+      "partial_success": "Collaboration works but has occasional sync issues (1-2% of sessions). Adoption is strong (60%). Users tolerate the bugs for the feature.",
+      "unexpected_impact": "Collaboration became the main use case, not your original product. Product strategy shifted. Sales messaging changed.",
+      "soft_failure": "Collaboration works but adoption is 35%. Most users are still solo. Network effects didn't materialize.",
+      "catastrophe": "Websocket infrastructure couldn't handle concurrent users. System crashed at 50k simultaneous users. Data loss on 2k active sessions. Took 12 hours to recover. Customer trust evaporated. PR nightmare."
+    }
+  },
+  {
+    "id": "ms_003",
+    "title": "Predictive Analytics Engine",
+    "description": "Build predictive analytics engine that forecasts user churn, revenue, and feature adoption based on behavioral signals. Embedded in product for self-serve use. Hard ML problem. High upside: enterprise TAM + $5M+, competitive moat.",
+    "category": "moonshot",
+    "effort": 9,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [9, 13], "partial": [4, 7] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 6], "partial": [2, 4] },
+    "outcomes": {
+      "clear_success": "Predictive engine deployed. Churn predictions 87% accurate. Enterprises using it for strategic planning. Deal size increased 35%. New TAM unlocked.",
+      "partial_success": "Engine works. Accuracy 72%. Useful but not perfect. Adoption in 20% of enterprise base.",
+      "unexpected_impact": "Engine's churn predictions made customers paranoid about their own health. False positives caused panic.",
+      "soft_failure": "Model accuracy 58%. Predictions are marginally better than random. Enterprise sales interest is low.",
+      "catastrophe": "Predictive model flagged 100 customers as 'high churn risk' with 91% confidence. Finance got nervous. Customers got aggressive win-back attempts. 12 customers churned because they felt sales didn't trust them anymore."
+    }
+  },
+  {
+    "id": "ms_004",
+    "title": "White-Label Platform",
+    "description": "Enable customers to white-label the platform and resell it as their own product. Requires multi-tenancy, branding infrastructure, and partner sales playbooks. High risk: cannibalization, partner mismanagement. Upside: channel revenue, network effects, TAM expansion.",
+    "category": "moonshot",
+    "effort": 10,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [10, 14], "partial": [5, 7] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 7], "partial": [3, 5] },
+    "outcomes": {
+      "clear_success": "White-label live. 8 partners reselling. Generated $2.5M ARR by year 1. Expanded TAM by 40%. Partners are happy. Organic growth through channel.",
+      "partial_success": "White-label works. 3 partners reselling. Generated $400k ARR. Growth is slower than hoped but profitable.",
+      "unexpected_impact": "One partner became a competitor and ate into your direct sales. Partner conflict management became full-time work.",
+      "soft_failure": "White-label built but only 1 partner interested. Revenue is minimal. Infrastructure cost not justified.",
+      "catastrophe": "A white-label partner's brand infringement caused trademark dispute. Legal fees exceeded channel revenue. Partner sued you for IP ownership. You had to shut down the white-label program."
+    }
+  },
+  {
+    "id": "ms_005",
+    "title": "Ecosystem Marketplace",
+    "description": "Build an extensible marketplace where partners build apps, integrations, and workflows on your platform. Event-driven architecture required. High risk: partner quality, security, developer experience. Upside: network effects, switching cost, TAM explosion.",
+    "category": "moonshot",
+    "effort": 8,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [3, 5], "partial": [2, 3] },
+    "outcomes": {
+      "clear_success": "Marketplace live with 45 apps. Users built custom workflows. Ecosystem generated $1.8M ARR. Network effects kicking in. Switching cost increased dramatically.",
+      "partial_success": "Marketplace exists with 15 apps. $200k ARR. Adoption slower than expected. Developers are cautious.",
+      "unexpected_impact": "Quality control nightmare. Low-quality apps damaged trust. You had to implement mandatory review process.",
+      "soft_failure": "Marketplace launched with 5 apps. Developers aren't building. Revenue is $50k/year.",
+      "catastrophe": "A marketplace app got hacked. It exposed customer data of 10k users. Security hole was in your marketplace infrastructure. Lawsuits filed. Marketplace shut down for 3 months for security audit."
+    }
+  },
+  {
+    "id": "ms_006",
+    "title": "Workflow Automation Builder",
+    "description": "Add a no-code workflow builder (Zapier-style) that lets users automate repetitive tasks without code. Complex UI/UX problem. High risk: feature creep, UX complexity, support burden. Upside: engagement +50%, enterprise lock-in.",
+    "category": "moonshot",
+    "effort": 9,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [9, 13], "partial": [4, 7] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 6], "partial": [2, 4] },
+    "outcomes": {
+      "clear_success": "Workflow builder live. 52% of users built at least one workflow. Automation engagement up 55%. Enterprise customers are locked in. Churn decreased 8%.",
+      "partial_success": "Builder works. 28% of users tried it. Adoption is strong but not universal. Engagement up 25%.",
+      "unexpected_impact": "Users built workflows that broke when you updated APIs. Support tickets for workflow breakage became 30% of queue.",
+      "soft_failure": "Builder UI is confusing. Only 15% of users built workflows. Engagement barely moved.",
+      "catastrophe": "A workflow loop created by a user ran infinitely and cost you $80k in compute charges before being auto-killed. Customer demanded compensation. You had to add mandatory rate limits that broke legitimate workflows."
+    }
+  },
+  {
+    "id": "ms_007",
+    "title": "Natural Language Search",
+    "description": "Replace keyword search with NLP-powered natural language search that understands intent. High risk: hallucinations, mismatched results, LLM latency. Upside: user satisfaction +40%, feature discovery +30%, engagement +20%.",
+    "category": "moonshot",
+    "effort": 8,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [3, 5], "partial": [2, 3] },
+    "outcomes": {
+      "clear_success": "NL search live. Search satisfaction jumped 38%. Users finding what they need 2x faster. Engagement up 22%. Feature discovery +28%.",
+      "partial_success": "NL search works. Satisfaction up 15%. Accuracy is 78%. Users prefer it to keyword search.",
+      "unexpected_impact": "Search latency increased 400ms per query. Some users complained about slower experience.",
+      "soft_failure": "NL search has accuracy issues (62%). Users revert to keyword search. Engagement barely moved.",
+      "catastrophe": "NL search hallucinated results for 30% of queries. Users got completely wrong data. Confusion and trust loss. You had to disable NL search and revert to keyword for a month. It's now 'experimental feature' with a disclaimer."
+    }
+  },
+  {
+    "id": "ms_008",
+    "title": "Embedded BI Tool",
+    "description": "Build embedded business intelligence directly in your product (dashboards, KPIs, data exploration). High risk: performance, data freshness, design complexity. Upside: replaces external tools, increases stickiness, new metrics revenue stream.",
+    "category": "moonshot",
+    "effort": 9,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [9, 13], "partial": [4, 7] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 6], "partial": [2, 4] },
+    "outcomes": {
+      "clear_success": "BI tool live. Enterprise customers replaced external BI tools. Embedded dashboards are now core feature. Enterprise ARR up 32%. Switching cost increased.",
+      "partial_success": "BI tool works. 40% of enterprises use it as primary dashboard. Good adoption. Engagement increase 18%.",
+      "unexpected_impact": "Dashboard users started asking for BI-specific features (drill-downs, custom SQL). You've built a partial BI platform.",
+      "soft_failure": "BI tool exists. Adoption is 15%. Most enterprises still use external tools. Revenue impact minimal.",
+      "catastrophe": "BI dashboard rendering caused browser crashes for large datasets (>1M rows). Enterprises with big data couldn't use the feature. Performance investigation took 6 weeks. Feature is marked 'Beta, not production-ready.'"
+    }
+  },
+  {
+    "id": "ms_009",
+    "title": "Mobile App Launch",
+    "description": "Build native iOS and Android apps to increase mobile engagement and reach. High risk: platform maintenance, app store policies, feature parity. Upside: mobile users +150%, engagement +40%, new user segments (sales reps, field teams).",
+    "category": "moonshot",
+    "effort": 10,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [10, 14], "partial": [5, 7] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 7], "partial": [3, 5] },
+    "outcomes": {
+      "clear_success": "Apps live on both stores. Mobile users jumped 140%. Field teams adoption was immediate (new segment). Mobile engagement +42%. Core product engagement increased because mobile users access more frequently.",
+      "partial_success": "Apps live. Mobile usage up 80%. Feature parity with web is 85%. Users love having mobile access.",
+      "unexpected_impact": "Mobile app became the primary interface. Desktop usage declined. You now have to support two parallel product experiences.",
+      "soft_failure": "Apps launched but adoption is 40% of expected. Most users are desktop-first. Mobile segment never materialized.",
+      "catastrophe": "iOS app got rejected from App Store for compliance issues. Android app had authentication bug that locked users out for 8 hours. You had to issue emergency patches. Both platforms were broken for a day. Mobile credibility damaged for 6 months."
+    }
+  },
+  {
+    "id": "ms_010",
+    "title": "Voice Interface Layer",
+    "description": "Add voice command interface that lets users control product via voice (Alexa-style). Accessibility feature with enterprise appeal. High risk: accuracy, privacy concerns, user comfort. Upside: accessibility leader, enterprise mandate (compliance), new interaction model.",
+    "category": "moonshot",
+    "effort": 8,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [4, 7], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [3, 5], "partial": [2, 3] },
+    "outcomes": {
+      "clear_success": "Voice interface live. 34% of users tried it, 18% use regularly. Accessibility score increased. Enterprise interest (compliance mandate) generated $1.2M in new deals.",
+      "partial_success": "Voice interface works. Accuracy 82%. 10% of users use it occasionally. Enterprise interest is moderate.",
+      "unexpected_impact": "Users had privacy concerns about always-listening audio. Had to implement kill-switch and local processing. Complexity skyrocketed.",
+      "soft_failure": "Voice accuracy is 68%. Users find it faster to click. Voice feature is novelty, not utility.",
+      "catastrophe": "Voice interface misheard 'delete account' as 'delete archived items' and deleted a customer's account. GDPR violation and massive liability. Customer sued. You disabled voice delete operations and issued permanent credits."
+    }
+  },
+  {
+    "id": "ms_011",
+    "title": "Customer Health Scoring AI",
+    "description": "Build AI-powered health scoring for CSM teams (predicts churn, expansion, renewal risk). ML model trained on 5 years of customer data. High risk: model bias, privacy, model drift. Upside: CSM efficiency +60%, proactive retention, enterprise positioning.",
+    "category": "moonshot",
+    "effort": 9,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [9, 13], "partial": [4, 7] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 6], "partial": [2, 4] },
+    "outcomes": {
+      "clear_success": "Health scoring deployed to 80 CSM teams. Accuracy 89% for churn prediction. CSM efficiency up 55%. Proactive interventions prevented 23 at-risk renewals. Enterprise value perception increased.",
+      "partial_success": "Health scoring works. Accuracy 76%. CSM teams use it for 60% of accounts. Efficiency improvement 25%.",
+      "unexpected_impact": "CSM teams started gaming the score by doing 'health hygiene' rather than actual product adoption work. Metric became a proxy for CSM activity, not account health.",
+      "soft_failure": "Model accuracy 64%. CSMs don't trust the scores. Adoption is low. Efficiency gain minimal.",
+      "catastrophe": "Model exhibited bias against certain customer cohorts (startups got 'high risk' scores disproportionately). CSMs neglected those accounts. You had to audit the model. Bias findings got disclosed. PR damage. CSM team's trust damaged."
+    }
+  },
+  {
+    "id": "ms_012",
+    "title": "No-Code Integration Builder",
+    "description": "Build visual integration builder (Zapier-style) that lets users connect to external systems without engineering. High complexity, high reward. Risk: scope creep, coverage gaps, support. Upside: new customer segment (operations teams), ecosystem plays, partnership value.",
+    "category": "moonshot",
+    "effort": 10,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [10, 14], "partial": [5, 7] },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": { "success": [5, 9], "partial": [3, 5] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [4, 7], "partial": [3, 5] },
+    "outcomes": {
+      "clear_success": "No-code builder live with 120+ integrations. Operations teams adopted immediately (new segment). Removed bottleneck on engineering. Enterprise deals closed 40% faster. Integration requests decreased 70%.",
+      "partial_success": "Builder works with 45 integrations. Adoption by operations teams is strong (30%). Covers 80% of integration needs.",
+      "unexpected_impact": "Users built integrations that broke your own architecture (unsupported data flows). You had to add guard rails.",
+      "soft_failure": "Builder covers only 20 integrations. Most integrations still require engineering. ROI is questionable.",
+      "catastrophe": "A user built an integration that caused a runaway data sync job. It replicated data infinitely and cost you $120k in compute before auto-kill. Customer demanded compensation. You added permanent rate limits that broke legitimate use cases."
+    }
+  }
+]

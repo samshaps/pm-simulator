@@ -1,0 +1,442 @@
+[
+  {
+    "id": "ss_001",
+    "title": "Self-Serve Upgrade Flow",
+    "description": "Enable users to upgrade tiers directly in the product instead of emailing sales. Quick win that should move conversion velocity needle. Tradeoff: will likely cannibalizing our 'sales touch' motion in mid-market.",
+    "category": "self_serve_feature",
+    "effort": 5,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [-2, 1], "partial": [-1, 0] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 2] },
+    "outcomes": {
+      "clear_success": "Upgrade button went live. 34% of signups now self-serve upgrade within 14 days instead of waiting for sales outreach. Enterprise deals unchanged. Finance is too busy updating the model to ask questions.",
+      "partial_success": "The flow works, but only 18% of users complete it. Turns out most hesitate without talking to someone first. Still counts as progress, or so the quarterly review insisted.",
+      "unexpected_impact": "Users are upgrading to higher tiers than sales would have closed them at. Average contract value per self-serve upgrade is 23% lower than sales-assisted deals, but velocity more than compensates. The sales org sent one email about fairness and then stopped.",
+      "soft_failure": "Upgrade button is live but conversion rate is 7%. Our onboarding doesn't explain features clearly enough for users to know what they're buying. Support volume increased slightly as users bought the wrong tiers.",
+      "catastrophe": "A pricing logic bug caused 156 users to upgrade at 2019 pricing. Discovery took 11 days. Refund negotiations consumed the sales director's entire March calendar. The ticket that 'should have been quick' became a case study in technical debt."
+    }
+  },
+  {
+    "id": "ss_002",
+    "title": "Freemium Tier Launch",
+    "description": "Create a free plan with limited features to expand TAM. Should drive top-of-funnel volume significantly. Tradeoff: supporting a free tier has operational cost and cloud spend implications that compound quickly.",
+    "category": "self_serve_feature",
+    "effort": 8,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "secondary_metric": "nps",
+    "secondary_impact": { "success": [1, 3], "partial": [-1, 1] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [3, 5], "partial": [2, 3] },
+    "outcomes": {
+      "clear_success": "Freemium tier went live. Signups tripled in six weeks. Conversion to paid at month 3 is 12%, lower than we'd hoped but absolute numbers are solid. Cloud spend increased 40% but the CAC math still works.",
+      "partial_success": "Freemium attracted volume, but 8% conversion feels thin. Free tier users are generating disproportionate support requests relative to their lifetime value. It's technically successful, just less elegant than the business case pretended.",
+      "unexpected_impact": "Free users became the source of most feature requests. Product backlog is now oriented around freeware use cases instead of paying customer needs. Sales is frustrated. Engineering is confused about priorities.",
+      "soft_failure": "Freemium signup volume is there, but retention at day 30 is 19%. Users spin up a project, touch the UI, realize they need the paid tier, and then just leave instead of converting. Monthly cohort analysis is depressing.",
+      "catastrophe": "A free user accidentally created a project with 4.2 million data points and crashed the shared infrastructure for 2 hours. Three paying customers lost work. The incident cost $47,000 in emergency engineering time to isolate free users onto separate infrastructure."
+    }
+  },
+  {
+    "id": "ss_003",
+    "title": "In-App Activation Tutorial",
+    "description": "Build guided tour that walks new users through core workflows without leaving the product. Low effort, should compress activation curves. Tradeoff: new code path that might confuse users who skip it or loop it.",
+    "category": "self_serve_feature",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [1, 2], "partial": [1, 1] },
+    "outcomes": {
+      "clear_success": "Tutorial is live. Time to first meaningful action dropped from 18 minutes to 11. Users who completed the tutorial had 34% higher day-7 retention. It's the kind of quiet win that shows up in board materials.",
+      "partial_success": "Tutorial reduces activation time by 6 minutes. Help, but not transformative. Some users found it condescending. Some users restarted it instead of exploring. Most people ignored the 'skip' button.",
+      "unexpected_impact": "Tutorial is so effective at walking users through the happy path that they don't discover the advanced features they'd actually paid for. Follow-on support cost went up because power users had to be re-educated.",
+      "soft_failure": "Tutorial has 34% skip-through rate. Of those who completed it, retention improved 9%. Of those who skipped it, retention got worse by 3%, as if they felt patronized. Net effect is near-zero.",
+      "catastrophe": "Tutorial's analytics tracking beacon had a memory leak. After 10 minutes of tutorial interaction, the browser tab would consume 800MB of RAM and crash. Affected 31% of the free tier. Rollback took 6 hours and looked like an outage."
+    }
+  },
+  {
+    "id": "ss_004",
+    "title": "Usage Analytics Dashboard",
+    "description": "Self-service analytics showing users how much they're actually using the product. Increases stickiness by making value visible. Tradeoff: will also surface to users that they're underutilizing features, creating buyer's remorse.",
+    "category": "self_serve_feature",
+    "effort": 6,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "nps",
+    "secondary_impact": { "success": [2, 4], "partial": [0, 2] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 3] },
+    "outcomes": {
+      "clear_success": "Dashboard launched. Users spend 3 minutes per week reviewing usage. Active users increased 12% quarter-over-quarter. The visibility into 'wasting money' actually made more people upgrade to use the product better. Retention improved.",
+      "partial_success": "Dashboard is there and used. Weekly actives up 6%. Some users are looking at it and optimizing, others are looking at it and getting depressed about their ROI. Net win, but not as much as projected.",
+      "unexpected_impact": "Usage analytics dashboard became the primary tool for customer success to justify contract renewals. Sales meetings now include 'here's how much value you're not using' conversations. Awkward but effective.",
+      "soft_failure": "Dashboard went live to poor adoption. Only 19% of users ever visit it. Those who do don't seem to change behavior. The assumption that visibility drives engagement was wrong. It just drove anxiety.",
+      "catastrophe": "Dashboard aggregation query ran on unindexed data and consumed 5 days of compute time. Warehouse costs spiked $22,000. Real-time metrics became 4 hours stale. Downgrade requests came from three enterprise customers who thought we were throttling their data access."
+    }
+  },
+  {
+    "id": "ss_005",
+    "title": "Notification Preference Center",
+    "description": "Let users control what emails and in-app alerts they receive. Should reduce unsubscribe rates and inbox spam complaints. Tradeoff: users will disable notifications we actually want them to see.",
+    "category": "self_serve_feature",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 3], "partial": [1, 2] },
+    "outcomes": {
+      "clear_success": "Preference center is live. Unsubscribe rate dropped from 3.2% to 1.8% month-over-month. Users are actually turning things on and off instead of just leaving. Complaint tickets to support dropped 27%. Quiet, efficient fix.",
+      "partial_success": "Preferences center went live. Unsubscribe rate fell 1.4 percentage points. Better than before, but not the 1.8 we modeled. Engagement with the center is lower than expected; most people just want one-click unsubscribe still.",
+      "unexpected_impact": "Users turned off billing alerts. Finance received zero notification of three failed credit cards until they went unpaid for 60 days. Collections took 4 months. The 'control your own notifications' philosophy turned expensive.",
+      "soft_failure": "Preference center exists but is buried three clicks deep in settings. 6% of users ever discover it. Unsubscribe rate didn't budge. Discovery problem turned a good idea into a shelfware feature.",
+      "catastrophe": "Notification state wasn't synced to the backend correctly. Users thought they'd disabled notifications but still received them. Support tickets about 'why aren't my preferences working' hit 340 that week. Rollback destroyed all manual preference settings; customers had to re-configure."
+    }
+  },
+  {
+    "id": "ss_006",
+    "title": "Mobile App Redesign",
+    "description": "Modernize the mobile experience to match web capabilities. Should unlock mobile-first segment. Tradeoff: substantial engineering effort and fragmented feature parity between platforms.",
+    "category": "self_serve_feature",
+    "effort": 8,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "secondary_metric": "nps",
+    "secondary_impact": { "success": [2, 4], "partial": [1, 2] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [3, 5], "partial": [2, 3] },
+    "outcomes": {
+      "clear_success": "Redesigned app is live on iOS and Android. Mobile DAU increased 48%. A segment of users who only use mobile became viable. Performance improved 31%. The app is now a legitimate product, not a companion feature.",
+      "partial_success": "Mobile redesign shipped. DAU went up 24%. Features are still lagging web by 2-3 sprints. Android version is solid. iOS update is still waiting for review. It's better, just not complete yet.",
+      "unexpected_impact": "Mobile-first users started submitting feature requests that don't make sense on web. Product roadmap is now pulled in two directions. Weekly prioritization meetings now include mobile vs. web debates.",
+      "soft_failure": "App redesign shipped. Mobile metrics haven't moved. Turns out our users aren't mobile-first after all; they use us at their desks. The redesign was technically proficient and behaviorally irrelevant.",
+      "catastrophe": "iOS app version 2.0 had a data sync bug where local changes weren't pushing to the server correctly. 2,100 users lost work from sessions that appeared successful. Recovery required manual intervention for 1,800 of them. App Store reviews tanked to 2.1 stars. Two week reputation recovery followed."
+    }
+  },
+  {
+    "id": "ss_007",
+    "title": "Knowledge Base Expansion",
+    "description": "Build out self-serve documentation and how-to guides to deflect common support questions. Low engineering effort, high content burden. Tradeoff: is content current enough to be helpful or is it stale advice?",
+    "category": "self_serve_feature",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [1, 2], "partial": [1, 1] },
+    "outcomes": {
+      "clear_success": "Knowledge base went live with 47 core articles. Support ticket volume dropped 19%. Users can now solve problems at 2 AM without escalating. Article search ranks well in Google. Support team has capacity to handle edge cases.",
+      "partial_success": "KB launched with 32 articles. Support tickets fell 11%. Some articles are getting hits, others get zero traffic. Maintenance is already an afterthought; several articles reference deprecated features.",
+      "unexpected_impact": "Knowledge base became popular enough to show up in search results ahead of our marketing site. Unqualified traffic is now reading advanced features they don't have access to. Inbound frustration increased.",
+      "soft_failure": "Knowledge base has 40 articles but only 6% of support questions reference them. Users don't search for documentation; they email us directly. The KB exists but isn't part of the support workflow.",
+      "catastrophe": "An article about 'manual data export' was correct for v2.3 but wrong for v3.1. 127 users followed the deprecated instructions, corrupted their exports, and requested refunds. The article wasn't marked as version-specific. Content review process became mandatory after that week."
+    }
+  },
+  {
+    "id": "ss_008",
+    "title": "Referral Program Launch",
+    "description": "Users earn credits for referring other users. Should drive organic acquisition. Tradeoff: viral loops can feel spammy and burn brand trust if the incentive is too aggressive.",
+    "category": "self_serve_feature",
+    "effort": 5,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 2] },
+    "outcomes": {
+      "clear_success": "Referral program is live. 12% of new signups come from existing users. CAC is effectively zero for those cohorts. Viral coefficient is 0.34. Word of mouth is finally measurable and profitable.",
+      "partial_success": "Referral program launched. 6% of signups are referrals. Better than organic but not the 15% we projected. Users aren't sharing as much as the incentive structure suggested they would.",
+      "unexpected_impact": "Top 50 power users generated 40% of all referral signups. They're essentially doing sales work for us. Comp question emerged: should we be paying them as affiliates? Yes, but we're not. Awkward.",
+      "soft_failure": "Referral program went live. Participation rate is 3%. Users either don't want to refer or don't know they can. The feature exists but isn't culturally integrated into the product.",
+      "catastrophe": "Referral credits could be stacked with loyalty discounts and created an arbitrage where users referred themselves via secondary emails, accrued unlimited credits, and hit $0 annual cost. 340 users reached zero-dollar tiers before the bug was caught. Revenue impact: $210,000 in lost ARR recovery."
+    }
+  },
+  {
+    "id": "ss_009",
+    "title": "Feature Gating by Tier",
+    "description": "Gate advanced features behind higher tier plans, encourage in-product upgrades. Should increase conversion velocity and feature adoption. Tradeoff: gated features frustrate free users and might feel arbitrary.",
+    "category": "self_serve_feature",
+    "effort": 5,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [-1, 1], "partial": [-1, 0] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 2] },
+    "outcomes": {
+      "clear_success": "Feature gates are live. Users hit a 'upgrade to use this' wall and 14% convert within 7 days. NPS among free users dropped 8 points but ARPU among payers increased 18%. The product is now more clearly a freemium funnel.",
+      "partial_success": "Gates are deployed. Conversion at gate-hit is 8%. Users are upgrading, just not at the rate we modeled. Some gated features are rarely requested anyway; gates on those features feel artificial.",
+      "unexpected_impact": "Enterprise customers who bought 'all features' are now hitting gates designed for the freemium tier. Support has to explain that their tier actually has everything. Customers feel nickeled and dimed.",
+      "soft_failure": "Feature gates exist but the upgrade flow from the gate is confusing. Users hit a gate, see the paywall, and bounce instead of converting. Click-through on 'upgrade' is 3%. The psychology of the gate is all wrong.",
+      "catastrophe": "A bug in the gate logic allowed enterprise users to share their API keys with free users, who could then use gated features. 41 free accounts were accessing premium workflows via shared keys. Revenue leakage was estimated at $58,000/month before QA caught it."
+    }
+  },
+  {
+    "id": "ss_010",
+    "title": "User Segmentation Engine",
+    "description": "Dynamically segment users by behavior to personalize experience and messaging. Should improve activation and retention. Tradeoff: segmentation logic can become complex and hard to maintain; wrong segments can feel creepy.",
+    "category": "self_serve_feature",
+    "effort": 6,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "nps",
+    "secondary_impact": { "success": [1, 3], "partial": [0, 1] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 3] },
+    "outcomes": {
+      "clear_success": "Segmentation engine is live. We can now target power users, at-risk users, and early-stage users with different onboarding. Retention improved 7%. Churn cohorts are now responsive to targeted campaigns. The product experience is more relevant to each persona.",
+      "partial_success": "Segmentation is functional but rough. We have 4 segments instead of the 9 we wanted. Targeting is improving retention by 3%. It's a foundation that will mature over time.",
+      "unexpected_impact": "Segmentation revealed that our 'at-risk' users are actually a distinct persona with different needs than anyone expected. Product roadmap shifted to serve them. Sales team started asking for the segmentation data to guide their outreach.",
+      "soft_failure": "Segmentation engine was built but isn't being used effectively. We have segments but targeting logic isn't implemented. The infrastructure exists; the strategy doesn't. Feels like a failure of product discipline.",
+      "catastrophe": "Segmentation algorithm had a race condition in the batch job that reassigned segments. Users switched segments randomly throughout the day, causing inconsistent personalization. Some users saw 3 different onboarding flows in one session. Logs showed 15,000 erratic segment transitions. Reset required manual recalculation for 23,000 users."
+    }
+  },
+  {
+    "id": "ss_011",
+    "title": "Developer API Documentation",
+    "description": "Ship self-serve API docs and SDKs to unlock developer integrations. Should expand use cases and integration opportunities. Tradeoff: good API docs require ongoing maintenance and developer support will become a drain.",
+    "category": "self_serve_feature",
+    "effort": 6,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 3] },
+    "outcomes": {
+      "clear_success": "API docs and Python/JS SDKs launched. Developer signup increased 156%. Three existing customers built internal integrations. An open-source project picked up the SDK and extended it. The product is now programmable, not just clickable.",
+      "partial_success": "API documentation is live. Developer interest increased but not dramatically. SDKs work but are rough around the edges. Some examples are out of date. It's functional but not a primary funnel driver.",
+      "unexpected_impact": "Two developers built alternative UIs on top of our API and started reselling the product as their own. Not malicious, but licensing questions emerged. We now have unauthorized derivatives to manage.",
+      "soft_failure": "API docs exist but usage is light. Turns out most users don't want to code; they want to click. The docs are well-written but for a use case that's smaller than projected.",
+      "catastrophe": "An example in the API docs showed how to export user data using an undocumented 'admin' parameter. 8 customers used the example in production. One customer accidentally exposed another customer's data, resulting in a GDPR complaint and a £15,000 settlement."
+    }
+  },
+  {
+    "id": "ss_012",
+    "title": "Pricing Page Redesign",
+    "description": "Simplify pricing to make tier comparison easier and reduce sales friction. Should improve conversion before trial. Tradeoff: oversimplification can remove pricing power; comparison tables that highlight value leave money on the table.",
+    "category": "self_serve_feature",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 3], "partial": [1, 2] },
+    "outcomes": {
+      "clear_success": "Pricing page is simpler, three tiers, clear comparison matrix. Trial signup CRR improved 23%. Sales is happier because prospects arrive with better self-education. ARPU per cohort didn't change; volume did.",
+      "partial_success": "Redesigned pricing page is live. Trial conversion improved 12%. Some messaging is still confusing. The page is cleaner but maybe too much clarity reduced upsell psychology.",
+      "unexpected_impact": "New pricing page made it obvious that our mid-tier is terrible value compared to bottom + top. Most signups now skip mid and go straight to top. Mid-tier revenue dropped 34%. We have a pricing hole we didn't know existed.",
+      "soft_failure": "Redesigned pricing page looks modern but trial conversion is unchanged. We simplified the messaging but prospects still don't understand the tier differences. The problem wasn't UI clarity; it was value articulation.",
+      "catastrophe": "Pricing page had a JavaScript bug where the toggle between 'monthly' and 'annual' pricing didn't actually update the displayed prices. For 6 days, every annual plan comparison showed monthly pricing. 740 users signed up thinking they got 60% discounts. Revenue impact: $180,000 in year-one lost margin."
+    }
+  },
+  {
+    "id": "ss_013",
+    "title": "Community Forum",
+    "description": "Ship a community forum where users can ask questions and help each other. Should reduce support burden and create network effects. Tradeoff: forums need moderation; bad answers spread faster than support can correct them.",
+    "category": "self_serve_feature",
+    "effort": 6,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "nps",
+    "secondary_impact": { "success": [1, 3], "partial": [0, 1] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 3] },
+    "outcomes": {
+      "clear_success": "Forum is live. Power users are actively answering questions. Support tickets fell 22%. Community has organic moderation. The forum feels alive; users are helping each other at 2 AM. NPS among forum participants increased 6 points.",
+      "partial_success": "Forum is active but unevenly so. Some categories get answers in minutes, others go unanswered for days. Support ticket reduction is 9%. It's working, just not at scale.",
+      "unexpected_impact": "Forum became a place where customers negotiate pricing and discuss switching to competitors. Private feedback became public conversation. We learned things we didn't want to know about churn reasons.",
+      "soft_failure": "Forum exists but has 12 total posts. Most of them are from the support team trying to seed conversation. Users don't want to share problems publicly. It's infrastructure looking for demand.",
+      "catastrophe": "An incorrect answer to a 'how to set up billing integration' question was marked as the solution by 47 users. 12 of them went live with the wrong configuration. Billing data corruption for those 12 took finance 40 hours to manually repair. One customer's revenue was double-counted for a month."
+    }
+  },
+  {
+    "id": "ss_014",
+    "title": "Template Library",
+    "description": "Curate templates for common use cases to help users get started faster. Quick value delivery. Tradeoff: templates can mislead if they're overly simplified or don't match real workflows.",
+    "category": "self_serve_feature",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 3], "partial": [1, 2] },
+    "outcomes": {
+      "clear_success": "Template library launched with 8 templates. 31% of new users use a template as a starting point. Time to first value dropped from 27 minutes to 8 minutes. Activation improved 19%. Templates are getting cloned faster than we can iterate on them.",
+      "partial_success": "Templates are live. 14% of new users use them. Time to value dropped 9 minutes. Adoption is lower than expected, but those who use templates do stick around longer.",
+      "unexpected_impact": "Users are copying templates and then hacking them into shapes the templates weren't designed for. Support tickets about 'my template stopped working after I modified it' became a category. Users blame the template for their modifications.",
+      "soft_failure": "Template library exists but isn't discoverable. Only 8% of new users even know it's there. Onboarding doesn't mention templates. Zero integration with the signup flow. The feature is invisible.",
+      "catastrophe": "A template was built from a beta version of the product. Four of the nine template steps no longer work in the current product version. 340 users tried the template, hit errors, and bounced. NPS among template-users dropped 14 points. Three support tickets per day were just 'template broken' issues."
+    }
+  },
+  {
+    "id": "ss_015",
+    "title": "Search and Filter Overhaul",
+    "description": "Improve search relevance and faceted filtering to help users find what they need. Should reduce time-to-task. Tradeoff: search algorithms can feel unpredictable; users might not trust the ranking.",
+    "category": "self_serve_feature",
+    "effort": 5,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 2] },
+    "outcomes": {
+      "clear_success": "Search was completely rebuilt with relevance ranking and filters. Search usage increased 34%. Users now find what they're looking for first try instead of browsing. Feature usage distribution flattened; obscure features got more traffic. Better search revealed demand we didn't know existed.",
+      "partial_success": "Search improved but isn't quite there. Top results are relevant 73% of the time. Users still browse instead of search sometimes. Good progress, not solved yet.",
+      "unexpected_impact": "Better search made niche features more discoverable. Users found advanced features they didn't know existed. Feature adoption spread to tail of capabilities. Support load shifted from 'how do I find X' to 'how do I use X'.",
+      "soft_failure": "Search was completely rebuilt using machine learning. Results are unpredictable. Users trust the old sequential browse more than the new smart ranking. The math is sound; human intuition doesn't match it.",
+      "catastrophe": "Search indexing had a bug where timestamps were stored as integers instead of dates. Filtering by date range returned results in random order. 23,000 users experienced unreliable search for 9 days. Workaround required turning off date filters entirely. Search trust took months to recover."
+    }
+  },
+  {
+    "id": "ss_016",
+    "title": "Integrations Marketplace",
+    "description": "Platform for third-party integrations with popular tools. Should expand product value without building every integration ourselves. Tradeoff: marketplace moderation and support questions for third-party integrations fall on us.",
+    "category": "self_serve_feature",
+    "effort": 7,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [1, 3], "partial": [0, 1] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [3, 5], "partial": [2, 3] },
+    "outcomes": {
+      "clear_success": "Integrations marketplace launched. 12 third-party integrations available day one. Usage is immediate: 34% of signups connect at least one integration. Enterprise deals now mention 'integrates with Salesforce' as a key reason. Buyers see the product as more capable than it actually is.",
+      "partial_success": "Marketplace is live with 7 integrations. 18% of users try at least one. Friction is moderate; some integrations are solid, others need setup help. The ecosystem is starting but not thriving yet.",
+      "unexpected_impact": "Third-party integrations revealed product gaps we'd been ignoring. A Slack integration showed that users wanted real-time notifications, which we don't have. Support volume for third-party integrations is higher than expected.",
+      "soft_failure": "Marketplace exists but has low adoption. Only 6% of users connect an integration. Discovery is poor. The tab is buried in settings. Integrations exist but aren't part of the core user experience.",
+      "catastrophe": "A Zapier integration used by 400 customers had a bug where it was sending duplicate records every 4 hours. Customer databases ended up with millions of duplicates. 47 support tickets came in over 3 days before we traced it to the integration. The third-party vendor was slow to fix; we got blamed for their code. Three customers downgraded."
+    }
+  },
+  {
+    "id": "ss_017",
+    "title": "Dark Mode Interface",
+    "description": "Ship dark mode to satisfy power users and reduce eye strain complaints. Nice-to-have quality of life feature. Tradeoff: maintaining two theme variants doubles styling code and creates regression surface.",
+    "category": "self_serve_feature",
+    "effort": 5,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": "nps",
+    "secondary_impact": { "success": [1, 2], "partial": [0, 1] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 2] },
+    "outcomes": {
+      "clear_success": "Dark mode shipped. 47% of active users enabled it within two weeks. Power users report less eye strain. Mentions of dark mode requests in support dropped to zero. NPS among dark mode users increased 3 points. It's a polishing feature that users notice and appreciate quietly.",
+      "partial_success": "Dark mode is live. 28% adoption. Looks good, though some components didn't theme properly. There are a few UX inconsistencies but nothing breaking. Adoption is fine, not transformative.",
+      "unexpected_impact": "Dark mode became a draw for late-night users in Asia. Session concentration shifted. Late-night cohort retention improved. Engagement flattened across time zones as work hours became less relevant to product usage patterns.",
+      "soft_failure": "Dark mode shipped but adoption is 11%. Turns out most users don't care enough to hunt for the toggle. It's nice-to-have, not need-to-have. The effort spent on a feature with 11% usage feels disproportionate.",
+      "catastrophe": "Dark mode CSS used inverted colors across the entire DOM, including SVG charts. Data visualizations inverted colors but not axis labels, making charts unreadable. 1,200 power users who relied on charts for decision-making reported the feature as broken. Rollback took 30 minutes; re-implementation took 3 sprints."
+    }
+  },
+  {
+    "id": "ss_018",
+    "title": "Localization and i18n",
+    "description": "Expand into non-English markets with localized UI and i18n support. Should unlock international expansion. Tradeoff: localization is ongoing maintenance; translations fall out of sync when features ship.",
+    "category": "self_serve_feature",
+    "effort": 7,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [3, 5], "partial": [2, 3] },
+    "outcomes": {
+      "clear_success": "i18n framework is live. Spanish and German translations shipped day one. International signups increased 56% in the first month. The product is now accessible to non-English speakers. Revenue from Europe doubled within a quarter. Localization became a competitive advantage.",
+      "partial_success": "i18n is live in Spanish and German. International signups increased 28%. Translations are mostly accurate but some enterprise jargon got lost. It's functional and expanding the market.",
+      "unexpected_impact": "Localization exposed how much product copy assumes English-language context. Dates, times, currency, and idioms needed regional customization beyond just translations. Europe wanted GDPR-specific language, Asia wanted different trial lengths.",
+      "soft_failure": "i18n framework was built but only English and Spanish live. Spanish adoption is 19% lower than projected. The real blocker wasn't language; it was payment localization that didn't happen. Users want Spanish UI but they're paying in USD because we don't support local payment methods.",
+      "catastrophe": "A German translation used the informal 'du' pronoun for button text ('du konfigurierst') while system messages used formal 'Sie' (system sagt 'Sie können konfigurieren'). German enterprise customers found this extremely unprofessional and rude. Three customer references requested language review. Reputation damage in DACH region lasted six months."
+    }
+  },
+  {
+    "id": "ss_019",
+    "title": "Smart Defaults for Setup",
+    "description": "Implement smart defaults based on company size and industry to reduce initial configuration burden. Should accelerate activation. Tradeoff: wrong defaults feel worse than blank slate; customers feel ignored if choices don't match their workflow.",
+    "category": "self_serve_feature",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [1, 2], "partial": [1, 1] },
+    "outcomes": {
+      "clear_success": "Smart defaults shipped. New users get configuration hints based on their signup data. Time to first meaningful action dropped 11 minutes. 37% of new users never needed to touch configuration; defaults were sufficient. Users with matching defaults activated 34% faster.",
+      "partial_success": "Smart defaults are live. Time to configuration dropped 7 minutes. Works well for common cases, misses edge cases. 22% of new users needed to override defaults immediately.",
+      "unexpected_impact": "Defaults for enterprise workflows felt too basic. Enterprise prospects used the defaults as a signal that the product wasn't serious enough for their use cases. Sales had to explicitly explain that defaults were customizable.",
+      "soft_failure": "Smart defaults exist but signup questions to feed them are intrusive. Users skip the questionnaire to get to the product faster, so defaults default to 'small tech startup.' The heuristics don't have good data.",
+      "catastrophe": "Smart defaults for 'manufacturing' industry set up workflow templates with 47 fields that were completely wrong for a specific company's process. Defaults auto-created 3,000 records in the database on signup. The customer spent 2 weeks cleaning up garbage data. They requested a custom reset; recovery took finance and CS 80 hours combined."
+    }
+  },
+  {
+    "id": "ss_020",
+    "title": "Single Sign-On Integration",
+    "description": "Support SSO (SAML, OAuth) for enterprise customers. Should reduce enterprise sales friction and increase security perception. Tradeoff: SSO support means deeper account management infrastructure and more complex troubleshooting.",
+    "category": "self_serve_feature",
+    "effort": 6,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "enterprise_growth",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [2, 4], "partial": [1, 3] },
+    "outcomes": {
+      "clear_success": "SSO (SAML/OAuth) went live. Enterprise deal velocity increased. Three prospects who were blocked on SSO as a requirement closed within the quarter. Employee onboarding is now automatic for customers with SSO enabled. Admin satisfaction increased noticeably.",
+      "partial_success": "SSO is implemented for Okta and Azure AD. Works well for those platforms. Integration with smaller providers is still pending. Enterprise adoption is moving forward, just not as fast as hoped.",
+      "unexpected_impact": "SSO made it possible for enterprise customers to gate internal access to our product, turning us into a compliance artifact rather than a discrete tool. We're now subject to their IT change windows.",
+      "soft_failure": "SSO was built but enterprise customers didn't adopt it. Turns out they want the flexibility of separate user management. The feature is there if they want it, but friction on both sides is keeping manual authentication as the default.",
+      "catastrophe": "A bug in SSO token refresh logic caused sessions to hang without logging out. Users appeared logged in but couldn't make API calls. 120 enterprise users experienced 4 hours of silent failures where data wasn't syncing. No error message, just stale state. Incident lasted until someone noticed API logs had 403 errors for 4 hours."
+    }
+  },
+  {
+    "id": "ss_021",
+    "title": "In-App Feedback Widget",
+    "description": "Collect qualitative feedback from users without leaving the product. Should drive product development priorities. Tradeoff: feedback is noisy and biased toward power users; implementing every suggestion is not feasible.",
+    "category": "self_serve_feature",
+    "effort": 4,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [5, 8], "partial": [2, 4] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [1, 2], "partial": [1, 1] },
+    "outcomes": {
+      "clear_success": "In-app feedback widget is live. Collected 340 pieces of feedback in the first month. Themes emerged that matched sales conversations perfectly. Product team now has systematic input from users. Two features were implemented directly based on feedback volume.",
+      "partial_success": "Feedback widget is live. Collected 120 pieces of feedback. Quality is mixed; some is actionable, some is noise. Using it to inform prioritization, but can't build everything users ask for.",
+      "unexpected_impact": "Feedback revealed that a feature we thought was unpopular is actually used by power users who weren't talking to us. Silent users' needs were invisible until we had systematic feedback. Roadmap adjusted to serve the quiet segment.",
+      "soft_failure": "Feedback widget exists but only 2% of users ever click it. Placement is poor. The feature collects 30 pieces of feedback per month, mostly from the same three users. Not representative.",
+      "catastrophe": "Feedback widget had a bug where multiline feedback was truncated at 50 characters before storage. A user's detailed architectural concern became 'Build API integrations.' Product team built a shallow integration. Customer complaint arrived 8 weeks later when the integration didn't match their actual needs. The original feedback was unrecoverable."
+    }
+  },
+  {
+    "id": "ss_022",
+    "title": "A/B Testing Framework",
+    "description": "Infrastructure for rapid A/B testing of product changes. Enables data-driven decisions. Tradeoff: testing framework adds complexity; teams might over-rotate on micro-optimizations instead of shipping larger changes.",
+    "category": "self_serve_feature",
+    "effort": 8,
+    "primary_metric": "self_serve_growth",
+    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "secondary_metric": null,
+    "secondary_impact": null,
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [3, 5], "partial": [2, 3] },
+    "outcomes": {
+      "clear_success": "A/B testing framework is production-ready. First 12 experiments generated data on signup flows, onboarding messaging, and pricing page layouts. Seven changes launched based on experiment results. Average of 3-4% incremental improvements per change. The product is now science-backed. Experiments became part of the product development cadence.",
+      "partial_success": "A/B testing framework is live and functional. Running 6 experiments currently. Statistical rigor is solid. Some experiments are showing results, others are inconclusive. Teams are starting to trust the data.",
+      "unexpected_impact": "A/B testing revealed that customer segments respond very differently to the same changes. A pricing page change improved conversion for free users but hurt enterprise trial conversion. Homogeneous approach was wrong; segmented strategies became necessary.",
+      "soft_failure": "A/B testing framework exists but adoption is low. Teams aren't used to waiting for statistical significance. Experiments are running but decision-making still happens faster than data emerges. Culture change is slower than infrastructure change.",
+      "catastrophe": "A/B testing framework had a variant assignment bug that assigned users to the wrong group based on timezone offset. Users in UTC+7 were systematically assigned to experimental variants regardless of randomization logic. 90 days of experiments became invalid. Statistical conclusion was unreliable. Rerun cost the team six weeks of runway."
+    }
+  }
+]

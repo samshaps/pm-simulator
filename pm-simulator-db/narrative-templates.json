@@ -1,0 +1,642 @@
+{
+  "sprint_retro_templates": [
+    {
+      "id": "retro_clean_sweep_01",
+      "archetype": "clean_sweep",
+      "conditions": {
+        "success_count": "all",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "This sprint executed exactly as planned. All {tickets_shipped} committed tickets shipped with the scope we promised, and the team maintained sustainable velocity throughout. There is nothing here that requires remediation or explanation, which is either a sign of excellent planning or a sign that we didn't commit to enough. We'll calibrate scope for next sprint accordingly."
+    },
+    {
+      "id": "retro_clean_sweep_02",
+      "archetype": "clean_sweep",
+      "conditions": {
+        "success_count": "all",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "Every single ticket shipped. {best_ticket_title} was {best_ticket_outcome_summary}, setting a tone for the entire sprint. We hit all story points, maintained code quality gates, and nobody had to sacrifice sleep or standards. This is what sustainable delivery looks like on paper. The question now is whether we're being too conservative with our commitments or if we've finally figured out estimation."
+    },
+    {
+      "id": "retro_mostly_good_01",
+      "archetype": "mostly_good",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "{tickets_shipped} out of {tickets_committed} tickets shipped—a strong showing overall. {best_ticket_title} performed exceptionally with {best_ticket_outcome_summary}. The few items that slipped were reasonable scope adjustments, not execution failures. We're in good position to wrap these up next sprint without any backlog accrual. Team morale is solid, and the codebase is where we want it to be."
+    },
+    {
+      "id": "retro_mostly_good_02",
+      "archetype": "mostly_good",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "Most items made it across the finish line this sprint, with {tickets_shipped} out of {tickets_committed} completing as designed. {best_ticket_title} was our standout—{best_ticket_outcome_summary}. The remaining tickets are well-understood and not blocking anything critical. We achieved our velocity targets without burnout, which management will frame as a sign that we can take on more work next quarter."
+    },
+    {
+      "id": "retro_mostly_good_03",
+      "archetype": "mostly_good",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "Delivery: {tickets_shipped} of {tickets_committed}. The wins outweighed the misses by a comfortable margin, with {best_ticket_title} delivering {best_ticket_outcome_summary}. Quality was maintained throughout. The few stragglers have clear owners and timelines. If this trend continues, we'll be ahead of annual targets by Q3, assuming no major incidents derail us."
+    },
+    {
+      "id": "retro_mixed_bag_01",
+      "archetype": "mixed_bag",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "This sprint was best characterized as inconsistent. {tickets_shipped} of {tickets_committed} shipped, which is respectable but not ideal. {best_ticket_title} was a clear win—{best_ticket_outcome_summary}—but {worst_ticket_title} underperformed because {worst_ticket_outcome_summary}. The gap between our best and worst work suggests either uneven skill distribution or unreliable estimation. We need to examine what made the winners work and replicate that pattern."
+    },
+    {
+      "id": "retro_mixed_bag_02",
+      "archetype": "mixed_bag",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "{tickets_shipped} shipped, {tickets_committed} committed. The results were scattered—some tickets sailed through, others ran into expected technical challenges, and a few exposed gaps in planning. {best_ticket_title} showed what good looks like with {best_ticket_outcome_summary}. Meanwhile, {worst_ticket_title} became {worst_ticket_outcome_summary}. We have clear action items, but execution velocity was mediocre."
+    },
+    {
+      "id": "retro_mixed_bag_03",
+      "archetype": "mixed_bag",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "A tale of two sprints happened simultaneously. {best_ticket_title} landed beautifully—{best_ticket_outcome_summary}—proving our team can execute at a high level when conditions align. But {worst_ticket_title} dragged us down with {worst_ticket_outcome_summary}. Overall delivery: {tickets_shipped} of {tickets_committed}. The inconsistency is the real issue here, not the absolute numbers."
+    },
+    {
+      "id": "retro_mixed_bag_04",
+      "archetype": "mixed_bag",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "{tickets_shipped} of {tickets_committed} arrived at completion. {best_ticket_title} was {best_ticket_outcome_summary}, suggesting our team has the capability we need. {worst_ticket_title}, however, was {worst_ticket_outcome_summary}, which raises questions about either our estimation framework or our dependency management. Neither extreme was acceptable, but both offer diagnostic value. We need to understand why outcomes diverged so sharply."
+    },
+    {
+      "id": "retro_rough_sprint_01",
+      "archetype": "rough_sprint",
+      "conditions": {
+        "success_count": "none",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "This sprint was a reset. {tickets_shipped} of {tickets_committed} made it to done—well below target. {worst_ticket_title} was {worst_ticket_outcome_summary}, and unfortunately it wasn't alone. The team faced cascading blockers, scope wasn't as well understood as we thought it was, and velocity suffered accordingly. We have a decision to make: either our planning process is broken, or our capacity assessment is wrong. Probably both."
+    },
+    {
+      "id": "retro_rough_sprint_02",
+      "archetype": "rough_sprint",
+      "conditions": {
+        "success_count": "none",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "We underdelivered. {tickets_shipped} of {tickets_committed} shipped. Multiple tickets collided with dependencies we didn't anticipate, the codebase revealed hidden complexity, and we ended the sprint with more questions than answers. {worst_ticket_title} became a particularly revealing failure—{worst_ticket_outcome_summary}. This is the kind of sprint where we learn more from what went wrong than what went right. Unfortunately, learning is expensive."
+    },
+    {
+      "id": "retro_rough_sprint_03",
+      "archetype": "rough_sprint",
+      "conditions": {
+        "success_count": "none",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "Delivery numbers: {tickets_shipped} of {tickets_committed}. This sprint exposed gaps in our technical planning, communication breakdowns, and at least one significant estimation miss with {worst_ticket_title}—{worst_ticket_outcome_summary}. The team wasn't demoralized, but they were frustrated. The good news is that nothing catastrophic happened. The bad news is that this is our new baseline until we fix the fundamentals."
+    },
+    {
+      "id": "retro_catastrophe_01",
+      "archetype": "catastrophe_sprint",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": true,
+        "is_overbooked": false
+      },
+      "template": "{tickets_shipped} of {tickets_committed} shipped, but that metric is almost irrelevant given what happened with {worst_ticket_title}. {worst_ticket_outcome_summary}—a failure that cascaded into customer impact and required unplanned remediation hours. {best_ticket_title} being {best_ticket_outcome_summary} is cold comfort. The sprint is defined by the disaster, not the deliverables. We need a comprehensive incident review and corrective action plan before moving forward."
+    },
+    {
+      "id": "retro_catastrophe_02",
+      "archetype": "catastrophe_sprint",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": true,
+        "is_overbooked": false
+      },
+      "template": "We had an incident. {worst_ticket_title} resulted in {worst_ticket_outcome_summary}, which consumed the second half of this sprint and overshadowed everything else. {tickets_shipped} tickets shipped, but the quality of delivery is less important than understanding what broke. The team handled the crisis response professionally. Now we need to ensure it doesn't happen again. This changes sprint planning for the next cycle."
+    },
+    {
+      "id": "retro_catastrophe_03",
+      "archetype": "catastrophe_sprint",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": true,
+        "is_overbooked": false
+      },
+      "template": "This sprint will be remembered for {worst_ticket_title}—{worst_ticket_outcome_summary}. The incident demanded immediate response, rework, and process changes. {tickets_shipped} of {tickets_committed} made it through, but throughput is meaningless when there's a 5-alarm fire. The good news: the team responded quickly. The bad news: we need to prevent this kind of failure. Everything else is secondary."
+    },
+    {
+      "id": "retro_overbooked_success_01",
+      "archetype": "overbooked_success",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": true
+      },
+      "template": "We committed to too much—{overbook_pct}% above our typical capacity—and yet {tickets_shipped} of {tickets_committed} still made it across the line. {best_ticket_title} was {best_ticket_outcome_summary}, setting the tone for scrappy execution everywhere. The team overachieved through a combination of skill and luck. This sprint proves that we can do more, which means executives will immediately ask us to do more next quarter. Sustainable velocity is now our enemy."
+    },
+    {
+      "id": "retro_overbooked_success_02",
+      "archetype": "overbooked_success",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": true
+      },
+      "template": "Despite being {overbook_pct}% overburdened, we shipped {tickets_shipped} of {tickets_committed} items. {best_ticket_title} performed well—{best_ticket_outcome_summary}—and most other work followed suit. This sprint will be cited as evidence that the team has excess capacity. It will not be remembered for the team members who skipped lunch or worked evenings to make it happen. Expect another aggressive commitment next sprint."
+    },
+    {
+      "id": "retro_overbooked_failure_01",
+      "archetype": "overbooked_failure",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": false,
+        "is_overbooked": true
+      },
+      "template": "We overcommitted by {overbook_pct}% and the results were predictable: {tickets_shipped} of {tickets_committed} shipped, quality suffered, and the team ended the sprint exhausted. {worst_ticket_title} was {worst_ticket_outcome_summary}, a failure we can directly trace to insufficient time allocation. {best_ticket_title} managed to be {best_ticket_outcome_summary}, but that's the exception. Next sprint, we need realistic commitments or we'll see burnout, not heroics."
+    },
+    {
+      "id": "retro_overbooked_failure_02",
+      "archetype": "overbooked_failure",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": false,
+        "is_overbooked": true
+      },
+      "template": "The {overbook_pct}% overbooking created exactly the problems we warned about: {tickets_shipped} shipped instead of our target, {worst_ticket_title} became {worst_ticket_outcome_summary}, and team morale took a hit. {best_ticket_title} was {best_ticket_outcome_summary}, but one win doesn't redeem an unsustainable sprint. This is the moment to have a hard conversation about capacity versus demand."
+    },
+    {
+      "id": "retro_overbooked_failure_03",
+      "archetype": "overbooked_failure",
+      "conditions": {
+        "success_count": "none",
+        "has_catastrophe": false,
+        "is_overbooked": true
+      },
+      "template": "We overbooked by {overbook_pct}% and underdelivered significantly: {tickets_shipped} of {tickets_committed} completed. {worst_ticket_title} collapsed under the pressure—{worst_ticket_outcome_summary}. The team did everything they could, but the sprint plan was fundamentally unrealistic. We've now proven that aggressive commitments don't increase output; they just increase failure. Next sprint, we commit to what we can actually deliver."
+    },
+    {
+      "id": "retro_quiet_sprint_01",
+      "archetype": "quiet_sprint",
+      "conditions": {
+        "success_count": "all",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "A quiet sprint is often underestimated. We shipped {tickets_shipped} tickets without drama, incident, or heroics. {best_ticket_title} was {best_ticket_outcome_summary}. Nobody stayed late, the code review process worked as intended, and dependencies were minimal. There's no story here, which is exactly the point. This is the baseline for healthy team operation. When this becomes boring enough, we'll know we've built something sustainable."
+    },
+    {
+      "id": "retro_quiet_sprint_02",
+      "archetype": "quiet_sprint",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "{tickets_shipped} of {tickets_committed} shipped in what might be our most uneventful sprint on record. No incidents, no surprises, minimal scope creep. {best_ticket_title} delivered {best_ticket_outcome_summary} on schedule. Nothing remarkable, which is remarkable in itself. The team maintained their standard pace without friction. Stakeholders will barely notice this sprint happened, which means we did our job correctly."
+    },
+    {
+      "id": "retro_recovery_sprint_01",
+      "archetype": "recovery_sprint",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "This sprint was explicitly designed to recover from last quarter's shortfall. We reduced scope commitment to focus on quality and morale, resulting in {tickets_shipped} of {tickets_committed} shipped—down in volume but up in reliability. {best_ticket_title} was {best_ticket_outcome_summary}. The team's confidence is rebuilding. We're not back to normal yet, but we're moving in the right direction."
+    },
+    {
+      "id": "retro_recovery_sprint_02",
+      "archetype": "recovery_sprint",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "Intentional reset sprint. After the previous quarter's difficulties, we deliberately scaled back to {tickets_shipped} items to rebuild execution credibility and team morale. {best_ticket_title} was {best_ticket_outcome_summary}, setting the tone for reliability. Quality gates are tighter. Dependencies are managed. We're climbing back to sustainable velocity. Expect gradual commitment increases as confidence returns."
+    },
+    {
+      "id": "retro_recovery_sprint_03",
+      "archetype": "recovery_sprint",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false,
+        "is_overbooked": false
+      },
+      "template": "{tickets_shipped} of {tickets_committed} shipped as planned—a small number intentionally chosen to rebuild team confidence after recent setbacks. {best_ticket_title} delivering {best_ticket_outcome_summary} proved that we can execute at high quality again. The previous quarter is behind us. This sprint is the foundation for a return to normal operations."
+    },
+    {
+      "metric_warnings": {
+        "tech_debt_rising": "Technical debt metrics are trending upward, suggesting we're accumulating shortcuts faster than we're paying them down.",
+        "tech_debt_critical": "Technical debt has reached critical levels. We cannot sustain feature velocity without addressing core infrastructure issues.",
+        "team_morale_dropping": "Team sentiment surveys show declining morale, likely driven by sprint intensity and scope misalignment.",
+        "team_morale_crisis": "Team morale is in crisis territory. Retention risk is real. We need immediate action on workload and workplace culture.",
+        "self_serve_stagnant": "Self-serve metrics are flat or declining, which will pressure the sales team and long-term GTM strategy.",
+        "enterprise_stagnant": "Enterprise adoption has plateaued, reducing long-term revenue predictability and growth runway.",
+        "sales_unhappy": "Sales leadership has expressed frustration with feature delivery and competitive gaps.",
+        "sales_furious": "Sales is escalating concerns about missing feature commitments and competitive positioning. This is a priority.",
+        "ceo_cooling": "The CEO's enthusiasm for the product direction appears to be cooling based on recent communications.",
+        "nps_silent_decline": "NPS hasn't moved, but the underlying trend shows subtle erosion in customer satisfaction."
+      }
+    }
+  ],
+  "quarterly_review_narratives": [
+    {
+      "id": "qr_strong_01",
+      "rating": "strong",
+      "raw_score_range": [75, 100],
+      "template": "This quarter demonstrated strong execution across most fronts. The team shipped {tickets_shipped} out of {tickets_committed} planned items, with {best_ticket_title} setting a high bar—{best_ticket_outcome_summary}. Work quality remained at standard, dependencies were managed effectively, and the team maintained their pace without deterioration. There are clear areas for optimization in future cycles, but overall this is the kind of quarter that meets leadership expectations. Expect increased stakeholder confidence heading into next quarter."
+    },
+    {
+      "id": "qr_strong_02",
+      "rating": "strong",
+      "raw_score_range": [75, 100],
+      "template": "{tickets_shipped} of {tickets_committed} shipped. More importantly, {best_ticket_title} succeeded at {best_ticket_outcome_summary}, proving that ambitious goals can be achieved through disciplined execution. The team navigated around {worst_ticket_title}, which was {worst_ticket_outcome_summary}, without letting it derail overall momentum. This quarter established a track record that will serve the team well in negotiating next quarter's scope. Strong quarters like this one become the baseline people expect—be prepared for that shift in perception."
+    },
+    {
+      "id": "qr_strong_03",
+      "rating": "strong",
+      "raw_score_range": [75, 100],
+      "template": "Delivery was strong this quarter: {tickets_shipped} of {tickets_committed}} completed, {best_ticket_title} delivered {best_ticket_outcome_summary}, and customer impact was measurable. The team executed a complex roadmap without major incidents. Quality gates were maintained. Sprint-to-sprint consistency improved. This quarter has established credibility with executives, which means they'll immediately ask if you can repeat this while taking on additional scope next quarter."
+    },
+    {
+      "id": "qr_strong_04",
+      "rating": "strong",
+      "raw_score_range": [75, 100],
+      "template": "This was a strong quarter by most measures. Delivery outpaced previous cycles, {best_ticket_title} was {best_ticket_outcome_summary}, and the team demonstrated the capability to handle complexity. Even the missteps—such as {worst_ticket_title} being {worst_ticket_outcome_summary}—were managed responsibly. Stakeholder satisfaction is high. The bar for future quarters has now been raised. Plan accordingly."
+    },
+    {
+      "id": "qr_solid_01",
+      "rating": "solid",
+      "raw_score_range": [55, 74],
+      "template": "A solid quarter with respectable execution. {tickets_shipped} of {tickets_committed} shipped, including {best_ticket_title}, which was {best_ticket_outcome_summary}. The team handled challenges professionally and maintained reasonable velocity. Work quality was acceptable, though not exceptional. {worst_ticket_title} was {worst_ticket_outcome_summary}, a miss that required adjustment but wasn't disastrous. This is professional, competent execution. Leadership will be satisfied, though not surprised."
+    },
+    {
+      "id": "qr_solid_02",
+      "rating": "solid",
+      "raw_score_range": [55, 74],
+      "template": "{tickets_shipped} of {tickets_committed} shipped this quarter—good but not exceptional delivery. {best_ticket_title} being {best_ticket_outcome_summary} kept momentum going. The team met expectations without particularly exceeding them. {worst_ticket_title} became {worst_ticket_outcome_summary}, a setback that was handled but could have been prevented. Overall: a credible quarter that positions the team well for continued work. Not memorable, but that's not necessarily a bad thing."
+    },
+    {
+      "id": "qr_solid_03",
+      "rating": "solid",
+      "raw_score_range": [55, 74],
+      "template": "Solid quarter. {tickets_shipped} out of {tickets_committed}} completed. {best_ticket_title} performed well—{best_ticket_outcome_summary}. The work was reliable, dependencies were managed, and the team demonstrated consistent capability. There were some bumps, including {worst_ticket_title} which was {worst_ticket_outcome_summary}, but nothing that shook confidence. This quarter proves that the team can execute predictably, even if they're not consistently surprising everyone with heroics."
+    },
+    {
+      "id": "qr_solid_04",
+      "rating": "solid",
+      "raw_score_range": [55, 74],
+      "template": "A competent quarter with {tickets_shipped} of {tickets_committed}} items shipped. {best_ticket_title} was {best_ticket_outcome_summary}, meeting its promise. Work quality remained within acceptable parameters. The team managed scope changes without drama. {worst_ticket_title}, while {worst_ticket_outcome_summary}, didn't derail other progress. This is what professional execution looks like: predictable, acceptable, and unlikely to surprise anyone."
+    },
+    {
+      "id": "qr_mixed_01",
+      "rating": "mixed",
+      "raw_score_range": [35, 54],
+      "template": "Mixed results this quarter. {tickets_shipped} of {tickets_committed}} shipped—a below-target delivery rate that reflects the inconsistency in execution. {best_ticket_title} was {best_ticket_outcome_summary}}, proving the team can succeed under the right conditions. But {worst_ticket_title} was {{worst_ticket_outcome_summary}}, a significant miss that consumed resources and damaged confidence. The quarter felt like two different teams. We need to understand what made the successes work and replicate that systematically."
+    },
+    {
+      "id": "qr_mixed_02",
+      "rating": "mixed",
+      "raw_score_range": [35, 54],
+      "template": "This quarter demonstrated uneven performance. {tickets_shipped} shipped out of {tickets_committed}} committed—mixed results that reflect both capability and execution challenges. {{best_ticket_title} was {{best_ticket_outcome_summary}}, which is encouraging. But {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, a miss that raises questions about planning or capacity. Leadership will expect clarification on what went wrong and how it won't happen again."
+    },
+    {
+      "id": "qr_mixed_03",
+      "rating": "mixed",
+      "raw_score_range": [35, 54],
+      "template": "Mixed quarter. Delivery numbers tell part of the story: {tickets_shipped} of {tickets_committed}} shipped. But the composition is revealing. {best_ticket_title} being {best_ticket_outcome_summary}} shows strong capability in some areas. Meanwhile, {worst_ticket_title}} was {worst_ticket_outcome_summary}}, a failure that significantly impacted the quarter narrative. The gaps between best and worst performance suggest either uneven team capability or inconsistent planning discipline. This needs to be solved."
+    },
+    {
+      "id": "qr_mixed_04",
+      "rating": "mixed",
+      "raw_score_range": [35, 54],
+      "template": "Inconsistent quarter. {{tickets_shipped}} of {{tickets_committed}} shipped, but the underlying story is more important than the headline number. {{best_ticket_title}} was {{best_ticket_outcome_summary}}, a genuine success. {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, a genuine failure. The team has both the capability to win and the risk of losing. Future success depends on understanding what separates these two categories and making the winning conditions consistent."
+    },
+    {
+      "id": "qr_below_01",
+      "rating": "below_expectations",
+      "raw_score_range": [0, 34],
+      "template": "This quarter fell short of expectations. {{tickets_shipped}} of {{tickets_committed}} shipped—a delivery rate well below target. {{best_ticket_title}} being {{best_ticket_outcome_summary}} is a positive note, but {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, a failure that set the tone for the entire quarter. The team faced real challenges, but the results suggest planning was either overambitious or execution was below capability. Leadership will expect a detailed action plan for course correction in the next cycle."
+    },
+    {
+      "id": "qr_below_02",
+      "rating": "below_expectations",
+      "raw_score_range": [0, 34],
+      "template": "This quarter underdelivered significantly. {{tickets_shipped}} of {{tickets_committed}} shipped—well below what was committed. {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, and it wasn't alone; multiple items failed to complete. {{best_ticket_title}} being {{best_ticket_outcome_summary}} offers limited consolation. The quarter raised questions about capacity assessment, planning discipline, or both. Immediate corrective action is expected before the next cycle."
+    },
+    {
+      "id": "qr_below_03",
+      "rating": "below_expectations",
+      "raw_score_range": [0, 34],
+      "template": "Below-expectation quarter. {{tickets_shipped}} of {{tickets_committed}} completed—a miss that cannot be reframed as a win. {{worst_ticket_title}} becoming {{worst_ticket_outcome_summary}} was emblematic of the quarter's challenges. {{best_ticket_title}} being {{best_ticket_outcome_summary}} doesn't change the overall narrative. Leadership is expecting an explanation and a recovery plan. This quarter will be referenced as a baseline for how not to execute."
+    }
+  ],
+  "product_pulse_narratives": [
+    {
+      "id": "pulse_all_positive",
+      "combination": {
+        "churn": "positive",
+        "support_load": "positive",
+        "customer_sentiment": "positive"
+      },
+      "narrative": "The product pulse is strong across all vectors. Churn is trending down, indicating customer stickiness and satisfaction. Support volume remains manageable, suggesting the product is stable and self-service options are working. Customer sentiment in outreach and NPS tracking is uniformly positive. This is the ideal state—healthy product health across all metrics. The question now is how to maintain this while introducing change without disrupting what's working."
+    },
+    {
+      "id": "pulse_all_mixed",
+      "combination": {
+        "churn": "mixed",
+        "support_load": "mixed",
+        "customer_sentiment": "mixed"
+      },
+      "narrative": "The product pulse is neutral across all dimensions. Churn is neither improving nor declining—customers are stable but not enthusiastic about their choice. Support load is typical for the install base. Customer sentiment is muted; customers are content but not advocates. This is the norm for mature products. The challenge is figuring out whether to optimize the current state or invest in innovation to shift sentiment upward."
+    },
+    {
+      "id": "pulse_all_concerning",
+      "combination": {
+        "churn": "concerning",
+        "support_load": "concerning",
+        "customer_sentiment": "concerning"
+      },
+      "narrative": "All product health metrics are concerning simultaneously. Churn is elevated, indicating customers are evaluating alternatives. Support load is spiking, suggesting either product instability or poor self-serve usability. Customer sentiment is negative across all channels. This is a crisis scenario that demands immediate investigation and remedy. Something fundamental has broken in either the product experience or the market perception of it. Leadership will expect urgent corrective action."
+    },
+    {
+      "id": "pulse_churn_pos_support_mid_sentiment_pos",
+      "combination": {
+        "churn": "positive",
+        "support_load": "mixed",
+        "customer_sentiment": "positive"
+      },
+      "narrative": "Churn is down and customer sentiment is positive, which is the core health signal we care about. Support load is neither spiking nor declining, hovering at normal levels. This suggests the product is resonating with customers, though there may be usability gaps that are driving moderate support volume. The combination is healthy. Focus on maintaining customer happiness while looking for opportunities to reduce support friction."
+    },
+    {
+      "id": "pulse_churn_mid_support_concern_sentiment_mid",
+      "combination": {
+        "churn": "mixed",
+        "support_load": "concerning",
+        "customer_sentiment": "mixed"
+      },
+      "narrative": "Support load is elevated while churn remains stable and sentiment is neutral. This suggests customers are having friction with the product but aren't yet leaving because switching costs are high or alternatives aren't compelling. Support volume is a leading indicator of churn—if we don't address the underlying issues causing support tickets, churn will likely follow. This is an early warning that needs response."
+    },
+    {
+      "id": "pulse_churn_pos_support_pos_sentiment_mid",
+      "combination": {
+        "churn": "positive",
+        "support_load": "positive",
+        "customer_sentiment": "mixed"
+      },
+      "narrative": "Churn is down and support efficiency is good, both positive signs. Customer sentiment, however, is muted—customers are staying but not excited. This suggests the product is stable and intuitive enough that people don't need help, but it's not driving delight or advocacy. The foundation is solid, which gives room to focus on differentiation or delightful experiences that move sentiment from neutral to positive."
+    },
+    {
+      "id": "pulse_churn_concern_support_mid_sentiment_mid",
+      "combination": {
+        "churn": "concerning",
+        "support_load": "mixed",
+        "customer_sentiment": "mixed"
+      },
+      "narrative": "Churn is elevated while support load and sentiment remain neutral. This is a danger sign suggesting that customers are evaluating exits not because of immediate friction or poor sentiment, but because they're not getting sufficient value or perceived competitive advantage. Support load and sentiment being stable means the product is adequate, but apparently not good enough to earn loyalty. Competitive pressure is likely involved."
+    },
+    {
+      "id": "pulse_churn_mid_support_mid_sentiment_pos",
+      "combination": {
+        "churn": "mixed",
+        "support_load": "mixed",
+        "customer_sentiment": "positive"
+      },
+      "narrative": "Customer sentiment is positive despite churn being stable and support load being normal. This is the best combination for expansion: happy customers who are stable and reasonably self-sufficient. There's room to improve either retention or support efficiency, but the foundation of customer satisfaction is solid. Use this goodwill to invest in features that deepen stickiness or earn upsell opportunities."
+    },
+    {
+      "id": "pulse_churn_mid_support_pos_sentiment_mid",
+      "combination": {
+        "churn": "mixed",
+        "support_load": "positive",
+        "customer_sentiment": "mixed"
+      },
+      "narrative": "Support efficiency is excellent while churn remains stable and sentiment is neutral. This means the product is intuitive and self-service is working well. Customers aren't leaving, but they're also not particularly enthusiastic. The low support burden gives team capacity to focus on sentiment-shifting initiatives—features or experiences that move neutral customers toward advocacy."
+    },
+    {
+      "id": "pulse_churn_concern_support_concern_sentiment_mid",
+      "combination": {
+        "churn": "concerning",
+        "support_load": "concerning",
+        "customer_sentiment": "mixed"
+      },
+      "narrative": "Both churn and support load are elevated while sentiment remains neutral. This is a double-problem: customers are leaving AND consuming significant support resources. The combination suggests product issues are driving support volume, but customers are also questioning whether the product is worth the friction. There's instability in the customer base. Immediate focus on root-cause investigation and remediation is required."
+    },
+    {
+      "id": "pulse_churn_pos_support_mid_sentiment_concern",
+      "combination": {
+        "churn": "positive",
+        "support_load": "mixed",
+        "customer_sentiment": "concerning"
+      },
+      "narrative": "Churn is improving despite negative sentiment, which is a confusing signal. Customers are staying despite saying they're unhappy. This could indicate that switching costs are high, competitive alternatives are weak, or sentiment data is lagging behind behavior. Support load being normal suggests the product works, even if it doesn't delight. Monitor sentiment closely—negative sentiment can be a leading indicator of future churn."
+    },
+    {
+      "id": "pulse_churn_mid_support_concern_sentiment_pos",
+      "combination": {
+        "churn": "mixed",
+        "support_load": "concerning",
+        "customer_sentiment": "positive"
+      },
+      "narrative": "Support load is elevated while customer sentiment remains positive and churn is stable. Customers are happy but need help using the product. This suggests strong demand and positive perception, but usability or self-service gaps are creating support burden. The goodwill is there—investing in better onboarding or clearer documentation could dramatically improve support efficiency while maintaining customer happiness."
+    },
+    {
+      "id": "pulse_churn_concern_support_mid_sentiment_pos",
+      "combination": {
+        "churn": "concerning",
+        "support_load": "mixed",
+        "customer_sentiment": "positive"
+      },
+      "narrative": "Elevated churn despite positive sentiment is a notable contradiction. Customers seem satisfied when surveyed, but they're still leaving. This could indicate that happiness is high but competitive alternatives are more compelling, or that sentiment data is biased toward retained customers. Support load being normal suggests the product itself isn't broken. The problem is retention, not product quality."
+    },
+    {
+      "id": "pulse_churn_pos_support_concern_sentiment_concern",
+      "combination": {
+        "churn": "positive",
+        "support_load": "concerning",
+        "customer_sentiment": "concerning"
+      },
+      "narrative": "Churn is improving despite elevated support load and negative sentiment—an unusual combination that suggests something has shifted positively at a market or product level despite ongoing friction. Customers are choosing to stay despite being unhappy and needing help. This window of opportunity may be temporary. Urgent focus on resolving support drivers and addressing sentiment issues is warranted before the positive churn trend reverses."
+    }
+  ],
+  "year_end_review_narratives": [
+    {
+      "id": "yr_exceeds_01",
+      "rating": "exceeds_expectations",
+      "final_score_range": [85, 100],
+      "template": "{player_role} demonstrated excellence this year. Across four quarters, {player_role} navigated complexity, adapted to changing priorities, and consistently delivered against committed objectives. {best_ticket_title} was {best_ticket_outcome_summary}—a standout that exemplified the quality of work expected at this level. {player_role} also managed {hardest_quarter_or_event} with poise and strategic thinking. The alignment between execution and CEO focus on {ceo_focus_readable} was direct and measurable. This year has established {player_role} as a trusted operator with expanding influence. Expectations for next year will necessarily be higher."
+    },
+    {
+      "id": "yr_exceeds_02",
+      "rating": "exceeds_expectations",
+      "final_score_range": [85, 100],
+      "template": "Exceeds expectations. {player_role} delivered {tickets_shipped} major initiatives across the year against {tickets_committed} planned, while managing the inherent tradeoffs of product strategy. The combination of output and quality suggests {player_role} understands both execution discipline and product thinking. {strongest_metric} showed clear improvement, validating {player_role}'s strategic direction. Even through {hardest_quarter_or_event}, {player_role} maintained composure and communicated transparently. This is the kind of consistent, high-quality delivery that builds organizational trust. The bar for next year has been reset accordingly."
+    },
+    {
+      "id": "yr_exceeds_03",
+      "rating": "exceeds_expectations",
+      "final_score_range": [85, 100],
+      "template": "{player_role} exceeded expectations this year by demonstrating both strategic vision and tactical execution. Key initiatives shipped successfully, {strongest_metric} improved measurably, and the team maintained momentum despite {hardest_quarter_or_event}. {player_role}'s work in {ceo_focus_readable} directly supported business priorities. {best_ticket_title} was particularly exemplary—{best_ticket_outcome_summary}. {player_role} has positioned themselves as a leader worth investing in. Be prepared for increased scope and higher accountability in the coming year."
+    },
+    {
+      "id": "yr_meets_strong_01",
+      "rating": "meets_strong",
+      "final_score_range": [70, 84],
+      "template": "{player_role} contributed meaningfully to this year's product strategy. Delivery was solid across quarters, with {best_ticket_title} performing well—{best_ticket_outcome_summary}. {player_role} managed to keep {strongest_metric} on track while balancing competing demands. {hardest_quarter_or_event} was handled professionally. {player_role}'s focus on {ceo_focus_readable} aligned with business needs, though opportunities existed to push harder on innovation. Overall, {player_role} has proven to be a capable operator who understands the business. This is a productive year that the organization benefited from."
+    },
+    {
+      "id": "yr_meets_strong_02",
+      "rating": "meets_strong",
+      "final_score_range": [70, 84],
+      "template": "{player_role} had a strong year by most measures. {tickets_shipped} of {tickets_committed}} major initiatives reached completion, which is respectable execution. {strongest_metric}} improved, indicating strategic direction is sound. {best_ticket_title}} being {{best_ticket_outcome_summary}} was particularly valuable. The navigation of {{hardest_quarter_or_event}} showed judgment and composure. {{player_role}} has built credibility within the organization. The work was professional and aligned with business needs. Nothing remarkable, but nothing concerning either."
+    },
+    {
+      "id": "yr_meets_strong_03",
+      "rating": "meets_strong",
+      "final_score_range": [70, 84],
+      "template": "Good year. {{player_role}} delivered consistent execution against the roadmap. Quarterly reviews showed {{player_role}} as a reliable operator who understands tradeoffs and makes defensible decisions. {{best_ticket_title}} was {{best_ticket_outcome_summary}}, a success that validated the strategic direction. {{strongest_metric}} shows progress. {{hardest_quarter_or_event}} was managed responsibly. {{player_role}} has earned the trust of leadership and the respect of the team. This is the kind of year that builds reputation capital for future opportunities."
+    },
+    {
+      "id": "yr_meets_expectations_01",
+      "rating": "meets_expectations",
+      "final_score_range": [45, 69],
+      "template": "{player_role} met expectations this year. {{tickets_shipped}} of {{tickets_committed}} planned work shipped, which was the goal. {{player_role}} participated in quarterly planning, attended meetings, and delivered on assigned work. {{best_ticket_title}} was {{best_ticket_outcome_summary}}, demonstrating competence. {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, demonstrating that not every decision lands perfectly. {{hardest_quarter_or_event}} was navigated adequately. {{player_role}} fulfilled the role as defined and required. This is what acceptable performance looks like: {{player_role}} did the job they were hired to do."
+    },
+    {
+      "id": "yr_meets_expectations_02",
+      "rating": "meets_expectations",
+      "final_score_range": [45, 69],
+      "template": "{{player_role}} met baseline expectations this year. Work was completed as assigned. {{tickets_shipped}} of {{tickets_committed}} shipped—the target was hit. {{best_ticket_title}} was {{best_ticket_outcome_summary}}, which is what we expected. {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, which occasionally happens. {{player_role}} managed {{hardest_quarter_or_event}} without incident. {{player_role}} showed up, did the job, and delivered acceptable results. {{player_role}} performed the role competently. The organization got what it paid for."
+    },
+    {
+      "id": "yr_meets_expectations_03",
+      "rating": "meets_expectations",
+      "final_score_range": [45, 69],
+      "template": "Meets expectations. {{player_role}} executed the assigned roadmap and delivered {{tickets_shipped}} of {{tickets_committed}} planned items across the year. {{player_role}} made reasonable decisions, showed up consistently, and maintained professional standards. {{best_ticket_title}} being {{best_ticket_outcome_summary}} is what we expected from someone in this role. {{player_role}} navigated {{hardest_quarter_or_event}} professionally. {{player_role}} did their job. This is the baseline of acceptable performance—reliable, consistent, and without notable distinction. {{player_role}} met what the role required."
+    },
+    {
+      "id": "yr_needs_improvement_01",
+      "rating": "needs_improvement",
+      "final_score_range": [25, 44],
+      "template": "{player_role} demonstrated areas for development this year. {{tickets_shipped}} of {{tickets_committed}} shipped—below target—suggesting execution challenges or planning misalignment. {{best_ticket_title}} was {{best_ticket_outcome_summary}}, showing capability is present. But {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, a failure pattern that repeated across quarters. {{player_role}}'s handling of {{hardest_quarter_or_event}} raised concerns about resilience and decision-making. {{player_role}} has potential but needs to demonstrate improvement in consistency, planning discipline, and execution rigor in the coming year. This is a critical performance conversation."
+    },
+    {
+      "id": "yr_needs_improvement_02",
+      "rating": "needs_improvement",
+      "final_score_range": [25, 44],
+      "template": "{{player_role}} demonstrated capability but fell short of consistent execution this year. {{tickets_shipped}} of {{tickets_committed}} represents underdelivery that cannot be explained by scope alone. {{best_ticket_title}} being {{best_ticket_outcome_summary}} suggests {{player_role}} can succeed under the right conditions, but those conditions weren't replicated consistently. {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, emblematic of planning gaps. {{hardest_quarter_or_event}} exposed some judgment questions. {{player_role}} has the foundational skills for this role but needs to demonstrate improved execution discipline and planning rigor in the next cycle."
+    },
+    {
+      "id": "yr_needs_improvement_03",
+      "rating": "needs_improvement",
+      "final_score_range": [25, 44],
+      "template": "{{player_role}} needs to demonstrate improvement in key areas. Execution fell short targets with {{tickets_shipped}} of {{tickets_committed}} shipped. {{player_role}}'s engagement with quarterly planning and CEO priorities around {{ceo_focus_readable}} was inconsistent. {{best_ticket_title}} being {{best_ticket_outcome_summary}} shows capability, but {{worst_ticket_title}} being {{worst_ticket_outcome_summary}} was a significant miss. {{player_role}}'s handling of {{hardest_quarter_or_event}} raised questions about judgment and resilience. {{player_role}} has technical skills but needs to improve strategic thinking, execution consistency, and ability to navigate pressure. Improvement is expected in the next evaluation period."
+    },
+    {
+      "id": "yr_does_not_meet_01",
+      "rating": "does_not_meet",
+      "final_score_range": [0, 24],
+      "template": "{{player_role}}'s performance this year fell significantly below expectations. {{tickets_shipped}} of {{tickets_committed}} shipped—a delivery rate well below acceptable. {{worst_ticket_title}} was {{worst_ticket_outcome_summary}}, and similar patterns repeated across the year. {{best_ticket_title}} being {{best_ticket_outcome_summary}} demonstrates that capability exists, but it was not reliably demonstrated. {{player_role}}'s navigation of {{hardest_quarter_or_event}} raised serious concerns about judgment and resilience. {{player_role}}'s contribution to {{ceo_focus_readable}} was minimal. We appreciate {{player_role}}'s contributions and wish them well in future endeavors. A severance package and transition support are available."
+    },
+    {
+      "id": "yr_does_not_meet_02",
+      "rating": "does_not_meet",
+      "final_score_range": [0, 24],
+      "template": "{{player_role}} did not meet expectations this year. Execution was significantly below target with only {{tickets_shipped}} of {{tickets_committed}} shipped. {{worst_ticket_title}} becoming {{worst_ticket_outcome_summary}} was particularly concerning and indicative of broader planning and execution gaps. {{player_role}}'s strategic alignment with {{ceo_focus_readable}} was unclear. {{hardest_quarter_or_event}} was not handled effectively, raising questions about resilience. {{best_ticket_title}} being {{best_ticket_outcome_summary}} offers limited evidence of consistent capability. {{player_role}}'s trajectory does not align with organizational needs. We appreciate {{player_role}}'s contributions and wish them well in finding a role that is a better fit."
+    },
+    {
+      "id": "yr_does_not_meet_03",
+      "rating": "does_not_meet",
+      "final_score_range": [0, 24],
+      "template": "{{player_role}} does not meet expectations for this role. The year was marked by inconsistent delivery ({{tickets_shipped}} of {{tickets_committed}} shipped), unclear strategic vision, and concerning judgment during {{hardest_quarter_or_event}}. {{worst_ticket_title}} being {{worst_ticket_outcome_summary}} was emblematic of execution and planning challenges that persisted throughout the year. {{player_role}}'s contribution to {{ceo_focus_readable}} priorities was minimal. While we value {{player_role}}'s effort, the overall trajectory is not aligned with organizational needs. We appreciate {{player_role}}'s contributions and wish them well in future endeavors. Transition support is available."
+    }
+  ],
+  "quarter_opening_texts": [
+    {
+      "id": "q1_open_01",
+      "quarter": 1,
+      "template": "Welcome to {{next_quarter}}. The year is fresh and your OKRs are ambitious. Nobody has formed strong opinions about your judgment yet, which is a temporary advantage. The board is energized, executives are optimistic, and unrealistic expectations are abundant. You have a few weeks before Q1 results begin to expose whether your planning was sound or merely hopeful. The team is ready. Your job is to be clear about scope, realistic about dependencies, and strategic about how you allocate what will inevitably become a constraint: attention."
+    },
+    {
+      "id": "q1_open_02",
+      "quarter": 1,
+      "template": "{{next_quarter}} is here. Fresh start, new priorities, and no historical context to constrain your decisions yet. The team is energized and executives are paying attention. This quarter is about setting a foundation—not just for delivery, but for credibility. Get some wins on the board early. Over-communicate about trade-offs. Under-promise and over-deliver if you can. By the end of {{next_quarter}}, people will have formed strong opinions about your competence. Make those opinions favorable."
+    },
+    {
+      "id": "q1_open_03",
+      "quarter": 1,
+      "template": "{{next_quarter}} begins. The year is yours to shape. Everyone is optimistic, expectations are unformed, and you have room to set the narrative. Your first quarter output will establish the baseline for what people expect from you going forward. Choose your commitments carefully. Communicate clearly. Deliver reliably. If you succeed here, you'll have built capital for future quarters when conditions are less favorable and constraints are tighter."
+    },
+    {
+      "id": "q2_open_01",
+      "quarter": 2,
+      "template": "{{next_quarter}} arrives with the weight of {{prev_quarter}} results behind it. {{q1_review_reference}}. The honeymoon, if there was one, is over. Executives have data points now. Expectations are partially formed. The sales team has opinions. This quarter is about either building on {{prev_quarter}}'s momentum or reversing course if {{prev_quarter}} was a disappointment. Either way, you're being measured against a baseline now. There's no more clean slate."
+    },
+    {
+      "id": "q2_open_02",
+      "quarter": 2,
+      "template": "{{next_quarter}} means there are now two quarters of data in the organization's collective memory. {{q1_review_reference}}. That context shapes expectations. People have formed opinions. The team knows whether you deliver. Leadership knows whether they can trust your estimation. This quarter is about pattern-setting: are you consistent, or are {{prev_quarter}}'s results a anomaly? Deliver again. The narrative compounds quarterly."
+    },
+    {
+      "id": "q2_open_03",
+      "quarter": 2,
+      "template": "Into {{next_quarter}}. {{q1_review_reference}}, and that precedent matters. People remember whether you shipped last quarter. They remember if you were late. You're no longer a new PM navigating early challenges; you're an operator with a track record. Choose your commitments understanding that you're being evaluated on consistency and predictability, not just raw output. The pressure increases because the data set is larger."
+    },
+    {
+      "id": "q3_open_01",
+      "quarter": 3,
+      "template": "{{next_quarter}} arrives with half the team on rotation and nobody focused like they were in Q1. The board wants a strong second half. You want momentum heading into year-end. Reality is that {{next_quarter}} is where plans collide with vacation schedules, summer priorities, and organizational focus drift. Be strategic about what you commit to. Protect key initiatives. The team will deliver better if you're realistic about {{next_quarter}}'s constraints. Build breathing room; you'll need it."
+    },
+    {
+      "id": "q3_open_02",
+      "quarter": 3,
+      "template": "{{next_quarter}} is here. You're on the downslope toward year-end, and the board is making noise about strong finishes. Two quarters are behind you; two more have real data. The team is tired. Focus has frayed. Your job is to identify what's actually critical and create focus around that, not try to boil the ocean. {{next_quarter}} success isn't about ambition; it's about discipline and identifying what moves the needle."
+    },
+    {
+      "id": "q3_open_03",
+      "quarter": 3,
+      "template": "{{next_quarter}} momentum becomes important. You're halfway through the year. Leadership is forming opinions about whether the year is trending toward success or correction. {{next_quarter}} is when you prove you can execute in non-ideal conditions—limited team bandwidth, summer distraction, competing priorities. Be selective with your commitments. Be clear with stakeholders. Build {{next_quarter}} on sustainable foundations, not heroics."
+    },
+    {
+      "id": "q4_open_01",
+      "quarter": 4,
+      "template": "{{next_quarter}} is here. This is it—the final quarter, the one that defines the year. Year-end reviews loom. Board presentations happen here. {{hardest_quarter_or_event}} is behind you, and you now have a full picture of how you navigate pressure. {{next_quarter}} is about finishing strong. You don't need to be perfect; you need to be reliable and strategic. Choose what matters, deliver it, and let the year speak for itself."
+    },
+    {
+      "id": "q4_open_02",
+      "quarter": 4,
+      "template": "{{next_quarter}} is the final quarter. This is where years are made or broken. Three quarters of data exist. People know whether you're a consistent operator or a one-hit wonder. The CEO is watching. The board is watching. Year-end reviews are being written. {{next_quarter}} is not the time to experiment; it's the time to deliver against a clear narrative. Choose initiatives that matter and execute them with discipline."
+    },
+    {
+      "id": "q4_open_03",
+      "quarter": 4,
+      "template": "{{next_quarter}}. The year ends here. Every decision in {{next_quarter}} will be evaluated within the context of the full year. You have a body of work behind you. {{next_quarter}} is about either cementing it as a strong year or revealing that the trajectory was overestimated. The team is tired. The board is impatient. Stakeholders are eager for next year's strategy. Your job is to navigate {{next_quarter}} with clarity and deliver what you promised. Let the outcomes speak."
+    }
+  ]
+}

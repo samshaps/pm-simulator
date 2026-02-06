@@ -1,0 +1,442 @@
+[
+  {
+    "id": "ent_001",
+    "title": "SSO Integration",
+    "description": "Implement SAML/OIDC-based single sign-on for enterprise customers. Sales has three deals pending this feature. Engineering estimates 6 weeks of work, during which the platform team cannot tackle any self-serve improvements.",
+    "category": "enterprise_feature",
+    "effort": 6,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "self_serve_growth",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "SSO is live. Three deals convert to contracts within 30 days. IT departments call it 'acceptable.' The product team resumes self-serve work, only three weeks behind on roadmap.",
+      "partial_success": "SSO works for basic OIDC flows but SAML attribute mapping requires manual configuration per client. Sales is satisfied enough to stop complaining in steering meetings. Self-serve roadmap remains frozen.",
+      "unexpected_impact": "SSO implementation surfaces a critical issue with how sessions are managed across environments. The incident forces a refactor of the entire auth layer. Nobody mentions SSO at the next board meeting.",
+      "soft_failure": "SSO is technically functional but the UX for administrators is confusing enough that each enterprise customer requires a 2-hour setup call. Support now runs 8 of these per month. The feature is considered 'mature.'",
+      "catastrophe": "A configuration error in the SAML metadata handler causes all SSO users from one customer to be provisioned as administrators. Audit logs show 47 users accessed data they shouldn't have. Legal is now involved. The incident channel has 91 participants."
+    }
+  },
+  {
+    "id": "ent_002",
+    "title": "SCIM User Provisioning",
+    "description": "Implement SCIM 2.0 endpoint for automated user provisioning and deprovisioning. Required for three prospects already in late sales stages. The feature requires careful permission modeling and audit logging, which pulls engineering from infrastructure work.",
+    "category": "enterprise_feature",
+    "effort": 7,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "SCIM endpoint launches. All three pending enterprise deals close in month one. Provisioning automation eliminates manual admin overhead for customers. The engineering team describes this as 'a normal amount of technical debt for a valuable feature.'",
+      "partial_success": "SCIM works but requires customers to map their custom directory attributes manually. Two of three deals move forward; the third delays implementation. Sales considers this acceptable but not elegant.",
+      "unexpected_impact": "The SCIM implementation surfaces inconsistencies in how the platform models roles versus permissions. Rather than fix the model, the team implements workarounds in the SCIM layer. The architecture document nobody reads grows by 8 pages.",
+      "soft_failure": "SCIM is live. One customer deploys it successfully. The other two find the documentation insufficient and request a custom integration instead. The feature is technically complete but commercially underwhelming.",
+      "catastrophe": "A race condition in the SCIM deprovisioning logic causes a batch of 300 users to retain access after being marked inactive. The customers discover this during a security audit. The incident involves forensic analysis of seven months of audit logs."
+    }
+  },
+  {
+    "id": "ent_003",
+    "title": "Role-Based Access Control",
+    "description": "Design and implement granular role-based permissions (admin, viewer, editor, auditor, plus custom roles). Enterprise deals uniformly demand this. Implementation requires database schema changes that conflict with planned performance optimizations.",
+    "category": "enterprise_feature",
+    "effort": 7,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "RBAC is live with five predefined roles plus custom role builder. All enterprise customers migrate existing team structures into the system seamlessly. Sales closes two new enterprise contracts citing the feature. Database queries execute 12% slower than before, but not noticeably.",
+      "partial_success": "RBAC supports predefined roles but custom role creation requires engineering intervention. Customers adapt their structures to fit the predefined roles. Sales is mollified but not thrilled.",
+      "unexpected_impact": "The permission schema creates edge cases with inherited roles and cross-organizational delegation. The team builds a second permission layer to handle exceptions. Documentation needs to explain why the second layer exists.",
+      "soft_failure": "RBAC works but the UI for managing roles is cluttered enough that customers keep emailing support with 'permission denied' errors. Each issue requires 30 minutes of investigation. Support classifies these as 'usage questions.'",
+      "catastrophe": "A subtle bug in the role inheritance logic grants unintended permissions to 12% of all users in a large customer's instance. The customer discovers it during a quarterly compliance review. The remediation requires manually auditing and resetting permissions for 1,847 users across seven months of activity."
+    }
+  },
+  {
+    "id": "ent_004",
+    "title": "Comprehensive Audit Logging",
+    "description": "Implement detailed audit logs for all entity changes, with filtering, export, and tamper-proof storage. Finance and compliance demand this for SOC 2 readiness. Requires a separate data pipeline that competes for database resources.",
+    "category": "enterprise_feature",
+    "effort": 6,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Audit logs are comprehensive and immutable. SOC 2 auditors find no gaps. Enterprise customers export audit trails for their own compliance processes. Sales uses this as a selling point for two new deals.",
+      "partial_success": "Audit logs capture most changes but custom integrations are not logged due to schema complexity. Auditors note the gap but do not require remediation. Customers find the logs useful for basic troubleshooting.",
+      "unexpected_impact": "Audit log storage grows faster than anticipated. A decision to compress and archive logs after 90 days means some enterprise customers lose historical data they needed for multi-year audits. The decision creates friction.",
+      "soft_failure": "Audit logs work but the UI for searching and filtering is slow when querying large datasets. Customers learn to export weekly snapshots instead. The feature exists but is not loved.",
+      "catastrophe": "A misconfigured retention policy deletes audit logs that should have been immutable. When an incident occurs six months later, the relevant logs are gone. Regulatory bodies question whether deletion was intentional. A forensic investigation examines 9 years of database backups."
+    }
+  },
+  {
+    "id": "ent_005",
+    "title": "Custom Branding & White-Label",
+    "description": "Allow enterprise customers to customize UI colors, logos, email templates, and domain branding. Two prospects explicitly require this. Implementation requires rearchitecting how CSS and templates are served, adding complexity to deployment.",
+    "category": "enterprise_feature",
+    "effort": 6,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "self_serve_growth",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "White-label branding is live. Both prospects convert to enterprise contracts. Their end-users see only customer branding, no mention of the platform. Sales reports these are our stickiest enterprise accounts at the 12-month mark.",
+      "partial_success": "Customers can rebrand the main UI but email templates and embedded widgets still carry some platform branding. Sales closes one deal; the other negotiates a discount for the incomplete feature.",
+      "unexpected_impact": "Brand customization increases the number of distinct UI variants in the codebase. Testing overhead for visual regressions becomes significant. Each release requires checking N permutations of the UI.",
+      "soft_failure": "Branding customization works but requires significant engineering per customer to wire up custom CSS files. The feature is available but not self-serve. Customers consider it a managed service add-on.",
+      "catastrophe": "A caching issue causes one customer's branding assets to be served to another customer for six hours. Three thousand end-users see incorrect logos and colors. Customer confidentiality implications lead to a post-mortem involving the CEO."
+    }
+  },
+  {
+    "id": "ent_006",
+    "title": "Data Residency Compliance",
+    "description": "Support customer requests for data to remain within specific geographic regions (EU, US, APAC, etc.). Required for a 7-figure enterprise deal in DACH. Requires multi-region database and infrastructure provisioning that doubles storage costs.",
+    "category": "enterprise_feature",
+    "effort": 8,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "Data residency is configurable at onboarding. The 7-figure DACH customer signs. Two additional prospects in regulated industries also convert, citing the feature. Infrastructure costs increase but are offset by contract value.",
+      "partial_success": "Data residency works for primary databases but some analytical queries still run on shared infrastructure. The DACH customer accepts this with a compliance addendum. Sales feels the deal narrowly survives.",
+      "unexpected_impact": "Data residency introduces latency for certain cross-region operations. The team documents acceptable latency ranges per region but some customers exceed them. Support handles escalations on a per-case basis.",
+      "soft_failure": "Data residency is implemented but the onboarding flow for selecting a region is unclear. Three customers initially choose the wrong region and require manual data migration. The feature is considered functional but procedurally awkward.",
+      "catastrophe": "A replication delay causes data consistency issues between the EU primary and backup. During a failover test, the backup is corrupted. Recovery requires restoring from seven-day-old snapshots. A customer nearly files a breach notification due to uncontrolled data loss."
+    }
+  },
+  {
+    "id": "ent_007",
+    "title": "Enterprise SLA Dashboard",
+    "description": "Create a customer-facing dashboard showing uptime guarantees, incident response times, and support SLA metrics in real-time. Enterprise RFPs are asking for this. Requires new data collection and a separate analytics service.",
+    "category": "enterprise_feature",
+    "effort": 5,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "The SLA dashboard launches showing real-time uptime and response times. Enterprise customers reference it in their own reports to stakeholders. No SLA breaches occur in the first quarter. Sales includes this in all enterprise pitches.",
+      "partial_success": "The dashboard exists but SLA calculations are occasionally manual and take 24 hours to update. Customers find it useful but not real-time as promised. Sales describes it as 'a foundation for future automation.'",
+      "unexpected_impact": "The dashboard surfaces that some support tickets are being resolved in 18 hours when the SLA promises 12. Rather than improve processes, the team adjusts category definitions to exclude the slow tickets. The dashboard now shows 'compliance' but customers notice the gap.",
+      "soft_failure": "The dashboard works but the visuals are not intuitive. Enterprise customers request custom reports instead. Support builds these manually each month. The dashboard becomes legacy within six months.",
+      "catastrophe": "A calculation error in the uptime metric causes the dashboard to report 99.98% uptime while actual platform downtime was 47 minutes. Customers trust the number and cite it in their own vendor management reviews. The discrepancy is discovered during an audit."
+    }
+  },
+  {
+    "id": "ent_008",
+    "title": "Enterprise Admin Console",
+    "description": "Build a dedicated admin portal for enterprise customers to manage users, audit logs, integrations, and security settings from one place. Scope is substantial but sales says it's table-stakes. Requires six months of dedicated frontend work.",
+    "category": "enterprise_feature",
+    "effort": 7,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "self_serve_growth",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "The admin console is live with all promised features. Enterprise customers migrate their administrative workflows into it within weeks. Support tickets for admin-related issues drop 34%. Sales closes two deals mentioning the console in closing arguments.",
+      "partial_success": "The admin console covers 70% of use cases. Complex scenarios still require support escalation. Customers appreciate the console but IT teams maintain spreadsheets for exceptions. Sales softens the absence of full coverage.",
+      "unexpected_impact": "The admin console becomes so feature-rich that customers ask for API access to automate console operations. The team builds an API for the API's console. A meta-problem becomes a new roadmap item.",
+      "soft_failure": "The console launches but information architecture is confusing. Customers spend time clicking through nested menus to find basic settings. Training calls are required. Adoption is slower than anticipated.",
+      "catastrophe": "A permission bug in the admin console allows lower-privileged admins to view and modify settings they should not access. The console inadvertently grants 'full tenant access' to 22 users across three customers. Remediation involves credential rotation and manual audit of affected operations."
+    }
+  },
+  {
+    "id": "ent_009",
+    "title": "Bulk User Management",
+    "description": "Implement CSV import and bulk user operations (enable/disable/delete in batches). Enterprise customers managing 2,000+ users have been doing this manually or via API scripts. Engineering must build safe, auditable batch processing.",
+    "category": "enterprise_feature",
+    "effort": 5,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Bulk import is live. Enterprise customers onboard hundreds of users in minutes instead of hours. Support volume for user creation requests drops 40%. Operations are fully audited and reversible.",
+      "partial_success": "Bulk import works for basic user creation but some custom attributes require manual entry. Customers find it helpful but not fully self-serve. Sales appreciates the efficiency gain.",
+      "unexpected_impact": "Bulk operations surface data quality issues customers never noticed before. The import process validates email formats and detects duplicates. Customers request a 'validation only' mode to clean their data first.",
+      "soft_failure": "Bulk import is technically sound but the UI provides no feedback on success/failure until the entire import completes. A 5,000-user import taking 15 minutes with no progress bar causes support anxiety. Customers worry about system health.",
+      "catastrophe": "A race condition causes bulk import to process the same CSV twice, creating 4,000 duplicate users. The detection lag means the duplicates are provisioned in downstream systems. Remediation requires a manual deduplication script that takes an engineer 8 hours to build and validate."
+    }
+  },
+  {
+    "id": "ent_010",
+    "title": "Custom API Rate Limits",
+    "description": "Allow enterprise customers to request higher API rate limits customized to their usage patterns, with monitoring and alerts. Required for a customer scaling to 100K API calls/day. Requires rate limit system redesign.",
+    "category": "enterprise_feature",
+    "effort": 6,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Custom rate limits are live. The scaling customer reaches their API targets without throttling. Two other customers also request higher limits and sign enterprise contracts. The rate limit system is now auditable and fair.",
+      "partial_success": "Custom rate limits work but require engineering to provision per-customer settings manually. The scaling customer deploys successfully but onboarding took three weeks of collaboration. Sales accepts this as a managed service.",
+      "unexpected_impact": "Higher rate limits reveal inefficient API usage patterns in the customer's integration. Rather than optimize, they request even higher limits. The platform's total API throughput becomes a bottleneck.",
+      "soft_failure": "Custom rate limits are available but the customer does not realize they can request them. Support discovers this during a performance investigation. Adoption requires direct sales outreach.",
+      "catastrophe": "An error in rate limit calculation causes one customer's limit to be set 100x higher than contracted. They use all 10 million monthly calls in two weeks. Platform API tail latencies increase 400%. Other customers' integrations slow to unacceptable levels."
+    }
+  },
+  {
+    "id": "ent_011",
+    "title": "Dedicated Support Portal",
+    "description": "Build a customer-facing support portal with ticket tracking, SLA visibility, and direct escalation paths. Enterprise customers demand structured support workflows. Requires integration with internal ticketing system and governance overhead.",
+    "category": "enterprise_feature",
+    "effort": 5,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "The support portal launches with ticket tracking and SLA transparency. Enterprise customers report feeling heard and included in resolution timelines. Support team finds the structured intake reduces miscommunication. Customer satisfaction scores increase 12%.",
+      "partial_success": "The portal works for basic ticket submission but escalation paths are not automated. Complex issues still route inconsistently. Customers appreciate the visibility even if the flow is not smooth.",
+      "unexpected_impact": "The portal surfaces that support response times vary widely depending on customer size. Smaller enterprise customers feel deprioritized. Sales hears complaints about fairness.",
+      "soft_failure": "The portal is built but adoption is low. Customers prefer email. Support team maintains both email and portal workflows in parallel. Operational complexity increases without benefit.",
+      "catastrophe": "A sync error causes the portal to show resolved tickets as 'awaiting customer response' for weeks after closure. Customers believe their issues are stalled. The team spends 40 hours manually correcting records and apologizing."
+    }
+  },
+  {
+    "id": "ent_012",
+    "title": "SOC 2 Compliance Mode",
+    "description": "Implement compliance features required for SOC 2 Type II attestation: detailed audit trails, immutable logging, encryption at rest, and quarterly security attestations. Three enterprise deals require this. Requires security audit infrastructure.",
+    "category": "enterprise_feature",
+    "effort": 8,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "secondary_metric": "ceo_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "SOC 2 Mode is live and verified by external auditors. All three deals close. The company now markets SOC 2 compliance as a standard feature. Enterprise win rate increases 18% in subsequent quarters.",
+      "partial_success": "Most SOC 2 requirements are met but immutable logging has performance tradeoffs. Auditors require compensating controls. The deals close with compliance addendums.",
+      "unexpected_impact": "Compliance infrastructure is expensive to maintain. Annual security audits cost $85K. Monthly compliance reports require operations overhead. The team realizes this is now a permanent cost center.",
+      "soft_failure": "SOC 2 Mode is implemented but documentation is sparse. Customers request clarification on what is actually covered. Sales must manually explain compliance scope in calls.",
+      "catastrophe": "During the SOC 2 audit, auditors discover that 'immutable' logs were actually being deleted by a retention policy. The audit is delayed while the team demonstrates that logs are now truly immutable. Trust in the feature is damaged."
+    }
+  },
+  {
+    "id": "ent_013",
+    "title": "HIPAA Compliance Features",
+    "description": "Implement HIPAA-required features: encryption of PHI, audit logging of access, data retention policies, and breach notification procedures. A healthcare customer is asking for this to onboard patient data. Full compliance requires security redesign.",
+    "category": "enterprise_feature",
+    "effort": 8,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "HIPAA features are live and verified by the customer's compliance team. The healthcare deal closes for $500K ARR. The company markets to healthcare verticals. Legal review is required for all new features.",
+      "partial_success": "HIPAA requirements are mostly met but the customer requires Business Associate Agreements and ongoing training. The deal closes at a discount. Compliance is now a permanent constraint.",
+      "unexpected_impact": "HIPAA requirements propagate across the entire codebase. Features that worked fine must now consider PHI constraints. Development velocity for all features decreases.",
+      "soft_failure": "HIPAA features are implemented but the customer's compliance team finds gaps during their own audit. Additional features are required mid-contract. Customer satisfaction becomes strained.",
+      "catastrophe": "A data export includes PHI in unencrypted CSV format. A customer's data breach notification to patients mentions our platform. Legal liability is unclear. The company's insurance company opens an investigation."
+    }
+  },
+  {
+    "id": "ent_014",
+    "title": "Custom Reporting Engine",
+    "description": "Build flexible reporting allowing enterprise customers to create custom dashboards and exports without engineering support. Sales says this is high-value. Requires significant work on query optimization and UI complexity.",
+    "category": "enterprise_feature",
+    "effort": 7,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "self_serve_growth",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "The reporting engine is live. Enterprise customers build custom reports within hours instead of weeks of engineering support. Support tickets for 'custom report requests' drop to near-zero. Sales closes two deals citing the feature.",
+      "partial_success": "The reporting engine covers common use cases but complex multi-table queries require engineering. Customers appreciate the self-serve foundation. Sales describes this as a 'beta-stage feature with room to grow.'",
+      "unexpected_impact": "Some customers build extremely complex queries that cause performance issues. The team implements query timeouts. Customers complain that 'reasonable' queries are being terminated.",
+      "soft_failure": "The reporting UI is powerful but overwhelming. Most customers use a small fraction of capabilities. Support requests become 'how do I do this in reporting?' instead of 'can you build this report?'",
+      "catastrophe": "A SQL injection vulnerability in the custom reporting engine allows a customer to extract data they do not have permissions to view. Three months pass before discovery. Audit logs show unauthorized queries but data loss cannot be confirmed."
+    }
+  },
+  {
+    "id": "ent_015",
+    "title": "Advanced Permission Model",
+    "description": "Extend RBAC to include object-level permissions, attribute-based access control, and delegated administration. A large enterprise customer needs fine-grained control over data access. Requires architectural changes to the permission system.",
+    "category": "enterprise_feature",
+    "effort": 7,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "Advanced permissions are live. The large customer deploys complex permission structures matching their organizational hierarchy. Two other prospects cite the feature as table-stakes. Permission evaluation performance remains acceptable.",
+      "partial_success": "Advanced permissions work for most scenarios but some delegation patterns require manual configuration. The customer adapts their structure to fit the system. Sales feels the feature is adequate but not seamless.",
+      "unexpected_impact": "Permission evaluation adds latency to every data access. Caching helps but edge cases involving revoked permissions become stale. The team documents acceptable staleness (up to 5 minutes).",
+      "soft_failure": "Advanced permissions are implemented but the UI for managing them is complex. Customers require training to use the system. Adoption is slower than anticipated.",
+      "catastrophe": "A bug in permission caching causes a user who was removed from a role to retain permissions for 72 hours. The customer discovers unintended data access during a security review. The incident involves a full audit of permission state."
+    }
+  },
+  {
+    "id": "ent_016",
+    "title": "Multi-Tenancy Isolation",
+    "description": "Isolate enterprise tenants with guaranteed data separation, separate rate limits, and independent compliance posture. Required for a financial services customer wanting to run multiple business units. Requires database schema redesign and testing rigor.",
+    "category": "enterprise_feature",
+    "effort": 8,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "Multi-tenancy is live with guaranteed isolation. The financial services customer provisions three separate business units. Data isolation is auditable. Two additional customers also request the feature.",
+      "partial_success": "Multi-tenancy works but some shared infrastructure (analytics, backups) is still shared. The customer accepts this with compliance documentation. Isolation is logically sufficient even if not physically complete.",
+      "unexpected_impact": "Multi-tenancy requires tenant-aware code changes across the entire platform. Every feature that ships must consider tenant context. Development velocity decreases by ~20%.",
+      "soft_failure": "Multi-tenancy is implemented but a bug causes tenant A's users to be visible in tenant B's user lists for searches. The customer notices and reports it immediately. Fix is straightforward but trust is damaged.",
+      "catastrophe": "A backup/restore operation accidentally restores all tenant data to a single tenant. When discovered, 4 GB of data from other tenants is present in one customer's instance. Remediation involves restore from older backups, losing 6 hours of data."
+    }
+  },
+  {
+    "id": "ent_017",
+    "title": "Contract Management Integration",
+    "description": "Integrate contract details (term end dates, renewal clauses, pricing tier) into the platform for visibility and alerts. Sales asks for this to track renewal opportunities. Requires syncing with Salesforce and handling contract amendments.",
+    "category": "enterprise_feature",
+    "effort": 5,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Contract data is synced from Salesforce. Renewal alerts trigger 90 days before term end. Sales team can now see contract details within the platform instead of toggling to Salesforce. Renewal win rate increases 7%.",
+      "partial_success": "Contract integration works but amendments are not automatically synced. Sales must manually update contract records after significant changes. The feature is useful but incomplete.",
+      "unexpected_impact": "Salesforce contract data is sometimes stale by 2-3 days. Alerts occasionally fire at the wrong time. The team implements a manual sync option but adoption is low.",
+      "soft_failure": "Contract data is integrated but not visually prominent. Sales team continues using Salesforce as the source of truth. The feature exists but is underutilized.",
+      "catastrophe": "A data sync error causes contract end dates to be shifted by 30 days for 18 customers. Renewal alerts fire at the wrong time. Sales misses renewal opportunities because the system said there was still 30 days to go."
+    }
+  },
+  {
+    "id": "ent_018",
+    "title": "Custom Data Retention",
+    "description": "Allow enterprise customers to define custom data retention policies (delete/archive after N days, keep indefinitely for compliance, separate rules per data type). Required for a financial services prospect. Involves complex data lifecycle management.",
+    "category": "enterprise_feature",
+    "effort": 6,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Custom retention policies are live. The financial services customer deploys policies per data type (transactions kept forever, temporary data deleted after 30 days). Compliance auditors approve the policies. The deal closes.",
+      "partial_success": "Retention policies work but some edge cases (child records with different retention) require manual intervention. The customer adapts. Sales accepts the feature as functional.",
+      "unexpected_impact": "Executing retention policies at scale takes longer than anticipated. Nightly cleanup jobs impact database performance. The team implements weekday rate-limiting.",
+      "soft_failure": "Retention policies are available but the UI for setting them is confusing. Customers ask support for help configuring them. Self-serve adoption is low.",
+      "catastrophe": "A bug in the retention job causes policies to be applied in reverse: temporary data is kept indefinitely, important data is deleted. The customer discovers this during a compliance review when historical data is missing. Recovery from backups is required."
+    }
+  },
+  {
+    "id": "ent_019",
+    "title": "Enterprise Onboarding Wizard",
+    "description": "Build a guided, multi-step onboarding workflow for enterprise customers covering setup, user provisioning, and integration configuration. Large customers typically take 3-4 weeks to go live. A wizard could reduce this to 2 weeks.",
+    "category": "enterprise_feature",
+    "effort": 6,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "self_serve_growth",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "The onboarding wizard is live. Enterprise customers now go live in 10-12 days instead of 3-4 weeks. Time-to-value improves dramatically. Sales closes deals faster. One customer reports the wizard was 'surprisingly competent.'",
+      "partial_success": "The wizard covers basic setup but complex integrations still require professional services. Onboarding time drops to 2-3 weeks. Sales is satisfied with the improvement.",
+      "unexpected_impact": "The wizard makes some decisions for customers that they later want to change. Undoing wizard-configured items requires support. Customers wish the wizard was more flexible.",
+      "soft_failure": "The wizard works but abandonment rate is high. Customers start the wizard and switch to manual setup after a few steps. Adoption is lower than anticipated.",
+      "catastrophe": "The wizard's integration configuration step automatically connects to the customer's systems with generic credentials. Three customers do not realize this and are shocked when the wizard pushes data to production. Two customers threaten to terminate."
+    }
+  },
+  {
+    "id": "ent_020",
+    "title": "Sandbox Environments",
+    "description": "Provide customers with isolated sandbox instances for testing and development before deploying to production. Enterprise customers and prospects ask for this to reduce risk. Requires instance cloning and separate credential management.",
+    "category": "enterprise_feature",
+    "effort": 6,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "Sandbox environments are available. Enterprise customers clone production to sandbox, test integrations, and deploy with confidence. Risk perception decreases. Sales closes two deals citing sandbox availability.",
+      "partial_success": "Sandboxes work but data cloning takes 4 hours and requires manual credential rotation. Customers find it valuable but the overhead is non-trivial. Sales considers this acceptable.",
+      "unexpected_impact": "Sandbox environment support requests become common. Some customers create sandboxes and forget about them. Stale sandboxes become storage liabilities.",
+      "soft_failure": "Sandboxes are technically available but the process for requesting/provisioning them is not self-serve. Customers email support. Adoption is lower than anticipated.",
+      "catastrophe": "A cloning bug causes the sandbox to include a live API key from production. A customer discovers this and immediately revokes the key, then panics about potential abuse. Post-incident review reveals the key was not used by unauthorized parties, but trust is damaged."
+    }
+  },
+  {
+    "id": "ent_021",
+    "title": "Approval Workflows",
+    "description": "Implement configurable approval workflows for sensitive operations (data export, user access grants, contract changes). Enterprise security teams demand this for control and auditability. Requires state machine implementation and notification system.",
+    "category": "enterprise_feature",
+    "effort": 7,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "outcomes": {
+      "clear_success": "Approval workflows are live. Enterprise customers configure multi-stage approvals for sensitive operations. Compliance auditors approve the control structure. Sales uses this as a key differentiator.",
+      "partial_success": "Workflows support basic approvals but escalation logic is not automated. Complex approval chains require manual intervention. The feature is useful but not fully autonomous.",
+      "unexpected_impact": "Approval workflows introduce friction. Operations that previously took minutes now take hours. Users complain about delays, but security teams appreciate the control.",
+      "soft_failure": "Workflows are implemented but notification delivery is inconsistent. Some approvers do not see requests. The team switches to email notifications, which bypass the workflow visibility.",
+      "catastrophe": "A bug in the approval state machine causes requests to become 'stuck' in pending state indefinitely. A customer's user access request is never approved. Three days pass before operations team discovers the stuck state and manually forces resolution."
+    }
+  },
+  {
+    "id": "ent_022",
+    "title": "Enterprise Support SLA Tiers",
+    "description": "Define tiered support SLAs for enterprise customers (critical: 1-hour response, high: 4-hour response, normal: 24-hour response). Sales needs this to close deals at different price points. Requires support process changes and staffing plans.",
+    "category": "enterprise_feature",
+    "effort": 5,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "outcomes": {
+      "clear_success": "SLA tiers are live. Sales closes deals at three price points (basic, premium, critical). Support team has clear expectations for each tier. Premium and critical customers report satisfaction with response times.",
+      "partial_success": "SLA tiers are defined but critical-tier response times are missed 12% of the time due to staffing gaps. Affected customers receive credits. Sales still uses SLAs as a selling point.",
+      "unexpected_impact": "Support team burns out trying to meet critical SLAs. Overtime increases. The team requests additional headcount. The cost of the critical tier reduces its profitability.",
+      "soft_failure": "SLA tiers are announced but tracking is manual. Support team tracks response times in a spreadsheet. Transparency is low. Sales cannot confidently promise SLAs.",
+      "catastrophe": "A data entry error assigns a normal-tier customer to the critical-tier SLA. Support responds at critical speed for six weeks. When billing occurs, the customer is shocked to see the critical tier charge. The customer disputes it and threatens to leave."
+    }
+  }
+]
