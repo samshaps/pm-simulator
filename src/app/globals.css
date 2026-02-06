@@ -100,3 +100,32 @@ select {
   background: #fff;
   color: var(--text);
 }
+
+.list {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+
+.item {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: #fff;
+}
+
+.item h3 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+}
+
+.item p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.retro {
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+  color: var(--text);
+}

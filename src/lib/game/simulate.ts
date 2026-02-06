@@ -1,0 +1,361 @@
+import type { Difficulty, MetricsState } from "@/lib/types";
+
+export type MetricKey = keyof MetricsState;
+
+export type Outcome =
+  | "clear_success"
+  | "partial_success"
+  | "unexpected_impact"
+  | "soft_failure"
+  | "catastrophe";
+
+export type TicketTemplate = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  effort: number;
+  primary_metric: MetricKey;
+  primary_impact?: { success: [number, number]; partial: [number, number] };
+  secondary_metric?: MetricKey | null;
+  secondary_impact?: { success: [number, number]; partial: [number, number] } | null;
+  tradeoff_metric?: MetricKey | null;
+  tradeoff_impact?: { success: [number, number]; partial: [number, number] } | null;
+  outcomes: Record<Outcome, string>;
+};
+
+export type TicketInstance = TicketTemplate & {
+  ceo_aligned?: boolean;
+  outcome?: Outcome;
+  outcome_narrative?: string;
+  metric_impacts?: Partial<Record<MetricKey, number>>;
+};
+
+type Rng = {
+  next: () => number;
+  int: (min: number, max: number) => number;
+  pick: <T>(items: T[]) => T;
+  state: () => number;
+};
+
+export function createRng(seed: number): Rng {
+  let t = seed;
+  const next = () => {
+    t += 0x6d2b79f5;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+  return {
+    next,
+    int: (min, max) => Math.floor(next() * (max - min + 1)) + min,
+    pick: (items) => items[Math.floor(next() * items.length)],
+    state: () => t
+  };
+}
+
+export function computeEffectiveCapacity(metrics: MetricsState): number {
+  const team = metrics.team_sentiment;
+  const debt = metrics.tech_debt;
+  const cto = metrics.cto_sentiment;
+  let capacity = 20;
+
+  if (team > 75) capacity += 4;
+  else if (team >= 50) capacity += 1;
+  else if (team >= 25) capacity -= 2;
+  else capacity -= 5;
+
+  if (debt < 25) capacity += 2;
+  else if (debt <= 50) capacity += 0;
+  else if (debt <= 75) capacity -= 3;
+  else capacity -= 6;
+
+  if (cto > 80) capacity += 4;
+
+  return Math.max(8, capacity);
+}
+
+export function generateBacklog(
+  templates: TicketTemplate[],
+  metrics: MetricsState,
+  rng: Rng,
+  count: number
+): TicketInstance[] {
+  const templatesByCategory = new Map<string, TicketTemplate[]>();
+  for (const template of templates) {
+    const list = templatesByCategory.get(template.category) ?? [];
+    list.push(template);
+    templatesByCategory.set(template.category, list);
+  }
+
+  const categories = Array.from(templatesByCategory.keys());
+  if (categories.length === 0) return [];
+
+  const weights = new Map<string, number>();
+  for (const category of categories) {
+    weights.set(category, 1);
+  }
+
+  if (metrics.sales_sentiment < 35) {
+    weights.set(
+      "sales_request",
+      (weights.get("sales_request") ?? 0) + 2
+    );
+  }
+  if (metrics.tech_debt > 60) {
+    weights.set(
+      "tech_debt_reduction",
+      (weights.get("tech_debt_reduction") ?? 0) + 2
+    );
+  }
+  if (metrics.enterprise_growth < 30) {
+    weights.set(
+      "enterprise_feature",
+      (weights.get("enterprise_feature") ?? 0) + 2
+    );
+  }
+  if (metrics.self_serve_growth < 30) {
+    weights.set(
+      "self_serve_feature",
+      (weights.get("self_serve_feature") ?? 0) + 2
+    );
+  }
+
+  const pickCategory = () => {
+    const total = Array.from(weights.values()).reduce((sum, w) => sum + w, 0);
+    let roll = rng.next() * total;
+    for (const [category, weight] of weights.entries()) {
+      roll -= weight;
+      if (roll <= 0) return category;
+    }
+    return categories[0];
+  };
+
+  const selected: TicketInstance[] = [];
+  const usedIds = new Set<string>();
+
+  while (selected.length < count) {
+    const category = pickCategory();
+    const pool = templatesByCategory.get(category) ?? templates;
+    if (pool.length === 0) break;
+
+    let candidate = rng.pick(pool);
+    let guard = 0;
+    while (usedIds.has(candidate.id) && guard < 5) {
+      candidate = rng.pick(pool);
+      guard += 1;
+    }
+    if (usedIds.has(candidate.id)) {
+      const fallback = templates.find((tpl) => !usedIds.has(tpl.id));
+      if (!fallback) break;
+      candidate = fallback;
+    }
+    usedIds.add(candidate.id);
+    selected.push({ ...candidate });
+  }
+
+  return selected;
+}
+
+type OutcomeContext = {
+  techDebt: number;
+  teamSentiment: number;
+  isOverbooked: boolean;
+  isMoonshot: boolean;
+  ceoAligned: boolean;
+  difficulty: Difficulty;
+};
+
+export function rollOutcome(rng: Rng, context: OutcomeContext): Outcome {
+  const base: Record<Outcome, number> = {
+    clear_success: 25,
+    partial_success: 35,
+    unexpected_impact: 15,
+    soft_failure: 20,
+    catastrophe: 5
+  };
+
+  const mod = { ...base };
+
+  if (context.ceoAligned) {
+    mod.clear_success += 12;
+    mod.partial_success += 3;
+    mod.soft_failure -= 10;
+    mod.catastrophe -= 5;
+  }
+
+  if (context.techDebt > 80) {
+    mod.clear_success -= 12;
+    mod.partial_success -= 3;
+    mod.soft_failure += 7;
+    mod.catastrophe += 8;
+  } else if (context.techDebt > 65) {
+    mod.clear_success -= 8;
+    mod.partial_success -= 2;
+    mod.soft_failure += 5;
+    mod.catastrophe += 5;
+  }
+
+  if (context.teamSentiment < 30) {
+    mod.clear_success -= 8;
+    mod.soft_failure += 5;
+    mod.catastrophe += 3;
+  } else if (context.teamSentiment > 75) {
+    mod.clear_success += 5;
+    mod.partial_success += 3;
+    mod.soft_failure -= 5;
+    mod.catastrophe -= 3;
+  }
+
+  if (context.isOverbooked) {
+    mod.clear_success -= 10;
+    mod.soft_failure += 5;
+    mod.catastrophe += 5;
+  }
+
+  if (context.isMoonshot) {
+    mod.clear_success -= 10;
+    mod.partial_success += 5;
+    mod.soft_failure += 3;
+    mod.catastrophe += 2;
+  }
+
+  if (context.difficulty === "easy") {
+    mod.clear_success += 5;
+    mod.partial_success += 3;
+    mod.soft_failure -= 5;
+    mod.catastrophe -= 3;
+  }
+  if (context.difficulty === "hard") {
+    mod.clear_success -= 5;
+    mod.soft_failure += 3;
+    mod.catastrophe += 2;
+  }
+
+  const outcomes: Outcome[] = [
+    "clear_success",
+    "partial_success",
+    "unexpected_impact",
+    "soft_failure",
+    "catastrophe"
+  ];
+
+  const clamped = outcomes.map((key) => Math.max(2, mod[key]));
+  const total = clamped.reduce((sum, value) => sum + value, 0);
+  const roll = rng.next() * total;
+
+  let acc = 0;
+  for (let i = 0; i < outcomes.length; i += 1) {
+    acc += clamped[i];
+    if (roll <= acc) return outcomes[i];
+  }
+  return "partial_success";
+}
+
+const stakeholderByCategory: Record<string, MetricKey> = {
+  self_serve_feature: "ceo_sentiment",
+  enterprise_feature: "sales_sentiment",
+  tech_debt_reduction: "cto_sentiment",
+  ux_improvement: "team_sentiment",
+  infrastructure: "cto_sentiment",
+  monetization: "ceo_sentiment",
+  sales_request: "sales_sentiment",
+  moonshot: "ceo_sentiment"
+};
+
+const clampMetric = (value: number) => Math.max(0, Math.min(100, value));
+
+const applyRange = (rng: Rng, range?: [number, number] | null) => {
+  if (!range) return 0;
+  const [min, max] = range;
+  if (min === max) return min;
+  return rng.int(min, max);
+};
+
+export function applyOutcome(
+  rng: Rng,
+  metrics: MetricsState,
+  ticket: TicketTemplate,
+  outcome: Outcome
+): { updated: MetricsState; deltas: Partial<Record<MetricKey, number>> } {
+  const updated = { ...metrics };
+  const deltas: Partial<Record<MetricKey, number>> = {};
+
+  const applyDelta = (metric: MetricKey, delta: number) => {
+    if (!delta) return;
+    updated[metric] = clampMetric(updated[metric] + delta);
+    deltas[metric] = (deltas[metric] ?? 0) + delta;
+  };
+
+  const stakeholder = stakeholderByCategory[ticket.category] ?? "ceo_sentiment";
+
+  if (outcome === "clear_success" || outcome === "partial_success") {
+    const isSuccess = outcome === "clear_success";
+    const primaryRange = isSuccess
+      ? ticket.primary_impact?.success
+      : ticket.primary_impact?.partial;
+    const secondaryRange = isSuccess
+      ? ticket.secondary_impact?.success
+      : ticket.secondary_impact?.partial;
+    const tradeoffRange = isSuccess
+      ? ticket.tradeoff_impact?.success
+      : ticket.tradeoff_impact?.partial;
+
+    applyDelta(ticket.primary_metric, applyRange(rng, primaryRange));
+
+    if (ticket.secondary_metric) {
+      applyDelta(ticket.secondary_metric, applyRange(rng, secondaryRange));
+    }
+
+    if (ticket.tradeoff_metric) {
+      applyDelta(ticket.tradeoff_metric, applyRange(rng, tradeoffRange));
+    }
+
+    applyDelta(stakeholder, isSuccess ? rng.int(3, 6) : rng.int(1, 3));
+  }
+
+  if (outcome === "unexpected_impact") {
+    applyDelta(ticket.primary_metric, rng.int(-2, 4));
+    const metricsList: MetricKey[] = [
+      "team_sentiment",
+      "ceo_sentiment",
+      "sales_sentiment",
+      "cto_sentiment",
+      "self_serve_growth",
+      "enterprise_growth",
+      "tech_debt",
+      "nps"
+    ];
+    const other = rng.pick(metricsList.filter((m) => m !== ticket.primary_metric));
+    const swing = rng.next() < 0.5 ? rng.int(4, 10) : rng.int(-10, -4);
+    applyDelta(other, swing);
+    if (ticket.tradeoff_metric) {
+      applyDelta(ticket.tradeoff_metric, rng.int(0, 3) * -1);
+    }
+  }
+
+  if (outcome === "soft_failure") {
+    applyDelta(ticket.primary_metric, rng.int(-2, 1));
+    applyDelta("team_sentiment", rng.int(-5, -3));
+    applyDelta("tech_debt", rng.int(1, 3));
+  }
+
+  if (outcome === "catastrophe") {
+    applyDelta(ticket.primary_metric, rng.int(-10, -5));
+    applyDelta("team_sentiment", rng.int(-10, -5));
+    applyDelta("ceo_sentiment", rng.int(-8, -3));
+    applyDelta("tech_debt", rng.int(3, 8));
+    const metricsList: MetricKey[] = [
+      "sales_sentiment",
+      "cto_sentiment",
+      "self_serve_growth",
+      "enterprise_growth",
+      "nps"
+    ];
+    const other = rng.pick(metricsList);
+    applyDelta(other, rng.int(-6, -3));
+  }
+
+  return { updated, deltas };
+}
+
