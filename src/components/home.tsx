@@ -52,6 +52,21 @@ type QuarterState = {
   } | null;
 };
 
+type QuarterSummary = {
+  quarter: number;
+  product_pulse: {
+    churn: string;
+    support_load: string;
+    customer_sentiment: string;
+    narrative: string;
+  } | null;
+  quarterly_review: {
+    rating: string;
+    raw_score: number;
+    narrative: string;
+  } | null;
+} | null;
+
 export default function Home() {
   const [state, setState] = useState<SessionState | null>(null);
   const [loadState, setLoadState] = useState<LoadState>("idle");
@@ -64,6 +79,7 @@ export default function Home() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [retro, setRetro] = useState<SprintState["retro"] | null>(null);
   const [quarter, setQuarter] = useState<QuarterState | null>(null);
+  const [quarterSummary, setQuarterSummary] = useState<QuarterSummary>(null);
   const [gameMeta, setGameMeta] = useState<{
     difficulty: "easy" | "normal" | "hard";
     current_quarter: number;
@@ -131,6 +147,7 @@ export default function Home() {
       if (data.activeSprint) {
         setSprint(data.activeSprint);
       }
+      setQuarterSummary(null);
       if (data.activeGame) {
         setGameMeta({
           difficulty: data.activeGame.difficulty,
@@ -165,6 +182,7 @@ export default function Home() {
       setRetro(data.retro);
       setMetrics(data.game.metrics_state);
       setQuarter(data.quarter ?? null);
+      setQuarterSummary(data.quarter_summary ?? null);
       setGameMeta({
         difficulty: data.game.difficulty,
         current_quarter: data.game.current_quarter,
@@ -304,16 +322,16 @@ export default function Home() {
             <p className="retro">{retro.narrative}</p>
           </div>
         )}
-        {quarter?.product_pulse && (
+        {quarterSummary?.product_pulse && (
           <div className="item">
-            <h3>Product Pulse</h3>
-            <p className="retro">{quarter.product_pulse.narrative}</p>
+            <h3>Quarter {quarterSummary.quarter} Product Pulse</h3>
+            <p className="retro">{quarterSummary.product_pulse.narrative}</p>
           </div>
         )}
-        {quarter?.quarterly_review && (
+        {quarterSummary?.quarterly_review && (
           <div className="item">
-            <h3>Quarterly Review</h3>
-            <p className="retro">{quarter.quarterly_review.narrative}</p>
+            <h3>Quarter {quarterSummary.quarter} Review</h3>
+            <p className="retro">{quarterSummary.quarterly_review.narrative}</p>
           </div>
         )}
       </div>

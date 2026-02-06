@@ -312,6 +312,11 @@ export async function POST(request: Request) {
   let nextCeoFocus = ceoFocus;
   let productPulse = null;
   let quarterlyReview = null;
+  let quarterSummary: {
+    quarter: number;
+    product_pulse: typeof productPulse;
+    quarterly_review: typeof quarterlyReview;
+  } | null = null;
 
   if (!isQuarterEnd) {
     if (shouldShiftFocus(rng, game.difficulty)) {
@@ -365,6 +370,11 @@ export async function POST(request: Request) {
       productPulse,
       catastropheCount
     );
+    quarterSummary = {
+      quarter: currentQuarter,
+      product_pulse: productPulse,
+      quarterly_review: quarterlyReview
+    };
 
     await supabase
       .from("quarters")
@@ -493,6 +503,7 @@ export async function POST(request: Request) {
       ceo_focus: nextCeoFocus,
       product_pulse: productPulse,
       quarterly_review: quarterlyReview
-    }
+    },
+    quarter_summary: quarterSummary
   });
 }
