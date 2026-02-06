@@ -12,6 +12,8 @@ import {
   computeQuarterlyReview,
   rollOutcome,
   type CeoFocus,
+  type ProductPulse,
+  type QuarterlyReview,
   type TicketInstance,
   type TicketTemplate
 } from "@/lib/game/simulate";
@@ -310,12 +312,12 @@ export async function POST(request: Request) {
   let nextQuarter = game.current_quarter;
   let nextSprintNumber = game.current_sprint;
   let nextCeoFocus = ceoFocus;
-  let productPulse = null;
-  let quarterlyReview = null;
+  let productPulse: ProductPulse | null = null;
+  let quarterlyReview: QuarterlyReview | null = null;
   let quarterSummary: {
     quarter: number;
-    product_pulse: typeof productPulse;
-    quarterly_review: typeof quarterlyReview;
+    product_pulse: ProductPulse | null;
+    quarterly_review: QuarterlyReview | null;
   } | null = null;
 
   if (!isQuarterEnd) {
