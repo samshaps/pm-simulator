@@ -4,6 +4,7 @@ import React from 'react';
 import styles from './QuarterlyReview.module.css';
 
 type Rating = 'exceeds' | 'meets' | 'needs' | 'does-not';
+type CalibrationOutcome = 'survived' | 'promoted' | 'pip' | 'terminated';
 
 export default function QuarterlyReview() {
   const rating: Rating = 'meets';
@@ -14,7 +15,7 @@ export default function QuarterlyReview() {
     'does-not': 'Does Not Meet Expectations'
   };
 
-  const calibrationOutcome = "survived"; // or "promoted" or "pip" or "terminated"
+  const calibrationOutcome: CalibrationOutcome = "survived";
 
   const narrative = "You navigated Q2 with the pragmatism of someone who's read the employee handbook. Your focus on enterprise priorities aligned with the CEO's goals, boosting revenue metrics and keeping Sales temporarily satisfied. However, your tendency to overcommit left the team feeling stretched, and tech debt accumulated faster than anyone acknowledged in standups. The CTO noticed. Your manager noticed. You survived calibration, but you're not getting promoted this cycle.";
 
