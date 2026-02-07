@@ -93,9 +93,27 @@ export default function QuarterlyReview() {
 
   console.log('15. Rating value extracted:', ratingValue);
 
-  // Fallback to 'meets' if rating is missing
-  const rating = (ratingValue || 'meets') as Rating;
-  console.log('16. Final rating (with fallback):', rating);
+  // Map backend ratings to frontend Rating type
+  const mapRating = (backendRating: string): Rating => {
+    // Quarterly ratings: "strong" | "solid" | "mixed" | "below_expectations"
+    if (backendRating === 'strong') return 'exceeds';
+    if (backendRating === 'solid') return 'meets';
+    if (backendRating === 'mixed') return 'meets';
+    if (backendRating === 'below_expectations') return 'needs';
+
+    // Year-end ratings: "exceeds_expectations" | "meets_expectations_strong" | "meets_expectations" | "needs_improvement" | "does_not_meet_expectations"
+    if (backendRating === 'exceeds_expectations') return 'exceeds';
+    if (backendRating === 'meets_expectations_strong') return 'meets';
+    if (backendRating === 'meets_expectations') return 'meets';
+    if (backendRating === 'needs_improvement') return 'needs';
+    if (backendRating === 'does_not_meet_expectations') return 'does-not';
+
+    // Fallback
+    return 'meets';
+  };
+
+  const rating = mapRating(ratingValue || '');
+  console.log('16. Final rating (after mapping):', rating);
 
   const ratingText: Record<Rating, string> = {
     'exceeds': 'Exceeds Expectations',
@@ -104,9 +122,11 @@ export default function QuarterlyReview() {
     'does-not': 'Does Not Meet Expectations'
   };
 
+  // TODO: Backend doesn't calculate calibration_outcome yet - needs to be added to computeQuarterlyReview/computeYearEndReview
   const calibrationValue = (review as any).calibration_outcome;
   console.log('17. Calibration value extracted:', calibrationValue);
 
+  // Default to 'survived' until backend implements calibration logic
   const calibrationOutcome = (calibrationValue || 'survived') as CalibrationOutcome;
   console.log('18. Final calibration outcome (with fallback):', calibrationOutcome);
   console.log('=== REVIEW EXTRACTION END ===');
