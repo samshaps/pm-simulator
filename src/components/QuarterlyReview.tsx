@@ -63,10 +63,19 @@ export default function QuarterlyReview() {
     return <div className={styles.pageContainer}>No review data available.</div>;
   }
 
+  console.log('Review data:', review);
+  console.log('Is year end:', isYearEnd);
+
   // Year-end review has 'final_rating', quarterly has 'rating'
-  const rating = (isYearEnd
-    ? (review as { final_rating: string }).final_rating
-    : (review as { rating: string }).rating) as Rating;
+  const ratingValue = isYearEnd
+    ? (review as any).final_rating
+    : (review as any).rating;
+
+  console.log('Rating value:', ratingValue);
+
+  // Fallback to 'meets' if rating is missing
+  const rating = (ratingValue || 'meets') as Rating;
+
   const ratingText: Record<Rating, string> = {
     'exceeds': 'Exceeds Expectations',
     'meets': 'Meets Expectations',
@@ -74,7 +83,10 @@ export default function QuarterlyReview() {
     'does-not': 'Does Not Meet Expectations'
   };
 
-  const calibrationOutcome = review.calibration_outcome as CalibrationOutcome;
+  const calibrationValue = (review as any).calibration_outcome;
+  console.log('Calibration value:', calibrationValue);
+
+  const calibrationOutcome = (calibrationValue || 'survived') as CalibrationOutcome;
 
   const calibrationText: Record<CalibrationOutcome, string> = {
     survived: 'Survived',
