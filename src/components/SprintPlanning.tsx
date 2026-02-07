@@ -323,6 +323,13 @@ export default function SprintPlanning() {
     return '→';
   };
 
+  const getArrowColor = (metricKey: string) => {
+    const delta = previousDeltas?.[metricKey] || 0;
+    if (delta > 0) return '#4ade80'; // green
+    if (delta < 0) return '#f87171'; // red
+    return '#fbbf24'; // yellow
+  };
+
   const getGrowthClass = (value: number) => {
     if (value >= 60) return styles.trendUp;
     if (value >= 40) return styles.trendFlat;
@@ -336,6 +343,14 @@ export default function SprintPlanning() {
     if (delta < -5) return '↘↘';
     if (delta < 0) return '↘';
     return '→';
+  };
+
+  const getTechDebtArrowColor = () => {
+    const delta = previousDeltas?.['tech_debt'] || 0;
+    // For tech debt, increasing is bad (red) and decreasing is good (green)
+    if (delta > 0) return '#f87171'; // red
+    if (delta < 0) return '#4ade80'; // green
+    return '#fbbf24'; // yellow
   };
 
   const formatCeoFocus = (focus: string) => {
@@ -382,18 +397,24 @@ export default function SprintPlanning() {
 
           <div className={styles.metricItem} title={`Self-Serve Growth: ${Math.round(metrics.self_serve_growth)}/100`}>
             <span className={styles.metricLabel}>Self-Serve</span>
-            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.self_serve_growth)}`}>{getGrowthLabel(metrics.self_serve_growth, 'self_serve_growth')}</span>
+            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.self_serve_growth)}`} style={{ color: getArrowColor('self_serve_growth') }}>
+              {getGrowthLabel(metrics.self_serve_growth, 'self_serve_growth')}
+            </span>
           </div>
           <div className={styles.metricItem} title={`Enterprise Growth: ${Math.round(metrics.enterprise_growth)}/100`}>
             <span className={styles.metricLabel}>Enterprise</span>
-            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.enterprise_growth)}`}>{getGrowthLabel(metrics.enterprise_growth, 'enterprise_growth')}</span>
+            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.enterprise_growth)}`} style={{ color: getArrowColor('enterprise_growth') }}>
+              {getGrowthLabel(metrics.enterprise_growth, 'enterprise_growth')}
+            </span>
           </div>
 
           <div className={styles.metricDivider}></div>
 
           <div className={styles.metricItem} title={`Tech Debt: ${getTechDebtLabel(metrics.tech_debt)} (${Math.round(metrics.tech_debt)}/100)`}>
             <span className={styles.metricLabel}>Tech Debt</span>
-            <span className={`${styles.metricTrend} ${styles.trendMounting}`}>{getTechDebtLabel(metrics.tech_debt)}</span>
+            <span className={`${styles.metricTrend} ${styles.trendMounting}`} style={{ color: getTechDebtArrowColor() }}>
+              {getTechDebtLabel(metrics.tech_debt)}
+            </span>
           </div>
         </div>
 
