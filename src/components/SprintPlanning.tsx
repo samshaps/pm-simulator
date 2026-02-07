@@ -79,6 +79,7 @@ export default function SprintPlanning() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCommitting, setIsCommitting] = useState(false);
   const [committedTickets, setCommittedTickets] = useState<CommittedTicket[]>([]);
+  const [previousDeltas, setPreviousDeltas] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
     // Fetch active sprint data
@@ -93,16 +94,28 @@ export default function SprintPlanning() {
         setIsLoading(false);
       });
 
-    // Handle browser back button - redirect to home instead
-    const handlePopState = (e: PopStateEvent) => {
-      e.preventDefault();
-      router.replace('/');
+    // Check for metric deltas from previous sprint's retro
+    const storedRetro = sessionStorage.getItem('lastRetro');
+    if (storedRetro) {
+      const retro = JSON.parse(storedRetro);
+      if (retro.retro?.metric_deltas) {
+        setPreviousDeltas(retro.retro.metric_deltas);
+        // Clear it so it doesn't show on subsequent sprints
+        sessionStorage.removeItem('lastRetro');
+      }
+    }
+
+    // Handle browser back button - prevent it and redirect to home
+    const handlePopState = () => {
+      // Push state again to prevent actual back navigation
+      window.history.pushState(null, '', window.location.pathname);
+      // Then navigate to home
+      window.location.href = '/';
     };
 
+    // Push initial state to trap back button
+    window.history.pushState(null, '', window.location.pathname);
     window.addEventListener('popstate', handlePopState);
-
-    // Push a dummy state to handle back button
-    window.history.pushState(null, '', window.location.href);
 
     return () => {
       window.removeEventListener('popstate', handlePopState);
@@ -301,10 +314,13 @@ export default function SprintPlanning() {
     return 'Angry';
   };
 
-  const getGrowthLabel = (value: number) => {
-    if (value >= 60) return 'Growing ↑';
-    if (value >= 40) return 'Flat →';
-    return 'Declining ↓';
+  const getGrowthLabel = (value: number, metricKey: string) => {
+    const delta = previousDeltas?.[metricKey] || 0;
+    if (delta > 5) return '↗↗';
+    if (delta > 0) return '↗';
+    if (delta < -5) return '↘↘';
+    if (delta < 0) return '↘';
+    return '→';
   };
 
   const getGrowthClass = (value: number) => {
@@ -314,10 +330,12 @@ export default function SprintPlanning() {
   };
 
   const getTechDebtLabel = (value: number) => {
-    if (value >= 70) return 'Critical ⚠';
-    if (value >= 50) return 'Mounting →';
-    if (value >= 30) return 'Manageable →';
-    return 'Low ✓';
+    const delta = previousDeltas?.['tech_debt'] || 0;
+    if (delta > 5) return '↗↗';
+    if (delta > 0) return '↗';
+    if (delta < -5) return '↘↘';
+    if (delta < 0) return '↘';
+    return '→';
   };
 
   const formatCeoFocus = (focus: string) => {
@@ -362,13 +380,13 @@ export default function SprintPlanning() {
 
           <div className={styles.metricDivider}></div>
 
-          <div className={styles.metricItem} title={`Self-Serve Growth: ${getGrowthLabel(metrics.self_serve_growth)} (${Math.round(metrics.self_serve_growth)}/100)`}>
+          <div className={styles.metricItem} title={`Self-Serve Growth: ${Math.round(metrics.self_serve_growth)}/100`}>
             <span className={styles.metricLabel}>Self-Serve</span>
-            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.self_serve_growth)}`}>{getGrowthLabel(metrics.self_serve_growth)}</span>
+            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.self_serve_growth)}`}>{getGrowthLabel(metrics.self_serve_growth, 'self_serve_growth')}</span>
           </div>
-          <div className={styles.metricItem} title={`Enterprise Growth: ${getGrowthLabel(metrics.enterprise_growth)} (${Math.round(metrics.enterprise_growth)}/100)`}>
+          <div className={styles.metricItem} title={`Enterprise Growth: ${Math.round(metrics.enterprise_growth)}/100`}>
             <span className={styles.metricLabel}>Enterprise</span>
-            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.enterprise_growth)}`}>{getGrowthLabel(metrics.enterprise_growth)}</span>
+            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.enterprise_growth)}`}>{getGrowthLabel(metrics.enterprise_growth, 'enterprise_growth')}</span>
           </div>
 
           <div className={styles.metricDivider}></div>
