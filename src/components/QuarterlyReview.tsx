@@ -37,18 +37,34 @@ export default function QuarterlyReview() {
 
   useEffect(() => {
     // Read quarterly review data from sessionStorage
+    console.log('=== QUARTERLY REVIEW DEBUG START ===');
     const storedRetro = sessionStorage.getItem('lastRetro');
+    console.log('1. Raw sessionStorage data:', storedRetro);
+
     if (storedRetro) {
       const retro = JSON.parse(storedRetro);
+      console.log('2. Parsed retro object:', retro);
+      console.log('3. Has quarterSummary?', !!retro.quarterSummary);
+      console.log('4. Has yearEndReview?', !!retro.yearEndReview);
+      console.log('5. quarterSummary content:', retro.quarterSummary);
+      console.log('6. yearEndReview content:', retro.yearEndReview);
+
       if (retro.quarterSummary || retro.yearEndReview) {
-        setReviewData({
+        const reviewDataObj = {
           quarter: retro.completedSprint?.quarter || retro.game?.current_quarter,
           quarterSummary: retro.quarterSummary,
           yearEndReview: retro.yearEndReview,
           game: retro.game
-        });
+        };
+        console.log('7. Setting reviewData to:', reviewDataObj);
+        setReviewData(reviewDataObj);
+      } else {
+        console.log('8. No quarterSummary or yearEndReview found!');
       }
+    } else {
+      console.log('9. No sessionStorage data found!');
     }
+    console.log('=== QUARTERLY REVIEW DEBUG END ===');
     setIsLoading(false);
   }, []);
 
@@ -59,22 +75,27 @@ export default function QuarterlyReview() {
   const isYearEnd = !!reviewData.yearEndReview;
   const review = isYearEnd ? reviewData.yearEndReview : reviewData.quarterSummary?.quarterly_review;
 
+  console.log('=== REVIEW EXTRACTION ===');
+  console.log('10. isYearEnd:', isYearEnd);
+  console.log('11. review object:', review);
+  console.log('12. reviewData.yearEndReview:', reviewData.yearEndReview);
+  console.log('13. reviewData.quarterSummary:', reviewData.quarterSummary);
+
   if (!review) {
+    console.log('14. No review object - returning early!');
     return <div className={styles.pageContainer}>No review data available.</div>;
   }
-
-  console.log('Review data:', review);
-  console.log('Is year end:', isYearEnd);
 
   // Year-end review has 'final_rating', quarterly has 'rating'
   const ratingValue = isYearEnd
     ? (review as any).final_rating
     : (review as any).rating;
 
-  console.log('Rating value:', ratingValue);
+  console.log('15. Rating value extracted:', ratingValue);
 
   // Fallback to 'meets' if rating is missing
   const rating = (ratingValue || 'meets') as Rating;
+  console.log('16. Final rating (with fallback):', rating);
 
   const ratingText: Record<Rating, string> = {
     'exceeds': 'Exceeds Expectations',
@@ -84,9 +105,11 @@ export default function QuarterlyReview() {
   };
 
   const calibrationValue = (review as any).calibration_outcome;
-  console.log('Calibration value:', calibrationValue);
+  console.log('17. Calibration value extracted:', calibrationValue);
 
   const calibrationOutcome = (calibrationValue || 'survived') as CalibrationOutcome;
+  console.log('18. Final calibration outcome (with fallback):', calibrationOutcome);
+  console.log('=== REVIEW EXTRACTION END ===');
 
   const calibrationText: Record<CalibrationOutcome, string> = {
     survived: 'Survived',
