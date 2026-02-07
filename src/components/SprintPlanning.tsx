@@ -68,10 +68,9 @@ const categoryToClass: Record<string, string> = {
 };
 
 const ceoFocusToCategory: Record<string, string> = {
-  'self_serve_growth': 'self_serve_feature',
-  'enterprise_growth': 'enterprise_feature',
-  'tech_debt': 'tech_debt_reduction',
-  'nps': 'ux_improvement'
+  'self_serve': 'self_serve_feature',
+  'enterprise': 'enterprise_feature',
+  'tech_debt': 'tech_debt_reduction'
 };
 
 export default function SprintPlanning() {
@@ -205,6 +204,11 @@ export default function SprintPlanning() {
       return;
     }
 
+    if (usedCapacity > stretchCapacity) {
+      alert(`${usedCapacity} points? Really? That's ${usedCapacity - stretchCapacity} points over max capacity. Even your over-optimistic estimates have limits. The API will reject this, but nice try.`);
+      return;
+    }
+
     setIsCommitting(true);
     try {
       const response = await fetch('/api/sprint/commit', {
@@ -231,7 +235,7 @@ export default function SprintPlanning() {
           yearEndReview: data.year_end_review
         }));
         // Navigate to sprint retro
-        router.push('/sprint-retro');
+        router.replace('/sprint-retro');
       } else {
         const error = await response.json();
         alert(`Failed to commit sprint: ${error.error || 'Unknown error'}`);
@@ -285,10 +289,9 @@ export default function SprintPlanning() {
 
   const formatCeoFocus = (focus: string) => {
     const labels: Record<string, string> = {
-      'self_serve_growth': 'Self-Serve Growth',
-      'enterprise_growth': 'Enterprise Growth',
-      'tech_debt': 'Tech Debt Reduction',
-      'nps': 'Customer Satisfaction (NPS)'
+      'self_serve': 'Self-Serve Growth',
+      'enterprise': 'Enterprise Growth',
+      'tech_debt': 'Tech Debt Reduction'
     };
     return labels[focus] || focus;
   };
@@ -402,6 +405,34 @@ export default function SprintPlanning() {
                 <span className={styles.used}>{usedCapacity}</span> / {sprintCapacity} pts used
               </span>
             </div>
+
+            {/* Team Morale Alert */}
+            {metrics.team_sentiment < 40 && (
+              <div style={{
+                background: 'rgba(255, 100, 100, 0.1)',
+                border: '1px solid rgba(255, 100, 100, 0.3)',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                marginBottom: '12px',
+                fontSize: '13px',
+                color: '#ff6b6b'
+              }}>
+                ⚠️ Team morale is low — capacity reduced to {sprintCapacity} pts
+              </div>
+            )}
+            {metrics.team_sentiment >= 70 && (
+              <div style={{
+                background: 'rgba(100, 255, 150, 0.1)',
+                border: '1px solid rgba(100, 255, 150, 0.3)',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                marginBottom: '12px',
+                fontSize: '13px',
+                color: '#6bffb0'
+              }}>
+                ✨ Team morale is high — capacity at {sprintCapacity} pts
+              </div>
+            )}
             <div className={styles.capacityBarTrack}>
               <div className={styles.capacityBarStretch} style={{ left: `${capacityLimitPercent}%`, right: 0 }}></div>
               <div className={styles.capacityBarLimit} style={{ left: `${capacityLimitPercent}%` }}></div>

@@ -75,7 +75,7 @@ export default function Home() {
       });
 
       if (response.ok) {
-        router.push('/sprint-planning');
+        router.replace('/sprint-planning');
       } else {
         console.error('Failed to create game');
         setIsLoading(false);
@@ -88,7 +88,7 @@ export default function Home() {
 
   const handleContinue = () => {
     if (hasSaveGame) {
-      router.push('/sprint-planning');
+      router.replace('/sprint-planning');
     }
   };
 

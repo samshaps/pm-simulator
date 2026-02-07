@@ -89,6 +89,17 @@ export default function SprintRetro() {
 
   const narrative = retroData.retro.narrative;
 
+  const formatMetricChange = (value: number): string => {
+    const absValue = Math.abs(Math.round(value));
+    if (value > 15) return `↑↑ Strong Increase`;
+    if (value > 5) return `↑ Increased`;
+    if (value > 0) return `↗ Slight Increase`;
+    if (value === 0) return `→ No Change`;
+    if (value > -5) return `↘ Slight Decrease`;
+    if (value > -15) return `↓ Decreased`;
+    return `↓↓ Strong Decrease`;
+  };
+
   const metricChanges: MetricChange[] = Object.entries(retroData.retro.metric_deltas).map(([key, value]) => ({
     name: metricNameMap[key] || key,
     change: Math.round(value as number),
@@ -102,13 +113,51 @@ export default function SprintRetro() {
     outcome: ticket.outcome
   }));
 
-  const managerFeedback = "Sprint complete. Review the outcomes and prepare for the next one.";
+  // Generate actionable insights based on metric changes
+  const generateInsights = () => {
+    const insights: string[] = [];
+    const deltas = retroData.retro.metric_deltas;
+
+    // Sentiment insights
+    if (deltas.team_sentiment && deltas.team_sentiment < -10) {
+      insights.push("Team morale took a significant hit. Consider lighter loads next sprint.");
+    } else if (deltas.team_sentiment && deltas.team_sentiment > 10) {
+      insights.push("Team morale improved. Momentum is building.");
+    }
+
+    // Growth insights
+    if (deltas.self_serve_growth && deltas.self_serve_growth > 8) {
+      insights.push("Self-serve growth is accelerating. Product changes are resonating.");
+    }
+    if (deltas.enterprise_growth && deltas.enterprise_growth > 8) {
+      insights.push("Enterprise momentum building. Sales team is noticing.");
+    }
+
+    // Tech debt insights
+    if (deltas.tech_debt && deltas.tech_debt > 10) {
+      insights.push("Tech debt is mounting. CTO will bring this up soon.");
+    } else if (deltas.tech_debt && deltas.tech_debt < -8) {
+      insights.push("Tech debt improved. Engineering team appreciates the focus.");
+    }
+
+    // Stakeholder insights
+    if (deltas.ceo_sentiment && deltas.ceo_sentiment < -10) {
+      insights.push("CEO sentiment dropped. Priorities may need realignment.");
+    }
+    if (deltas.sales_sentiment && deltas.sales_sentiment < -10) {
+      insights.push("Sales team is frustrated. Enterprise deals may be at risk.");
+    }
+
+    return insights;
+  };
+
+  const insights = generateInsights();
 
   const handleContinue = () => {
     if (retroData.isQuarterEnd) {
-      router.push('/quarterly-review');
+      router.replace('/quarterly-review');
     } else {
-      router.push('/sprint-planning');
+      router.replace('/sprint-planning');
     }
   };
 
@@ -143,25 +192,33 @@ export default function SprintRetro() {
             <div className={styles.narrativeText}>{narrative}</div>
           </div>
 
+          {/* Key Insights */}
+          {insights.length > 0 && (
+            <>
+              <div className={styles.sectionLabel}>Key Takeaways</div>
+              <div className={styles.feedbackCard}>
+                <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
+                  {insights.map((insight, index) => (
+                    <li key={index}>{insight}</li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
+
           {/* Metric Changes */}
-          <div className={styles.sectionLabel}>Metric Changes</div>
+          <div className={styles.sectionLabel}>Metrics Momentum</div>
           <div className={styles.metricChangesCard}>
             <div className={styles.metricChangesGrid}>
               {metricChanges.map((metric, index) => (
                 <div key={index} className={styles.metricChangeItem}>
                   <span className={styles.metricChangeName}>{metric.name}</span>
                   <span className={`${styles.metricChangeValue} ${styles[metric.changeType]}`}>
-                    {metric.change > 0 ? '+' : ''}{metric.change}
+                    {formatMetricChange(metric.change)}
                   </span>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Manager Feedback */}
-          <div className={styles.sectionLabel}>Manager Feedback</div>
-          <div className={styles.feedbackCard}>
-            <div className={styles.feedbackText}>{managerFeedback}</div>
           </div>
         </div>
 
@@ -182,17 +239,6 @@ export default function SprintRetro() {
                 <div className={styles.outcomeImpact}>{ticket.impact}</div>
               </div>
             ))}
-          </div>
-
-          {/* Key Learnings */}
-          <div className={styles.sectionLabel} style={{ marginTop: '24px' }}>Key Learnings</div>
-          <div className={styles.learningsCard}>
-            <ul className={styles.learningsList}>
-              <li>Overcommitting damages team morale, even when you ship</li>
-              <li>Enterprise wins boost CEO sentiment but can alienate the team</li>
-              <li>Tech debt accumulates faster than you expect</li>
-              <li>Sales will love you briefly, then forget immediately</li>
-            </ul>
           </div>
         </div>
       </div>
