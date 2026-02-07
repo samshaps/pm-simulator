@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './SprintRetro.module.css';
 
 interface MetricChange {
@@ -13,44 +14,102 @@ interface TicketOutcome {
   title: string;
   status: 'success' | 'partial' | 'failure';
   impact: string;
+  outcome: string;
 }
 
+interface RetroData {
+  game: {
+    id: string;
+    difficulty: string;
+    current_quarter: number;
+    current_sprint: number;
+  };
+  completedSprint: {
+    sprint_number: number;
+    quarter: number;
+  };
+  retro: {
+    sprint_number: number;
+    ticket_outcomes: any[];
+    metric_deltas: Record<string, number>;
+    narrative: string;
+  };
+  isQuarterEnd: boolean;
+}
+
+const outcomeStatusMap: Record<string, 'success' | 'partial' | 'failure'> = {
+  'clear_success': 'success',
+  'partial_success': 'partial',
+  'unexpected_impact': 'success',
+  'soft_failure': 'failure',
+  'catastrophe': 'failure'
+};
+
+const metricNameMap: Record<string, string> = {
+  'team_sentiment': 'Team Sentiment',
+  'ceo_sentiment': 'CEO Sentiment',
+  'sales_sentiment': 'Sales Sentiment',
+  'cto_sentiment': 'CTO Sentiment',
+  'self_serve_growth': 'Self-Serve Growth',
+  'enterprise_growth': 'Enterprise Growth',
+  'tech_debt': 'Tech Debt',
+  'nps': 'NPS',
+  'velocity': 'Velocity'
+};
+
 export default function SprintRetro() {
-  const narrative = "The sprint wrapped up with mixed results. Your SSO implementation for Acme Corp shipped on time, which made Sales ecstatic for about 48 hours. The custom export for GlobalTech also landed, though the team muttered about technical debt the entire time. On the flip side, you committed to more than the team could deliver, and two tickets got pushed to next sprint. CEO sentiment ticked up slightly thanks to the enterprise wins, but your team's morale took a small hit from the overcommitment.";
+  const router = useRouter();
+  const [retroData, setRetroData] = useState<RetroData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const metricChanges: MetricChange[] = [
-    { name: 'Team Sentiment', change: -8, changeType: 'negative' },
-    { name: 'CEO Sentiment', change: 12, changeType: 'positive' },
-    { name: 'Sales Sentiment', change: 15, changeType: 'positive' },
-    { name: 'CTO Sentiment', change: -3, changeType: 'negative' },
-    { name: 'Self-Serve Growth', change: 0, changeType: 'neutral' },
-    { name: 'Enterprise Growth', change: 8, changeType: 'positive' },
-    { name: 'Tech Debt', change: 12, changeType: 'negative' }
-  ];
+  useEffect(() => {
+    // Fetch the current game state which includes the completed sprint's retro
+    fetch('/api/sprint/active')
+      .then(res => res.json())
+      .then(data => {
+        // The retro data should be in the previous sprint
+        // For now, let's store retro in session storage during commit
+        const storedRetro = sessionStorage.getItem('lastRetro');
+        if (storedRetro) {
+          const parsed = JSON.parse(storedRetro);
+          setRetroData(parsed);
+          sessionStorage.removeItem('lastRetro');
+        }
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load retro data:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
-  const ticketOutcomes: TicketOutcome[] = [
-    {
-      title: 'SSO for Acme Corp',
-      status: 'success',
-      impact: 'Shipped on time. Sales is thrilled. Enterprise growth improved.'
-    },
-    {
-      title: 'Custom Export for GlobalTech',
-      status: 'success',
-      impact: 'Delivered. Added tech debt as expected. Sales sentiment boosted.'
-    },
-    {
-      title: 'Dashboard Analytics',
-      status: 'partial',
-      impact: 'Only 60% complete. Pushed to next sprint. No growth impact yet.'
-    }
-  ];
+  if (isLoading || !retroData) {
+    return <div className={styles.pageContainer}>Loading sprint results...</div>;
+  }
 
-  const managerFeedback = "Not bad. You delivered on the enterprise priorities, which is what I care about this quarter. But you overcommitted and the team noticed. Next sprint, be more realistic about capacity. Also, tech debt is creeping up—the CTO mentioned it in our 1:1.";
+  const narrative = retroData.retro.narrative;
+
+  const metricChanges: MetricChange[] = Object.entries(retroData.retro.metric_deltas).map(([key, value]) => ({
+    name: metricNameMap[key] || key,
+    change: Math.round(value as number),
+    changeType: value > 0 ? 'positive' : value < 0 ? 'negative' : 'neutral'
+  }));
+
+  const ticketOutcomes: TicketOutcome[] = retroData.retro.ticket_outcomes.map(ticket => ({
+    title: ticket.title,
+    status: outcomeStatusMap[ticket.outcome] || 'partial',
+    impact: ticket.outcome_narrative || 'Completed with mixed results.',
+    outcome: ticket.outcome
+  }));
+
+  const managerFeedback = "Sprint complete. Review the outcomes and prepare for the next one.";
 
   const handleContinue = () => {
-    console.log('Continuing to next sprint');
-    // TODO: Navigate to next sprint or home
+    if (retroData.isQuarterEnd) {
+      router.push('/quarterly-review');
+    } else {
+      router.push('/sprint-planning');
+    }
   };
 
   return (
@@ -62,7 +121,7 @@ export default function SprintRetro() {
             <div className={styles.logoIcon}>PM</div>
             <span className={styles.logoText}>PM Simulator</span>
           </div>
-          <div className={styles.quarterBadge}>Q2 — Sprint 1 Complete</div>
+          <div className={styles.quarterBadge}>Q{retroData.completedSprint.quarter} — Sprint {retroData.completedSprint.sprint_number} Complete</div>
         </div>
         <div className={styles.topBarRight}>
           <div className={styles.avatar}>S</div>
@@ -141,11 +200,11 @@ export default function SprintRetro() {
       {/* Bottom Bar */}
       <div className={styles.bottomBar}>
         <div className={styles.bottomBarLeft}>
-          Sprint 1 of 3 complete. Two more sprints until quarterly review.
+          Sprint {retroData.completedSprint.sprint_number} of 3 complete. {retroData.isQuarterEnd ? 'Time for quarterly review.' : `${3 - retroData.completedSprint.sprint_number} more sprint${3 - retroData.completedSprint.sprint_number > 1 ? 's' : ''} until quarterly review.`}
         </div>
         <div className={styles.bottomBarRight}>
           <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleContinue}>
-            Continue to Next Sprint
+            {retroData.isQuarterEnd ? 'View Quarterly Review' : 'Continue to Next Sprint'}
           </button>
         </div>
       </div>

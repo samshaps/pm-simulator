@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './SprintPlanning.module.css';
 
 interface Ticket {
@@ -10,8 +11,8 @@ interface Ticket {
   category: string;
   categoryClass: string;
   description: string;
-  isMandatory?: boolean;
-  isCEOAligned?: boolean;
+  is_mandatory?: boolean;
+  outcomes?: Record<string, string>;
 }
 
 interface CommittedTicket {
@@ -22,19 +23,97 @@ interface CommittedTicket {
   categoryClass: string;
 }
 
-export default function SprintPlanning() {
-  const [committedTickets, setCommittedTickets] = useState<CommittedTicket[]>([
-    { id: '2', title: 'SSO for Acme Corp', effort: 7, category: 'Enterprise', categoryClass: 'catEnterprise' },
-    { id: '5', title: 'Custom Export for GlobalTech', effort: 6, category: 'Sales', categoryClass: 'catSales' }
-  ]);
+interface MetricsState {
+  team_sentiment: number;
+  ceo_sentiment: number;
+  sales_sentiment: number;
+  cto_sentiment: number;
+  self_serve_growth: number;
+  enterprise_growth: number;
+  tech_debt: number;
+  nps: number;
+  velocity: number;
+}
 
-  const sprintCapacity = 21;
-  const stretchCapacity = 26;
+interface GameState {
+  game: {
+    id: string;
+    difficulty: string;
+    current_quarter: number;
+    current_sprint: number;
+    metrics_state: MetricsState;
+  };
+  sprint: {
+    id: string;
+    effective_capacity: number;
+    backlog: Ticket[];
+    committed: any[];
+  };
+  quarter: {
+    ceo_focus: string;
+  };
+}
+
+const categoryToClass: Record<string, string> = {
+  'self_serve_feature': 'catSelfServe',
+  'enterprise_feature': 'catEnterprise',
+  'sales_request': 'catSales',
+  'tech_debt_reduction': 'catTechDebt',
+  'ux_improvement': 'catUx',
+  'monetization': 'catMonetization',
+  'infrastructure': 'catInfra',
+  'moonshot': 'catMoonshot'
+};
+
+const ceoFocusToCategory: Record<string, string> = {
+  'self_serve_growth': 'self_serve_feature',
+  'enterprise_growth': 'enterprise_feature',
+  'tech_debt': 'tech_debt_reduction',
+  'nps': 'ux_improvement'
+};
+
+export default function SprintPlanning() {
+  const router = useRouter();
+  const [gameState, setGameState] = useState<GameState | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCommitting, setIsCommitting] = useState(false);
+  const [committedTickets, setCommittedTickets] = useState<CommittedTicket[]>([]);
+
+  useEffect(() => {
+    // Fetch active sprint data
+    fetch('/api/sprint/active')
+      .then(res => res.json())
+      .then(data => {
+        setGameState(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load sprint data:', err);
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (isLoading || !gameState) {
+    return <div className={styles.pageContainer}>Loading sprint data...</div>;
+  }
+
+  const sprintCapacity = Math.floor(gameState.sprint.effective_capacity);
+  const stretchCapacity = Math.floor(sprintCapacity * 1.25);
   const usedCapacity = committedTickets.reduce((sum, t) => sum + t.effort, 0);
   const capacityPercent = (usedCapacity / stretchCapacity) * 100;
   const capacityLimitPercent = (sprintCapacity / stretchCapacity) * 100;
 
-  const backlogTickets: Ticket[] = [
+  const metrics = gameState.game.metrics_state;
+  const ceoFocusCategory = ceoFocusToCategory[gameState.quarter.ceo_focus] || '';
+
+  const backlogTickets: Ticket[] = gameState.sprint.backlog.map(ticket => ({
+    ...ticket,
+    categoryClass: categoryToClass[ticket.category] || 'catDefault',
+    isMandatory: ticket.is_mandatory,
+    isCEOAligned: ticket.category === ceoFocusCategory
+  }));
+
+  const mockBacklogTickets: Ticket[] = [
     {
       id: '1',
       title: 'Revamp Dashboard Analytics',
@@ -118,15 +197,98 @@ export default function SprintPlanning() {
     setCommittedTickets(committedTickets.filter(t => t.id !== ticketId));
   };
 
-  const handleStartSprint = () => {
-    console.log('Starting sprint with tickets:', committedTickets);
-    // TODO: Navigate to sprint execution or call API
+  const handleStartSprint = async () => {
+    if (committedTickets.length === 0) {
+      alert('Please commit at least one ticket to start the sprint.');
+      return;
+    }
+
+    setIsCommitting(true);
+    try {
+      const response = await fetch('/api/sprint/commit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ticketIds: committedTickets.map(t => t.id)
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Store retro data for the retro page
+        const isQuarterEnd = gameState.game.current_sprint === 3;
+        sessionStorage.setItem('lastRetro', JSON.stringify({
+          game: data.game,
+          completedSprint: {
+            sprint_number: gameState.game.current_sprint,
+            quarter: gameState.game.current_quarter
+          },
+          retro: data.retro,
+          isQuarterEnd,
+          quarterSummary: data.quarter_summary,
+          yearEndReview: data.year_end_review
+        }));
+        // Navigate to sprint retro
+        router.push('/sprint-retro');
+      } else {
+        const error = await response.json();
+        alert(`Failed to commit sprint: ${error.error || 'Unknown error'}`);
+        setIsCommitting(false);
+      }
+    } catch (error) {
+      console.error('Error committing sprint:', error);
+      alert('Failed to commit sprint. Please try again.');
+      setIsCommitting(false);
+    }
   };
 
   const getCapacityClass = () => {
     if (usedCapacity > stretchCapacity) return styles.danger;
     if (usedCapacity > sprintCapacity) return styles.overbooked;
     return '';
+  };
+
+  const getSentimentFace = (value: number) => {
+    if (value >= 70) return '😊';
+    if (value >= 50) return '😐';
+    if (value >= 30) return '😟';
+    return '😠';
+  };
+
+  const getSentimentLabel = (value: number) => {
+    if (value >= 70) return 'Happy';
+    if (value >= 50) return 'Neutral';
+    if (value >= 30) return 'Unhappy';
+    return 'Angry';
+  };
+
+  const getGrowthLabel = (value: number) => {
+    if (value >= 60) return 'Growing ↑';
+    if (value >= 40) return 'Flat →';
+    return 'Declining ↓';
+  };
+
+  const getGrowthClass = (value: number) => {
+    if (value >= 60) return styles.trendUp;
+    if (value >= 40) return styles.trendFlat;
+    return styles.trendDown;
+  };
+
+  const getTechDebtLabel = (value: number) => {
+    if (value >= 70) return 'Critical ⚠';
+    if (value >= 50) return 'Mounting →';
+    if (value >= 30) return 'Manageable →';
+    return 'Low ✓';
+  };
+
+  const formatCeoFocus = (focus: string) => {
+    const labels: Record<string, string> = {
+      'self_serve_growth': 'Self-Serve Growth',
+      'enterprise_growth': 'Enterprise Growth',
+      'tech_debt': 'Tech Debt Reduction',
+      'nps': 'Customer Satisfaction (NPS)'
+    };
+    return labels[focus] || focus;
   };
 
   return (
@@ -138,44 +300,44 @@ export default function SprintPlanning() {
             <div className={styles.logoIcon}>PM</div>
             <span className={styles.logoText}>PM Simulator</span>
           </div>
-          <div className={styles.quarterBadge}>Q2 — Sprint 1 of 3</div>
+          <div className={styles.quarterBadge}>Q{gameState.game.current_quarter} — Sprint {gameState.game.current_sprint} of 3</div>
         </div>
 
         {/* Metrics Bar */}
         <div className={styles.metricsBar}>
-          <div className={styles.metricItem} title="Team Sentiment: Neutral (55/100)">
+          <div className={styles.metricItem} title={`Team Sentiment: ${getSentimentLabel(metrics.team_sentiment)} (${Math.round(metrics.team_sentiment)}/100)`}>
             <span className={styles.metricLabel}>Team</span>
-            <span className={styles.metricFace}>😐</span>
+            <span className={styles.metricFace}>{getSentimentFace(metrics.team_sentiment)}</span>
           </div>
-          <div className={styles.metricItem} title="CEO Sentiment: Neutral (48/100)">
+          <div className={styles.metricItem} title={`CEO Sentiment: ${getSentimentLabel(metrics.ceo_sentiment)} (${Math.round(metrics.ceo_sentiment)}/100)`}>
             <span className={styles.metricLabel}>CEO</span>
-            <span className={styles.metricFace}>😐</span>
+            <span className={styles.metricFace}>{getSentimentFace(metrics.ceo_sentiment)}</span>
           </div>
-          <div className={styles.metricItem} title="Sales Sentiment: Unhappy (38/100)">
+          <div className={styles.metricItem} title={`Sales Sentiment: ${getSentimentLabel(metrics.sales_sentiment)} (${Math.round(metrics.sales_sentiment)}/100)`}>
             <span className={styles.metricLabel}>Sales</span>
-            <span className={styles.metricFace}>😟</span>
+            <span className={styles.metricFace}>{getSentimentFace(metrics.sales_sentiment)}</span>
           </div>
-          <div className={styles.metricItem} title="CTO Sentiment: Neutral (52/100)">
+          <div className={styles.metricItem} title={`CTO Sentiment: ${getSentimentLabel(metrics.cto_sentiment)} (${Math.round(metrics.cto_sentiment)}/100)`}>
             <span className={styles.metricLabel}>CTO</span>
-            <span className={styles.metricFace}>😐</span>
+            <span className={styles.metricFace}>{getSentimentFace(metrics.cto_sentiment)}</span>
           </div>
 
           <div className={styles.metricDivider}></div>
 
-          <div className={styles.metricItem} title="Self-Serve Growth: Flat (45/100)">
+          <div className={styles.metricItem} title={`Self-Serve Growth: ${getGrowthLabel(metrics.self_serve_growth)} (${Math.round(metrics.self_serve_growth)}/100)`}>
             <span className={styles.metricLabel}>Self-Serve</span>
-            <span className={`${styles.metricTrend} ${styles.trendFlat}`}>Flat →</span>
+            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.self_serve_growth)}`}>{getGrowthLabel(metrics.self_serve_growth)}</span>
           </div>
-          <div className={styles.metricItem} title="Enterprise Growth: Declining (38/100)">
+          <div className={styles.metricItem} title={`Enterprise Growth: ${getGrowthLabel(metrics.enterprise_growth)} (${Math.round(metrics.enterprise_growth)}/100)`}>
             <span className={styles.metricLabel}>Enterprise</span>
-            <span className={`${styles.metricTrend} ${styles.trendDown}`}>Declining ↓</span>
+            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.enterprise_growth)}`}>{getGrowthLabel(metrics.enterprise_growth)}</span>
           </div>
 
           <div className={styles.metricDivider}></div>
 
-          <div className={styles.metricItem} title="Tech Debt: Mounting (48/100)">
+          <div className={styles.metricItem} title={`Tech Debt: ${getTechDebtLabel(metrics.tech_debt)} (${Math.round(metrics.tech_debt)}/100)`}>
             <span className={styles.metricLabel}>Tech Debt</span>
-            <span className={`${styles.metricTrend} ${styles.trendMounting}`}>Mounting →</span>
+            <span className={`${styles.metricTrend} ${styles.trendMounting}`}>{getTechDebtLabel(metrics.tech_debt)}</span>
           </div>
         </div>
 
@@ -187,7 +349,7 @@ export default function SprintPlanning() {
       {/* CEO Focus Banner */}
       <div className={styles.ceoFocusBanner}>
         <span className={styles.ceoFocusLabel}>CEO Focus this Quarter:</span>
-        <span className={styles.ceoFocusValue}>Enterprise Growth</span>
+        <span className={styles.ceoFocusValue}>{formatCeoFocus(gameState.quarter.ceo_focus)}</span>
         <span className={styles.ceoFocusHint}>— aligned tickets get +12% success chance</span>
       </div>
 
@@ -290,13 +452,20 @@ export default function SprintPlanning() {
       {/* Bottom Bar */}
       <div className={styles.bottomBar}>
         <div className={styles.bottomBarLeft}>
-          Sales is at 38 and dropping. CEO wants enterprise. Tech debt is creeping up. Only {sprintCapacity} points. Classic PM trap.
+          {metrics.sales_sentiment < 40 && 'Sales is unhappy. '}
+          {metrics.ceo_sentiment < 50 && 'CEO is watching. '}
+          {metrics.tech_debt > 60 && 'Tech debt is mounting. '}
+          {metrics.team_sentiment < 40 && 'Team morale is low. '}
+          Only {sprintCapacity} points. Choose wisely.
         </div>
         <div className={styles.bottomBarRight}>
-          <button className={`${styles.btn} ${styles.btnGhost}`}>Reset Sprint</button>
-          <button className={`${styles.btn} ${styles.btnGhost}`}>Reconsider Scope</button>
-          <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleStartSprint}>
-            Start Sprint
+          <button className={`${styles.btn} ${styles.btnGhost}`} onClick={() => setCommittedTickets([])}>Reset Sprint</button>
+          <button
+            className={`${styles.btn} ${styles.btnPrimary}`}
+            onClick={handleStartSprint}
+            disabled={isCommitting || committedTickets.length === 0}
+          >
+            {isCommitting ? 'Committing...' : 'Start Sprint'}
           </button>
         </div>
       </div>
