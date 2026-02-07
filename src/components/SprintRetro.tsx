@@ -100,10 +100,15 @@ export default function SprintRetro() {
     return `↓↓ Strong Decrease`;
   };
 
-  const metricChanges: MetricChange[] = Object.entries(retroData.retro.metric_deltas).map(([key, value]) => ({
+  // Ensure all core metrics are shown, even if they have 0 change
+  const coreMetrics = ['team_sentiment', 'ceo_sentiment', 'sales_sentiment', 'cto_sentiment',
+                       'self_serve_growth', 'enterprise_growth', 'tech_debt'];
+
+  const metricDeltas = retroData.retro.metric_deltas;
+  const metricChanges: MetricChange[] = coreMetrics.map(key => ({
     name: metricNameMap[key] || key,
-    change: Math.round(value as number),
-    changeType: value > 0 ? 'positive' : value < 0 ? 'negative' : 'neutral'
+    change: Math.round((metricDeltas[key] as number) || 0),
+    changeType: (metricDeltas[key] || 0) > 0 ? 'positive' as const : (metricDeltas[key] || 0) < 0 ? 'negative' as const : 'neutral' as const
   }));
 
   const ticketOutcomes: TicketOutcome[] = retroData.retro.ticket_outcomes.map(ticket => ({

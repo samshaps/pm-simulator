@@ -92,7 +92,22 @@ export default function SprintPlanning() {
         console.error('Failed to load sprint data:', err);
         setIsLoading(false);
       });
-  }, []);
+
+    // Handle browser back button - redirect to home instead
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      router.replace('/');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    // Push a dummy state to handle back button
+    window.history.pushState(null, '', window.location.href);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [router]);
 
   if (isLoading || !gameState) {
     return <div className={styles.pageContainer}>Loading sprint data...</div>;
@@ -100,18 +115,36 @@ export default function SprintPlanning() {
 
   const sprintCapacity = Math.floor(gameState.sprint.effective_capacity);
   const stretchCapacity = Math.floor(sprintCapacity * 1.25);
+
+  // Estimate "lost" capacity due to low morale
+  // Base capacity assumes ~50 team sentiment as baseline
+  const baseSentiment = 50;
+  const sentimentDiff = Math.max(0, baseSentiment - metrics.team_sentiment);
+  const lostCapacityEstimate = Math.floor((sentimentDiff / 50) * sprintCapacity * 0.3); // Up to 30% capacity loss
+  const displayCapacity = sprintCapacity + lostCapacityEstimate;
+
   const usedCapacity = committedTickets.reduce((sum, t) => sum + t.effort, 0);
   const capacityPercent = (usedCapacity / stretchCapacity) * 100;
   const capacityLimitPercent = (sprintCapacity / stretchCapacity) * 100;
+  const lostCapacityPercent = (lostCapacityEstimate / stretchCapacity) * 100;
 
   const metrics = gameState.game.metrics_state;
   const ceoFocusCategory = ceoFocusToCategory[gameState.quarter.ceo_focus] || '';
+
+  // Check if ticket is CEO-aligned
+  const isTicketCEOAligned = (ticketCategory: string) => {
+    // Sales requests align with enterprise focus
+    if (gameState.quarter.ceo_focus === 'enterprise' && ticketCategory === 'sales_request') {
+      return true;
+    }
+    return ticketCategory === ceoFocusCategory;
+  };
 
   const backlogTickets: Ticket[] = gameState.sprint.backlog.map(ticket => ({
     ...ticket,
     categoryClass: categoryToClass[ticket.category] || 'catDefault',
     isMandatory: ticket.is_mandatory,
-    isCEOAligned: ticket.category === ceoFocusCategory
+    isCEOAligned: isTicketCEOAligned(ticket.category)
   }));
 
   const mockBacklogTickets: Ticket[] = [
@@ -437,10 +470,26 @@ export default function SprintPlanning() {
               <div className={styles.capacityBarStretch} style={{ left: `${capacityLimitPercent}%`, right: 0 }}></div>
               <div className={styles.capacityBarLimit} style={{ left: `${capacityLimitPercent}%` }}></div>
               <div className={`${styles.capacityBarFill} ${getCapacityClass()}`} style={{ width: `${capacityPercent}%` }}></div>
+
+              {/* Show lost capacity due to low morale */}
+              {lostCapacityEstimate > 0 && (
+                <div style={{
+                  position: 'absolute',
+                  left: `${capacityLimitPercent}%`,
+                  width: `${lostCapacityPercent}%`,
+                  height: '100%',
+                  backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,100,100,0.2) 0px, rgba(255,100,100,0.2) 2px, transparent 2px, transparent 6px)',
+                  border: '1px dashed rgba(255,100,100,0.4)',
+                  borderRadius: '0 4px 4px 0',
+                  pointerEvents: 'none'
+                }} title={`${lostCapacityEstimate} pts lost to low morale`}></div>
+              )}
             </div>
             <div className={styles.capacityLabelsRow}>
               <span className={styles.capacitySublabel}>0 pts</span>
-              <span className={styles.capacitySublabel} style={{ position: 'relative', left: '-10%' }}>{sprintCapacity} pts capacity</span>
+              <span className={styles.capacitySublabel} style={{ position: 'relative', left: '-10%' }}>
+                {sprintCapacity} pts capacity{lostCapacityEstimate > 0 && ` (${lostCapacityEstimate} pts lost)`}
+              </span>
               <span className={`${styles.capacitySublabel} ${styles.warn}`}>{stretchCapacity} pts max (stretch)</span>
             </div>
           </div>
@@ -497,8 +546,12 @@ export default function SprintPlanning() {
             className={`${styles.btn} ${styles.btnPrimary}`}
             onClick={handleStartSprint}
             disabled={isCommitting || committedTickets.length === 0}
+            style={{
+              opacity: (isCommitting || committedTickets.length === 0) ? 0.4 : 1,
+              cursor: (isCommitting || committedTickets.length === 0) ? 'not-allowed' : 'pointer'
+            }}
           >
-            {isCommitting ? 'Committing...' : 'Start Sprint'}
+            {isCommitting ? 'Committing...' : committedTickets.length === 0 ? 'Add Tickets to Start' : 'Start Sprint'}
           </button>
         </div>
       </div>
