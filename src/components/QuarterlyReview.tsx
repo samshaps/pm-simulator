@@ -63,7 +63,10 @@ export default function QuarterlyReview() {
     return <div className={styles.pageContainer}>No review data available.</div>;
   }
 
-  const rating = review.rating as Rating;
+  // Year-end review has 'final_rating', quarterly has 'rating'
+  const rating = (isYearEnd
+    ? (review as { final_rating: string }).final_rating
+    : (review as { rating: string }).rating) as Rating;
   const ratingText: Record<Rating, string> = {
     'exceeds': 'Exceeds Expectations',
     'meets': 'Meets Expectations',
