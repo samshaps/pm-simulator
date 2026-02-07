@@ -1,0 +1,800 @@
+// PM Simulator - Persona Playthrough Simulation
+// Replicates the game engine logic and runs 5 personas through 12 sprints
+
+import { readFileSync } from 'fs';
+
+// ─── LOAD TICKET DATA ───
+const base = `${process.cwd()}/pm-simulator-db`;
+const allTickets = [
+  ...JSON.parse(readFileSync(`${base}/tickets-self-serve.json`, 'utf8')),
+  ...JSON.parse(readFileSync(`${base}/tickets-enterprise.json`, 'utf8')),
+  ...JSON.parse(readFileSync(`${base}/tickets-tech-debt.json`, 'utf8')),
+  ...JSON.parse(readFileSync(`${base}/tickets-ux-infra.json`, 'utf8')),
+  ...JSON.parse(readFileSync(`${base}/tickets-sales-monetization-moonshot.json`, 'utf8')),
+];
+const eventsData = JSON.parse(readFileSync(`${base}/events-and-alerts.json`, 'utf8'));
+
+// ─── RNG (matches game engine exactly) ───
+function createRng(seed) {
+  let t = seed | 0;
+  const next = () => {
+    t = (t + 0x6d2b79f5) | 0;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+  return {
+    next,
+    int: (min, max) => Math.floor(next() * (max - min + 1)) + min,
+    pick: (items) => items[Math.floor(next() * items.length)],
+    state: () => t,
+  };
+}
+
+// ─── CORE ENGINE (matches simulate.ts) ───
+function computeEffectiveCapacity(metrics) {
+  let capacity = 20;
+  const team = metrics.team_sentiment;
+  const debt = metrics.tech_debt;
+  const cto = metrics.cto_sentiment;
+  if (team > 75) capacity += 4;
+  else if (team >= 50) capacity += 1;
+  else if (team >= 25) capacity -= 2;
+  else capacity -= 5;
+  if (debt < 25) capacity += 2;
+  else if (debt <= 50) capacity += 0;
+  else if (debt <= 75) capacity -= 3;
+  else capacity -= 6;
+  if (cto > 80) capacity += 4;
+  return Math.max(8, capacity);
+}
+
+function selectCeoFocus(metrics, rng) {
+  const weights = { self_serve: 35, enterprise: 35, tech_debt: 30 };
+  if (metrics.self_serve_growth < 35) weights.self_serve += 20;
+  if (metrics.enterprise_growth < 35) weights.enterprise += 20;
+  if (metrics.tech_debt > 65) weights.tech_debt += 20;
+  const total = weights.self_serve + weights.enterprise + weights.tech_debt;
+  let roll = rng.next() * total;
+  for (const focus of ['self_serve', 'enterprise', 'tech_debt']) {
+    roll -= weights[focus];
+    if (roll <= 0) return focus;
+  }
+  return 'self_serve';
+}
+
+function focusToCategory(focus) {
+  if (focus === 'enterprise') return 'enterprise_feature';
+  if (focus === 'tech_debt') return 'tech_debt_reduction';
+  return 'self_serve_feature';
+}
+
+function shouldShiftFocus(rng, difficulty) {
+  const chance = difficulty === 'easy' ? 0.05 : difficulty === 'hard' ? 0.15 : 0.1;
+  return rng.next() < chance;
+}
+
+const stakeholderByCategory = {
+  self_serve_feature: 'ceo_sentiment',
+  enterprise_feature: 'sales_sentiment',
+  tech_debt_reduction: 'cto_sentiment',
+  ux_improvement: 'team_sentiment',
+  infrastructure: 'cto_sentiment',
+  monetization: 'ceo_sentiment',
+  sales_request: 'sales_sentiment',
+  moonshot: 'ceo_sentiment',
+};
+
+function rollOutcome(rng, context) {
+  const mod = {
+    clear_success: 25, partial_success: 35, unexpected_impact: 15,
+    soft_failure: 20, catastrophe: 5,
+  };
+  if (context.ceoAligned) {
+    mod.clear_success += 12; mod.partial_success += 3;
+    mod.soft_failure -= 10; mod.catastrophe -= 5;
+  }
+  if (context.techDebt > 80) {
+    mod.clear_success -= 12; mod.partial_success -= 3;
+    mod.soft_failure += 7; mod.catastrophe += 8;
+  } else if (context.techDebt > 65) {
+    mod.clear_success -= 8; mod.partial_success -= 2;
+    mod.soft_failure += 5; mod.catastrophe += 5;
+  }
+  if (context.teamSentiment < 30) {
+    mod.clear_success -= 8; mod.soft_failure += 5; mod.catastrophe += 3;
+  } else if (context.teamSentiment > 75) {
+    mod.clear_success += 5; mod.partial_success += 3;
+    mod.soft_failure -= 5; mod.catastrophe -= 3;
+  }
+  if (context.isOverbooked) {
+    mod.clear_success -= 10; mod.soft_failure += 5; mod.catastrophe += 5;
+  }
+  if (context.isMoonshot) {
+    mod.clear_success -= 10; mod.partial_success += 5;
+    mod.soft_failure += 3; mod.catastrophe += 2;
+  }
+  if (context.difficulty === 'easy') {
+    mod.clear_success += 5; mod.partial_success += 3;
+    mod.soft_failure -= 5; mod.catastrophe -= 3;
+  }
+  if (context.difficulty === 'hard') {
+    mod.clear_success -= 5; mod.soft_failure += 3; mod.catastrophe += 2;
+  }
+  const outcomes = ['clear_success', 'partial_success', 'unexpected_impact', 'soft_failure', 'catastrophe'];
+  const clamped = outcomes.map(k => Math.max(2, mod[k]));
+  const total = clamped.reduce((s, v) => s + v, 0);
+  const roll = rng.next() * total;
+  let acc = 0;
+  for (let i = 0; i < outcomes.length; i++) {
+    acc += clamped[i];
+    if (roll <= acc) return outcomes[i];
+  }
+  return 'partial_success';
+}
+
+const clamp = v => Math.max(0, Math.min(100, v));
+const applyRange = (rng, range) => {
+  if (!range) return 0;
+  const [min, max] = range;
+  if (min === max) return min;
+  return rng.int(min, max);
+};
+
+function applyOutcome(rng, metrics, ticket, outcome) {
+  const updated = { ...metrics };
+  const deltas = {};
+  const applyDelta = (metric, delta) => {
+    if (!delta) return;
+    updated[metric] = clamp(updated[metric] + delta);
+    deltas[metric] = (deltas[metric] || 0) + delta;
+  };
+  const stakeholder = stakeholderByCategory[ticket.category] || 'ceo_sentiment';
+
+  if (outcome === 'clear_success' || outcome === 'partial_success') {
+    const isSuccess = outcome === 'clear_success';
+    const pRange = isSuccess ? ticket.primary_impact?.success : ticket.primary_impact?.partial;
+    const sRange = isSuccess ? ticket.secondary_impact?.success : ticket.secondary_impact?.partial;
+    const tRange = isSuccess ? ticket.tradeoff_impact?.success : ticket.tradeoff_impact?.partial;
+    applyDelta(ticket.primary_metric, applyRange(rng, pRange));
+    if (ticket.secondary_metric) applyDelta(ticket.secondary_metric, applyRange(rng, sRange));
+    if (ticket.tradeoff_metric) applyDelta(ticket.tradeoff_metric, applyRange(rng, tRange));
+    applyDelta(stakeholder, isSuccess ? rng.int(3, 6) : rng.int(1, 3));
+  }
+  if (outcome === 'unexpected_impact') {
+    applyDelta(ticket.primary_metric, rng.int(-2, 4));
+    const metricsList = ['team_sentiment','ceo_sentiment','sales_sentiment','cto_sentiment','self_serve_growth','enterprise_growth','tech_debt','nps'];
+    const other = rng.pick(metricsList.filter(m => m !== ticket.primary_metric));
+    const swing = rng.next() < 0.5 ? rng.int(4, 10) : rng.int(-10, -4);
+    applyDelta(other, swing);
+    if (ticket.tradeoff_metric) applyDelta(ticket.tradeoff_metric, rng.int(0, 3) * -1);
+  }
+  if (outcome === 'soft_failure') {
+    applyDelta(ticket.primary_metric, rng.int(-2, 1));
+    applyDelta('team_sentiment', rng.int(-5, -3));
+    applyDelta('tech_debt', rng.int(1, 3));
+  }
+  if (outcome === 'catastrophe') {
+    applyDelta(ticket.primary_metric, rng.int(-10, -5));
+    applyDelta('team_sentiment', rng.int(-10, -5));
+    applyDelta('ceo_sentiment', rng.int(-8, -3));
+    applyDelta('tech_debt', rng.int(3, 8));
+    const metricsList = ['sales_sentiment','cto_sentiment','self_serve_growth','enterprise_growth','nps'];
+    const other = rng.pick(metricsList);
+    applyDelta(other, rng.int(-6, -3));
+  }
+  return { updated, deltas };
+}
+
+function generateBacklog(templates, metrics, rng, count) {
+  const byCategory = new Map();
+  for (const t of templates) {
+    const list = byCategory.get(t.category) || [];
+    list.push(t);
+    byCategory.set(t.category, list);
+  }
+  const categories = Array.from(byCategory.keys());
+  if (!categories.length) return [];
+  const weights = new Map();
+  for (const c of categories) weights.set(c, 1);
+  if (metrics.sales_sentiment < 35) weights.set('sales_request', (weights.get('sales_request') || 0) + 2);
+  if (metrics.tech_debt > 60) weights.set('tech_debt_reduction', (weights.get('tech_debt_reduction') || 0) + 2);
+  if (metrics.enterprise_growth < 30) weights.set('enterprise_feature', (weights.get('enterprise_feature') || 0) + 2);
+  if (metrics.self_serve_growth < 30) weights.set('self_serve_feature', (weights.get('self_serve_feature') || 0) + 2);
+
+  const pickCat = () => {
+    const total = Array.from(weights.values()).reduce((s, w) => s + w, 0);
+    let roll = rng.next() * total;
+    for (const [c, w] of weights.entries()) { roll -= w; if (roll <= 0) return c; }
+    return categories[0];
+  };
+
+  const selected = [];
+  const usedIds = new Set();
+  while (selected.length < count) {
+    const cat = pickCat();
+    const pool = byCategory.get(cat) || templates;
+    if (!pool.length) break;
+    let candidate = rng.pick(pool);
+    let guard = 0;
+    while (usedIds.has(candidate.id) && guard < 5) { candidate = rng.pick(pool); guard++; }
+    if (usedIds.has(candidate.id)) {
+      const fallback = templates.find(t => !usedIds.has(t.id));
+      if (!fallback) break;
+      candidate = fallback;
+    }
+    usedIds.add(candidate.id);
+    selected.push({ ...candidate });
+  }
+  return selected;
+}
+
+function deriveProductPulse(metrics, hasCatastrophe, hasUxSuccess) {
+  const churn = metrics.nps > 60 && (metrics.self_serve_growth > 50 || metrics.enterprise_growth > 50)
+    ? 'positive' : metrics.nps < 35 || (metrics.self_serve_growth < 30 && metrics.enterprise_growth < 30)
+    ? 'concerning' : 'mixed';
+  const support_load = metrics.tech_debt < 40 && !hasCatastrophe
+    ? 'positive' : metrics.tech_debt > 65 || hasCatastrophe ? 'concerning' : 'mixed';
+  const customer_sentiment = metrics.nps > 60 && hasUxSuccess
+    ? 'positive' : metrics.nps < 35 ? 'concerning' : 'mixed';
+  return { churn, support_load, customer_sentiment };
+}
+
+function computeQuarterlyReview(quarter, metrics, pulse, catastropheCount) {
+  const ceoAlignment = metrics.ceo_sentiment > 70 ? 38 : metrics.ceo_sentiment >= 50 ? 27 : metrics.ceo_sentiment >= 30 ? 14 : 6;
+  const growthUp = metrics.self_serve_growth > 55 && metrics.enterprise_growth > 55 ? 22
+    : metrics.self_serve_growth > 55 || metrics.enterprise_growth > 55 ? 16
+    : metrics.self_serve_growth < 35 || metrics.enterprise_growth < 35 ? 4 : 9;
+  const stability = catastropheCount === 0 ? 13 : catastropheCount === 1 ? 8 : 3;
+  const pulseScore = pulse.churn === 'positive' && pulse.support_load === 'positive' && pulse.customer_sentiment === 'positive' ? 19
+    : pulse.churn === 'concerning' || pulse.support_load === 'concerning' || pulse.customer_sentiment === 'concerning' ? 5 : 10;
+  const rawScore = ceoAlignment + growthUp + stability + pulseScore;
+  const rating = rawScore >= 75 ? 'strong' : rawScore >= 55 ? 'solid' : rawScore >= 35 ? 'mixed' : 'below_expectations';
+  return { quarter, rawScore, rating, factors: { ceoAlignment, growthUp, stability, pulseScore } };
+}
+
+function computeYearEndReview(difficulty, quarterlyScores, rng) {
+  const scores = quarterlyScores.slice(0, 4);
+  while (scores.length < 4) scores.push(50);
+  const avg = scores.reduce((s, v) => s + v, 0) / 4;
+  const strictlyImproving = scores[0] < scores[1] && scores[1] < scores[2] && scores[2] < scores[3];
+  const strictlyDeclining = scores[0] > scores[1] && scores[1] > scores[2] && scores[2] > scores[3];
+  const range = Math.max(...scores) - Math.min(...scores);
+  let trajectoryBonus = 50;
+  if (strictlyImproving) trajectoryBonus = 90;
+  else if (strictlyDeclining) trajectoryBonus = 10;
+  else if (range <= 10) trajectoryBonus = 50;
+  else if (scores[3] > scores[0]) trajectoryBonus = 70;
+  else if (scores[3] < scores[0]) trajectoryBonus = 30;
+  let consistencyBonus = 55;
+  if (range <= 15) consistencyBonus = 85;
+  else if (range > 25) consistencyBonus = 20;
+  const rawComposite = avg * 0.5 + trajectoryBonus * 0.25 + consistencyBonus * 0.25;
+  const calRange = difficulty === 'easy' ? [-8, 12] : difficulty === 'hard' ? [-18, 10] : [-15, 15];
+  const calMod = rng.int(calRange[0], calRange[1]);
+  const finalScore = Math.max(0, Math.min(100, Math.round(rawComposite + calMod)));
+  const finalRating = finalScore >= 85 ? 'exceeds_expectations' : finalScore >= 70 ? 'meets_expectations_strong' : finalScore >= 45 ? 'meets_expectations' : finalScore >= 25 ? 'needs_improvement' : 'does_not_meet_expectations';
+  return { quarterlyScores: scores, rawComposite: Math.round(rawComposite), calMod, finalScore, finalRating };
+}
+
+// ─── RANDOM EVENTS ───
+function processRandomEvents(rng, metrics, quarter, sprint) {
+  const triggered = [];
+  for (const evt of eventsData.random_events) {
+    if (evt.quarter_restriction && !evt.quarter_restriction.includes(quarter)) continue;
+    if (rng.next() < evt.trigger_chance_per_sprint) {
+      triggered.push(evt);
+      // apply metric effects
+      for (const [metric, delta] of Object.entries(evt.metric_effects)) {
+        if (metric === 'sprint_capacity') continue; // handled separately
+        if (metric in metrics) metrics[metric] = clamp(metrics[metric] + delta);
+      }
+      // special: surprise all-hands
+      if (evt.id === 'evt_r_009') {
+        if (metrics.ceo_sentiment > 60) metrics.team_sentiment = clamp(metrics.team_sentiment + 5);
+        else if (metrics.ceo_sentiment < 40) metrics.team_sentiment = clamp(metrics.team_sentiment - 5);
+      }
+      // ceo_sentiment reset for conference
+      if (evt.id === 'evt_r_001') metrics.ceo_sentiment = 50;
+    }
+  }
+  return triggered;
+}
+
+// ─── PERSONA DEFINITIONS ───
+const PERSONAS = [
+  {
+    name: 'The People-First PM',
+    description: 'Prioritizes team morale and UX. Never overbooks. Avoids moonshots. Picks ux_improvement, infrastructure, and low-effort tickets.',
+    difficulty: 'normal',
+    selectTickets(backlog, capacity, _stretchCap, _ceoFocus, metrics) {
+      // Sort: prefer ux_improvement, infrastructure, then low effort
+      const priority = { ux_improvement: 0, infrastructure: 1, tech_debt_reduction: 2, self_serve_feature: 3, enterprise_feature: 4, sales_request: 5, monetization: 6, moonshot: 7 };
+      const sorted = [...backlog].sort((a, b) => (priority[a.category] ?? 5) - (priority[b.category] ?? 5) || a.effort - b.effort);
+      const selected = [];
+      let totalEffort = 0;
+      for (const t of sorted) {
+        if (totalEffort + t.effort <= capacity) { // never overbook
+          selected.push(t);
+          totalEffort += t.effort;
+        }
+      }
+      return selected;
+    }
+  },
+  {
+    name: 'The CEO Whisperer',
+    description: 'Always chases CEO alignment. Picks tickets matching CEO focus. Will overbook to fit more aligned tickets.',
+    difficulty: 'normal',
+    selectTickets(backlog, capacity, stretchCap, ceoFocus, metrics) {
+      const focusCat = focusToCategory(ceoFocus);
+      const sorted = [...backlog].sort((a, b) => {
+        const aAligned = a.category === focusCat ? 0 : 1;
+        const bAligned = b.category === focusCat ? 0 : 1;
+        return aAligned - bAligned || a.effort - b.effort;
+      });
+      const selected = [];
+      let totalEffort = 0;
+      for (const t of sorted) {
+        if (totalEffort + t.effort <= stretchCap) { // will overbook
+          selected.push(t);
+          totalEffort += t.effort;
+        }
+      }
+      return selected;
+    }
+  },
+  {
+    name: 'The Tech Debt Crusader',
+    description: 'Prioritizes tech debt reduction and infrastructure. Rarely overbooks. Methodical and conservative.',
+    difficulty: 'normal',
+    selectTickets(backlog, capacity, stretchCap, ceoFocus, metrics) {
+      const priority = { tech_debt_reduction: 0, infrastructure: 1, ux_improvement: 2, enterprise_feature: 3, self_serve_feature: 4, sales_request: 5, monetization: 6, moonshot: 7 };
+      const sorted = [...backlog].sort((a, b) => (priority[a.category] ?? 5) - (priority[b.category] ?? 5) || a.effort - b.effort);
+      const selected = [];
+      let totalEffort = 0;
+      const softCap = capacity + 2; // slight overbook tolerance
+      for (const t of sorted) {
+        if (totalEffort + t.effort <= softCap) {
+          selected.push(t);
+          totalEffort += t.effort;
+        }
+      }
+      return selected;
+    }
+  },
+  {
+    name: 'The Growth Hacker',
+    description: 'Chases self-serve & enterprise growth aggressively. Takes moonshots. Overbooks frequently.',
+    difficulty: 'normal',
+    selectTickets(backlog, capacity, stretchCap, ceoFocus, metrics) {
+      const priority = { moonshot: 0, self_serve_feature: 1, enterprise_feature: 2, monetization: 3, sales_request: 4, ux_improvement: 5, tech_debt_reduction: 6, infrastructure: 7 };
+      const sorted = [...backlog].sort((a, b) => (priority[a.category] ?? 5) - (priority[b.category] ?? 5));
+      const selected = [];
+      let totalEffort = 0;
+      for (const t of sorted) {
+        if (totalEffort + t.effort <= stretchCap) { // always uses stretch capacity
+          selected.push(t);
+          totalEffort += t.effort;
+        }
+      }
+      return selected;
+    }
+  },
+  {
+    name: 'The Balanced Diplomat',
+    description: 'Tries to keep all stakeholders happy. Diversifies categories. Mild overbook. Avoids extremes.',
+    difficulty: 'normal',
+    selectTickets(backlog, capacity, stretchCap, ceoFocus, metrics) {
+      // Pick one from each category, then fill with CEO-aligned
+      const byCategory = {};
+      for (const t of backlog) {
+        if (!byCategory[t.category]) byCategory[t.category] = [];
+        byCategory[t.category].push(t);
+      }
+      const selected = [];
+      let totalEffort = 0;
+      const mildCap = Math.floor(capacity * 1.1); // only 10% overbook
+      // One from each available category (prefer lower effort)
+      for (const [cat, tickets] of Object.entries(byCategory)) {
+        if (cat === 'moonshot') continue;
+        const sorted = [...tickets].sort((a, b) => a.effort - b.effort);
+        if (sorted.length > 0 && totalEffort + sorted[0].effort <= mildCap) {
+          selected.push(sorted[0]);
+          totalEffort += sorted[0].effort;
+        }
+      }
+      // Fill remainder with CEO-aligned
+      const focusCat = focusToCategory(ceoFocus);
+      const remaining = backlog.filter(t => !selected.includes(t)).sort((a, b) => {
+        const aAligned = a.category === focusCat ? 0 : 1;
+        const bAligned = b.category === focusCat ? 0 : 1;
+        return aAligned - bAligned || a.effort - b.effort;
+      });
+      for (const t of remaining) {
+        if (totalEffort + t.effort <= mildCap) {
+          selected.push(t);
+          totalEffort += t.effort;
+        }
+      }
+      return selected;
+    }
+  }
+];
+
+// ─── MAIN SIMULATION ───
+function runPlaythrough(persona, seed) {
+  const rng = createRng(seed);
+  const difficulty = persona.difficulty;
+
+  // Initial metrics (normal mode)
+  let metrics = {
+    team_sentiment: 60, ceo_sentiment: 50, sales_sentiment: 50, cto_sentiment: 50,
+    self_serve_growth: 40, enterprise_growth: 40, tech_debt: 35, nps: 55, velocity: 20,
+  };
+
+  let ceoFocus = selectCeoFocus(metrics, rng);
+  const sprintLog = [];
+  const quarterlyReviews = [];
+  let totalCatastrophes = 0;
+  let quarterCatastrophes = 0;
+
+  // Track stats
+  const stats = {
+    totalTickets: 0, outcomeCounts: { clear_success: 0, partial_success: 0, unexpected_impact: 0, soft_failure: 0, catastrophe: 0 },
+    overbookedSprints: 0, ceoAlignedTickets: 0, categoriesPicked: {},
+    metricTimeline: [{ ...metrics }],
+    eventsTriggered: [],
+    ticketsPerSprint: [],
+    sprintDetails: [],
+  };
+
+  for (let quarter = 1; quarter <= 4; quarter++) {
+    quarterCatastrophes = 0;
+    let quarterHasUxSuccess = false;
+
+    for (let sprint = 1; sprint <= 3; sprint++) {
+      const sprintNum = (quarter - 1) * 3 + sprint;
+
+      // Process random events
+      const events = processRandomEvents(rng, metrics, quarter, sprint);
+      stats.eventsTriggered.push(...events.map(e => ({ sprint: sprintNum, title: e.title })));
+
+      // CEO focus shift
+      if (shouldShiftFocus(rng, difficulty)) {
+        ceoFocus = selectCeoFocus(metrics, rng);
+      }
+      // Board meeting prep forces weakest growth metric
+      const boardEvt = events.find(e => e.id === 'evt_r_002');
+      if (boardEvt) {
+        if (metrics.self_serve_growth <= metrics.enterprise_growth) ceoFocus = 'self_serve';
+        else ceoFocus = 'enterprise';
+      }
+
+      // Compute capacity
+      const effectiveCap = computeEffectiveCapacity(metrics);
+      const stretchCap = Math.floor(effectiveCap * 1.25);
+
+      // Generate backlog
+      const backlogCount = rng.int(7, 10);
+      const backlog = generateBacklog(allTickets, metrics, rng, backlogCount);
+
+      // Mark CEO-aligned tickets
+      const focusCat = focusToCategory(ceoFocus);
+      for (const t of backlog) {
+        t.ceo_aligned = t.category === focusCat;
+      }
+
+      // Persona selects tickets
+      const selected = persona.selectTickets(backlog, effectiveCap, stretchCap, ceoFocus, metrics);
+      const totalEffort = selected.reduce((s, t) => s + t.effort, 0);
+      const isOverbooked = totalEffort > effectiveCap;
+      if (isOverbooked) stats.overbookedSprints++;
+
+      // Overbooking penalty to team sentiment
+      if (isOverbooked) {
+        metrics.team_sentiment = clamp(metrics.team_sentiment - 5);
+      }
+
+      // Resolve each ticket
+      const sprintOutcomes = [];
+      let sprintHasCatastrophe = false;
+
+      for (const ticket of selected) {
+        stats.totalTickets++;
+        stats.categoriesPicked[ticket.category] = (stats.categoriesPicked[ticket.category] || 0) + 1;
+        if (ticket.ceo_aligned) stats.ceoAlignedTickets++;
+
+        const outcome = rollOutcome(rng, {
+          techDebt: metrics.tech_debt,
+          teamSentiment: metrics.team_sentiment,
+          isOverbooked,
+          isMoonshot: ticket.category === 'moonshot',
+          ceoAligned: ticket.ceo_aligned,
+          difficulty,
+        });
+
+        const { updated, deltas } = applyOutcome(rng, metrics, ticket, outcome);
+        metrics = updated;
+        stats.outcomeCounts[outcome]++;
+
+        if (outcome === 'catastrophe') {
+          sprintHasCatastrophe = true;
+          quarterCatastrophes++;
+          totalCatastrophes++;
+        }
+        if ((outcome === 'clear_success' || outcome === 'partial_success') && ticket.category === 'ux_improvement') {
+          quarterHasUxSuccess = true;
+        }
+
+        sprintOutcomes.push({ ticketId: ticket.id, title: ticket.title, category: ticket.category, effort: ticket.effort, outcome, ceoAligned: ticket.ceo_aligned, deltas });
+      }
+
+      // Additional overbooking penalty if failures
+      if (isOverbooked && sprintOutcomes.some(o => o.outcome === 'soft_failure' || o.outcome === 'catastrophe')) {
+        metrics.team_sentiment = clamp(metrics.team_sentiment - 5);
+      }
+
+      stats.ticketsPerSprint.push(selected.length);
+      stats.metricTimeline.push({ ...metrics });
+      stats.sprintDetails.push({
+        sprint: sprintNum, quarter, sprintInQuarter: sprint,
+        capacity: effectiveCap, stretchCap, totalEffort, isOverbooked,
+        ceoFocus, ticketCount: selected.length, outcomes: sprintOutcomes,
+        events: events.map(e => e.title),
+      });
+
+      // Quarter end review
+      if (sprint === 3) {
+        const pulse = deriveProductPulse(metrics, quarterCatastrophes > 0, quarterHasUxSuccess);
+        const review = computeQuarterlyReview(quarter, metrics, pulse, quarterCatastrophes);
+        quarterlyReviews.push(review);
+      }
+    }
+  }
+
+  // Year-end review
+  const yearEnd = computeYearEndReview(difficulty, quarterlyReviews.map(r => r.rawScore), rng);
+
+  return { persona: persona.name, description: persona.description, difficulty, stats, quarterlyReviews, yearEnd, finalMetrics: metrics };
+}
+
+// ─── RUN ALL PERSONAS (multiple seeds for statistical significance) ───
+const SEEDS = [42, 137, 256, 789, 1024, 1337, 2048, 3141, 4242, 5555];
+
+console.log('═══════════════════════════════════════════════════════════════════');
+console.log('  PM SIMULATOR: 5-PERSONA PLAYTHROUGH ANALYSIS');
+console.log('═══════════════════════════════════════════════════════════════════\n');
+
+const allResults = [];
+
+for (const persona of PERSONAS) {
+  const runs = SEEDS.map(seed => runPlaythrough(persona, seed));
+  allResults.push({ persona: persona.name, description: persona.description, runs });
+
+  console.log(`\n${'━'.repeat(65)}`);
+  console.log(`  PERSONA: ${persona.name}`);
+  console.log(`  ${persona.description}`);
+  console.log(`${'━'.repeat(65)}`);
+
+  // Aggregate stats across runs
+  const avgOutcomes = { clear_success: 0, partial_success: 0, unexpected_impact: 0, soft_failure: 0, catastrophe: 0 };
+  let avgTotalTickets = 0, avgOverbookedSprints = 0, avgCeoAligned = 0;
+  const avgFinalMetrics = {};
+  const avgQuarterlyScores = [0, 0, 0, 0];
+  let avgYearEndScore = 0;
+  const yearEndRatings = {};
+  const quarterlyRatings = [{}, {}, {}, {}];
+
+  for (const run of runs) {
+    avgTotalTickets += run.stats.totalTickets;
+    avgOverbookedSprints += run.stats.overbookedSprints;
+    avgCeoAligned += run.stats.ceoAlignedTickets;
+    for (const [k, v] of Object.entries(run.stats.outcomeCounts)) avgOutcomes[k] += v;
+    for (const [k, v] of Object.entries(run.finalMetrics)) avgFinalMetrics[k] = (avgFinalMetrics[k] || 0) + v;
+    for (let i = 0; i < 4; i++) avgQuarterlyScores[i] += run.quarterlyReviews[i].rawScore;
+    avgYearEndScore += run.yearEnd.finalScore;
+    yearEndRatings[run.yearEnd.finalRating] = (yearEndRatings[run.yearEnd.finalRating] || 0) + 1;
+    for (let i = 0; i < 4; i++) {
+      const r = run.quarterlyReviews[i].rating;
+      quarterlyRatings[i][r] = (quarterlyRatings[i][r] || 0) + 1;
+    }
+  }
+
+  const n = runs.length;
+  const totalOutcomes = Object.values(avgOutcomes).reduce((s, v) => s + v, 0);
+
+  console.log(`\n  OUTCOME DISTRIBUTION (across ${n} runs, ${Math.round(avgTotalTickets/n)} avg tickets/game):`);
+  console.log(`    Clear Success:     ${(avgOutcomes.clear_success/totalOutcomes*100).toFixed(1)}%  (${Math.round(avgOutcomes.clear_success/n)} per game)`);
+  console.log(`    Partial Success:   ${(avgOutcomes.partial_success/totalOutcomes*100).toFixed(1)}%  (${Math.round(avgOutcomes.partial_success/n)} per game)`);
+  console.log(`    Unexpected Impact: ${(avgOutcomes.unexpected_impact/totalOutcomes*100).toFixed(1)}%  (${Math.round(avgOutcomes.unexpected_impact/n)} per game)`);
+  console.log(`    Soft Failure:      ${(avgOutcomes.soft_failure/totalOutcomes*100).toFixed(1)}%  (${Math.round(avgOutcomes.soft_failure/n)} per game)`);
+  console.log(`    Catastrophe:       ${(avgOutcomes.catastrophe/totalOutcomes*100).toFixed(1)}%  (${Math.round(avgOutcomes.catastrophe/n)} per game)`);
+
+  const successRate = (avgOutcomes.clear_success + avgOutcomes.partial_success) / totalOutcomes * 100;
+  const failRate = (avgOutcomes.soft_failure + avgOutcomes.catastrophe) / totalOutcomes * 100;
+  console.log(`    ─── SUCCESS RATE: ${successRate.toFixed(1)}%  │  FAIL RATE: ${failRate.toFixed(1)}%  │  WILD CARD: ${(avgOutcomes.unexpected_impact/totalOutcomes*100).toFixed(1)}% ───`);
+
+  console.log(`\n  PLAY STYLE STATS:`);
+  console.log(`    Avg overbooked sprints: ${(avgOverbookedSprints/n).toFixed(1)} / 12`);
+  console.log(`    Avg CEO-aligned tickets: ${(avgCeoAligned/n).toFixed(1)} / ${Math.round(avgTotalTickets/n)}`);
+
+  // Category breakdown for first run
+  const catBreakdown = runs[0].stats.categoriesPicked;
+  const catTotal = Object.values(catBreakdown).reduce((s, v) => s + v, 0);
+  console.log(`    Category mix (sample run):`);
+  for (const [cat, count] of Object.entries(catBreakdown).sort((a, b) => b[1] - a[1])) {
+    console.log(`      ${cat.padEnd(22)} ${count} tickets (${(count/catTotal*100).toFixed(0)}%)`);
+  }
+
+  console.log(`\n  QUARTERLY REVIEWS (avg raw score → rating distribution):`);
+  for (let i = 0; i < 4; i++) {
+    const avgScore = (avgQuarterlyScores[i] / n).toFixed(1);
+    const ratings = Object.entries(quarterlyRatings[i]).sort((a, b) => b[1] - a[1]).map(([r, c]) => `${r}:${c}`).join(', ');
+    console.log(`    Q${i+1}: avg=${avgScore}  →  [${ratings}]`);
+  }
+
+  console.log(`\n  YEAR-END RESULTS:`);
+  console.log(`    Avg final score: ${(avgYearEndScore/n).toFixed(1)}`);
+  console.log(`    Rating distribution: ${Object.entries(yearEndRatings).sort((a, b) => b[1] - a[1]).map(([r, c]) => `${r}:${c}`).join(', ')}`);
+
+  console.log(`\n  FINAL METRICS (averaged across ${n} runs):`);
+  const metricOrder = ['team_sentiment', 'ceo_sentiment', 'sales_sentiment', 'cto_sentiment', 'self_serve_growth', 'enterprise_growth', 'tech_debt', 'nps'];
+  for (const k of metricOrder) {
+    const v = avgFinalMetrics[k] / n;
+    const start = { team_sentiment: 60, ceo_sentiment: 50, sales_sentiment: 50, cto_sentiment: 50, self_serve_growth: 40, enterprise_growth: 40, tech_debt: 35, nps: 55 };
+    const delta = v - start[k];
+    const bar = delta >= 0 ? '▲' : '▼';
+    console.log(`    ${k.padEnd(22)} ${v.toFixed(1).padStart(5)}  (${bar} ${Math.abs(delta).toFixed(1)} from start)`);
+  }
+
+  // Detailed sprint-by-sprint for ONE representative run
+  const rep = runs[0];
+  console.log(`\n  SPRINT-BY-SPRINT (seed=42):`);
+  for (const sd of rep.stats.sprintDetails) {
+    const outcomes = sd.outcomes.map(o => o.outcome[0].toUpperCase()).join('');
+    const ob = sd.isOverbooked ? ' [OVERBOOKED]' : '';
+    console.log(`    S${String(sd.sprint).padStart(2)}: cap=${sd.capacity} effort=${sd.totalEffort} tickets=${sd.ticketCount} focus=${sd.ceoFocus.padEnd(10)} outcomes=[${outcomes}]${ob}`);
+    if (sd.events.length > 0) console.log(`          events: ${sd.events.join(', ')}`);
+  }
+}
+
+// ─── CROSS-PERSONA COMPARISON ───
+console.log(`\n\n${'═'.repeat(65)}`);
+console.log('  CROSS-PERSONA COMPARISON');
+console.log(`${'═'.repeat(65)}\n`);
+
+console.log('  Persona                   Avg Score  Fail%  Catastrophe%  Overbook  CEO-Aligned%');
+console.log('  ' + '─'.repeat(80));
+
+for (const { persona, runs } of allResults) {
+  const n = runs.length;
+  let avgScore = 0, totalFail = 0, totalCat = 0, totalTickets = 0, totalOverbook = 0, totalAligned = 0;
+  for (const r of runs) {
+    avgScore += r.yearEnd.finalScore;
+    totalFail += r.stats.outcomeCounts.soft_failure + r.stats.outcomeCounts.catastrophe;
+    totalCat += r.stats.outcomeCounts.catastrophe;
+    totalTickets += r.stats.totalTickets;
+    totalOverbook += r.stats.overbookedSprints;
+    totalAligned += r.stats.ceoAlignedTickets;
+  }
+  const failPct = (totalFail / totalTickets * 100).toFixed(1);
+  const catPct = (totalCat / totalTickets * 100).toFixed(1);
+  console.log(`  ${persona.padEnd(26)} ${(avgScore/n).toFixed(1).padStart(6)}    ${failPct.padStart(5)}%    ${catPct.padStart(5)}%      ${(totalOverbook/n).toFixed(1).padStart(4)}     ${(totalAligned/totalTickets*100).toFixed(1)}%`);
+}
+
+// ─── GAME MECHANICS ANALYSIS ───
+console.log(`\n\n${'═'.repeat(65)}`);
+console.log('  GAME MECHANICS ANALYSIS');
+console.log(`${'═'.repeat(65)}\n`);
+
+// 1. Failure rate analysis
+console.log('  1. OUTCOME DISTRIBUTION ANALYSIS:');
+{
+  let totalAll = { clear_success: 0, partial_success: 0, unexpected_impact: 0, soft_failure: 0, catastrophe: 0, total: 0 };
+  for (const { runs } of allResults) {
+    for (const r of runs) {
+      for (const [k, v] of Object.entries(r.stats.outcomeCounts)) totalAll[k] += v;
+      totalAll.total += r.stats.totalTickets;
+    }
+  }
+  console.log(`     Total tickets resolved across all runs: ${totalAll.total}`);
+  console.log(`     Clear Success:     ${(totalAll.clear_success/totalAll.total*100).toFixed(1)}%`);
+  console.log(`     Partial Success:   ${(totalAll.partial_success/totalAll.total*100).toFixed(1)}%`);
+  console.log(`     Unexpected Impact: ${(totalAll.unexpected_impact/totalAll.total*100).toFixed(1)}%`);
+  console.log(`     Soft Failure:      ${(totalAll.soft_failure/totalAll.total*100).toFixed(1)}%`);
+  console.log(`     Catastrophe:       ${(totalAll.catastrophe/totalAll.total*100).toFixed(1)}%`);
+  console.log(`     ─── COMBINED SUCCESS: ${((totalAll.clear_success+totalAll.partial_success)/totalAll.total*100).toFixed(1)}%  COMBINED FAIL: ${((totalAll.soft_failure+totalAll.catastrophe)/totalAll.total*100).toFixed(1)}% ───`);
+}
+
+// 2. Overbooking impact
+console.log(`\n  2. OVERBOOKING IMPACT:`);
+{
+  let obTickets = { clear_success: 0, partial_success: 0, unexpected_impact: 0, soft_failure: 0, catastrophe: 0, total: 0 };
+  let normalTickets = { clear_success: 0, partial_success: 0, unexpected_impact: 0, soft_failure: 0, catastrophe: 0, total: 0 };
+  for (const { runs } of allResults) {
+    for (const r of runs) {
+      for (const sd of r.stats.sprintDetails) {
+        const bucket = sd.isOverbooked ? obTickets : normalTickets;
+        for (const o of sd.outcomes) {
+          bucket[o.outcome]++;
+          bucket.total++;
+        }
+      }
+    }
+  }
+  if (obTickets.total > 0) {
+    console.log(`     Overbooked sprints (${obTickets.total} tickets):`);
+    console.log(`       Success: ${((obTickets.clear_success+obTickets.partial_success)/obTickets.total*100).toFixed(1)}%  Fail: ${((obTickets.soft_failure+obTickets.catastrophe)/obTickets.total*100).toFixed(1)}%  Catastrophe: ${(obTickets.catastrophe/obTickets.total*100).toFixed(1)}%`);
+  }
+  console.log(`     Normal sprints (${normalTickets.total} tickets):`);
+  console.log(`       Success: ${((normalTickets.clear_success+normalTickets.partial_success)/normalTickets.total*100).toFixed(1)}%  Fail: ${((normalTickets.soft_failure+normalTickets.catastrophe)/normalTickets.total*100).toFixed(1)}%  Catastrophe: ${(normalTickets.catastrophe/normalTickets.total*100).toFixed(1)}%`);
+  console.log(`     ─── Overbooking currently applies a FLAT -5 team_sentiment + flat outcome modifier ───`);
+  console.log(`     ─── Recommendation: Scale exponentially based on overbook amount ───`);
+}
+
+// 3. CEO alignment impact
+console.log(`\n  3. CEO ALIGNMENT IMPACT:`);
+{
+  let aligned = { clear_success: 0, partial_success: 0, soft_failure: 0, catastrophe: 0, total: 0 };
+  let unaligned = { clear_success: 0, partial_success: 0, soft_failure: 0, catastrophe: 0, total: 0 };
+  for (const { runs } of allResults) {
+    for (const r of runs) {
+      for (const sd of r.stats.sprintDetails) {
+        for (const o of sd.outcomes) {
+          const bucket = o.ceoAligned ? aligned : unaligned;
+          if (bucket[o.outcome] !== undefined) bucket[o.outcome]++;
+          bucket.total++;
+        }
+      }
+    }
+  }
+  console.log(`     CEO-aligned tickets (${aligned.total}):`);
+  console.log(`       Success: ${((aligned.clear_success+aligned.partial_success)/aligned.total*100).toFixed(1)}%  Fail: ${((aligned.soft_failure+aligned.catastrophe)/aligned.total*100).toFixed(1)}%`);
+  console.log(`     Non-aligned tickets (${unaligned.total}):`);
+  console.log(`       Success: ${((unaligned.clear_success+unaligned.partial_success)/unaligned.total*100).toFixed(1)}%  Fail: ${((unaligned.soft_failure+unaligned.catastrophe)/unaligned.total*100).toFixed(1)}%`);
+}
+
+// 4. Morale death spiral analysis
+console.log(`\n  4. MORALE DEATH SPIRAL ANALYSIS:`);
+{
+  let spiralCount = 0;
+  let belowThirtyCount = 0;
+  for (const { runs } of allResults) {
+    for (const r of runs) {
+      let consecutiveDeclines = 0;
+      for (let i = 1; i < r.stats.metricTimeline.length; i++) {
+        if (r.stats.metricTimeline[i].team_sentiment < r.stats.metricTimeline[i-1].team_sentiment) consecutiveDeclines++;
+        else consecutiveDeclines = 0;
+        if (consecutiveDeclines >= 3) spiralCount++;
+        if (r.stats.metricTimeline[i].team_sentiment < 30) belowThirtyCount++;
+      }
+    }
+  }
+  console.log(`     3+ consecutive team_sentiment declines: ${spiralCount} instances`);
+  console.log(`     Sprints with team_sentiment < 30: ${belowThirtyCount}`);
+}
+
+// 5. Tech debt trajectory
+console.log(`\n  5. TECH DEBT TRAJECTORY:`);
+for (const { persona, runs } of allResults) {
+  let avgStart = 35, avgEnd = 0;
+  for (const r of runs) avgEnd += r.finalMetrics.tech_debt;
+  avgEnd /= runs.length;
+  console.log(`     ${persona.padEnd(26)} Start: ${avgStart}  End: ${avgEnd.toFixed(1)}  Change: ${(avgEnd-avgStart) >= 0 ? '+' : ''}${(avgEnd-avgStart).toFixed(1)}`);
+}
+
+// 6. Year-end score variance
+console.log(`\n  6. YEAR-END SCORE VARIANCE (decision impact assessment):`);
+for (const { persona, runs } of allResults) {
+  const scores = runs.map(r => r.yearEnd.finalScore);
+  const avg = scores.reduce((s, v) => s + v, 0) / scores.length;
+  const variance = scores.reduce((s, v) => s + (v - avg) ** 2, 0) / scores.length;
+  const min = Math.min(...scores);
+  const max = Math.max(...scores);
+  console.log(`     ${persona.padEnd(26)} avg=${avg.toFixed(1)}  std=${Math.sqrt(variance).toFixed(1)}  range=[${min},${max}]`);
+}
+
+console.log(`\n${'═'.repeat(65)}`);
+console.log('  SIMULATION COMPLETE');
+console.log(`${'═'.repeat(65)}\n`);

@@ -291,9 +291,11 @@ export async function POST(request: Request) {
   let updatedMetrics = { ...(game.metrics_state as MetricsState) };
   const metricDeltas: Record<string, number> = {};
   const ticketOutcomes: TicketOutcome[] = [];
-  let hasFailure = false;
 
-  const isOverbooked = totalEffort > effectiveCapacity;
+  const overAmount = Math.max(0, totalEffort - effectiveCapacity);
+  const maxOverbook = Math.max(1, Math.floor(effectiveCapacity * 0.25));
+  const overbookFraction = overAmount > 0 ? Math.min(overAmount / maxOverbook, 1) : 0;
+  const isOverbooked = overAmount > 0;
 
   for (const ticket of selectedTickets) {
     const ceoAligned = ticket.category === focusToCategory(ceoFocus);
@@ -301,6 +303,7 @@ export async function POST(request: Request) {
       techDebt: updatedMetrics.tech_debt,
       teamSentiment: updatedMetrics.team_sentiment,
       isOverbooked,
+      overbookFraction,
       isMoonshot: ticket.category === "moonshot",
       ceoAligned,
       difficulty: game.difficulty
@@ -309,35 +312,18 @@ export async function POST(request: Request) {
     const { updated, deltas } = applyOutcome(rng, updatedMetrics, ticket, outcome);
     updatedMetrics = updated;
 
-    if (outcome === "soft_failure" || outcome === "catastrophe") {
-      hasFailure = true;
-    }
-
     for (const [metric, delta] of Object.entries(deltas)) {
       metricDeltas[metric] = (metricDeltas[metric] ?? 0) + delta;
     }
 
     ticketOutcomes.push({
       ...ticket,
+      ceo_aligned: ceoAligned,
       outcome,
       outcome_narrative:
         ticket.outcomes?.[outcome] ?? "Outcome recorded without narrative.",
       metric_impacts: deltas as Record<string, number>
     });
-  }
-
-  if (isOverbooked) {
-    updatedMetrics.team_sentiment = clampMetric(
-      updatedMetrics.team_sentiment - 5
-    );
-    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) - 5;
-
-    if (hasFailure) {
-      updatedMetrics.team_sentiment = clampMetric(
-        updatedMetrics.team_sentiment - 5
-      );
-      metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) - 5;
-    }
   }
 
   const total = ticketOutcomes.length;
@@ -346,10 +332,55 @@ export async function POST(request: Request) {
       ticket.outcome
     )
   ).length;
+  const clearPartialSuccesses = ticketOutcomes.filter((ticket) =>
+    ["clear_success", "partial_success"].includes(ticket.outcome)
+  ).length;
+  const failCount = ticketOutcomes.filter((ticket) =>
+    ["soft_failure", "catastrophe"].includes(ticket.outcome)
+  ).length;
+  const failureRate = total > 0 ? failCount / total : 0;
+  const clearPartialRate = total > 0 ? clearPartialSuccesses / total : 0;
   const failures = total - successes;
   const hasCatastrophe = ticketOutcomes.some(
     (ticket) => ticket.outcome === "catastrophe"
   );
+
+  if (isOverbooked) {
+    const penalty = Math.min(
+      6,
+      Math.max(1, Math.round(1 + 5 * overbookFraction * overbookFraction))
+    );
+    updatedMetrics.team_sentiment = clampMetric(
+      updatedMetrics.team_sentiment - penalty
+    );
+    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) - penalty;
+
+    if (failureRate > 0.5) {
+      const extraPenalty = Math.min(
+        3,
+        Math.max(1, Math.round(1 + 2 * overbookFraction))
+      );
+      updatedMetrics.team_sentiment = clampMetric(
+        updatedMetrics.team_sentiment - extraPenalty
+      );
+      metricDeltas.team_sentiment =
+        (metricDeltas.team_sentiment ?? 0) - extraPenalty;
+    }
+  }
+
+  if (!isOverbooked && failureRate < 0.25) {
+    updatedMetrics.team_sentiment = clampMetric(
+      updatedMetrics.team_sentiment + 3
+    );
+    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + 3;
+  }
+
+  if (clearPartialRate > 0.5) {
+    updatedMetrics.team_sentiment = clampMetric(
+      updatedMetrics.team_sentiment + 1
+    );
+    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + 1;
+  }
 
   const { data: narrativeRows } = await supabase
     .from("narrative_templates")
@@ -372,6 +403,7 @@ export async function POST(request: Request) {
 
   const retro = {
     sprint_number: game.current_sprint,
+    ceo_focus: ceoFocus,
     ticket_outcomes: ticketOutcomes,
     metric_deltas: metricDeltas,
     narrative:
@@ -438,14 +470,21 @@ export async function POST(request: Request) {
   } else {
     const { data: quarterSprints } = await supabase
       .from("sprints")
-      .select("retro")
+      .select("number, retro")
       .eq("game_id", game.id)
       .eq("quarter", currentQuarter);
 
     let catastropheCount = 0;
     let hasUxSuccess = false;
+    let alignedTickets = 0;
+    let totalTickets = 0;
+    let lowTeamSprints = 0;
+    const orderedSprints = [...(quarterSprints ?? [])].sort(
+      (a, b) => Number(a?.number ?? 0) - Number(b?.number ?? 0)
+    );
     for (const row of quarterSprints ?? []) {
       const outcomes = row?.retro?.ticket_outcomes ?? [];
+      const sprintFocus = row?.retro?.ceo_focus ?? ceoFocus;
       for (const outcome of outcomes) {
         if (outcome?.outcome === "catastrophe") catastropheCount += 1;
         if (
@@ -454,8 +493,30 @@ export async function POST(request: Request) {
         ) {
           hasUxSuccess = true;
         }
+        totalTickets += 1;
+        const aligned =
+          typeof outcome?.ceo_aligned === "boolean"
+            ? outcome.ceo_aligned
+            : outcome?.category
+            ? outcome.category === focusToCategory(sprintFocus)
+            : false;
+        if (aligned) alignedTickets += 1;
       }
     }
+
+    let teamAtEnd = updatedMetrics.team_sentiment;
+    const reversed = [...orderedSprints].sort(
+      (a, b) => Number(b?.number ?? 0) - Number(a?.number ?? 0)
+    );
+    for (const row of reversed) {
+      if (teamAtEnd < 30) lowTeamSprints += 1;
+      const delta = row?.retro?.metric_deltas?.team_sentiment;
+      if (typeof delta === "number") {
+        teamAtEnd -= delta;
+      }
+    }
+
+    const alignmentRatio = totalTickets > 0 ? alignedTickets / totalTickets : 0;
 
     productPulse = deriveProductPulse(
       updatedMetrics,
@@ -466,7 +527,8 @@ export async function POST(request: Request) {
       currentQuarter,
       updatedMetrics,
       productPulse,
-      catastropheCount
+      catastropheCount,
+      { lowTeamSprints, alignmentRatio }
     );
     quarterSummary = {
       quarter: currentQuarter,

@@ -179,8 +179,12 @@ export function computeQuarterlyReview(
   quarter: number,
   metrics: MetricsState,
   pulse: ProductPulse,
-  catastropheCount: number
+  catastropheCount: number,
+  context: { lowTeamSprints?: number; alignmentRatio?: number } = {}
 ): QuarterlyReview {
+  const lowTeamSprints = context.lowTeamSprints ?? 0;
+  const alignmentRatio = context.alignmentRatio ?? 0;
+
   const ceoAlignment =
     metrics.ceo_sentiment > 70
       ? 38
@@ -192,15 +196,15 @@ export function computeQuarterlyReview(
 
   const growthUp =
     metrics.self_serve_growth > 55 && metrics.enterprise_growth > 55
-      ? 22
+      ? 18
       : metrics.self_serve_growth > 55 || metrics.enterprise_growth > 55
-      ? 16
+      ? 13
       : metrics.self_serve_growth < 35 || metrics.enterprise_growth < 35
-      ? 4
-      : 9;
+      ? 3
+      : 8;
 
   const stability =
-    catastropheCount === 0 ? 13 : catastropheCount === 1 ? 8 : 3;
+    catastropheCount === 0 ? 18 : catastropheCount === 1 ? 12 : 5;
 
   const pulseScore =
     pulse.churn === "positive" &&
@@ -213,7 +217,31 @@ export function computeQuarterlyReview(
       ? 5
       : 10;
 
-  const rawScore = ceoAlignment + growthUp + stability + pulseScore;
+  const alignmentBonus =
+    alignmentRatio >= 0.6
+      ? 5
+      : alignmentRatio >= 0.45
+      ? 3
+      : alignmentRatio >= 0.3
+      ? 1
+      : 0;
+
+  const moralePenalty = lowTeamSprints >= 2 ? -5 : 0;
+
+  const rawScore = Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(
+        ceoAlignment +
+          growthUp +
+          stability +
+          pulseScore +
+          alignmentBonus +
+          moralePenalty
+      )
+    )
+  );
 
   const rating =
     rawScore >= 75
@@ -233,7 +261,10 @@ export function computeQuarterlyReview(
       ceo_alignment_score: ceoAlignment,
       growth_trajectory_score: growthUp,
       stability_score: stability,
-      pulse_health_score: pulseScore
+      pulse_health_score: pulseScore,
+      alignment_bonus: alignmentBonus,
+      morale_penalty: moralePenalty,
+      alignment_ratio: Number(alignmentRatio.toFixed(2))
     }
   };
 }
@@ -390,6 +421,7 @@ type OutcomeContext = {
   techDebt: number;
   teamSentiment: number;
   isOverbooked: boolean;
+  overbookFraction?: number;
   isMoonshot: boolean;
   ceoAligned: boolean;
   difficulty: Difficulty;
@@ -397,38 +429,33 @@ type OutcomeContext = {
 
 export function rollOutcome(rng: Rng, context: OutcomeContext): Outcome {
   const base: Record<Outcome, number> = {
-    clear_success: 25,
-    partial_success: 35,
-    unexpected_impact: 15,
-    soft_failure: 20,
-    catastrophe: 5
+    clear_success: 22,
+    partial_success: 50,
+    unexpected_impact: 9,
+    soft_failure: 15,
+    catastrophe: 4
   };
 
   const mod = { ...base };
 
   if (context.ceoAligned) {
-    mod.clear_success += 12;
-    mod.partial_success += 3;
-    mod.soft_failure -= 10;
-    mod.catastrophe -= 5;
+    mod.clear_success += 10;
+    mod.partial_success += 6;
+    mod.soft_failure -= 8;
+    mod.catastrophe -= 2;
   }
 
   if (context.techDebt > 80) {
-    mod.clear_success -= 12;
-    mod.partial_success -= 3;
-    mod.soft_failure += 7;
-    mod.catastrophe += 8;
+    mod.soft_failure += 4;
+    mod.catastrophe += 3;
   } else if (context.techDebt > 65) {
-    mod.clear_success -= 8;
-    mod.partial_success -= 2;
-    mod.soft_failure += 5;
-    mod.catastrophe += 5;
+    mod.soft_failure += 3;
+    mod.catastrophe += 2;
   }
 
   if (context.teamSentiment < 30) {
-    mod.clear_success -= 8;
-    mod.soft_failure += 5;
-    mod.catastrophe += 3;
+    mod.soft_failure += 3;
+    mod.catastrophe += 1;
   } else if (context.teamSentiment > 75) {
     mod.clear_success += 5;
     mod.partial_success += 3;
@@ -436,15 +463,20 @@ export function rollOutcome(rng: Rng, context: OutcomeContext): Outcome {
     mod.catastrophe -= 3;
   }
 
-  if (context.isOverbooked) {
-    mod.clear_success -= 10;
-    mod.soft_failure += 5;
-    mod.catastrophe += 5;
+  const overbookFraction = Math.max(
+    0,
+    Math.min(1, context.overbookFraction ?? (context.isOverbooked ? 1 : 0))
+  );
+  if (overbookFraction > 0) {
+    mod.clear_success -= 4 * overbookFraction;
+    mod.partial_success -= 2 * overbookFraction;
+    mod.soft_failure += 5 * overbookFraction;
+    mod.catastrophe += 2 * overbookFraction;
   }
 
   if (context.isMoonshot) {
-    mod.clear_success -= 10;
-    mod.partial_success += 5;
+    mod.clear_success -= 8;
+    mod.partial_success += 3;
     mod.soft_failure += 3;
     mod.catastrophe += 2;
   }
@@ -459,6 +491,19 @@ export function rollOutcome(rng: Rng, context: OutcomeContext): Outcome {
     mod.clear_success -= 5;
     mod.soft_failure += 3;
     mod.catastrophe += 2;
+  }
+
+  const baseSoft = base.soft_failure;
+  const baseCat = base.catastrophe;
+  const softDelta = mod.soft_failure - baseSoft;
+  const catDelta = mod.catastrophe - baseCat;
+  const softPos = Math.max(0, softDelta);
+  const catPos = Math.max(0, catDelta);
+  const totalPos = softPos + catPos;
+  if (totalPos > 6) {
+    const scale = 6 / totalPos;
+    mod.soft_failure = baseSoft + Math.min(0, softDelta) + softPos * scale;
+    mod.catastrophe = baseCat + Math.min(0, catDelta) + catPos * scale;
   }
 
   const outcomes: Outcome[] = [
