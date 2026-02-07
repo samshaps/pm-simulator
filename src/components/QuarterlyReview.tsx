@@ -1,21 +1,77 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './QuarterlyReview.module.css';
 
 type Rating = 'exceeds' | 'meets' | 'needs' | 'does-not';
 type CalibrationOutcome = 'survived' | 'promoted' | 'pip' | 'terminated';
 
+interface QuarterlyReviewData {
+  quarter: number;
+  quarterSummary?: {
+    quarter: number;
+    product_pulse: any;
+    quarterly_review: {
+      rating: string;
+      calibration_outcome: string;
+      raw_score: number;
+      narrative?: string;
+    };
+  };
+  yearEndReview?: {
+    final_rating: string;
+    calibration_outcome: string;
+    narrative: string;
+  };
+  game: {
+    current_quarter: number;
+    metrics_state: Record<string, number>;
+  };
+}
+
 export default function QuarterlyReview() {
-  const rating: Rating = 'meets';
-  const ratingText = {
+  const router = useRouter();
+  const [reviewData, setReviewData] = useState<QuarterlyReviewData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Read quarterly review data from sessionStorage
+    const storedRetro = sessionStorage.getItem('lastRetro');
+    if (storedRetro) {
+      const retro = JSON.parse(storedRetro);
+      if (retro.quarterSummary || retro.yearEndReview) {
+        setReviewData({
+          quarter: retro.completedSprint?.quarter || retro.game?.current_quarter,
+          quarterSummary: retro.quarterSummary,
+          yearEndReview: retro.yearEndReview,
+          game: retro.game
+        });
+      }
+    }
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading || !reviewData) {
+    return <div className={styles.pageContainer}>Loading review...</div>;
+  }
+
+  const isYearEnd = !!reviewData.yearEndReview;
+  const review = isYearEnd ? reviewData.yearEndReview : reviewData.quarterSummary?.quarterly_review;
+
+  if (!review) {
+    return <div className={styles.pageContainer}>No review data available.</div>;
+  }
+
+  const rating = review.rating as Rating;
+  const ratingText: Record<Rating, string> = {
     'exceeds': 'Exceeds Expectations',
     'meets': 'Meets Expectations',
     'needs': 'Needs Improvement',
     'does-not': 'Does Not Meet Expectations'
   };
 
-  const calibrationOutcome: CalibrationOutcome = "survived";
+  const calibrationOutcome = review.calibration_outcome as CalibrationOutcome;
 
   const calibrationText: Record<CalibrationOutcome, string> = {
     survived: 'Survived',
@@ -24,30 +80,34 @@ export default function QuarterlyReview() {
     terminated: 'Terminated'
   };
 
-  const narrative = "You navigated Q2 with the pragmatism of someone who's read the employee handbook. Your focus on enterprise priorities aligned with the CEO's goals, boosting revenue metrics and keeping Sales temporarily satisfied. However, your tendency to overcommit left the team feeling stretched, and tech debt accumulated faster than anyone acknowledged in standups. The CTO noticed. Your manager noticed. You survived calibration, but you're not getting promoted this cycle.";
+  const narrative = review.narrative || "Quarter complete. Review your performance and prepare for what's next.";
 
+  const metrics = reviewData.game?.metrics_state || {};
   const finalMetrics = [
-    { name: 'Team Sentiment', value: 47, tier: 'neutral' },
-    { name: 'CEO Sentiment', value: 60, tier: 'positive' },
-    { name: 'Sales Sentiment', value: 53, tier: 'neutral' },
-    { name: 'CTO Sentiment', value: 49, tier: 'neutral' },
-    { name: 'Self-Serve Growth', value: 45, tier: 'neutral' },
-    { name: 'Enterprise Growth', value: 62, tier: 'positive' },
-    { name: 'Tech Debt', value: 60, tier: 'warning' }
+    { name: 'Team Sentiment', value: Math.round(metrics.team_sentiment || 50), tier: metrics.team_sentiment >= 60 ? 'positive' : metrics.team_sentiment < 40 ? 'warning' : 'neutral' },
+    { name: 'CEO Sentiment', value: Math.round(metrics.ceo_sentiment || 50), tier: metrics.ceo_sentiment >= 60 ? 'positive' : metrics.ceo_sentiment < 40 ? 'warning' : 'neutral' },
+    { name: 'Sales Sentiment', value: Math.round(metrics.sales_sentiment || 50), tier: metrics.sales_sentiment >= 60 ? 'positive' : metrics.sales_sentiment < 40 ? 'warning' : 'neutral' },
+    { name: 'CTO Sentiment', value: Math.round(metrics.cto_sentiment || 50), tier: metrics.cto_sentiment >= 60 ? 'positive' : metrics.cto_sentiment < 40 ? 'warning' : 'neutral' },
+    { name: 'Self-Serve Growth', value: Math.round(metrics.self_serve_growth || 50), tier: metrics.self_serve_growth >= 60 ? 'positive' : metrics.self_serve_growth < 40 ? 'warning' : 'neutral' },
+    { name: 'Enterprise Growth', value: Math.round(metrics.enterprise_growth || 50), tier: metrics.enterprise_growth >= 60 ? 'positive' : metrics.enterprise_growth < 40 ? 'warning' : 'neutral' },
+    { name: 'Tech Debt', value: Math.round(metrics.tech_debt || 50), tier: metrics.tech_debt >= 60 ? 'warning' : metrics.tech_debt < 40 ? 'positive' : 'neutral' }
   ];
 
-  const managerReview = "You delivered on what mattered most this quarter—enterprise growth. That's why you're still here. But let's be real: you overcommitted, the team felt it, and tech debt is becoming a problem. Next quarter, I need you to be more strategic about capacity and start addressing that debt before the CTO escalates it.";
-
-  const calibrationNarrative = {
-    survived: "You survived calibration. Your manager defended your rating against some pushback from the CTO, citing your enterprise wins. You're safe for now, but you're not on the 'high performer' list. Next quarter matters.",
-    promoted: "Congratulations—you've been promoted! Your consistent delivery on CEO priorities and strong stakeholder relationships put you in the top tier. Enjoy the 3% raise and new title. Next quarter's expectations just went up.",
-    pip: "You've been placed on a Performance Improvement Plan. Your manager cited chronic overcommitment, declining team morale, and insufficient progress on strategic priorities. You have 90 days to turn this around.",
-    terminated: "Your employment has been terminated. Despite some wins, leadership determined that your pattern of missed commitments and poor stakeholder management made you a net negative. Your Slack access has been revoked."
+  const calibrationNarrative: Record<CalibrationOutcome, string> = {
+    survived: "You survived calibration. Your manager defended your rating, citing your wins this quarter. You're safe for now, but you're not on the 'high performer' list. Next quarter matters.",
+    promoted: "Congratulations—you've been promoted! Your consistent delivery on priorities and strong stakeholder relationships put you in the top tier. Next quarter's expectations just went up.",
+    pip: "You've been placed on a Performance Improvement Plan. Leadership cited insufficient progress on strategic priorities. You have 90 days to turn this around.",
+    terminated: "Your employment has been terminated. Leadership determined that your pattern of performance made you a net negative. Your Slack access has been revoked."
   };
 
   const handleContinue = () => {
-    console.log('Returning to home screen');
-    // TODO: Navigate to home or start new game
+    if (isYearEnd || calibrationOutcome === 'terminated') {
+      // Game over - go back to home
+      router.replace('/');
+    } else {
+      // Continue to next quarter
+      router.replace('/sprint-planning');
+    }
   };
 
   return (
@@ -59,7 +119,9 @@ export default function QuarterlyReview() {
             <div className={styles.logoIcon}>PM</div>
             <span className={styles.logoText}>PM Simulator</span>
           </div>
-          <div className={styles.quarterBadge}>Q2 Complete — Review Time</div>
+          <div className={styles.quarterBadge}>
+            {isYearEnd ? 'Year Complete — Final Review' : `Q${reviewData.quarter} Complete — Review Time`}
+          </div>
         </div>
         <div className={styles.topBarRight}>
           <div className={styles.avatar}>S</div>
@@ -71,8 +133,12 @@ export default function QuarterlyReview() {
         <div className={styles.mainInner}>
           {/* Page Header */}
           <div className={styles.pageHeader}>
-            <div className={styles.pageTitle}>Quarterly Performance Review</div>
-            <div className={styles.pageSubtitle}>Q2 2026 — The moment of truth</div>
+            <div className={styles.pageTitle}>
+              {isYearEnd ? 'Year-End Performance Review' : 'Quarterly Performance Review'}
+            </div>
+            <div className={styles.pageSubtitle}>
+              {isYearEnd ? '2026 — The final verdict' : `Q${reviewData.quarter} 2026 — The moment of truth`}
+            </div>
           </div>
 
           {/* Rating & Calibration */}
@@ -130,7 +196,8 @@ export default function QuarterlyReview() {
           {/* Continue Button */}
           <div className={styles.actionSection}>
             <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleContinue}>
-              {(calibrationOutcome as CalibrationOutcome) === 'terminated' ? 'Return to Home' : 'Start Next Quarter'}
+              {calibrationOutcome === 'terminated' ? 'Return to Home' :
+               isYearEnd ? 'Play Again' : 'Start Next Quarter'}
             </button>
           </div>
         </div>
