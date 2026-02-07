@@ -113,6 +113,8 @@ export default function SprintPlanning() {
     return <div className={styles.pageContainer}>Loading sprint data...</div>;
   }
 
+  const metrics = gameState.game.metrics_state;
+
   const sprintCapacity = Math.floor(gameState.sprint.effective_capacity);
   const stretchCapacity = Math.floor(sprintCapacity * 1.25);
 
@@ -127,8 +129,6 @@ export default function SprintPlanning() {
   const capacityPercent = (usedCapacity / stretchCapacity) * 100;
   const capacityLimitPercent = (sprintCapacity / stretchCapacity) * 100;
   const lostCapacityPercent = (lostCapacityEstimate / stretchCapacity) * 100;
-
-  const metrics = gameState.game.metrics_state;
   const ceoFocusCategory = ceoFocusToCategory[gameState.quarter.ceo_focus] || '';
 
   // Check if ticket is CEO-aligned
