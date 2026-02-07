@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './Home.module.css';
 
 interface PastRun {
@@ -12,10 +13,13 @@ interface PastRun {
 }
 
 type Difficulty = 'good' | 'ok' | 'bad';
+type ApiDifficulty = 'easy' | 'normal' | 'hard';
 
 export default function Home() {
+  const router = useRouter();
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('ok');
-  const [hasSaveGame, setHasSaveGame] = useState(true);
+  const [hasSaveGame, setHasSaveGame] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const pastRuns: PastRun[] = [
     {
@@ -41,14 +45,51 @@ export default function Home() {
     }
   ];
 
-  const handleNewGame = () => {
-    console.log('Starting new game with difficulty:', selectedDifficulty);
-    // TODO: Navigate to game or call API
+  useEffect(() => {
+    // Initialize session and check for existing game
+    fetch('/api/session/init', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        setHasSaveGame(!!data.activeGameId);
+      })
+      .catch(console.error);
+  }, []);
+
+  const mapDifficultyToApi = (uiDifficulty: Difficulty): ApiDifficulty => {
+    const mapping: Record<Difficulty, ApiDifficulty> = {
+      'good': 'easy',
+      'ok': 'normal',
+      'bad': 'hard'
+    };
+    return mapping[uiDifficulty];
+  };
+
+  const handleNewGame = async () => {
+    setIsLoading(true);
+    try {
+      const apiDifficulty = mapDifficultyToApi(selectedDifficulty);
+      const response = await fetch('/api/game/new', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ difficulty: apiDifficulty })
+      });
+
+      if (response.ok) {
+        router.push('/sprint-planning');
+      } else {
+        console.error('Failed to create game');
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error('Error creating game:', error);
+      setIsLoading(false);
+    }
   };
 
   const handleContinue = () => {
-    console.log('Continuing saved game');
-    // TODO: Load saved game
+    if (hasSaveGame) {
+      router.push('/sprint-planning');
+    }
   };
 
   return (
@@ -69,8 +110,12 @@ export default function Home() {
 
       {/* Action Buttons */}
       <div className={styles.actions}>
-        <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleNewGame}>
-          New Game
+        <button
+          className={`${styles.btn} ${styles.btnPrimary}`}
+          onClick={handleNewGame}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Starting...' : 'New Game'}
         </button>
         {hasSaveGame ? (
           <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleContinue}>
