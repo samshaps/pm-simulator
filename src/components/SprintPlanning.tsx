@@ -12,6 +12,8 @@ interface Ticket {
   categoryClass: string;
   description: string;
   is_mandatory?: boolean;
+  isMandatory?: boolean;
+  isCEOAligned?: boolean;
   outcomes?: Record<string, string>;
 }
 
