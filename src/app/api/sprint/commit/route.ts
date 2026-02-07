@@ -7,6 +7,7 @@ import {
   generateBacklog,
   selectCeoFocus,
   focusToCategory,
+  isCeoAlignedCategory,
   shouldShiftFocus,
   deriveProductPulse,
   computeQuarterlyReview,
@@ -292,13 +293,19 @@ export async function POST(request: Request) {
   const metricDeltas: Record<string, number> = {};
   const ticketOutcomes: TicketOutcome[] = [];
 
+  const applyMetricDelta = (metric: keyof MetricsState, delta: number) => {
+    if (!delta) return;
+    updatedMetrics[metric] = clampMetric(updatedMetrics[metric] + delta);
+    metricDeltas[metric] = (metricDeltas[metric] ?? 0) + delta;
+  };
+
   const overAmount = Math.max(0, totalEffort - effectiveCapacity);
   const maxOverbook = Math.max(1, Math.floor(effectiveCapacity * 0.25));
   const overbookFraction = overAmount > 0 ? Math.min(overAmount / maxOverbook, 1) : 0;
   const isOverbooked = overAmount > 0;
 
   for (const ticket of selectedTickets) {
-    const ceoAligned = ticket.category === focusToCategory(ceoFocus);
+    const ceoAligned = isCeoAlignedCategory(ceoFocus, ticket.category);
     const outcome = rollOutcome(rng, {
       techDebt: updatedMetrics.tech_debt,
       teamSentiment: updatedMetrics.team_sentiment,
@@ -380,6 +387,112 @@ export async function POST(request: Request) {
       updatedMetrics.team_sentiment + 1
     );
     metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + 1;
+  }
+
+  const totalSelected = selectedTickets.length;
+  if (totalSelected > 0) {
+    const counts = selectedTickets.reduce<Record<string, number>>((acc, ticket) => {
+      acc[ticket.category] = (acc[ticket.category] ?? 0) + 1;
+      return acc;
+    }, {});
+    const growthCount =
+      (counts["self_serve_feature"] ?? 0) +
+      (counts["enterprise_feature"] ?? 0) +
+      (counts["monetization"] ?? 0) +
+      (counts["sales_request"] ?? 0) +
+      (counts["moonshot"] ?? 0);
+    const enterpriseCount =
+      (counts["enterprise_feature"] ?? 0) +
+      (counts["sales_request"] ?? 0);
+
+    if (growthCount / totalSelected > 0.5) {
+      applyMetricDelta("tech_debt", 2);
+      applyMetricDelta("team_sentiment", -1);
+    }
+
+    if (enterpriseCount / totalSelected > 0.5) {
+      applyMetricDelta("self_serve_growth", -2);
+    }
+  }
+
+  const prevSprintRef =
+    currentSprint > 1
+      ? { quarter: currentQuarter, number: currentSprint - 1 }
+      : currentQuarter > 1
+      ? { quarter: currentQuarter - 1, number: 3 }
+      : null;
+
+  let prevOutcomes: TicketOutcome[] = [];
+  if (prevSprintRef) {
+    const { data: prevSprint } = await supabase
+      .from("sprints")
+      .select("retro")
+      .eq("game_id", game.id)
+      .eq("quarter", prevSprintRef.quarter)
+      .eq("number", prevSprintRef.number)
+      .maybeSingle();
+    prevOutcomes = (prevSprint?.retro?.ticket_outcomes ?? []) as TicketOutcome[];
+  }
+
+  const failureOutcomes = new Set(["soft_failure", "catastrophe"]);
+  const enterpriseCategories = new Set(["enterprise_feature", "sales_request"]);
+  const techDebtCategories = new Set(["tech_debt_reduction", "infrastructure"]);
+  const uxOrSelfServeCategories = new Set([
+    "ux_improvement",
+    "self_serve_feature"
+  ]);
+  const selfServeCategories = new Set(["self_serve_feature"]);
+
+  const hasShipped = (outcomes: TicketOutcome[], categories: Set<string>) =>
+    outcomes.some(
+      (outcome) =>
+        categories.has(outcome.category) &&
+        !failureOutcomes.has(outcome.outcome)
+    );
+
+  const hasEnterpriseShipped = hasShipped(ticketOutcomes, enterpriseCategories);
+  const prevEnterpriseShipped = hasShipped(prevOutcomes, enterpriseCategories);
+  const hasTechDebtShipped = hasShipped(ticketOutcomes, techDebtCategories);
+  const prevTechDebtShipped = hasShipped(prevOutcomes, techDebtCategories);
+  const hasUxOrSelfServeShipped = hasShipped(
+    ticketOutcomes,
+    uxOrSelfServeCategories
+  );
+  const prevUxOrSelfServeShipped = hasShipped(
+    prevOutcomes,
+    uxOrSelfServeCategories
+  );
+  const hasSelfServeShipped = hasShipped(ticketOutcomes, selfServeCategories);
+  const prevSelfServeShipped = hasShipped(prevOutcomes, selfServeCategories);
+
+  if (!hasEnterpriseShipped) {
+    applyMetricDelta(
+      "sales_sentiment",
+      prevEnterpriseShipped ? -4 : -8
+    );
+  }
+
+  const techDebtDrift =
+    !hasTechDebtShipped && !prevTechDebtShipped ? 4 : 2;
+  applyMetricDelta("tech_debt", techDebtDrift);
+
+  if (hasTechDebtShipped) {
+    applyMetricDelta("cto_sentiment", 2);
+  } else {
+    applyMetricDelta("cto_sentiment", -3);
+  }
+  if (updatedMetrics.tech_debt > 70) {
+    applyMetricDelta("cto_sentiment", -2);
+  } else if (updatedMetrics.tech_debt < 35) {
+    applyMetricDelta("cto_sentiment", 1);
+  }
+
+  if (!hasUxOrSelfServeShipped && !prevUxOrSelfServeShipped) {
+    applyMetricDelta("nps", -2);
+  }
+
+  if (!hasSelfServeShipped && !prevSelfServeShipped) {
+    applyMetricDelta("self_serve_growth", -2);
   }
 
   const { data: narrativeRows } = await supabase

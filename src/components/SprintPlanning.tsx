@@ -150,6 +150,9 @@ export default function SprintPlanning() {
     if (gameState.quarter.ceo_focus === 'enterprise' && ticketCategory === 'sales_request') {
       return true;
     }
+    if (gameState.quarter.ceo_focus === 'tech_debt' && ticketCategory === 'infrastructure') {
+      return true;
+    }
     return ticketCategory === ceoFocusCategory;
   };
 

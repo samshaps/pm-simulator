@@ -134,6 +134,15 @@ export function focusToCategory(focus: CeoFocus): string {
   return "self_serve_feature";
 }
 
+export function isCeoAlignedCategory(
+  focus: CeoFocus,
+  category: string
+): boolean {
+  if (focus === "enterprise" && category === "sales_request") return true;
+  if (focus === "tech_debt" && category === "infrastructure") return true;
+  return category === focusToCategory(focus);
+}
+
 export function shouldShiftFocus(rng: Rng, difficulty: Difficulty): boolean {
   const chance =
     difficulty === "easy" ? 0.05 : difficulty === "hard" ? 0.15 : 0.1;
@@ -228,6 +237,10 @@ export function computeQuarterlyReview(
 
   const moralePenalty = lowTeamSprints >= 2 ? -5 : 0;
 
+  const techDebtBonus = metrics.tech_debt < 30 ? 5 : metrics.tech_debt > 70 ? -3 : 0;
+  const teamBonus =
+    metrics.team_sentiment > 60 ? 3 : metrics.team_sentiment < 30 ? -3 : 0;
+
   const rawScore = Math.max(
     0,
     Math.min(
@@ -238,7 +251,9 @@ export function computeQuarterlyReview(
           stability +
           pulseScore +
           alignmentBonus +
-          moralePenalty
+          moralePenalty +
+          techDebtBonus +
+          teamBonus
       )
     )
   );
@@ -264,7 +279,9 @@ export function computeQuarterlyReview(
       pulse_health_score: pulseScore,
       alignment_bonus: alignmentBonus,
       morale_penalty: moralePenalty,
-      alignment_ratio: Number(alignmentRatio.toFixed(2))
+      alignment_ratio: Number(alignmentRatio.toFixed(2)),
+      tech_debt_bonus: techDebtBonus,
+      team_bonus: teamBonus
     }
   };
 }
@@ -305,10 +322,15 @@ export function computeYearEndReview(
       : difficulty === "hard"
       ? { min: -18, max: 10 }
       : { min: -15, max: 15 };
-  const calibrationModifier = rng.int(
+  let calibrationModifier = rng.int(
     calibrationRange.min,
     calibrationRange.max
   );
+  if (rawComposite >= 90) {
+    calibrationModifier = Math.max(calibrationModifier, -2);
+  } else if (rawComposite >= 80) {
+    calibrationModifier = Math.max(calibrationModifier, -5);
+  }
   const finalScore = Math.max(
     0,
     Math.min(100, Math.round(rawComposite + calibrationModifier))
@@ -356,28 +378,34 @@ export function generateBacklog(
     weights.set(category, 1);
   }
 
-  if (metrics.sales_sentiment < 35) {
+  if (metrics.sales_sentiment < 45) {
     weights.set(
       "sales_request",
       (weights.get("sales_request") ?? 0) + 2
     );
   }
-  if (metrics.tech_debt > 60) {
+  if (metrics.tech_debt > 55) {
     weights.set(
       "tech_debt_reduction",
       (weights.get("tech_debt_reduction") ?? 0) + 2
     );
   }
-  if (metrics.enterprise_growth < 30) {
+  if (metrics.enterprise_growth < 45) {
     weights.set(
       "enterprise_feature",
       (weights.get("enterprise_feature") ?? 0) + 2
     );
   }
-  if (metrics.self_serve_growth < 30) {
+  if (metrics.self_serve_growth < 45) {
     weights.set(
       "self_serve_feature",
       (weights.get("self_serve_feature") ?? 0) + 2
+    );
+  }
+  if (metrics.nps < 45) {
+    weights.set(
+      "ux_improvement",
+      (weights.get("ux_improvement") ?? 0) + 1
     );
   }
 
@@ -394,11 +422,26 @@ export function generateBacklog(
   const selected: TicketInstance[] = [];
   const usedIds = new Set<string>();
 
-  while (selected.length < count) {
-    const category = pickCategory();
-    const pool = templatesByCategory.get(category) ?? templates;
-    if (pool.length === 0) break;
+  const guaranteeCategories: string[] = [];
+  if (metrics.self_serve_growth < 45) {
+    guaranteeCategories.push("self_serve_feature");
+  }
+  if (metrics.enterprise_growth < 45) {
+    guaranteeCategories.push("enterprise_feature");
+  }
+  if (metrics.tech_debt > 55) {
+    guaranteeCategories.push("tech_debt_reduction");
+  }
+  if (metrics.sales_sentiment < 40) {
+    guaranteeCategories.push("sales_request");
+  }
+  if (metrics.nps < 45) {
+    guaranteeCategories.push("ux_improvement");
+  }
 
+  const pickUniqueFromCategory = (category: string) => {
+    const pool = templatesByCategory.get(category) ?? templates;
+    if (pool.length === 0) return null;
     let candidate = rng.pick(pool);
     let guard = 0;
     while (usedIds.has(candidate.id) && guard < 5) {
@@ -406,10 +449,25 @@ export function generateBacklog(
       guard += 1;
     }
     if (usedIds.has(candidate.id)) {
-      const fallback = templates.find((tpl) => !usedIds.has(tpl.id));
-      if (!fallback) break;
+      const fallback = pool.find((tpl) => !usedIds.has(tpl.id));
+      if (!fallback) return null;
       candidate = fallback;
     }
+    return candidate;
+  };
+
+  for (const category of guaranteeCategories) {
+    if (selected.length >= count) break;
+    const candidate = pickUniqueFromCategory(category);
+    if (!candidate) continue;
+    usedIds.add(candidate.id);
+    selected.push({ ...candidate });
+  }
+
+  while (selected.length < count) {
+    const category = pickCategory();
+    const candidate = pickUniqueFromCategory(category);
+    if (!candidate) break;
     usedIds.add(candidate.id);
     selected.push({ ...candidate });
   }
@@ -582,7 +640,10 @@ export function applyOutcome(
     }
 
     if (ticket.tradeoff_metric) {
-      applyDelta(ticket.tradeoff_metric, applyRange(rng, tradeoffRange));
+      const tradeoffDelta = applyRange(rng, tradeoffRange);
+      const tradeoffScale = 1 + ticket.effort / 10;
+      const scaledTradeoff = Math.round(tradeoffDelta * tradeoffScale);
+      applyDelta(ticket.tradeoff_metric, scaledTradeoff);
     }
 
     applyDelta(stakeholder, isSuccess ? rng.int(3, 6) : rng.int(1, 3));

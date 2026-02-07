@@ -66,6 +66,12 @@ function focusToCategory(focus) {
   return 'self_serve_feature';
 }
 
+function isCeoAlignedCategory(focus, category) {
+  if (focus === 'enterprise' && category === 'sales_request') return true;
+  if (focus === 'tech_debt' && category === 'infrastructure') return true;
+  return category === focusToCategory(focus);
+}
+
 function shouldShiftFocus(rng, difficulty) {
   const chance = difficulty === 'easy' ? 0.05 : difficulty === 'hard' ? 0.15 : 0.1;
   return rng.next() < chance;
@@ -186,7 +192,12 @@ function applyOutcome(rng, metrics, ticket, outcome) {
     const tRange = isSuccess ? ticket.tradeoff_impact?.success : ticket.tradeoff_impact?.partial;
     applyDelta(ticket.primary_metric, applyRange(rng, pRange));
     if (ticket.secondary_metric) applyDelta(ticket.secondary_metric, applyRange(rng, sRange));
-    if (ticket.tradeoff_metric) applyDelta(ticket.tradeoff_metric, applyRange(rng, tRange));
+    if (ticket.tradeoff_metric) {
+      const tradeoffDelta = applyRange(rng, tRange);
+      const tradeoffScale = 1 + ticket.effort / 10;
+      const scaledTradeoff = Math.round(tradeoffDelta * tradeoffScale);
+      applyDelta(ticket.tradeoff_metric, scaledTradeoff);
+    }
     applyDelta(stakeholder, isSuccess ? rng.int(3, 6) : rng.int(1, 3));
   }
   if (outcome === 'unexpected_impact') {
@@ -225,10 +236,11 @@ function generateBacklog(templates, metrics, rng, count) {
   if (!categories.length) return [];
   const weights = new Map();
   for (const c of categories) weights.set(c, 1);
-  if (metrics.sales_sentiment < 35) weights.set('sales_request', (weights.get('sales_request') || 0) + 2);
-  if (metrics.tech_debt > 60) weights.set('tech_debt_reduction', (weights.get('tech_debt_reduction') || 0) + 2);
-  if (metrics.enterprise_growth < 30) weights.set('enterprise_feature', (weights.get('enterprise_feature') || 0) + 2);
-  if (metrics.self_serve_growth < 30) weights.set('self_serve_feature', (weights.get('self_serve_feature') || 0) + 2);
+  if (metrics.sales_sentiment < 45) weights.set('sales_request', (weights.get('sales_request') || 0) + 2);
+  if (metrics.tech_debt > 55) weights.set('tech_debt_reduction', (weights.get('tech_debt_reduction') || 0) + 2);
+  if (metrics.enterprise_growth < 45) weights.set('enterprise_feature', (weights.get('enterprise_feature') || 0) + 2);
+  if (metrics.self_serve_growth < 45) weights.set('self_serve_feature', (weights.get('self_serve_feature') || 0) + 2);
+  if (metrics.nps < 45) weights.set('ux_improvement', (weights.get('ux_improvement') || 0) + 1);
   const pickCat = () => {
     const total = Array.from(weights.values()).reduce((s, w) => s + w, 0);
     let roll = rng.next() * total;
@@ -237,18 +249,39 @@ function generateBacklog(templates, metrics, rng, count) {
   };
   const selected = [];
   const usedIds = new Set();
-  while (selected.length < count) {
-    const cat = pickCat();
-    const pool = byCategory.get(cat) || templates;
-    if (!pool.length) break;
+
+  const guaranteeCategories = [];
+  if (metrics.self_serve_growth < 45) guaranteeCategories.push('self_serve_feature');
+  if (metrics.enterprise_growth < 45) guaranteeCategories.push('enterprise_feature');
+  if (metrics.tech_debt > 55) guaranteeCategories.push('tech_debt_reduction');
+  if (metrics.sales_sentiment < 40) guaranteeCategories.push('sales_request');
+  if (metrics.nps < 45) guaranteeCategories.push('ux_improvement');
+
+  const pickUniqueFromCategory = (category) => {
+    const pool = byCategory.get(category) || templates;
+    if (!pool.length) return null;
     let candidate = rng.pick(pool);
     let guard = 0;
     while (usedIds.has(candidate.id) && guard < 5) { candidate = rng.pick(pool); guard++; }
     if (usedIds.has(candidate.id)) {
-      const fallback = templates.find(t => !usedIds.has(t.id));
-      if (!fallback) break;
+      const fallback = pool.find(t => !usedIds.has(t.id));
+      if (!fallback) return null;
       candidate = fallback;
     }
+    return candidate;
+  };
+
+  for (const category of guaranteeCategories) {
+    if (selected.length >= count) break;
+    const candidate = pickUniqueFromCategory(category);
+    if (!candidate) continue;
+    usedIds.add(candidate.id);
+    selected.push({ ...candidate });
+  }
+  while (selected.length < count) {
+    const cat = pickCat();
+    const candidate = pickUniqueFromCategory(cat);
+    if (!candidate) break;
     usedIds.add(candidate.id);
     selected.push({ ...candidate });
   }
@@ -280,8 +313,10 @@ function computeQuarterlyReview(quarter, metrics, pulse, catastropheCount, conte
     : alignmentRatio >= 0.45 ? 3
     : alignmentRatio >= 0.3 ? 1 : 0;
   const moralePenalty = lowTeamSprints >= 2 ? -5 : 0;
+  const techDebtBonus = metrics.tech_debt < 30 ? 5 : metrics.tech_debt > 70 ? -3 : 0;
+  const teamBonus = metrics.team_sentiment > 60 ? 3 : metrics.team_sentiment < 30 ? -3 : 0;
   const rawScore = Math.max(0, Math.min(100, Math.round(
-    ceoAlignment + growthUp + stability + pulseScore + alignmentBonus + moralePenalty
+    ceoAlignment + growthUp + stability + pulseScore + alignmentBonus + moralePenalty + techDebtBonus + teamBonus
   )));
   const rating = rawScore >= 75 ? 'strong' : rawScore >= 55 ? 'solid' : rawScore >= 35 ? 'mixed' : 'below_expectations';
   return { quarter, rawScore, rating };
@@ -305,7 +340,9 @@ function computeYearEndReview(difficulty, quarterlyScores, rng) {
   else if (range > 25) consistencyBonus = 20;
   const rawComposite = avg * 0.5 + trajectoryBonus * 0.25 + consistencyBonus * 0.25;
   const calRange = difficulty === 'easy' ? [-8, 12] : difficulty === 'hard' ? [-18, 10] : [-15, 15];
-  const calMod = rng.int(calRange[0], calRange[1]);
+  let calMod = rng.int(calRange[0], calRange[1]);
+  if (rawComposite >= 90) calMod = Math.max(calMod, -2);
+  else if (rawComposite >= 80) calMod = Math.max(calMod, -5);
   const finalScore = Math.max(0, Math.min(100, Math.round(rawComposite + calMod)));
   const finalRating = finalScore >= 85 ? 'exceeds_expectations' : finalScore >= 70 ? 'meets_expectations_strong' : finalScore >= 45 ? 'meets_expectations' : finalScore >= 25 ? 'needs_improvement' : 'does_not_meet_expectations';
   return { quarterlyScores: scores, rawComposite: Math.round(rawComposite), calMod, finalScore, finalRating };
@@ -467,6 +504,11 @@ function runPlaythrough(persona, seed) {
     metricTimeline: [{ ...metrics }],
     sprintDetails: [],
   };
+  const applyDelta = (metric, delta) => {
+    if (!delta) return;
+    metrics[metric] = clamp(metrics[metric] + delta);
+  };
+  let prevOutcomes = [];
 
   for (let quarter = 1; quarter <= 4; quarter++) {
     quarterCatastrophes = 0;
@@ -487,8 +529,7 @@ function runPlaythrough(persona, seed) {
       const stretchCap = Math.floor(effectiveCap * 1.25);
       const backlogCount = rng.int(7, 10);
       const backlog = generateBacklog(allTickets, metrics, rng, backlogCount);
-      const focusCat = focusToCategory(ceoFocus);
-      for (const t of backlog) t.ceo_aligned = t.category === focusCat;
+      for (const t of backlog) t.ceo_aligned = isCeoAlignedCategory(ceoFocus, t.category);
       const selected = persona.selectTickets(backlog, effectiveCap, stretchCap, ceoFocus, metrics);
       const totalEffort = selected.reduce((s, t) => s + t.effort, 0);
       const overAmount = Math.max(0, totalEffort - effectiveCap);
@@ -514,7 +555,7 @@ function runPlaythrough(persona, seed) {
         stats.outcomeCounts[outcome]++;
         if (outcome === 'catastrophe') { sprintHasCatastrophe = true; quarterCatastrophes++; totalCatastrophes++; }
         if ((outcome === 'clear_success' || outcome === 'partial_success') && ticket.category === 'ux_improvement') quarterHasUxSuccess = true;
-        sprintOutcomes.push({ outcome, ceoAligned: ticket.ceo_aligned });
+        sprintOutcomes.push({ outcome, category: ticket.category, ceoAligned: ticket.ceo_aligned });
       }
 
       const totalTickets = sprintOutcomes.length;
@@ -540,6 +581,77 @@ function runPlaythrough(persona, seed) {
       if (clearPartialRate > 0.5) {
         metrics.team_sentiment = clamp(metrics.team_sentiment + 1);
       }
+
+      const totalSelected = selected.length;
+      if (totalSelected > 0) {
+        const counts = selected.reduce((acc, ticket) => {
+          acc[ticket.category] = (acc[ticket.category] || 0) + 1;
+          return acc;
+        }, {});
+        const growthCount =
+          (counts['self_serve_feature'] || 0) +
+          (counts['enterprise_feature'] || 0) +
+          (counts['monetization'] || 0) +
+          (counts['sales_request'] || 0) +
+          (counts['moonshot'] || 0);
+        const enterpriseCount =
+          (counts['enterprise_feature'] || 0) +
+          (counts['sales_request'] || 0);
+
+        if (growthCount / totalSelected > 0.5) {
+          applyDelta('tech_debt', 2);
+          applyDelta('team_sentiment', -1);
+        }
+
+        if (enterpriseCount / totalSelected > 0.5) {
+          applyDelta('self_serve_growth', -2);
+        }
+      }
+
+      const failureOutcomes = new Set(['soft_failure', 'catastrophe']);
+      const enterpriseCategories = new Set(['enterprise_feature', 'sales_request']);
+      const techDebtCategories = new Set(['tech_debt_reduction', 'infrastructure']);
+      const uxOrSelfServeCategories = new Set(['ux_improvement', 'self_serve_feature']);
+      const selfServeCategories = new Set(['self_serve_feature']);
+      const hasShipped = (outcomes, categories) =>
+        outcomes.some(o => categories.has(o.category) && !failureOutcomes.has(o.outcome));
+
+      const hasEnterpriseShipped = hasShipped(sprintOutcomes, enterpriseCategories);
+      const prevEnterpriseShipped = hasShipped(prevOutcomes, enterpriseCategories);
+      const hasTechDebtShipped = hasShipped(sprintOutcomes, techDebtCategories);
+      const prevTechDebtShipped = hasShipped(prevOutcomes, techDebtCategories);
+      const hasUxOrSelfServeShipped = hasShipped(sprintOutcomes, uxOrSelfServeCategories);
+      const prevUxOrSelfServeShipped = hasShipped(prevOutcomes, uxOrSelfServeCategories);
+      const hasSelfServeShipped = hasShipped(sprintOutcomes, selfServeCategories);
+      const prevSelfServeShipped = hasShipped(prevOutcomes, selfServeCategories);
+
+      if (!hasEnterpriseShipped) {
+        applyDelta('sales_sentiment', prevEnterpriseShipped ? -4 : -8);
+      }
+
+      const techDebtDrift = !hasTechDebtShipped && !prevTechDebtShipped ? 4 : 2;
+      applyDelta('tech_debt', techDebtDrift);
+
+      if (hasTechDebtShipped) {
+        applyDelta('cto_sentiment', 2);
+      } else {
+        applyDelta('cto_sentiment', -3);
+      }
+      if (metrics.tech_debt > 70) {
+        applyDelta('cto_sentiment', -2);
+      } else if (metrics.tech_debt < 35) {
+        applyDelta('cto_sentiment', 1);
+      }
+
+      if (!hasUxOrSelfServeShipped && !prevUxOrSelfServeShipped) {
+        applyDelta('nps', -2);
+      }
+
+      if (!hasSelfServeShipped && !prevSelfServeShipped) {
+        applyDelta('self_serve_growth', -2);
+      }
+
+      prevOutcomes = sprintOutcomes;
 
       if (metrics.team_sentiment < 30) quarterLowTeamSprints++;
 
@@ -570,11 +682,11 @@ console.log('  PM SIMULATOR: PATCHED VERSION COMPARISON');
 console.log('═══════════════════════════════════════════════════════════════════\n');
 
 console.log('  PATCHES APPLIED:');
-console.log('    1. Rebalanced outcome probabilities (partial dominant, lower chaos/failure)');
-console.log('    2. Failure stacking cap (soft+cat increases capped at +6 total)');
-console.log('    3. Scaled overbooking penalties + conditional failure penalty');
-console.log('    4. Clean sprint morale recovery (+3 if low fail, +1 if clear/partial > 50%)');
-console.log('    5. Quarterly review rebalance (stability + alignment bonus, morale penalty)');
+console.log('    1. Backlog guarantees + higher need thresholds (avoid missing focus areas)');
+console.log('    2. Tradeoff impacts scale with effort + category over-index penalties');
+console.log('    3. Passive drift for sales/CTO/NPS/self-serve/tech debt');
+console.log('    4. CEO alignment includes infrastructure + sales_request');
+console.log('    5. Quarterly review bonuses for low tech debt/high morale + calibration guard');
 console.log('');
 
 const allResults = [];
