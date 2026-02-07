@@ -68,12 +68,12 @@ export default function SprintRetro() {
       .then(res => res.json())
       .then(data => {
         // The retro data should be in the previous sprint
-        // For now, let's store retro in session storage during commit
+        // Read from session storage (don't remove - let sprint planning handle that)
         const storedRetro = sessionStorage.getItem('lastRetro');
         if (storedRetro) {
           const parsed = JSON.parse(storedRetro);
           setRetroData(parsed);
-          sessionStorage.removeItem('lastRetro');
+          // Don't remove here - Sprint Planning will read and remove it
         }
         setIsLoading(false);
       })
