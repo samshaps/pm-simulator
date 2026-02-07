@@ -190,12 +190,6 @@ export default function QuarterlyReview() {
             ))}
           </div>
 
-          {/* Manager Review */}
-          <div className={styles.sectionLabel}>Manager's Review</div>
-          <div className={styles.managerCard}>
-            <div className={styles.managerText}>{managerReview}</div>
-          </div>
-
           {/* Continue Button */}
           <div className={styles.actionSection}>
             <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleContinue}>
