@@ -37,6 +37,15 @@ interface MetricsState {
   velocity: number;
 }
 
+interface ImpactMetric {
+  key: keyof MetricsState;
+  name: string;
+  from: number;
+  to: number;
+  delta: number;
+  tone: 'positive' | 'negative' | 'neutral';
+}
+
 interface GameState {
   game: {
     id: string;
@@ -54,6 +63,7 @@ interface GameState {
   quarter: {
     ceo_focus: string;
   };
+  ceo_focus_shift_narrative?: string | null;
 }
 
 const categoryToClass: Record<string, string> = {
@@ -73,6 +83,46 @@ const ceoFocusToCategory: Record<string, string> = {
   'tech_debt': 'tech_debt_reduction'
 };
 
+const loadingMessages = [
+  'Syncing with stakeholders...',
+  'Updating the JIRA board nobody reads...',
+  'Waiting for CI/CD...',
+  'Your manager is typing...',
+  'Calibrating expectations downward...',
+  'Refreshing LinkedIn to see if anyone noticed...',
+  'Resolving a merge conflict in the roadmap...',
+  'Asking ChatGPT to write your standup notes...',
+  'Convincing the designer this is MVP...',
+  'Calculating the blast radius...',
+  'Checking if anyone read the PRD...',
+  'Pretending to understand the architecture diagram...',
+  'Running it by legal, just in case...',
+  'Sprint planning is easy, they said...',
+  'Deploying to production on a Friday...'
+];
+
+const metricLabelMap: Record<keyof MetricsState, string> = {
+  team_sentiment: 'Team Sentiment',
+  ceo_sentiment: 'CEO Sentiment',
+  sales_sentiment: 'Sales Sentiment',
+  cto_sentiment: 'CTO Sentiment',
+  self_serve_growth: 'Self-Serve Growth',
+  enterprise_growth: 'Enterprise Growth',
+  tech_debt: 'Tech Debt',
+  nps: 'NPS',
+  velocity: 'Velocity'
+};
+
+const pickRandomMessages = (messages: string[], count: number) => {
+  const pool = [...messages];
+  const picked: string[] = [];
+  while (pool.length > 0 && picked.length < count) {
+    const index = Math.floor(Math.random() * pool.length);
+    picked.push(pool.splice(index, 1)[0]);
+  }
+  return picked;
+};
+
 export default function SprintPlanning() {
   const router = useRouter();
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -80,6 +130,13 @@ export default function SprintPlanning() {
   const [isCommitting, setIsCommitting] = useState(false);
   const [committedTickets, setCommittedTickets] = useState<CommittedTicket[]>([]);
   const [previousDeltas, setPreviousDeltas] = useState<Record<string, number> | null>(null);
+  const [impactMetrics, setImpactMetrics] = useState<ImpactMetric[]>([]);
+  const [impactValues, setImpactValues] = useState<Record<string, number>>({});
+  const [isImpactExpanded, setIsImpactExpanded] = useState(true);
+  const [loadingSequence, setLoadingSequence] = useState<string[]>([]);
+  const [loadingIndex, setLoadingIndex] = useState(0);
+  const [showCeoShift, setShowCeoShift] = useState(true);
+  const [ceoShiftNarrativeOverride, setCeoShiftNarrativeOverride] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch active sprint data
@@ -103,6 +160,9 @@ export default function SprintPlanning() {
         // Clear it so it doesn't show on subsequent sprints
         sessionStorage.removeItem('lastRetro');
       }
+      if (retro.ceo_focus_shift_narrative) {
+        setCeoShiftNarrativeOverride(retro.ceo_focus_shift_narrative);
+      }
     }
 
     // Handle browser back button - prevent it and redirect to home
@@ -121,6 +181,93 @@ export default function SprintPlanning() {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [router]);
+
+  useEffect(() => {
+    if (!previousDeltas || !gameState) return;
+    const deltas = Object.entries(previousDeltas).filter(([, value]) => value !== 0);
+    if (deltas.length === 0) return;
+
+    const metrics = gameState.game.metrics_state;
+    const impact: ImpactMetric[] = deltas.map(([key, value]) => {
+      const metricKey = key as keyof MetricsState;
+      const to = Math.round(metrics[metricKey]);
+      const from = Math.round(to - value);
+      const inverted = metricKey === 'tech_debt';
+      const tone =
+        value === 0
+          ? 'neutral'
+          : value > 0
+          ? inverted
+            ? 'negative'
+            : 'positive'
+          : inverted
+          ? 'positive'
+          : 'negative';
+      return {
+        key: metricKey,
+        name: metricLabelMap[metricKey] || metricKey,
+        from,
+        to,
+        delta: Math.round(value),
+        tone
+      };
+    });
+
+    setImpactMetrics(impact);
+    setIsImpactExpanded(true);
+    setImpactValues(
+      impact.reduce<Record<string, number>>((acc, item) => {
+        acc[item.key] = item.from;
+        return acc;
+      }, {})
+    );
+
+    let rafId = 0;
+    const start = performance.now();
+    const duration = 800;
+    const animate = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setImpactValues((prev) => {
+        const next = { ...prev };
+        for (const item of impact) {
+          next[item.key] = Math.round(item.from + (item.to - item.from) * eased);
+        }
+        return next;
+      });
+      if (progress < 1) {
+        rafId = requestAnimationFrame(animate);
+      }
+    };
+    rafId = requestAnimationFrame(animate);
+
+    const collapseTimer = window.setTimeout(() => {
+      setIsImpactExpanded(false);
+    }, 5000);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.clearTimeout(collapseTimer);
+    };
+  }, [previousDeltas, gameState]);
+
+  useEffect(() => {
+    if (!isCommitting) return;
+    const sequence = pickRandomMessages(loadingMessages, 4);
+    setLoadingSequence(sequence);
+    setLoadingIndex(0);
+    const interval = window.setInterval(() => {
+      setLoadingIndex((index) => (index + 1) % sequence.length);
+    }, 1500);
+    return () => window.clearInterval(interval);
+  }, [isCommitting]);
+
+  useEffect(() => {
+    if (!gameState) return;
+    if (gameState.game.current_sprint === 1) {
+      setShowCeoShift(true);
+    }
+  }, [gameState]);
 
   if (isLoading || !gameState) {
     return <div className={styles.pageContainer}>Loading sprint data...</div>;
@@ -281,7 +428,8 @@ export default function SprintPlanning() {
           retro: data.retro,
           isQuarterEnd,
           quarterSummary: data.quarter_summary,
-          yearEndReview: data.year_end_review
+          yearEndReview: data.year_end_review,
+          ceo_focus_shift_narrative: data.ceo_focus_shift_narrative ?? null
         }));
         // Navigate to sprint retro
         router.replace('/sprint-retro');
@@ -365,8 +513,26 @@ export default function SprintPlanning() {
     return labels[focus] || focus;
   };
 
+  const ceoFocusShiftNarrative =
+    ceoShiftNarrativeOverride ?? gameState.ceo_focus_shift_narrative;
+  const activeLoadingMessage =
+    loadingSequence[loadingIndex] || loadingMessages[0];
+  const showImpactPanel = impactMetrics.length > 0;
+
   return (
     <div className={styles.pageContainer}>
+      {isCommitting && (
+        <div className={styles.loadingOverlay} aria-live="polite">
+          <div className={styles.loadingCard}>
+            <div key={loadingIndex} className={styles.loadingMessage}>
+              {activeLoadingMessage}
+            </div>
+            <div className={styles.loadingProgress}>
+              <div className={styles.loadingProgressBar}></div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Top Bar */}
       <div className={styles.topBar}>
         <div className={styles.topBarLeft}>
@@ -433,8 +599,54 @@ export default function SprintPlanning() {
         <span className={styles.ceoFocusHint}>— aligned tickets get +12% success chance</span>
       </div>
 
+      {gameState.game.current_sprint === 1 && ceoFocusShiftNarrative && showCeoShift && (
+        <div className={styles.ceoShiftBanner}>
+          <div className={styles.ceoShiftText}>
+            “{ceoFocusShiftNarrative}”
+          </div>
+          <button
+            className={styles.ceoShiftDismiss}
+            onClick={() => setShowCeoShift(false)}
+            aria-label="Dismiss CEO focus update"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Main Content */}
       <div className={styles.mainContent}>
+        {showImpactPanel && (
+          <div
+            className={`${styles.impactPanel} ${
+              isImpactExpanded ? styles.impactExpanded : styles.impactCollapsed
+            }`}
+            onClick={() => setIsImpactExpanded((prev) => !prev)}
+          >
+            <div className={styles.impactHeader}>
+              <span className={styles.impactTitle}>Sprint Impact</span>
+              <span className={styles.impactHint}>
+                {isImpactExpanded ? 'Click to collapse' : 'Click to expand'}
+              </span>
+            </div>
+            <div className={styles.impactGrid}>
+              {impactMetrics.map((metric) => (
+                <div
+                  key={metric.key}
+                  className={`${styles.impactItem} ${styles[`impact${metric.tone.charAt(0).toUpperCase() + metric.tone.slice(1)}`]}`}
+                >
+                  <span className={styles.impactMetricName}>{metric.name}</span>
+                  <span className={styles.impactMetricValue}>
+                    {impactValues[metric.key] ?? metric.to}
+                    <span className={styles.impactMetricDelta}>
+                      {metric.delta > 0 ? `+${metric.delta}` : metric.delta}
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {/* Left Panel: Backlog */}
         <div className={styles.backlogPanel}>
           <div className={styles.panelHeader}>
@@ -492,7 +704,7 @@ export default function SprintPlanning() {
                 fontSize: '13px',
                 color: '#ff6b6b'
               }}>
-                ⚠️ Team morale is low — capacity reduced to {sprintCapacity} pts
+                Your team is updating their LinkedIn profiles. Capacity reduced to {sprintCapacity} pts
               </div>
             )}
             {metrics.team_sentiment >= 70 && (
@@ -505,7 +717,7 @@ export default function SprintPlanning() {
                 fontSize: '13px',
                 color: '#6bffb0'
               }}>
-                ✨ Team morale is high — capacity at {sprintCapacity} pts
+                Your team is vibing. Capacity up to {sprintCapacity} pts
               </div>
             )}
             <div className={styles.capacityBarTrack}>

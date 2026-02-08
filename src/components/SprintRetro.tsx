@@ -33,6 +33,11 @@ interface RetroData {
     ticket_outcomes: any[];
     metric_deltas: Record<string, number>;
     narrative: string;
+    events?: Array<{
+      title: string;
+      description: string;
+      metric_effects: Record<string, number>;
+    }>;
   };
   isQuarterEnd: boolean;
 }
@@ -88,6 +93,7 @@ export default function SprintRetro() {
   }
 
   const narrative = retroData.retro.narrative;
+  const events = retroData.retro.events ?? [];
 
   const formatMetricChange = (value: number): string => {
     const absValue = Math.abs(Math.round(value));
@@ -186,16 +192,31 @@ export default function SprintRetro() {
       <div className={styles.mainContent}>
         {/* Left Panel */}
         <div className={styles.leftPanel}>
-          <div className={styles.retroHeader}>
-            <div className={styles.retroTitle}>Sprint Retrospective</div>
-            <div className={styles.retroSubtitle}>What happened, and why it matters</div>
-          </div>
+        <div className={styles.retroHeader}>
+          <div className={styles.retroTitle}>Sprint Retrospective</div>
+          <div className={styles.retroSubtitle}>What happened, and why it matters</div>
+        </div>
 
-          {/* Narrative */}
-          <div className={styles.sectionLabel}>Sprint Summary</div>
-          <div className={styles.narrativeCard}>
-            <div className={styles.narrativeText}>{narrative}</div>
-          </div>
+        {/* Events */}
+        {events.length > 0 && (
+          <>
+            <div className={styles.sectionLabel}>Events</div>
+            <div className={styles.eventsCard}>
+              {events.map((event, index) => (
+                <div key={index} className={styles.eventItem}>
+                  <div className={styles.eventTitle}>{event.title}</div>
+                  <div className={styles.eventDescription}>{event.description}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Narrative */}
+        <div className={styles.sectionLabel}>Sprint Summary</div>
+        <div className={styles.narrativeCard}>
+          <div className={styles.narrativeText}>{narrative}</div>
+        </div>
 
           {/* Key Insights */}
           {insights.length > 0 && (

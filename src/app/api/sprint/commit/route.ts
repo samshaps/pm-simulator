@@ -130,6 +130,23 @@ type RetroTemplate = {
   group?: string;
 };
 
+type EventPayload = {
+  id: string;
+  title?: string;
+  description?: string;
+  group?: string;
+  trigger_chance_per_sprint?: number;
+  quarter_restriction?: number[] | null;
+  trigger_condition?: string;
+  trigger_condition_override?: string;
+  metric_effects?: Record<string, number>;
+  ceo_focus_shift?: string | null;
+  forced_ticket_category?: string | null;
+  sprint_duration?: number | null;
+  new_focus?: string;
+  text?: string;
+};
+
 const outcomeSummary = (text?: string) => {
   if (!text) return "a mixed outcome";
   const [first] = text.split(".");
@@ -182,6 +199,100 @@ const chooseRetroTemplate = (
       return true;
     }) ?? null
   );
+};
+
+const parseCondition = (condition: string) => {
+  const match = condition
+    .trim()
+    .match(/^([a-z_]+)\s*(<=|>=|<|>|==|=)\s*(-?\d+(?:\.\d+)?)$/i);
+  if (!match) return null;
+  const metric = match[1] as keyof MetricsState;
+  const op = match[2];
+  const value = Number(match[3]);
+  if (Number.isNaN(value)) return null;
+  return { metric, op, value };
+};
+
+const evaluateCondition = (condition: string, metrics: MetricsState) => {
+  if (!condition) return false;
+  const orParts = condition.split(/\s+OR\s+/i);
+  for (const part of orParts) {
+    const andParts = part.split(/\s+AND\s+/i);
+    let andOk = true;
+    for (const segment of andParts) {
+      const parsed = parseCondition(segment);
+      if (!parsed || typeof metrics[parsed.metric] !== "number") {
+        andOk = false;
+        break;
+      }
+      const metricValue = metrics[parsed.metric];
+      switch (parsed.op) {
+        case "<":
+          andOk = metricValue < parsed.value;
+          break;
+        case "<=":
+          andOk = metricValue <= parsed.value;
+          break;
+        case ">":
+          andOk = metricValue > parsed.value;
+          break;
+        case ">=":
+          andOk = metricValue >= parsed.value;
+          break;
+        case "=":
+        case "==":
+          andOk = metricValue === parsed.value;
+          break;
+        default:
+          andOk = false;
+      }
+      if (!andOk) break;
+    }
+    if (andOk) return true;
+  }
+  return false;
+};
+
+const resolveCeoFocusShift = (
+  shift: string | null | undefined,
+  metrics: MetricsState,
+  rng: ReturnType<typeof createRng>
+): CeoFocus | null => {
+  if (!shift) return null;
+  if (shift === "random") {
+    return selectCeoFocus(metrics, rng);
+  }
+  if (shift === "weakest_growth_metric") {
+    if (metrics.self_serve_growth === metrics.enterprise_growth) {
+      return rng.next() < 0.5 ? "self_serve" : "enterprise";
+    }
+    return metrics.self_serve_growth < metrics.enterprise_growth
+      ? "self_serve"
+      : "enterprise";
+  }
+  if (shift === "self_serve" || shift === "enterprise" || shift === "tech_debt") {
+    return shift;
+  }
+  return null;
+};
+
+const pickCeoShiftNarrative = (
+  shifts: EventPayload[],
+  focus: CeoFocus,
+  rng: ReturnType<typeof createRng>
+) => {
+  const matching = shifts.filter((shift) => shift.new_focus === focus);
+  const anyFocus = shifts.filter((shift) => shift.new_focus === "any");
+  const pool = matching.length > 0 ? matching : anyFocus;
+  if (pool.length === 0) return null;
+  return rng.pick(pool).text ?? null;
+};
+
+const eventDuration = (event: EventPayload) => {
+  if (typeof event.sprint_duration === "number" && event.sprint_duration > 0) {
+    return Math.max(1, Math.round(event.sprint_duration));
+  }
+  return 1;
 };
 
 export async function POST(request: Request) {
@@ -495,6 +606,134 @@ export async function POST(request: Request) {
     applyMetricDelta("self_serve_growth", -2);
   }
 
+  const eventsLog = Array.isArray(game.events_log) ? [...game.events_log] : [];
+  const { data: eventRows } = await supabase
+    .from("event_catalog")
+    .select("payload");
+
+  const eventCatalog = (eventRows ?? [])
+    .map((row) => row.payload as EventPayload)
+    .filter((row) => row && row.id && row.group);
+
+  const randomEvents = eventCatalog.filter(
+    (event) => event.group === "random_events"
+  );
+  const thresholdEvents = eventCatalog.filter(
+    (event) => event.group === "threshold_events"
+  );
+  const ceoShiftNarratives = eventCatalog.filter(
+    (event) => event.group === "ceo_focus_shifts"
+  );
+
+  const triggeredEvents: Array<{
+    title: string;
+    description: string;
+    metric_effects: Record<string, number>;
+  }> = [];
+
+  const applyEventEffects = async (
+    event: EventPayload,
+    type: "random_event" | "threshold_event"
+  ) => {
+    triggeredEvents.push({
+      title: event.title ?? "Event Triggered",
+      description: event.description ?? "",
+      metric_effects: event.metric_effects ?? {}
+    });
+    eventsLog.push({
+      type,
+      event_id: event.id,
+      quarter: currentQuarter,
+      sprint: currentSprint
+    });
+
+    const effects = event.metric_effects ?? {};
+    for (const [metric, delta] of Object.entries(effects)) {
+      if (metric === "sprint_capacity") {
+        eventsLog.push({
+          type: "capacity_modifier",
+          event_id: event.id,
+          delta,
+          remaining_sprints: eventDuration(event),
+          quarter: currentQuarter,
+          sprint: currentSprint
+        });
+        continue;
+      }
+      if (metric in updatedMetrics) {
+        applyMetricDelta(metric as keyof MetricsState, delta);
+      }
+    }
+
+    if (event.forced_ticket_category) {
+      eventsLog.push({
+        type: "forced_ticket",
+        event_id: event.id,
+        category: event.forced_ticket_category,
+        remaining_sprints: eventDuration(event),
+        quarter: currentQuarter,
+        sprint: currentSprint
+      });
+    }
+
+    const shifted = resolveCeoFocusShift(event.ceo_focus_shift, updatedMetrics, rng);
+    if (shifted && shifted !== ceoFocus) {
+      ceoFocus = shifted;
+      await supabase
+        .from("quarters")
+        .update({ ceo_focus: shifted })
+        .eq("game_id", game.id)
+        .eq("number", game.current_quarter);
+      eventsLog.push({
+        type: "ceo_focus_shift",
+        quarter: currentQuarter,
+        sprint: currentSprint,
+        new_focus: shifted,
+        shift_kind: "event",
+        source: "event"
+      });
+    }
+  };
+
+  let firedRandomEvent: EventPayload | null = null;
+  for (const event of randomEvents) {
+    const quarters = event.quarter_restriction;
+    if (Array.isArray(quarters) && !quarters.includes(currentQuarter)) {
+      continue;
+    }
+    if (
+      event.trigger_condition_override &&
+      !evaluateCondition(event.trigger_condition_override, updatedMetrics)
+    ) {
+      continue;
+    }
+    const chance =
+      typeof event.trigger_chance_per_sprint === "number"
+        ? event.trigger_chance_per_sprint
+        : 0;
+    if (rng.next() <= chance) {
+      firedRandomEvent = event;
+      break;
+    }
+  }
+
+  if (firedRandomEvent) {
+    await applyEventEffects(firedRandomEvent, "random_event");
+  }
+
+  const firedThresholdIds = new Set(
+    eventsLog
+      .filter((entry) => entry?.type === "threshold_event")
+      .map((entry) => entry?.event_id)
+  );
+  for (const event of thresholdEvents) {
+    if (firedThresholdIds.has(event.id)) continue;
+    if (!event.trigger_condition) continue;
+    if (!evaluateCondition(event.trigger_condition, updatedMetrics)) continue;
+    await applyEventEffects(event, "threshold_event");
+    break;
+  }
+
   const { data: narrativeRows } = await supabase
     .from("narrative_templates")
     .select("payload");
@@ -519,6 +758,7 @@ export async function POST(request: Request) {
     ceo_focus: ceoFocus,
     ticket_outcomes: ticketOutcomes,
     metric_deltas: metricDeltas,
+    events: triggeredEvents,
     narrative:
       template?.template
         ?.replace("{tickets_shipped}", String(successes))
@@ -547,7 +787,6 @@ export async function POST(request: Request) {
     .map((row) => row.payload as TicketTemplate)
     .filter((row) => row && row.id);
 
-  const eventsLog = Array.isArray(game.events_log) ? [...game.events_log] : [];
   const isQuarterEnd = currentSprint === 3;
   let nextQuarter = game.current_quarter;
   let nextSprintNumber = game.current_sprint;
@@ -555,6 +794,7 @@ export async function POST(request: Request) {
   let productPulse: ProductPulse | null = null;
   let quarterlyReview: QuarterlyReview | null = null;
   let yearEndReview: YearEndReview | null = null;
+  let ceoFocusShiftNarrative: string | null = null;
   let quarterSummary: {
     quarter: number;
     product_pulse: ProductPulse | null;
@@ -575,7 +815,8 @@ export async function POST(request: Request) {
           type: "ceo_focus_shift",
           quarter: currentQuarter,
           sprint: currentSprint,
-          new_focus: shifted
+          new_focus: shifted,
+          shift_kind: "mid_sprint"
         });
       }
     }
@@ -663,6 +904,14 @@ export async function POST(request: Request) {
       nextQuarter = currentQuarter + 1;
       nextSprintNumber = 1;
       nextCeoFocus = selectCeoFocus(updatedMetrics, rng);
+      for (let attempt = 0; attempt < 3 && nextCeoFocus === ceoFocus; attempt += 1) {
+        nextCeoFocus = selectCeoFocus(updatedMetrics, rng);
+      }
+      ceoFocusShiftNarrative = pickCeoShiftNarrative(
+        ceoShiftNarratives,
+        nextCeoFocus,
+        rng
+      );
 
       const { data: nextQuarterRow } = await supabase
         .from("quarters")
@@ -678,6 +927,14 @@ export async function POST(request: Request) {
           ceo_focus: nextCeoFocus
         });
       }
+      eventsLog.push({
+        type: "ceo_focus_shift",
+        quarter: nextQuarter,
+        sprint: 1,
+        new_focus: nextCeoFocus,
+        shift_kind: "quarter",
+        narrative: ceoFocusShiftNarrative
+      });
     } else {
       const { data: quarterRows } = await supabase
         .from("quarters")
@@ -753,6 +1010,28 @@ export async function POST(request: Request) {
         rng,
         rng.int(7, 10)
       );
+      const forcedTicketEntries = eventsLog.filter(
+        (entry) =>
+          entry?.type === "forced_ticket" &&
+          typeof entry?.category === "string" &&
+          (entry?.remaining_sprints ?? 0) > 0
+      );
+      const forcedTickets: TicketInstance[] = [];
+      for (const entry of forcedTicketEntries) {
+        const pool = ticketTemplates.filter(
+          (ticket) => ticket.category === entry.category
+        );
+        if (pool.length > 0) {
+          forcedTickets.push({
+            ...rng.pick(pool),
+            is_mandatory: true
+          });
+        }
+        entry.remaining_sprints =
+          typeof entry.remaining_sprints === "number"
+            ? Math.max(0, entry.remaining_sprints - 1)
+            : 0;
+      }
       const hijacks = pickHijackTickets(
         ticketTemplates,
         updatedMetrics,
@@ -769,7 +1048,27 @@ export async function POST(request: Request) {
         );
       }
       backlog = mergeBacklog(backlog, hijacks.forced);
-      const nextCapacity = computeEffectiveCapacity(updatedMetrics);
+      backlog = mergeBacklog(backlog, forcedTickets);
+
+      const capacityModifiers = eventsLog.filter(
+        (entry) =>
+          entry?.type === "capacity_modifier" &&
+          typeof entry?.delta === "number" &&
+          (entry?.remaining_sprints ?? 0) > 0
+      );
+      let capacityDelta = 0;
+      for (const entry of capacityModifiers) {
+        capacityDelta += entry.delta;
+        entry.remaining_sprints =
+          typeof entry.remaining_sprints === "number"
+            ? Math.max(0, entry.remaining_sprints - 1)
+            : 0;
+      }
+
+      const nextCapacity = Math.max(
+        1,
+        computeEffectiveCapacity(updatedMetrics) + capacityDelta
+      );
       const { data: inserted } = await supabase
         .from("sprints")
         .insert({
@@ -827,6 +1126,7 @@ export async function POST(request: Request) {
       product_pulse: productPulse,
       quarterly_review: quarterlyReview
     },
+    ceo_focus_shift_narrative: ceoFocusShiftNarrative,
     quarter_summary: quarterSummary,
     year_end_review: yearEndReview
   });

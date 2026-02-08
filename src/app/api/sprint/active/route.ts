@@ -26,7 +26,7 @@ export async function GET() {
 
   const { data: game } = await supabase
     .from("games")
-    .select("id, difficulty, current_quarter, current_sprint, metrics_state")
+    .select("id, difficulty, current_quarter, current_sprint, metrics_state, events_log")
     .eq("id", session.active_game_id)
     .maybeSingle();
 
@@ -56,5 +56,21 @@ export async function GET() {
     .eq("number", game.current_quarter)
     .maybeSingle();
 
-  return NextResponse.json({ game, sprint, quarter });
+  const eventsLog = Array.isArray(game.events_log) ? game.events_log : [];
+  const ceoShiftEvent = [...eventsLog].reverse().find(
+    (entry) =>
+      entry?.type === "ceo_focus_shift" &&
+      entry?.shift_kind === "quarter" &&
+      entry?.quarter === game.current_quarter &&
+      entry?.sprint === 1
+  );
+  const ceoFocusShiftNarrative =
+    typeof ceoShiftEvent?.narrative === "string" ? ceoShiftEvent.narrative : null;
+
+  return NextResponse.json({
+    game,
+    sprint,
+    quarter: quarter ?? null,
+    ceo_focus_shift_narrative: ceoFocusShiftNarrative
+  });
 }

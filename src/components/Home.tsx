@@ -20,30 +20,71 @@ export default function Home() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('ok');
   const [hasSaveGame, setHasSaveGame] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [pastRuns, setPastRuns] = useState<PastRun[]>([]);
 
-  const pastRuns: PastRun[] = [
-    {
-      date: 'Jan 28, 2026',
-      difficulty: 'OK Manager',
-      rating: 'meets',
-      ratingText: 'Meets Expectations',
-      outcome: 'Survived calibration'
-    },
-    {
-      date: 'Jan 15, 2026',
-      difficulty: 'Bad Manager',
-      rating: 'does-not',
-      ratingText: 'Does Not Meet',
-      outcome: 'Deactivated on Slack'
-    },
-    {
-      date: 'Jan 3, 2026',
-      difficulty: 'Good Manager',
-      rating: 'exceeds',
-      ratingText: 'Exceeds Expectations',
-      outcome: 'Got lucky in calibration'
+  const formatRunDate = (iso: string) => {
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return 'Unknown date';
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(date);
+  };
+
+  const mapDifficultyLabel = (difficulty: ApiDifficulty) => {
+    const mapping: Record<ApiDifficulty, string> = {
+      easy: 'Good Manager',
+      normal: 'OK Manager',
+      hard: 'Bad Manager'
+    };
+    return mapping[difficulty] || 'OK Manager';
+  };
+
+  const ratingMap: Record<string, { rating: PastRun['rating']; text: string }> = {
+    exceeds_expectations: { rating: 'exceeds', text: 'Exceeds Expectations' },
+    meets_expectations_strong: { rating: 'meets', text: 'Meets Expectations+' },
+    meets_expectations: { rating: 'meets', text: 'Meets Expectations' },
+    needs_improvement: { rating: 'needs', text: 'Needs Improvement' },
+    does_not_meet_expectations: { rating: 'does-not', text: 'Does Not Meet' }
+  };
+
+  const outcomeByRating: Record<PastRun['rating'], string[]> = {
+    exceeds: [
+      'Got a promotion no one understands',
+      'Accidentally became the roadmap',
+      'Survived calibration in style'
+    ],
+    meets: [
+      'Survived calibration',
+      'Kept the lights on',
+      'Stayed off the VP radar'
+    ],
+    needs: [
+      'Sent to the org chart basement',
+      'Assigned “stretch” goals',
+      'Put on a growth plan'
+    ],
+    'does-not': [
+      'Deactivated on Slack',
+      'Reassigned to “special projects”',
+      'Exited via calendar invite'
+    ]
+  };
+
+  const hashString = (value: string) => {
+    let hash = 0;
+    for (let i = 0; i < value.length; i += 1) {
+      hash = (hash * 31 + value.charCodeAt(i)) | 0;
     }
-  ];
+    return Math.abs(hash);
+  };
+
+  const pickOutcome = (rating: PastRun['rating'], seed: string) => {
+    const options = outcomeByRating[rating];
+    const index = hashString(seed) % options.length;
+    return options[index];
+  };
 
   useEffect(() => {
     // Initialize session and check for existing game
@@ -51,6 +92,28 @@ export default function Home() {
       .then(res => res.json())
       .then(data => {
         setHasSaveGame(!!data.activeGameId);
+        const completedGames = Array.isArray(data.completedGames) ? data.completedGames : [];
+        const runs = completedGames
+          .filter((game: any) => game && game.completed_at)
+          .sort((a: any, b: any) => {
+            const aTime = new Date(a.completed_at).getTime();
+            const bTime = new Date(b.completed_at).getTime();
+            return bTime - aTime;
+          })
+          .slice(0, 10)
+          .map((game: any) => {
+            const ratingInfo =
+              ratingMap[game.final_rating] ?? ratingMap.meets_expectations;
+            const seed = `${game.game_id || ''}-${game.completed_at || ''}`;
+            return {
+              date: formatRunDate(game.completed_at),
+              difficulty: mapDifficultyLabel(game.difficulty as ApiDifficulty),
+              rating: ratingInfo.rating,
+              ratingText: ratingInfo.text,
+              outcome: pickOutcome(ratingInfo.rating, seed)
+            };
+          });
+        setPastRuns(runs);
       })
       .catch(console.error);
   }, []);
