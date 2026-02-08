@@ -64,13 +64,22 @@ export async function GET() {
       entry?.quarter === game.current_quarter &&
       entry?.sprint === 1
   );
-  const ceoFocusShiftNarrative =
-    typeof ceoShiftEvent?.narrative === "string" ? ceoShiftEvent.narrative : null;
+  const ceoFocusShift = ceoShiftEvent
+    ? {
+        narrative:
+          typeof ceoShiftEvent?.narrative === "string"
+            ? ceoShiftEvent.narrative
+            : null,
+        from: typeof ceoShiftEvent?.old_focus === "string" ? ceoShiftEvent.old_focus : null,
+        to: typeof ceoShiftEvent?.new_focus === "string" ? ceoShiftEvent.new_focus : null,
+        kind: ceoShiftEvent?.shift_kind ?? null
+      }
+    : null;
 
   return NextResponse.json({
     game,
     sprint,
     quarter: quarter ?? null,
-    ceo_focus_shift_narrative: ceoFocusShiftNarrative
+    ceo_focus_shift: ceoFocusShift
   });
 }

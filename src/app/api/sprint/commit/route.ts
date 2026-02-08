@@ -678,6 +678,7 @@ export async function POST(request: Request) {
 
     const shifted = resolveCeoFocusShift(event.ceo_focus_shift, updatedMetrics, rng);
     if (shifted && shifted !== ceoFocus) {
+      const previousFocus = ceoFocus;
       ceoFocus = shifted;
       await supabase
         .from("quarters")
@@ -689,6 +690,7 @@ export async function POST(request: Request) {
         quarter: currentQuarter,
         sprint: currentSprint,
         new_focus: shifted,
+        old_focus: previousFocus,
         shift_kind: "event",
         source: "event"
       });
@@ -805,6 +807,7 @@ export async function POST(request: Request) {
     if (shouldShiftFocus(rng, game.difficulty)) {
       const shifted = selectCeoFocus(updatedMetrics, rng);
       if (shifted !== ceoFocus) {
+        const previousFocus = ceoFocus;
         nextCeoFocus = shifted;
         await supabase
           .from("quarters")
@@ -816,6 +819,7 @@ export async function POST(request: Request) {
           quarter: currentQuarter,
           sprint: currentSprint,
           new_focus: shifted,
+          old_focus: previousFocus,
           shift_kind: "mid_sprint"
         });
       }
@@ -932,6 +936,7 @@ export async function POST(request: Request) {
         quarter: nextQuarter,
         sprint: 1,
         new_focus: nextCeoFocus,
+        old_focus: ceoFocus,
         shift_kind: "quarter",
         narrative: ceoFocusShiftNarrative
       });
@@ -1111,6 +1116,16 @@ export async function POST(request: Request) {
     );
   }
 
+  const ceoFocusShift =
+    ceoFocusShiftNarrative
+      ? {
+          narrative: ceoFocusShiftNarrative,
+          from: ceoFocus,
+          to: nextCeoFocus,
+          kind: "quarter"
+        }
+      : null;
+
   return NextResponse.json({
     game: {
       id: updatedGame.id,
@@ -1126,7 +1141,7 @@ export async function POST(request: Request) {
       product_pulse: productPulse,
       quarterly_review: quarterlyReview
     },
-    ceo_focus_shift_narrative: ceoFocusShiftNarrative,
+    ceo_focus_shift: ceoFocusShift,
     quarter_summary: quarterSummary,
     year_end_review: yearEndReview
   });

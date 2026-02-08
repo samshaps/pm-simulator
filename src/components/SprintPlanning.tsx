@@ -63,7 +63,12 @@ interface GameState {
   quarter: {
     ceo_focus: string;
   };
-  ceo_focus_shift_narrative?: string | null;
+  ceo_focus_shift?: {
+    narrative?: string | null;
+    from?: string | null;
+    to?: string | null;
+    kind?: string | null;
+  } | null;
 }
 
 const categoryToClass: Record<string, string> = {
@@ -136,7 +141,9 @@ export default function SprintPlanning() {
   const [loadingSequence, setLoadingSequence] = useState<string[]>([]);
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [showCeoShift, setShowCeoShift] = useState(true);
-  const [ceoShiftNarrativeOverride, setCeoShiftNarrativeOverride] = useState<string | null>(null);
+  const [ceoShiftOverride, setCeoShiftOverride] = useState<GameState['ceo_focus_shift']>(null);
+  const [eventPopupEvents, setEventPopupEvents] = useState<Array<{ title: string; description: string }>>([]);
+  const [showEventPopup, setShowEventPopup] = useState(false);
 
   useEffect(() => {
     // Fetch active sprint data
@@ -160,8 +167,17 @@ export default function SprintPlanning() {
         // Clear it so it doesn't show on subsequent sprints
         sessionStorage.removeItem('lastRetro');
       }
-      if (retro.ceo_focus_shift_narrative) {
-        setCeoShiftNarrativeOverride(retro.ceo_focus_shift_narrative);
+      if (Array.isArray(retro.retro?.events) && retro.retro.events.length > 0) {
+        setEventPopupEvents(
+          retro.retro.events.map((event: any) => ({
+            title: event.title,
+            description: event.description
+          }))
+        );
+        setShowEventPopup(true);
+      }
+      if (retro.ceo_focus_shift) {
+        setCeoShiftOverride(retro.ceo_focus_shift);
       }
     }
 
@@ -405,6 +421,7 @@ export default function SprintPlanning() {
       return;
     }
 
+    const commitStartedAt = Date.now();
     setIsCommitting(true);
     try {
       const response = await fetch('/api/sprint/commit', {
@@ -429,8 +446,12 @@ export default function SprintPlanning() {
           isQuarterEnd,
           quarterSummary: data.quarter_summary,
           yearEndReview: data.year_end_review,
-          ceo_focus_shift_narrative: data.ceo_focus_shift_narrative ?? null
+          ceo_focus_shift: data.ceo_focus_shift ?? null
         }));
+        const elapsed = Date.now() - commitStartedAt;
+        if (elapsed < 2000) {
+          await new Promise(resolve => setTimeout(resolve, 2000 - elapsed));
+        }
         // Navigate to sprint retro
         router.replace('/sprint-retro');
       } else {
@@ -513,8 +534,10 @@ export default function SprintPlanning() {
     return labels[focus] || focus;
   };
 
-  const ceoFocusShiftNarrative =
-    ceoShiftNarrativeOverride ?? gameState.ceo_focus_shift_narrative;
+  const ceoFocusShift = ceoShiftOverride ?? gameState.ceo_focus_shift ?? null;
+  const ceoFocusShiftNarrative = ceoFocusShift?.narrative ?? null;
+  const ceoFocusShiftFrom = ceoFocusShift?.from ?? null;
+  const ceoFocusShiftTo = ceoFocusShift?.to ?? gameState.quarter.ceo_focus;
   const activeLoadingMessage =
     loadingSequence[loadingIndex] || loadingMessages[0];
   const showImpactPanel = impactMetrics.length > 0;
@@ -530,6 +553,28 @@ export default function SprintPlanning() {
             <div className={styles.loadingProgress}>
               <div className={styles.loadingProgressBar}></div>
             </div>
+          </div>
+        </div>
+      )}
+      {showEventPopup && eventPopupEvents.length > 0 && (
+        <div className={styles.eventPopup}>
+          <div className={styles.eventPopupHeader}>
+            <span className={styles.eventPopupTitle}>Events</span>
+            <button
+              className={styles.eventPopupDismiss}
+              onClick={() => setShowEventPopup(false)}
+              aria-label="Dismiss events"
+            >
+              ×
+            </button>
+          </div>
+          <div className={styles.eventPopupBody}>
+            {eventPopupEvents.map((event, index) => (
+              <div key={`${event.title}-${index}`} className={styles.eventPopupItem}>
+                <div className={styles.eventPopupItemTitle}>{event.title}</div>
+                <div className={styles.eventPopupItemText}>{event.description}</div>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -592,61 +637,66 @@ export default function SprintPlanning() {
         </div>
       </div>
 
-      {/* CEO Focus Banner */}
-      <div className={styles.ceoFocusBanner}>
-        <span className={styles.ceoFocusLabel}>CEO Focus this Quarter:</span>
-        <span className={styles.ceoFocusValue}>{formatCeoFocus(gameState.quarter.ceo_focus)}</span>
-        <span className={styles.ceoFocusHint}>— aligned tickets get +12% success chance</span>
-      </div>
-
-      {gameState.game.current_sprint === 1 && ceoFocusShiftNarrative && showCeoShift && (
-        <div className={styles.ceoShiftBanner}>
-          <div className={styles.ceoShiftText}>
-            “{ceoFocusShiftNarrative}”
+      {showImpactPanel && (
+        <div
+          className={`${styles.impactPanel} ${
+            isImpactExpanded ? styles.impactExpanded : styles.impactCollapsed
+          }`}
+          onClick={() => setIsImpactExpanded((prev) => !prev)}
+        >
+          <div className={styles.impactHeader}>
+            <span className={styles.impactTitle}>Sprint Impact</span>
+            <span className={styles.impactHint}>
+              {isImpactExpanded ? 'Click to collapse' : 'Click to expand'}
+            </span>
           </div>
-          <button
-            className={styles.ceoShiftDismiss}
-            onClick={() => setShowCeoShift(false)}
-            aria-label="Dismiss CEO focus update"
-          >
-            ×
-          </button>
+          <div className={styles.impactGrid}>
+            {impactMetrics.map((metric) => (
+              <div
+                key={metric.key}
+                className={`${styles.impactItem} ${styles[`impact${metric.tone.charAt(0).toUpperCase() + metric.tone.slice(1)}`]}`}
+              >
+                <span className={styles.impactMetricName}>{metric.name}</span>
+                <span className={styles.impactMetricValue}>
+                  {impactValues[metric.key] ?? metric.to}
+                  <span className={styles.impactMetricDelta}>
+                    {metric.delta > 0 ? `+${metric.delta}` : metric.delta}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Main Content */}
-      <div className={styles.mainContent}>
-        {showImpactPanel && (
-          <div
-            className={`${styles.impactPanel} ${
-              isImpactExpanded ? styles.impactExpanded : styles.impactCollapsed
-            }`}
-            onClick={() => setIsImpactExpanded((prev) => !prev)}
-          >
-            <div className={styles.impactHeader}>
-              <span className={styles.impactTitle}>Sprint Impact</span>
-              <span className={styles.impactHint}>
-                {isImpactExpanded ? 'Click to collapse' : 'Click to expand'}
-              </span>
-            </div>
-            <div className={styles.impactGrid}>
-              {impactMetrics.map((metric) => (
-                <div
-                  key={metric.key}
-                  className={`${styles.impactItem} ${styles[`impact${metric.tone.charAt(0).toUpperCase() + metric.tone.slice(1)}`]}`}
-                >
-                  <span className={styles.impactMetricName}>{metric.name}</span>
-                  <span className={styles.impactMetricValue}>
-                    {impactValues[metric.key] ?? metric.to}
-                    <span className={styles.impactMetricDelta}>
-                      {metric.delta > 0 ? `+${metric.delta}` : metric.delta}
-                    </span>
-                  </span>
-                </div>
-              ))}
-            </div>
+      {/* CEO Focus Banner */}
+      <div className={styles.ceoFocusBanner}>
+        <div className={styles.ceoFocusRow}>
+          <span className={styles.ceoFocusLabel}>CEO Focus this Quarter:</span>
+          {gameState.game.current_sprint === 1 && ceoFocusShiftNarrative && showCeoShift && ceoFocusShiftFrom && (
+            <span className={styles.ceoFocusOld}>{formatCeoFocus(ceoFocusShiftFrom)}</span>
+          )}
+          <span className={styles.ceoFocusValue}>{formatCeoFocus(ceoFocusShiftTo)}</span>
+          <span className={styles.ceoFocusHint}>— aligned tickets get +12% success chance</span>
+          {gameState.game.current_sprint === 1 && ceoFocusShiftNarrative && showCeoShift && (
+            <button
+              className={styles.ceoShiftDismiss}
+              onClick={() => setShowCeoShift(false)}
+              aria-label="Dismiss CEO focus update"
+            >
+              ×
+            </button>
+          )}
+        </div>
+        {gameState.game.current_sprint === 1 && ceoFocusShiftNarrative && showCeoShift && (
+          <div className={styles.ceoShiftNarrative}>
+            “{ceoFocusShiftNarrative}”
           </div>
         )}
+      </div>
+
+      {/* Main Content */}
+      <div className={styles.mainContent}>
         {/* Left Panel: Backlog */}
         <div className={styles.backlogPanel}>
           <div className={styles.panelHeader}>

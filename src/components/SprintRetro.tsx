@@ -33,11 +33,6 @@ interface RetroData {
     ticket_outcomes: any[];
     metric_deltas: Record<string, number>;
     narrative: string;
-    events?: Array<{
-      title: string;
-      description: string;
-      metric_effects: Record<string, number>;
-    }>;
   };
   isQuarterEnd: boolean;
 }
@@ -66,6 +61,26 @@ export default function SprintRetro() {
   const router = useRouter();
   const [retroData, setRetroData] = useState<RetroData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [transitionMessage, setTransitionMessage] = useState('Syncing with stakeholders...');
+
+  const loadingMessages = [
+    'Syncing with stakeholders...',
+    'Updating the JIRA board nobody reads...',
+    'Waiting for CI/CD...',
+    'Your manager is typing...',
+    'Calibrating expectations downward...',
+    'Refreshing LinkedIn to see if anyone noticed...',
+    'Resolving a merge conflict in the roadmap...',
+    'Asking ChatGPT to write your standup notes...',
+    'Convincing the designer this is MVP...',
+    'Calculating the blast radius...',
+    'Checking if anyone read the PRD...',
+    'Pretending to understand the architecture diagram...',
+    'Running it by legal, just in case...',
+    'Sprint planning is easy, they said...',
+    'Deploying to production on a Friday...'
+  ];
 
   useEffect(() => {
     // Fetch the current game state which includes the completed sprint's retro
@@ -93,7 +108,6 @@ export default function SprintRetro() {
   }
 
   const narrative = retroData.retro.narrative;
-  const events = retroData.retro.events ?? [];
 
   const formatMetricChange = (value: number): string => {
     const absValue = Math.abs(Math.round(value));
@@ -168,12 +182,27 @@ export default function SprintRetro() {
     if (retroData.isQuarterEnd) {
       router.replace('/quarterly-review');
     } else {
-      router.replace('/sprint-planning');
+      if (isTransitioning) return;
+      setTransitionMessage(loadingMessages[Math.floor(Math.random() * loadingMessages.length)]);
+      setIsTransitioning(true);
+      window.setTimeout(() => {
+        router.replace('/sprint-planning');
+      }, 2000);
     }
   };
 
   return (
     <div className={styles.pageContainer}>
+      {isTransitioning && (
+        <div className={styles.loadingOverlay} aria-live="polite">
+          <div className={styles.loadingCard}>
+            <div className={styles.loadingMessage}>{transitionMessage}</div>
+            <div className={styles.loadingProgress}>
+              <div className={styles.loadingProgressBar}></div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Top Bar */}
       <div className={styles.topBar}>
         <div className={styles.topBarLeft}>
@@ -197,26 +226,11 @@ export default function SprintRetro() {
           <div className={styles.retroSubtitle}>What happened, and why it matters</div>
         </div>
 
-        {/* Events */}
-        {events.length > 0 && (
-          <>
-            <div className={styles.sectionLabel}>Events</div>
-            <div className={styles.eventsCard}>
-              {events.map((event, index) => (
-                <div key={index} className={styles.eventItem}>
-                  <div className={styles.eventTitle}>{event.title}</div>
-                  <div className={styles.eventDescription}>{event.description}</div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* Narrative */}
-        <div className={styles.sectionLabel}>Sprint Summary</div>
-        <div className={styles.narrativeCard}>
-          <div className={styles.narrativeText}>{narrative}</div>
-        </div>
+          {/* Narrative */}
+          <div className={styles.sectionLabel}>Sprint Summary</div>
+          <div className={styles.narrativeCard}>
+            <div className={styles.narrativeText}>{narrative}</div>
+          </div>
 
           {/* Key Insights */}
           {insights.length > 0 && (
