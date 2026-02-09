@@ -290,7 +290,7 @@ export default function SprintPlanning() {
   }, [gameState]);
 
   if (isLoading || !gameState) {
-    return <div className={styles.pageContainer}>Loading sprint data...</div>;
+    return null; // Don't show default loading - home page loading overlay handles it
   }
 
   const metrics = gameState.game.metrics_state;
