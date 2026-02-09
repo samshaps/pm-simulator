@@ -619,6 +619,15 @@ export function applyOutcome(
     deltas[metric] = (deltas[metric] ?? 0) + delta;
   };
 
+  const impactScale = Math.max(
+    0.9,
+    1.15 * (1 + (ticket.effort - 5) * 0.04)
+  );
+  const wildScale = impactScale + 0.1;
+  const failureScale = impactScale + 0.2;
+  const scaleDelta = (delta: number, scale: number) =>
+    Math.round(delta * scale);
+
   const stakeholder = stakeholderByCategory[ticket.category] ?? "ceo_sentiment";
 
   if (outcome === "clear_success" || outcome === "partial_success") {
@@ -633,24 +642,39 @@ export function applyOutcome(
       ? ticket.tradeoff_impact?.success
       : ticket.tradeoff_impact?.partial;
 
-    applyDelta(ticket.primary_metric, applyRange(rng, primaryRange));
+    applyDelta(
+      ticket.primary_metric,
+      scaleDelta(applyRange(rng, primaryRange), impactScale)
+    );
 
     if (ticket.secondary_metric) {
-      applyDelta(ticket.secondary_metric, applyRange(rng, secondaryRange));
+      applyDelta(
+        ticket.secondary_metric,
+        scaleDelta(applyRange(rng, secondaryRange), impactScale)
+      );
     }
 
     if (ticket.tradeoff_metric) {
       const tradeoffDelta = applyRange(rng, tradeoffRange);
       const tradeoffScale = 1 + ticket.effort / 10;
-      const scaledTradeoff = Math.round(tradeoffDelta * tradeoffScale);
+      const scaledTradeoff = Math.round(
+        tradeoffDelta * tradeoffScale * impactScale
+      );
       applyDelta(ticket.tradeoff_metric, scaledTradeoff);
     }
 
-    applyDelta(stakeholder, isSuccess ? rng.int(3, 6) : rng.int(1, 3));
+    const stakeholderDelta = isSuccess ? rng.int(4, 8) : rng.int(2, 4);
+    applyDelta(
+      stakeholder,
+      scaleDelta(stakeholderDelta, Math.max(1, impactScale - 0.05))
+    );
   }
 
   if (outcome === "unexpected_impact") {
-    applyDelta(ticket.primary_metric, rng.int(-2, 4));
+    applyDelta(
+      ticket.primary_metric,
+      scaleDelta(rng.int(-4, 6), wildScale)
+    );
     const metricsList: MetricKey[] = [
       "team_sentiment",
       "ceo_sentiment",
@@ -662,24 +686,48 @@ export function applyOutcome(
       "nps"
     ];
     const other = rng.pick(metricsList.filter((m) => m !== ticket.primary_metric));
-    const swing = rng.next() < 0.5 ? rng.int(4, 10) : rng.int(-10, -4);
-    applyDelta(other, swing);
+    const swing = rng.next() < 0.5 ? rng.int(6, 14) : rng.int(-14, -6);
+    applyDelta(other, scaleDelta(swing, wildScale));
     if (ticket.tradeoff_metric) {
-      applyDelta(ticket.tradeoff_metric, rng.int(0, 3) * -1);
+      applyDelta(
+        ticket.tradeoff_metric,
+        scaleDelta(rng.int(-5, -2), wildScale)
+      );
     }
   }
 
   if (outcome === "soft_failure") {
-    applyDelta(ticket.primary_metric, rng.int(-2, 1));
-    applyDelta("team_sentiment", rng.int(-5, -3));
-    applyDelta("tech_debt", rng.int(1, 3));
+    applyDelta(
+      ticket.primary_metric,
+      scaleDelta(rng.int(-6, -2), failureScale)
+    );
+    applyDelta(
+      "team_sentiment",
+      scaleDelta(rng.int(-9, -5), failureScale)
+    );
+    applyDelta("tech_debt", scaleDelta(rng.int(2, 5), failureScale));
+    if (stakeholder !== "team_sentiment") {
+      applyDelta(
+        stakeholder,
+        scaleDelta(rng.int(-4, -2), failureScale)
+      );
+    }
   }
 
   if (outcome === "catastrophe") {
-    applyDelta(ticket.primary_metric, rng.int(-10, -5));
-    applyDelta("team_sentiment", rng.int(-10, -5));
-    applyDelta("ceo_sentiment", rng.int(-8, -3));
-    applyDelta("tech_debt", rng.int(3, 8));
+    applyDelta(
+      ticket.primary_metric,
+      scaleDelta(rng.int(-18, -10), failureScale)
+    );
+    applyDelta(
+      "team_sentiment",
+      scaleDelta(rng.int(-16, -8), failureScale)
+    );
+    applyDelta(
+      "ceo_sentiment",
+      scaleDelta(rng.int(-12, -6), failureScale)
+    );
+    applyDelta("tech_debt", scaleDelta(rng.int(5, 10), failureScale));
     const metricsList: MetricKey[] = [
       "sales_sentiment",
       "cto_sentiment",
@@ -688,7 +736,13 @@ export function applyOutcome(
       "nps"
     ];
     const other = rng.pick(metricsList);
-    applyDelta(other, rng.int(-6, -3));
+    applyDelta(other, scaleDelta(rng.int(-10, -5), failureScale));
+    if (stakeholder !== "team_sentiment" && stakeholder !== "ceo_sentiment") {
+      applyDelta(
+        stakeholder,
+        scaleDelta(rng.int(-8, -4), failureScale)
+      );
+    }
   }
 
   return { updated, deltas };

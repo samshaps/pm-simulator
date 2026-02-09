@@ -12,11 +12,11 @@
     "tradeoff_metric": "self_serve_growth",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "SSO is live. Three deals convert to contracts within 30 days. IT departments call it 'acceptable.' The product team resumes self-serve work, only three weeks behind on roadmap.",
-      "partial_success": "SSO works for basic OIDC flows but SAML attribute mapping requires manual configuration per client. Sales is satisfied enough to stop complaining in steering meetings. Self-serve roadmap remains frozen.",
-      "unexpected_impact": "SSO implementation surfaces a critical issue with how sessions are managed across environments. The incident forces a refactor of the entire auth layer. Nobody mentions SSO at the next board meeting.",
-      "soft_failure": "SSO is technically functional but the UX for administrators is confusing enough that each enterprise customer requires a 2-hour setup call. Support now runs 8 of these per month. The feature is considered 'mature.'",
-      "catastrophe": "A configuration error in the SAML metadata handler causes all SSO users from one customer to be provisioned as administrators. Audit logs show 47 users accessed data they shouldn't have. Legal is now involved. The incident channel has 91 participants."
+      "clear_success": "SSO is live. Three deals close within 30 days and IT calls it acceptable, which is apparently praise. The product team resumes self-serve work only three weeks behind.",
+      "partial_success": "OIDC works but SAML attribute mapping is still manual per client. Sales stops complaining in steering meetings. The self-serve roadmap stays on ice.",
+      "unexpected_impact": "SSO exposed a critical session-management flaw and forced an auth refactor. The fix is real, the SSO story vanished from the board deck.",
+      "soft_failure": "SSO is functional but admin UX is confusing enough to require a two-hour setup call per customer. Support runs eight a month. We call it mature because support is tired.",
+      "catastrophe": "A SAML metadata config error provisioned all users at one customer as admins. Audit logs show 47 users accessed data they should not. Legal joined, and the incident channel hit 91 people."
     }
   },
   {
@@ -32,11 +32,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "SCIM endpoint launches. All three pending enterprise deals close in month one. Provisioning automation eliminates manual admin overhead for customers. The engineering team describes this as 'a normal amount of technical debt for a valuable feature.'",
-      "partial_success": "SCIM works but requires customers to map their custom directory attributes manually. Two of three deals move forward; the third delays implementation. Sales considers this acceptable but not elegant.",
-      "unexpected_impact": "The SCIM implementation surfaces inconsistencies in how the platform models roles versus permissions. Rather than fix the model, the team implements workarounds in the SCIM layer. The architecture document nobody reads grows by 8 pages.",
-      "soft_failure": "SCIM is live. One customer deploys it successfully. The other two find the documentation insufficient and request a custom integration instead. The feature is technically complete but commercially underwhelming.",
-      "catastrophe": "A race condition in the SCIM deprovisioning logic causes a batch of 300 users to retain access after being marked inactive. The customers discover this during a security audit. The incident involves forensic analysis of seven months of audit logs."
+      "clear_success": "SCIM launched and all three pending enterprise deals closed in month one. Provisioning automation removed admin overhead. Engineering called the debt normal, which is how we cope now.",
+      "partial_success": "SCIM works but attribute mapping is manual. Two deals move forward and the third delays. Sales calls it acceptable, which is the bar.",
+      "unexpected_impact": "SCIM exposed inconsistencies between roles and permissions. We added workarounds in the SCIM layer and the architecture doc grew by eight pages.",
+      "soft_failure": "SCIM is live but only one customer deploys it. The other two want custom integrations because the docs are thin. Technically complete, commercially underwhelming.",
+      "catastrophe": "A race condition left 300 deprovisioned users active. Customers discovered it during a security audit. Forensic analysis covered seven months of logs and a lot of shame."
     }
   },
   {
@@ -52,11 +52,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "RBAC is live with five predefined roles plus custom role builder. All enterprise customers migrate existing team structures into the system seamlessly. Sales closes two new enterprise contracts citing the feature. Database queries execute 12% slower than before, but not noticeably.",
-      "partial_success": "RBAC supports predefined roles but custom role creation requires engineering intervention. Customers adapt their structures to fit the predefined roles. Sales is mollified but not thrilled.",
-      "unexpected_impact": "The permission schema creates edge cases with inherited roles and cross-organizational delegation. The team builds a second permission layer to handle exceptions. Documentation needs to explain why the second layer exists.",
-      "soft_failure": "RBAC works but the UI for managing roles is cluttered enough that customers keep emailing support with 'permission denied' errors. Each issue requires 30 minutes of investigation. Support classifies these as 'usage questions.'",
-      "catastrophe": "A subtle bug in the role inheritance logic grants unintended permissions to 12% of all users in a large customer's instance. The customer discovers it during a quarterly compliance review. The remediation requires manually auditing and resetting permissions for 1,847 users across seven months of activity."
+      "clear_success": "RBAC is live with predefined roles and a custom builder. Enterprise customers migrated cleanly and sales closed two deals citing it. Queries are 12% slower, which nobody noticed because they were celebrating.",
+      "partial_success": "Predefined roles work but custom roles need engineering help. Customers adapt their orgs to our model. Sales is mollified, which is apparently a milestone.",
+      "unexpected_impact": "The permission schema created edge cases with inheritance and delegation. We built a second permission layer to explain the first. The docs are now longer than the feature.",
+      "soft_failure": "RBAC works but the admin UI is cluttered. Customers email support about permission denied errors, each taking 30 minutes to diagnose. We call them usage questions to feel better.",
+      "catastrophe": "A role inheritance bug granted unintended permissions to 12% of users at a large customer. It was discovered in a compliance review. Remediation required auditing and resetting permissions for 1,847 users across seven months."
     }
   },
   {
@@ -72,11 +72,11 @@
     "tradeoff_metric": "team_sentiment",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "Audit logs are comprehensive and immutable. SOC 2 auditors find no gaps. Enterprise customers export audit trails for their own compliance processes. Sales uses this as a selling point for two new deals.",
-      "partial_success": "Audit logs capture most changes but custom integrations are not logged due to schema complexity. Auditors note the gap but do not require remediation. Customers find the logs useful for basic troubleshooting.",
-      "unexpected_impact": "Audit log storage grows faster than anticipated. A decision to compress and archive logs after 90 days means some enterprise customers lose historical data they needed for multi-year audits. The decision creates friction.",
-      "soft_failure": "Audit logs work but the UI for searching and filtering is slow when querying large datasets. Customers learn to export weekly snapshots instead. The feature exists but is not loved.",
-      "catastrophe": "A misconfigured retention policy deletes audit logs that should have been immutable. When an incident occurs six months later, the relevant logs are gone. Regulatory bodies question whether deletion was intentional. A forensic investigation examines 9 years of database backups."
+      "clear_success": "Audit logs are comprehensive and immutable. SOC 2 auditors found no gaps and enterprise customers export trails for compliance. Sales used it to close two deals, as promised.",
+      "partial_success": "Most changes are logged but custom integrations are not. Auditors noted the gap and moved on. Customers find the logs useful for basic troubleshooting, not much else.",
+      "unexpected_impact": "Audit log storage grew faster than planned. We compressed and archived after 90 days, which broke multi-year audit expectations. Customers were not thrilled with our definition of history.",
+      "soft_failure": "Audit logs work but search and filtering are painfully slow on large datasets. Customers export weekly snapshots instead. The feature exists, the experience does not.",
+      "catastrophe": "A retention misconfig deleted logs that were supposed to be immutable. Six months later an incident had no evidence trail. Regulators asked if deletion was intentional, and we opened nine years of backups."
     }
   },
   {
@@ -92,11 +92,11 @@
     "tradeoff_metric": "self_serve_growth",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "White-label branding is live. Both prospects convert to enterprise contracts. Their end-users see only customer branding, no mention of the platform. Sales reports these are our stickiest enterprise accounts at the 12-month mark.",
-      "partial_success": "Customers can rebrand the main UI but email templates and embedded widgets still carry some platform branding. Sales closes one deal; the other negotiates a discount for the incomplete feature.",
-      "unexpected_impact": "Brand customization increases the number of distinct UI variants in the codebase. Testing overhead for visual regressions becomes significant. Each release requires checking N permutations of the UI.",
-      "soft_failure": "Branding customization works but requires significant engineering per customer to wire up custom CSS files. The feature is available but not self-serve. Customers consider it a managed service add-on.",
-      "catastrophe": "A caching issue causes one customer's branding assets to be served to another customer for six hours. Three thousand end-users see incorrect logos and colors. Customer confidentiality implications lead to a post-mortem involving the CEO."
+      "clear_success": "White-label branding shipped. Both prospects converted and end-users see only customer branding. Sales calls these our stickiest accounts because we are effectively invisible.",
+      "partial_success": "UI rebranding works but emails and embedded widgets still show our branding. Sales closes one deal and discounts the other because the feature is half-finished.",
+      "unexpected_impact": "Brand customization multiplied UI variants. Visual regression testing became a weekly ritual and every release now checks N permutations of the rainbow.",
+      "soft_failure": "Branding works but requires engineering per customer to wire custom CSS. The feature is available, just not self-serve. Customers treat it as a managed service add-on.",
+      "catastrophe": "A caching issue served one customer's branding to another for six hours. Three thousand users saw the wrong logos. Confidentiality concerns escalated to a CEO-level postmortem."
     }
   },
   {
@@ -112,11 +112,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "Data residency is configurable at onboarding. The 7-figure DACH customer signs. Two additional prospects in regulated industries also convert, citing the feature. Infrastructure costs increase but are offset by contract value.",
-      "partial_success": "Data residency works for primary databases but some analytical queries still run on shared infrastructure. The DACH customer accepts this with a compliance addendum. Sales feels the deal narrowly survives.",
-      "unexpected_impact": "Data residency introduces latency for certain cross-region operations. The team documents acceptable latency ranges per region but some customers exceed them. Support handles escalations on a per-case basis.",
-      "soft_failure": "Data residency is implemented but the onboarding flow for selecting a region is unclear. Three customers initially choose the wrong region and require manual data migration. The feature is considered functional but procedurally awkward.",
-      "catastrophe": "A replication delay causes data consistency issues between the EU primary and backup. During a failover test, the backup is corrupted. Recovery requires restoring from seven-day-old snapshots. A customer nearly files a breach notification due to uncontrolled data loss."
+      "clear_success": "Data residency is configurable at onboarding. The seven-figure DACH customer signs and two more regulated prospects convert. Infrastructure costs rise, but revenue rises with them, so we call it balanced.",
+      "partial_success": "Residency works for primary databases, but analytics still run on shared infra. The DACH customer accepts a compliance addendum and the deal narrowly survives.",
+      "unexpected_impact": "Residency added latency to cross-region operations. We published acceptable latency ranges by region and then spent weeks explaining why they were exceeded.",
+      "soft_failure": "Residency is implemented but region selection is unclear. Three customers picked the wrong region and needed manual migration. Functional, but awkward and expensive.",
+      "catastrophe": "Replication lag corrupted the EU backup during a failover test. Recovery required seven-day-old snapshots. A customer nearly filed a breach notification over data loss we could not hide."
     }
   },
   {
@@ -132,11 +132,11 @@
     "tradeoff_metric": "team_sentiment",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "The SLA dashboard launches showing real-time uptime and response times. Enterprise customers reference it in their own reports to stakeholders. No SLA breaches occur in the first quarter. Sales includes this in all enterprise pitches.",
-      "partial_success": "The dashboard exists but SLA calculations are occasionally manual and take 24 hours to update. Customers find it useful but not real-time as promised. Sales describes it as 'a foundation for future automation.'",
-      "unexpected_impact": "The dashboard surfaces that some support tickets are being resolved in 18 hours when the SLA promises 12. Rather than improve processes, the team adjusts category definitions to exclude the slow tickets. The dashboard now shows 'compliance' but customers notice the gap.",
-      "soft_failure": "The dashboard works but the visuals are not intuitive. Enterprise customers request custom reports instead. Support builds these manually each month. The dashboard becomes legacy within six months.",
-      "catastrophe": "A calculation error in the uptime metric causes the dashboard to report 99.98% uptime while actual platform downtime was 47 minutes. Customers trust the number and cite it in their own vendor management reviews. The discrepancy is discovered during an audit."
+      "clear_success": "SLA dashboard launched with real-time uptime and response times. Enterprise customers cite it in their own reports and no breaches occur in Q1. Sales adds it to every pitch deck, as foretold.",
+      "partial_success": "The dashboard exists but calculations are still manual and update every 24 hours. Customers find it useful but not real-time. Sales calls it a foundation for automation.",
+      "unexpected_impact": "The dashboard showed tickets closing in 18 hours against a 12-hour SLA. Rather than fix the process, we redefined categories to exclude the slow ones. The dashboard says compliant and customers are not fooled.",
+      "soft_failure": "The dashboard works but the visuals confuse everyone. Customers request custom reports, support builds them monthly, and the dashboard becomes a forgotten tab within six months.",
+      "catastrophe": "A calculation error reported 99.98% uptime during 47 minutes of downtime. Customers trusted the number and cited it in vendor reviews. The discrepancy was found in an audit, not by us."
     }
   },
   {
@@ -152,11 +152,11 @@
     "tradeoff_metric": "self_serve_growth",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "The admin console is live with all promised features. Enterprise customers migrate their administrative workflows into it within weeks. Support tickets for admin-related issues drop 34%. Sales closes two deals mentioning the console in closing arguments.",
-      "partial_success": "The admin console covers 70% of use cases. Complex scenarios still require support escalation. Customers appreciate the console but IT teams maintain spreadsheets for exceptions. Sales softens the absence of full coverage.",
-      "unexpected_impact": "The admin console becomes so feature-rich that customers ask for API access to automate console operations. The team builds an API for the API's console. A meta-problem becomes a new roadmap item.",
-      "soft_failure": "The console launches but information architecture is confusing. Customers spend time clicking through nested menus to find basic settings. Training calls are required. Adoption is slower than anticipated.",
-      "catastrophe": "A permission bug in the admin console allows lower-privileged admins to view and modify settings they should not access. The console inadvertently grants 'full tenant access' to 22 users across three customers. Remediation involves credential rotation and manual audit of affected operations."
+      "clear_success": "Admin console launched with all promised features. Enterprise customers moved workflows into it within weeks and admin tickets fell 34%. Sales closed two deals citing the console in the final calls.",
+      "partial_success": "The console covers about 70% of use cases. Edge cases still need support, so IT keeps spreadsheets for exceptions. Sales softened the gaps and moved on.",
+      "unexpected_impact": "The console got so feature-rich that customers asked for API access to automate console actions. We built an API for the console and added a meta-problem to the roadmap.",
+      "soft_failure": "The console shipped but the IA is confusing. Customers click through nested menus to find basic settings and training calls became mandatory. Adoption is slower than the launch plan.",
+      "catastrophe": "A permission bug let lower admins view and modify restricted settings. Twenty-two users across three customers gained full-tenant access. Remediation required credential rotation and a manual audit."
     }
   },
   {
@@ -172,11 +172,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "Bulk import is live. Enterprise customers onboard hundreds of users in minutes instead of hours. Support volume for user creation requests drops 40%. Operations are fully audited and reversible.",
-      "partial_success": "Bulk import works for basic user creation but some custom attributes require manual entry. Customers find it helpful but not fully self-serve. Sales appreciates the efficiency gain.",
-      "unexpected_impact": "Bulk operations surface data quality issues customers never noticed before. The import process validates email formats and detects duplicates. Customers request a 'validation only' mode to clean their data first.",
-      "soft_failure": "Bulk import is technically sound but the UI provides no feedback on success/failure until the entire import completes. A 5,000-user import taking 15 minutes with no progress bar causes support anxiety. Customers worry about system health.",
-      "catastrophe": "A race condition causes bulk import to process the same CSV twice, creating 4,000 duplicate users. The detection lag means the duplicates are provisioned in downstream systems. Remediation requires a manual deduplication script that takes an engineer 8 hours to build and validate."
+      "clear_success": "Bulk import is live. Enterprises onboard hundreds of users in minutes instead of hours and support tickets drop 40%. Operations are audited and reversible, which is the only reason anyone slept.",
+      "partial_success": "Bulk import works for basic creation but custom attributes still need manual entry. Helpful, not fully self-serve. Sales appreciates the time saved.",
+      "unexpected_impact": "Bulk import exposed customer data quality issues. The validator flagged duplicates and bad emails. Customers asked for a validation-only mode to clean their data before they break it.",
+      "soft_failure": "Bulk import is sound but gives no feedback until completion. A 5,000-user import runs 15 minutes with no progress bar, and support gets to explain that nothing is on fire.",
+      "catastrophe": "A race condition processed the same CSV twice, creating 4,000 duplicate users. Downstream systems provisioned them before we noticed. Remediation required a manual dedupe script and eight hours of engineering."
     }
   },
   {
@@ -192,11 +192,11 @@
     "tradeoff_metric": "team_sentiment",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "Custom rate limits are live. The scaling customer reaches their API targets without throttling. Two other customers also request higher limits and sign enterprise contracts. The rate limit system is now auditable and fair.",
-      "partial_success": "Custom rate limits work but require engineering to provision per-customer settings manually. The scaling customer deploys successfully but onboarding took three weeks of collaboration. Sales accepts this as a managed service.",
-      "unexpected_impact": "Higher rate limits reveal inefficient API usage patterns in the customer's integration. Rather than optimize, they request even higher limits. The platform's total API throughput becomes a bottleneck.",
-      "soft_failure": "Custom rate limits are available but the customer does not realize they can request them. Support discovers this during a performance investigation. Adoption requires direct sales outreach.",
-      "catastrophe": "An error in rate limit calculation causes one customer's limit to be set 100x higher than contracted. They use all 10 million monthly calls in two weeks. Platform API tail latencies increase 400%. Other customers' integrations slow to unacceptable levels."
+      "clear_success": "Custom rate limits are live. The scaling customer hits targets without throttling and two others sign for higher limits. The rate-limit system is auditable and fair, which is a new sentence for us.",
+      "partial_success": "Custom limits work but require manual provisioning per customer. The scaling customer shipped, but onboarding took three weeks. Sales framed it as a managed service.",
+      "unexpected_impact": "Higher limits exposed inefficient API usage. Instead of optimizing, the customer asked for even higher limits. Platform throughput became the bottleneck.",
+      "soft_failure": "Custom limits exist but the customer did not know they could request them. Support discovered it mid-investigation. Adoption now requires sales outreach.",
+      "catastrophe": "A calculation error set one customer's limit 100x too high. They burned 10 million calls in two weeks and API tail latency spiked 400%. Other customers slowed to unacceptable levels."
     }
   },
   {
@@ -212,11 +212,11 @@
     "tradeoff_metric": "team_sentiment",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "The support portal launches with ticket tracking and SLA transparency. Enterprise customers report feeling heard and included in resolution timelines. Support team finds the structured intake reduces miscommunication. Customer satisfaction scores increase 12%.",
-      "partial_success": "The portal works for basic ticket submission but escalation paths are not automated. Complex issues still route inconsistently. Customers appreciate the visibility even if the flow is not smooth.",
-      "unexpected_impact": "The portal surfaces that support response times vary widely depending on customer size. Smaller enterprise customers feel deprioritized. Sales hears complaints about fairness.",
-      "soft_failure": "The portal is built but adoption is low. Customers prefer email. Support team maintains both email and portal workflows in parallel. Operational complexity increases without benefit.",
-      "catastrophe": "A sync error causes the portal to show resolved tickets as 'awaiting customer response' for weeks after closure. Customers believe their issues are stalled. The team spends 40 hours manually correcting records and apologizing."
+      "clear_success": "Support portal launched with ticket tracking and SLA transparency. Enterprise customers feel heard because there is a dashboard that says so. Structured intake reduced miscommunication and CSAT rose 12%.",
+      "partial_success": "The portal works for basic submissions but escalation paths are still manual. Complex issues route inconsistently. Customers like the visibility even when the workflow does not.",
+      "unexpected_impact": "The portal exposed response-time differences by customer size. Smaller enterprise customers feel deprioritized and sales gets a new fairness complaint category.",
+      "soft_failure": "The portal exists but adoption is low. Customers prefer email, so support runs two workflows in parallel. Operational complexity increases with no offsetting benefit.",
+      "catastrophe": "A sync error marked resolved tickets as awaiting customer response for weeks. Customers believed issues were stalled and we spent 40 hours correcting records and apologizing."
     }
   },
   {
@@ -232,11 +232,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "SOC 2 Mode is live and verified by external auditors. All three deals close. The company now markets SOC 2 compliance as a standard feature. Enterprise win rate increases 18% in subsequent quarters.",
-      "partial_success": "Most SOC 2 requirements are met but immutable logging has performance tradeoffs. Auditors require compensating controls. The deals close with compliance addendums.",
-      "unexpected_impact": "Compliance infrastructure is expensive to maintain. Annual security audits cost $85K. Monthly compliance reports require operations overhead. The team realizes this is now a permanent cost center.",
-      "soft_failure": "SOC 2 Mode is implemented but documentation is sparse. Customers request clarification on what is actually covered. Sales must manually explain compliance scope in calls.",
-      "catastrophe": "During the SOC 2 audit, auditors discover that 'immutable' logs were actually being deleted by a retention policy. The audit is delayed while the team demonstrates that logs are now truly immutable. Trust in the feature is damaged."
+      "clear_success": "SOC 2 Mode is live and verified by external auditors. All three deals close and marketing turns compliance into a headline. Enterprise win rate increases 18% in the next quarters.",
+      "partial_success": "Most requirements are met but immutable logging carries performance tradeoffs. Auditors require compensating controls and the deals close with addendums.",
+      "unexpected_impact": "Compliance infrastructure is expensive to maintain. Annual audits cost $85K and monthly reporting became a permanent operations tax. We built a feature and a cost center.",
+      "soft_failure": "SOC 2 Mode is implemented but documentation is thin. Customers ask what is actually covered and sales runs explanation theater on calls.",
+      "catastrophe": "Auditors found that immutable logs were being deleted by retention. The audit paused while we proved we fixed it. Trust in the feature took the hit."
     }
   },
   {
@@ -252,11 +252,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "HIPAA features are live and verified by the customer's compliance team. The healthcare deal closes for $500K ARR. The company markets to healthcare verticals. Legal review is required for all new features.",
-      "partial_success": "HIPAA requirements are mostly met but the customer requires Business Associate Agreements and ongoing training. The deal closes at a discount. Compliance is now a permanent constraint.",
-      "unexpected_impact": "HIPAA requirements propagate across the entire codebase. Features that worked fine must now consider PHI constraints. Development velocity for all features decreases.",
-      "soft_failure": "HIPAA features are implemented but the customer's compliance team finds gaps during their own audit. Additional features are required mid-contract. Customer satisfaction becomes strained.",
-      "catastrophe": "A data export includes PHI in unencrypted CSV format. A customer's data breach notification to patients mentions our platform. Legal liability is unclear. The company's insurance company opens an investigation."
+      "clear_success": "HIPAA features are live and verified by the customer's compliance team. The healthcare deal closes at $500K ARR and we start marketing to the vertical. Legal now reviews every new feature.",
+      "partial_success": "Requirements are mostly met, but BAAs and ongoing training are mandatory. The deal closes at a discount. Compliance becomes a permanent constraint, not a checkbox.",
+      "unexpected_impact": "HIPAA constraints spread across the codebase. Features that were simple now need PHI guardrails. Development velocity drops for everything, not just healthcare.",
+      "soft_failure": "HIPAA features shipped but the customer's audit found gaps. We added features mid-contract and customer satisfaction turned into compliance meetings.",
+      "catastrophe": "A data export included PHI in an unencrypted CSV. The customer's breach notification mentioned our platform. Insurance opened an investigation and legal stopped sleeping."
     }
   },
   {
@@ -272,11 +272,11 @@
     "tradeoff_metric": "self_serve_growth",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "The reporting engine is live. Enterprise customers build custom reports within hours instead of weeks of engineering support. Support tickets for 'custom report requests' drop to near-zero. Sales closes two deals citing the feature.",
-      "partial_success": "The reporting engine covers common use cases but complex multi-table queries require engineering. Customers appreciate the self-serve foundation. Sales describes this as a 'beta-stage feature with room to grow.'",
-      "unexpected_impact": "Some customers build extremely complex queries that cause performance issues. The team implements query timeouts. Customers complain that 'reasonable' queries are being terminated.",
-      "soft_failure": "The reporting UI is powerful but overwhelming. Most customers use a small fraction of capabilities. Support requests become 'how do I do this in reporting?' instead of 'can you build this report?'",
-      "catastrophe": "A SQL injection vulnerability in the custom reporting engine allows a customer to extract data they do not have permissions to view. Three months pass before discovery. Audit logs show unauthorized queries but data loss cannot be confirmed."
+      "clear_success": "Reporting engine is live. Enterprise customers build custom reports in hours instead of weeks of engineering support, and report-request tickets drop to near zero. Sales closed two deals citing it.",
+      "partial_success": "Common use cases are covered, but complex multi-table queries still require engineering. Customers like the foundation. Sales calls it a beta with room to grow.",
+      "unexpected_impact": "Some customers built monster queries that caused performance issues. We added timeouts, and customers complained that their reasonable queries were being killed.",
+      "soft_failure": "The UI is powerful but overwhelming. Customers use a small fraction of capabilities and support questions shift from can you build it to how do I use it.",
+      "catastrophe": "A SQL injection vulnerability let a customer extract data they did not have permission to view. Three months passed before discovery. Audit logs show unauthorized queries and no one can prove how much leaked."
     }
   },
   {
@@ -292,11 +292,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "Advanced permissions are live. The large customer deploys complex permission structures matching their organizational hierarchy. Two other prospects cite the feature as table-stakes. Permission evaluation performance remains acceptable.",
-      "partial_success": "Advanced permissions work for most scenarios but some delegation patterns require manual configuration. The customer adapts their structure to fit the system. Sales feels the feature is adequate but not seamless.",
-      "unexpected_impact": "Permission evaluation adds latency to every data access. Caching helps but edge cases involving revoked permissions become stale. The team documents acceptable staleness (up to 5 minutes).",
-      "soft_failure": "Advanced permissions are implemented but the UI for managing them is complex. Customers require training to use the system. Adoption is slower than anticipated.",
-      "catastrophe": "A bug in permission caching causes a user who was removed from a role to retain permissions for 72 hours. The customer discovers unintended data access during a security review. The incident involves a full audit of permission state."
+      "clear_success": "Advanced permissions are live. The large customer deploys complex structures that match their org and two other prospects cite it as table-stakes. Performance stays acceptable, which is the nicest thing anyone said.",
+      "partial_success": "Most scenarios work but some delegation patterns need manual configuration. The customer adapts their org to the system. Sales calls it adequate, which is a win in enterprise.",
+      "unexpected_impact": "Permission evaluation adds latency to every request. Caching helps but revoked permissions can remain effective for up to five minutes. We documented acceptable staleness like it was a feature.",
+      "soft_failure": "Advanced permissions are implemented but the UI is complex. Customers need training and adoption is slow. The capability exists, the usability does not.",
+      "catastrophe": "A caching bug left a removed user with permissions for 72 hours. The customer found it during a security review and we ran a full audit of permission state."
     }
   },
   {
@@ -312,11 +312,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "Multi-tenancy is live with guaranteed isolation. The financial services customer provisions three separate business units. Data isolation is auditable. Two additional customers also request the feature.",
-      "partial_success": "Multi-tenancy works but some shared infrastructure (analytics, backups) is still shared. The customer accepts this with compliance documentation. Isolation is logically sufficient even if not physically complete.",
-      "unexpected_impact": "Multi-tenancy requires tenant-aware code changes across the entire platform. Every feature that ships must consider tenant context. Development velocity decreases by ~20%.",
-      "soft_failure": "Multi-tenancy is implemented but a bug causes tenant A's users to be visible in tenant B's user lists for searches. The customer notices and reports it immediately. Fix is straightforward but trust is damaged.",
-      "catastrophe": "A backup/restore operation accidentally restores all tenant data to a single tenant. When discovered, 4 GB of data from other tenants is present in one customer's instance. Remediation involves restore from older backups, losing 6 hours of data."
+      "clear_success": "Multi-tenancy shipped with guaranteed isolation. The financial services customer provisions three business units and audits pass. Two more customers request the feature as soon as it exists.",
+      "partial_success": "Multi-tenancy works but analytics and backups still share infrastructure. The customer accepts compliance documentation and we call logical isolation good enough.",
+      "unexpected_impact": "Tenant-aware changes touched the entire platform. Every feature now needs tenant context and development velocity drops about 20%. We built a feature and bought a tax.",
+      "soft_failure": "Multi-tenancy is implemented but a bug shows tenant A users in tenant B search results. The customer spotted it immediately. The fix was easy, the trust loss was not.",
+      "catastrophe": "A backup restore loaded all tenant data into a single tenant. Four gigabytes of other customers' data appeared in one instance. We restored from older backups and lost six hours of data."
     }
   },
   {
@@ -332,11 +332,11 @@
     "tradeoff_metric": "team_sentiment",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "Contract data is synced from Salesforce. Renewal alerts trigger 90 days before term end. Sales team can now see contract details within the platform instead of toggling to Salesforce. Renewal win rate increases 7%.",
-      "partial_success": "Contract integration works but amendments are not automatically synced. Sales must manually update contract records after significant changes. The feature is useful but incomplete.",
-      "unexpected_impact": "Salesforce contract data is sometimes stale by 2-3 days. Alerts occasionally fire at the wrong time. The team implements a manual sync option but adoption is low.",
-      "soft_failure": "Contract data is integrated but not visually prominent. Sales team continues using Salesforce as the source of truth. The feature exists but is underutilized.",
-      "catastrophe": "A data sync error causes contract end dates to be shifted by 30 days for 18 customers. Renewal alerts fire at the wrong time. Sales misses renewal opportunities because the system said there was still 30 days to go."
+      "clear_success": "Contract data synced from Salesforce and renewal alerts fire 90 days out. Sales can see contract details without switching tools and renewal win rate improves 7%.",
+      "partial_success": "Integration works but amendments do not sync automatically. Sales updates records manually after changes. Useful, not complete.",
+      "unexpected_impact": "Salesforce data is stale by 2-3 days, so alerts occasionally fire at the wrong time. We added a manual sync option and almost nobody uses it.",
+      "soft_failure": "Contract data is integrated but not prominent. Sales keeps using Salesforce as the source of truth. The feature exists and is politely ignored.",
+      "catastrophe": "A sync error shifted contract end dates by 30 days for 18 customers. Alerts fired late, renewals slipped, and sales learned to distrust the dashboard."
     }
   },
   {
@@ -352,11 +352,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "Custom retention policies are live. The financial services customer deploys policies per data type (transactions kept forever, temporary data deleted after 30 days). Compliance auditors approve the policies. The deal closes.",
-      "partial_success": "Retention policies work but some edge cases (child records with different retention) require manual intervention. The customer adapts. Sales accepts the feature as functional.",
-      "unexpected_impact": "Executing retention policies at scale takes longer than anticipated. Nightly cleanup jobs impact database performance. The team implements weekday rate-limiting.",
-      "soft_failure": "Retention policies are available but the UI for setting them is confusing. Customers ask support for help configuring them. Self-serve adoption is low.",
-      "catastrophe": "A bug in the retention job causes policies to be applied in reverse: temporary data is kept indefinitely, important data is deleted. The customer discovers this during a compliance review when historical data is missing. Recovery from backups is required."
+      "clear_success": "Custom retention policies are live. The financial services customer applies rules per data type, auditors approve, and the deal closes. Compliance gets their slider and sales gets their signature.",
+      "partial_success": "Policies work but edge cases like child records need manual handling. The customer adapts and sales calls it functional.",
+      "unexpected_impact": "Retention jobs at scale took longer than expected and hammered the database. We rate-limited cleanup to weekdays and pretended that was the plan.",
+      "soft_failure": "Policies are available but the UI is confusing. Customers ask support to configure them and self-serve adoption stays low.",
+      "catastrophe": "A retention bug applied policies in reverse: temporary data kept forever and important data deleted. The customer found missing history during a compliance review. We restored from backups."
     }
   },
   {
@@ -372,11 +372,11 @@
     "tradeoff_metric": "self_serve_growth",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "The onboarding wizard is live. Enterprise customers now go live in 10-12 days instead of 3-4 weeks. Time-to-value improves dramatically. Sales closes deals faster. One customer reports the wizard was 'surprisingly competent.'",
-      "partial_success": "The wizard covers basic setup but complex integrations still require professional services. Onboarding time drops to 2-3 weeks. Sales is satisfied with the improvement.",
-      "unexpected_impact": "The wizard makes some decisions for customers that they later want to change. Undoing wizard-configured items requires support. Customers wish the wizard was more flexible.",
-      "soft_failure": "The wizard works but abandonment rate is high. Customers start the wizard and switch to manual setup after a few steps. Adoption is lower than anticipated.",
-      "catastrophe": "The wizard's integration configuration step automatically connects to the customer's systems with generic credentials. Three customers do not realize this and are shocked when the wizard pushes data to production. Two customers threaten to terminate."
+      "clear_success": "The onboarding wizard is live. Enterprise customers go live in 10-12 days instead of 3-4 weeks and time-to-value improves. Sales closes deals faster and one customer calls the wizard surprisingly competent.",
+      "partial_success": "The wizard covers basic setup but complex integrations still need professional services. Onboarding drops to 2-3 weeks. Sales is satisfied with the incremental win.",
+      "unexpected_impact": "The wizard makes choices that customers later want to undo. Reversals require support. The wizard is helpful until it becomes a lock-in.",
+      "soft_failure": "The wizard works but abandonment is high. Customers start it and then switch to manual setup after a few steps. Adoption is lower than forecast.",
+      "catastrophe": "The integration step connected to customer systems using generic credentials. Three customers did not realize it and data pushed to production. Two threatened to terminate."
     }
   },
   {
@@ -392,11 +392,11 @@
     "tradeoff_metric": "tech_debt",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "Sandbox environments are available. Enterprise customers clone production to sandbox, test integrations, and deploy with confidence. Risk perception decreases. Sales closes two deals citing sandbox availability.",
-      "partial_success": "Sandboxes work but data cloning takes 4 hours and requires manual credential rotation. Customers find it valuable but the overhead is non-trivial. Sales considers this acceptable.",
-      "unexpected_impact": "Sandbox environment support requests become common. Some customers create sandboxes and forget about them. Stale sandboxes become storage liabilities.",
-      "soft_failure": "Sandboxes are technically available but the process for requesting/provisioning them is not self-serve. Customers email support. Adoption is lower than anticipated.",
-      "catastrophe": "A cloning bug causes the sandbox to include a live API key from production. A customer discovers this and immediately revokes the key, then panics about potential abuse. Post-incident review reveals the key was not used by unauthorized parties, but trust is damaged."
+      "clear_success": "Sandboxes are available. Enterprise customers clone production, test integrations, and deploy with confidence. Risk perception drops and sales closes two deals citing sandbox access.",
+      "partial_success": "Sandboxes work but cloning takes four hours and needs manual credential rotation. Valuable, but the overhead is real. Sales calls it acceptable.",
+      "unexpected_impact": "Support requests for sandboxes became common. Some customers created sandboxes and forgot them, turning into storage liabilities with no owner.",
+      "soft_failure": "Sandboxes exist but provisioning is not self-serve. Customers email support and adoption stays low. The feature works on paper.",
+      "catastrophe": "A cloning bug included a live production API key in a sandbox. The customer revoked it and panicked about abuse. Postmortem says no misuse, but trust does not roll back."
     }
   },
   {
@@ -412,11 +412,11 @@
     "tradeoff_metric": "team_sentiment",
     "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
     "outcomes": {
-      "clear_success": "Approval workflows are live. Enterprise customers configure multi-stage approvals for sensitive operations. Compliance auditors approve the control structure. Sales uses this as a key differentiator.",
-      "partial_success": "Workflows support basic approvals but escalation logic is not automated. Complex approval chains require manual intervention. The feature is useful but not fully autonomous.",
-      "unexpected_impact": "Approval workflows introduce friction. Operations that previously took minutes now take hours. Users complain about delays, but security teams appreciate the control.",
-      "soft_failure": "Workflows are implemented but notification delivery is inconsistent. Some approvers do not see requests. The team switches to email notifications, which bypass the workflow visibility.",
-      "catastrophe": "A bug in the approval state machine causes requests to become 'stuck' in pending state indefinitely. A customer's user access request is never approved. Three days pass before operations team discovers the stuck state and manually forces resolution."
+      "clear_success": "Approval workflows are live. Enterprise customers configure multi-stage approvals for sensitive operations and auditors approve the control structure. Sales uses it as a differentiator and no one argues.",
+      "partial_success": "Basic approvals work but escalation logic is manual. Complex chains require intervention. Useful, but not autonomous.",
+      "unexpected_impact": "Approval workflows add friction. Tasks that took minutes now take hours. Users complain, security teams applaud, and the rest of us wait.",
+      "soft_failure": "Workflows exist but notifications are unreliable. Approvers miss requests, we switch to email, and the workflow visibility is bypassed.",
+      "catastrophe": "A state-machine bug left requests stuck in pending indefinitely. A user access request sat for three days before ops forced it through."
     }
   },
   {
@@ -432,11 +432,31 @@
     "tradeoff_metric": "team_sentiment",
     "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
     "outcomes": {
-      "clear_success": "SLA tiers are live. Sales closes deals at three price points (basic, premium, critical). Support team has clear expectations for each tier. Premium and critical customers report satisfaction with response times.",
-      "partial_success": "SLA tiers are defined but critical-tier response times are missed 12% of the time due to staffing gaps. Affected customers receive credits. Sales still uses SLAs as a selling point.",
-      "unexpected_impact": "Support team burns out trying to meet critical SLAs. Overtime increases. The team requests additional headcount. The cost of the critical tier reduces its profitability.",
-      "soft_failure": "SLA tiers are announced but tracking is manual. Support team tracks response times in a spreadsheet. Transparency is low. Sales cannot confidently promise SLAs.",
-      "catastrophe": "A data entry error assigns a normal-tier customer to the critical-tier SLA. Support responds at critical speed for six weeks. When billing occurs, the customer is shocked to see the critical tier charge. The customer disputes it and threatens to leave."
+      "clear_success": "SLA tiers are live. Sales closes deals at three price points and support has clear expectations. Premium and critical customers report satisfaction with response times, which is a sentence support wanted to hear.",
+      "partial_success": "SLA tiers are defined but critical response times are missed 12% due to staffing gaps. Customers get credits and sales keeps using SLAs as a selling point.",
+      "unexpected_impact": "Support burns out trying to meet critical SLAs. Overtime rises and headcount requests follow. The critical tier is less profitable than the spreadsheet said.",
+      "soft_failure": "SLA tiers exist but tracking is manual in a spreadsheet. Transparency is low and sales cannot confidently promise SLAs.",
+      "catastrophe": "A data entry error assigned a normal-tier customer to the critical SLA. Support responded at critical speed for six weeks and billing caused a dispute and churn threat."
+    }
+  },
+  {
+    "id": "ent_023",
+    "title": "Security Questionnaire Export",
+    "description": "Generate a standard security questionnaire export (hosting, encryption, access controls) for procurement reviews. Low effort, high demand. Tradeoff: you now own keeping the document current.",
+    "category": "enterprise_feature",
+    "effort": 3,
+    "primary_metric": "enterprise_growth",
+    "primary_impact": { "success": [4, 7], "partial": [2, 3] },
+    "secondary_metric": "sales_sentiment",
+    "secondary_impact": { "success": [2, 4], "partial": [1, 2] },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": { "success": [-1, -2], "partial": [-1, -1] },
+    "outcomes": {
+      "clear_success": "Questionnaire export shipped and procurement cycles shrink by weeks. Sales calls it a deal accelerator and asks for three more versions before lunch.",
+      "partial_success": "Export works but uses last quarter's wording. Sales sends it anyway and spends the call explaining what changed since the PDF was generated.",
+      "unexpected_impact": "Security teams treat the export as the official source of truth. We now have a standing meeting just to keep a PDF current.",
+      "soft_failure": "Procurement wanted a spreadsheet, not a PDF. We built a PDF. They asked again. The loop continues.",
+      "catastrophe": "The export claims encryption coverage we do not have. A prospect flags the gap and pauses the deal pending a full security review."
     }
   }
 ]

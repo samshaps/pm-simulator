@@ -465,8 +465,8 @@ export async function POST(request: Request) {
 
   if (isOverbooked) {
     const penalty = Math.min(
-      6,
-      Math.max(1, Math.round(1 + 5 * overbookFraction * overbookFraction))
+      8,
+      Math.max(2, Math.round(2 + 6 * overbookFraction * overbookFraction))
     );
     updatedMetrics.team_sentiment = clampMetric(
       updatedMetrics.team_sentiment - penalty
@@ -475,8 +475,8 @@ export async function POST(request: Request) {
 
     if (failureRate > 0.5) {
       const extraPenalty = Math.min(
-        3,
-        Math.max(1, Math.round(1 + 2 * overbookFraction))
+        5,
+        Math.max(2, Math.round(2 + 3 * overbookFraction))
       );
       updatedMetrics.team_sentiment = clampMetric(
         updatedMetrics.team_sentiment - extraPenalty
@@ -488,16 +488,31 @@ export async function POST(request: Request) {
 
   if (!isOverbooked && failureRate < 0.25) {
     updatedMetrics.team_sentiment = clampMetric(
-      updatedMetrics.team_sentiment + 3
+      updatedMetrics.team_sentiment + 4
     );
-    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + 3;
+    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + 4;
   }
 
-  if (clearPartialRate > 0.5) {
+  if (clearPartialRate > 0.75) {
+    updatedMetrics.team_sentiment = clampMetric(
+      updatedMetrics.team_sentiment + 2
+    );
+    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + 2;
+  } else if (clearPartialRate > 0.5) {
     updatedMetrics.team_sentiment = clampMetric(
       updatedMetrics.team_sentiment + 1
     );
     metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + 1;
+  }
+
+  if (failureRate >= 0.5) {
+    applyMetricDelta("team_sentiment", -4);
+    applyMetricDelta("ceo_sentiment", -3);
+    applyMetricDelta("sales_sentiment", -2);
+    applyMetricDelta("cto_sentiment", -2);
+  } else if (clearPartialRate >= 0.75 && failureRate < 0.25) {
+    applyMetricDelta("team_sentiment", 2);
+    applyMetricDelta("ceo_sentiment", 2);
   }
 
   const totalSelected = selectedTickets.length;
@@ -516,12 +531,22 @@ export async function POST(request: Request) {
       (counts["enterprise_feature"] ?? 0) +
       (counts["sales_request"] ?? 0);
 
-    if (growthCount / totalSelected > 0.5) {
+    const growthRatio = growthCount / totalSelected;
+    const enterpriseRatio = enterpriseCount / totalSelected;
+
+    if (growthRatio > 0.5) {
+      applyMetricDelta("tech_debt", 3);
+      applyMetricDelta("team_sentiment", -2);
+    }
+    if (growthRatio > 0.7) {
       applyMetricDelta("tech_debt", 2);
       applyMetricDelta("team_sentiment", -1);
     }
 
-    if (enterpriseCount / totalSelected > 0.5) {
+    if (enterpriseRatio > 0.5) {
+      applyMetricDelta("self_serve_growth", -3);
+    }
+    if (enterpriseRatio > 0.7) {
       applyMetricDelta("self_serve_growth", -2);
     }
   }
@@ -579,31 +604,34 @@ export async function POST(request: Request) {
   if (!hasEnterpriseShipped) {
     applyMetricDelta(
       "sales_sentiment",
-      prevEnterpriseShipped ? -4 : -8
+      prevEnterpriseShipped ? -6 : -10
     );
   }
 
   const techDebtDrift =
-    !hasTechDebtShipped && !prevTechDebtShipped ? 4 : 2;
+    !hasTechDebtShipped && !prevTechDebtShipped ? 6 : 3;
   applyMetricDelta("tech_debt", techDebtDrift);
+  if (updatedMetrics.tech_debt > 75) {
+    applyMetricDelta("tech_debt", 2);
+  }
 
   if (hasTechDebtShipped) {
-    applyMetricDelta("cto_sentiment", 2);
+    applyMetricDelta("cto_sentiment", 3);
   } else {
-    applyMetricDelta("cto_sentiment", -3);
+    applyMetricDelta("cto_sentiment", -4);
   }
   if (updatedMetrics.tech_debt > 70) {
-    applyMetricDelta("cto_sentiment", -2);
+    applyMetricDelta("cto_sentiment", -3);
   } else if (updatedMetrics.tech_debt < 35) {
-    applyMetricDelta("cto_sentiment", 1);
+    applyMetricDelta("cto_sentiment", 2);
   }
 
   if (!hasUxOrSelfServeShipped && !prevUxOrSelfServeShipped) {
-    applyMetricDelta("nps", -2);
+    applyMetricDelta("nps", -3);
   }
 
   if (!hasSelfServeShipped && !prevSelfServeShipped) {
-    applyMetricDelta("self_serve_growth", -2);
+    applyMetricDelta("self_serve_growth", -3);
   }
 
   const eventsLog = Array.isArray(game.events_log) ? [...game.events_log] : [];
