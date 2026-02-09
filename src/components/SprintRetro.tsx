@@ -105,7 +105,7 @@ export default function SprintRetro() {
   }, []);
 
   if (isLoading || !retroData) {
-    return <div className={styles.pageContainer}>Loading sprint results...</div>;
+    return null; // Don't show default loading - SprintPlanning loading overlay handles it
   }
 
   const narrative = retroData.retro.narrative;

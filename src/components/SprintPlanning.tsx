@@ -37,15 +37,6 @@ interface MetricsState {
   velocity: number;
 }
 
-interface ImpactMetric {
-  key: keyof MetricsState;
-  name: string;
-  from: number;
-  to: number;
-  delta: number;
-  tone: 'positive' | 'negative' | 'neutral';
-}
-
 interface GameState {
   game: {
     id: string;
@@ -135,9 +126,6 @@ export default function SprintPlanning() {
   const [isCommitting, setIsCommitting] = useState(false);
   const [committedTickets, setCommittedTickets] = useState<CommittedTicket[]>([]);
   const [previousDeltas, setPreviousDeltas] = useState<Record<string, number> | null>(null);
-  const [impactMetrics, setImpactMetrics] = useState<ImpactMetric[]>([]);
-  const [impactValues, setImpactValues] = useState<Record<string, number>>({});
-  const [isImpactExpanded, setIsImpactExpanded] = useState(true);
   const [loadingSequence, setLoadingSequence] = useState<string[]>([]);
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [showCeoShift, setShowCeoShift] = useState(true);
@@ -199,74 +187,6 @@ export default function SprintPlanning() {
     };
   }, [router]);
 
-  useEffect(() => {
-    if (!previousDeltas || !gameState) return;
-    const deltas = Object.entries(previousDeltas).filter(([, value]) => value !== 0);
-    if (deltas.length === 0) return;
-
-    const metrics = gameState.game.metrics_state;
-    const impact: ImpactMetric[] = deltas.map(([key, value]) => {
-      const metricKey = key as keyof MetricsState;
-      const to = Math.round(metrics[metricKey]);
-      const from = Math.round(to - value);
-      const inverted = metricKey === 'tech_debt';
-      const tone =
-        value === 0
-          ? 'neutral'
-          : value > 0
-          ? inverted
-            ? 'negative'
-            : 'positive'
-          : inverted
-          ? 'positive'
-          : 'negative';
-      return {
-        key: metricKey,
-        name: metricLabelMap[metricKey] || metricKey,
-        from,
-        to,
-        delta: Math.round(value),
-        tone
-      };
-    });
-
-    setImpactMetrics(impact);
-    setIsImpactExpanded(true);
-    setImpactValues(
-      impact.reduce<Record<string, number>>((acc, item) => {
-        acc[item.key] = item.from;
-        return acc;
-      }, {})
-    );
-
-    let rafId = 0;
-    const start = performance.now();
-    const duration = 800;
-    const animate = (now: number) => {
-      const progress = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setImpactValues((prev) => {
-        const next = { ...prev };
-        for (const item of impact) {
-          next[item.key] = Math.round(item.from + (item.to - item.from) * eased);
-        }
-        return next;
-      });
-      if (progress < 1) {
-        rafId = requestAnimationFrame(animate);
-      }
-    };
-    rafId = requestAnimationFrame(animate);
-
-    const collapseTimer = window.setTimeout(() => {
-      setIsImpactExpanded(false);
-    }, 5000);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.clearTimeout(collapseTimer);
-    };
-  }, [previousDeltas, gameState]);
 
   useEffect(() => {
     if (!isCommitting) return;
@@ -544,7 +464,6 @@ export default function SprintPlanning() {
   const ceoFocusShiftTo = ceoFocusShift?.to ?? gameState.quarter.ceo_focus;
   const activeLoadingMessage =
     loadingSequence[loadingIndex] || loadingMessages[0];
-  const showImpactPanel = impactMetrics.length > 0;
 
   return (
     <div className={styles.pageContainer}>
@@ -770,37 +689,6 @@ export default function SprintPlanning() {
         </div>
       </div>
 
-      {showImpactPanel && (
-        <div
-          className={`${styles.impactPanel} ${
-            isImpactExpanded ? styles.impactExpanded : styles.impactCollapsed
-          }`}
-          onClick={() => setIsImpactExpanded((prev) => !prev)}
-        >
-          <div className={styles.impactHeader}>
-            <span className={styles.impactTitle}>Sprint Impact</span>
-            <span className={styles.impactHint}>
-              {isImpactExpanded ? 'Click to collapse' : 'Click to expand'}
-            </span>
-          </div>
-          <div className={styles.impactGrid}>
-            {impactMetrics.map((metric) => (
-              <div
-                key={metric.key}
-                className={`${styles.impactItem} ${styles[`impact${metric.tone.charAt(0).toUpperCase() + metric.tone.slice(1)}`]}`}
-              >
-                <span className={styles.impactMetricName}>{metric.name}</span>
-                <span className={styles.impactMetricValue}>
-                  {impactValues[metric.key] ?? metric.to}
-                  <span className={styles.impactMetricDelta}>
-                    {metric.delta > 0 ? `+${metric.delta}` : metric.delta}
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* CEO Focus Banner */}
       <div className={styles.ceoFocusBanner}>
