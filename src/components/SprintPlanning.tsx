@@ -144,6 +144,7 @@ export default function SprintPlanning() {
   const [ceoShiftOverride, setCeoShiftOverride] = useState<GameState['ceo_focus_shift']>(null);
   const [eventPopupEvents, setEventPopupEvents] = useState<Array<{ title: string; description: string }>>([]);
   const [showEventPopup, setShowEventPopup] = useState(false);
+  const [isMetricsExpanded, setIsMetricsExpanded] = useState(false);
 
   useEffect(() => {
     // Fetch active sprint data
@@ -282,6 +283,9 @@ export default function SprintPlanning() {
     if (!gameState) return;
     if (gameState.game.current_sprint === 1) {
       setShowCeoShift(true);
+      setIsMetricsExpanded(false); // Closed for Sprint 1
+    } else {
+      setIsMetricsExpanded(true); // Auto-open for Sprint 2+
     }
   }, [gameState]);
 
@@ -556,28 +560,6 @@ export default function SprintPlanning() {
           </div>
         </div>
       )}
-      {showEventPopup && eventPopupEvents.length > 0 && (
-        <div className={styles.eventPopup}>
-          <div className={styles.eventPopupHeader}>
-            <span className={styles.eventPopupTitle}>Events</span>
-            <button
-              className={styles.eventPopupDismiss}
-              onClick={() => setShowEventPopup(false)}
-              aria-label="Dismiss events"
-            >
-              ×
-            </button>
-          </div>
-          <div className={styles.eventPopupBody}>
-            {eventPopupEvents.map((event, index) => (
-              <div key={`${event.title}-${index}`} className={styles.eventPopupItem}>
-                <div className={styles.eventPopupItemTitle}>{event.title}</div>
-                <div className={styles.eventPopupItemText}>{event.description}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
       {/* Top Bar */}
       <div className={styles.topBar}>
         <div className={styles.topBarLeft}>
@@ -589,47 +571,149 @@ export default function SprintPlanning() {
         </div>
 
         {/* Metrics Bar */}
-        <div className={styles.metricsBar}>
-          <div className={styles.metricItem} title={`Team Sentiment: ${getSentimentLabel(metrics.team_sentiment)} (${Math.round(metrics.team_sentiment)}/100)`}>
-            <span className={styles.metricLabel}>Team</span>
-            <span className={styles.metricFace}>{getSentimentFace(metrics.team_sentiment)}</span>
-          </div>
-          <div className={styles.metricItem} title={`CEO Sentiment: ${getSentimentLabel(metrics.ceo_sentiment)} (${Math.round(metrics.ceo_sentiment)}/100)`}>
-            <span className={styles.metricLabel}>CEO</span>
-            <span className={styles.metricFace}>{getSentimentFace(metrics.ceo_sentiment)}</span>
-          </div>
-          <div className={styles.metricItem} title={`Sales Sentiment: ${getSentimentLabel(metrics.sales_sentiment)} (${Math.round(metrics.sales_sentiment)}/100)`}>
-            <span className={styles.metricLabel}>Sales</span>
-            <span className={styles.metricFace}>{getSentimentFace(metrics.sales_sentiment)}</span>
-          </div>
-          <div className={styles.metricItem} title={`CTO Sentiment: ${getSentimentLabel(metrics.cto_sentiment)} (${Math.round(metrics.cto_sentiment)}/100)`}>
-            <span className={styles.metricLabel}>CTO</span>
-            <span className={styles.metricFace}>{getSentimentFace(metrics.cto_sentiment)}</span>
+        <div className={styles.metricsBarWrapper}>
+          <div className={styles.metricsBar}>
+            <div className={styles.metricItem} title={`Team Sentiment: ${getSentimentLabel(metrics.team_sentiment)} (${Math.round(metrics.team_sentiment)}/100)`}>
+              <span className={styles.metricLabel}>Team</span>
+              <span className={styles.metricFace}>{getSentimentFace(metrics.team_sentiment)}</span>
+            </div>
+            <div className={styles.metricItem} title={`CEO Sentiment: ${getSentimentLabel(metrics.ceo_sentiment)} (${Math.round(metrics.ceo_sentiment)}/100)`}>
+              <span className={styles.metricLabel}>CEO</span>
+              <span className={styles.metricFace}>{getSentimentFace(metrics.ceo_sentiment)}</span>
+            </div>
+            <div className={styles.metricItem} title={`Sales Sentiment: ${getSentimentLabel(metrics.sales_sentiment)} (${Math.round(metrics.sales_sentiment)}/100)`}>
+              <span className={styles.metricLabel}>Sales</span>
+              <span className={styles.metricFace}>{getSentimentFace(metrics.sales_sentiment)}</span>
+            </div>
+            <div className={styles.metricItem} title={`CTO Sentiment: ${getSentimentLabel(metrics.cto_sentiment)} (${Math.round(metrics.cto_sentiment)}/100)`}>
+              <span className={styles.metricLabel}>CTO</span>
+              <span className={styles.metricFace}>{getSentimentFace(metrics.cto_sentiment)}</span>
+            </div>
+
+            <div className={styles.metricDivider}></div>
+
+            <div className={styles.metricItem} title={`Self-Serve Growth: ${Math.round(metrics.self_serve_growth)}/100`}>
+              <span className={styles.metricLabel}>Self-Serve</span>
+              <span className={`${styles.metricTrend} ${getGrowthClass(metrics.self_serve_growth)}`} style={{ color: getArrowColor('self_serve_growth') }}>
+                {getGrowthLabel(metrics.self_serve_growth, 'self_serve_growth')}
+              </span>
+            </div>
+            <div className={styles.metricItem} title={`Enterprise Growth: ${Math.round(metrics.enterprise_growth)}/100`}>
+              <span className={styles.metricLabel}>Enterprise</span>
+              <span className={`${styles.metricTrend} ${getGrowthClass(metrics.enterprise_growth)}`} style={{ color: getArrowColor('enterprise_growth') }}>
+                {getGrowthLabel(metrics.enterprise_growth, 'enterprise_growth')}
+              </span>
+            </div>
+
+            <div className={styles.metricDivider}></div>
+
+            <div className={styles.metricItem} title={`Tech Debt: ${getTechDebtLabel(metrics.tech_debt)} (${Math.round(metrics.tech_debt)}/100)`}>
+              <span className={styles.metricLabel}>Tech Debt</span>
+              <span className={`${styles.metricTrend} ${styles.trendMounting}`} style={{ color: getTechDebtArrowColor() }}>
+                {getTechDebtLabel(metrics.tech_debt)}
+              </span>
+            </div>
+
+            <button
+              className={styles.metricsExpandBtn}
+              onClick={() => setIsMetricsExpanded(!isMetricsExpanded)}
+              title={isMetricsExpanded ? 'Collapse detailed metrics' : 'Expand detailed metrics'}
+            >
+              {isMetricsExpanded ? '▲' : '▼'}
+            </button>
           </div>
 
-          <div className={styles.metricDivider}></div>
-
-          <div className={styles.metricItem} title={`Self-Serve Growth: ${Math.round(metrics.self_serve_growth)}/100`}>
-            <span className={styles.metricLabel}>Self-Serve</span>
-            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.self_serve_growth)}`} style={{ color: getArrowColor('self_serve_growth') }}>
-              {getGrowthLabel(metrics.self_serve_growth, 'self_serve_growth')}
-            </span>
-          </div>
-          <div className={styles.metricItem} title={`Enterprise Growth: ${Math.round(metrics.enterprise_growth)}/100`}>
-            <span className={styles.metricLabel}>Enterprise</span>
-            <span className={`${styles.metricTrend} ${getGrowthClass(metrics.enterprise_growth)}`} style={{ color: getArrowColor('enterprise_growth') }}>
-              {getGrowthLabel(metrics.enterprise_growth, 'enterprise_growth')}
-            </span>
-          </div>
-
-          <div className={styles.metricDivider}></div>
-
-          <div className={styles.metricItem} title={`Tech Debt: ${getTechDebtLabel(metrics.tech_debt)} (${Math.round(metrics.tech_debt)}/100)`}>
-            <span className={styles.metricLabel}>Tech Debt</span>
-            <span className={`${styles.metricTrend} ${styles.trendMounting}`} style={{ color: getTechDebtArrowColor() }}>
-              {getTechDebtLabel(metrics.tech_debt)}
-            </span>
-          </div>
+          {/* Detailed Metrics Dropdown */}
+          {isMetricsExpanded && (
+            <div className={styles.metricsDropdown}>
+              <div className={styles.metricsDropdownGrid}>
+                <div className={styles.metricsDropdownItem}>
+                  <div className={styles.metricsDropdownName}>Team Sentiment</div>
+                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.team_sentiment)}</div>
+                  <div className={styles.metricsDropdownBar}>
+                    <div
+                      className={`${styles.metricsDropdownBarFill} ${
+                        metrics.team_sentiment >= 60 ? styles.positive : metrics.team_sentiment < 40 ? styles.warning : styles.neutral
+                      }`}
+                      style={{ width: `${metrics.team_sentiment}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className={styles.metricsDropdownItem}>
+                  <div className={styles.metricsDropdownName}>CEO Sentiment</div>
+                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.ceo_sentiment)}</div>
+                  <div className={styles.metricsDropdownBar}>
+                    <div
+                      className={`${styles.metricsDropdownBarFill} ${
+                        metrics.ceo_sentiment >= 60 ? styles.positive : metrics.ceo_sentiment < 40 ? styles.warning : styles.neutral
+                      }`}
+                      style={{ width: `${metrics.ceo_sentiment}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className={styles.metricsDropdownItem}>
+                  <div className={styles.metricsDropdownName}>Sales Sentiment</div>
+                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.sales_sentiment)}</div>
+                  <div className={styles.metricsDropdownBar}>
+                    <div
+                      className={`${styles.metricsDropdownBarFill} ${
+                        metrics.sales_sentiment >= 60 ? styles.positive : metrics.sales_sentiment < 40 ? styles.warning : styles.neutral
+                      }`}
+                      style={{ width: `${metrics.sales_sentiment}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className={styles.metricsDropdownItem}>
+                  <div className={styles.metricsDropdownName}>CTO Sentiment</div>
+                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.cto_sentiment)}</div>
+                  <div className={styles.metricsDropdownBar}>
+                    <div
+                      className={`${styles.metricsDropdownBarFill} ${
+                        metrics.cto_sentiment >= 60 ? styles.positive : metrics.cto_sentiment < 40 ? styles.warning : styles.neutral
+                      }`}
+                      style={{ width: `${metrics.cto_sentiment}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className={styles.metricsDropdownItem}>
+                  <div className={styles.metricsDropdownName}>Self-Serve Growth</div>
+                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.self_serve_growth)}</div>
+                  <div className={styles.metricsDropdownBar}>
+                    <div
+                      className={`${styles.metricsDropdownBarFill} ${
+                        metrics.self_serve_growth >= 60 ? styles.positive : metrics.self_serve_growth < 40 ? styles.warning : styles.neutral
+                      }`}
+                      style={{ width: `${metrics.self_serve_growth}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className={styles.metricsDropdownItem}>
+                  <div className={styles.metricsDropdownName}>Enterprise Growth</div>
+                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.enterprise_growth)}</div>
+                  <div className={styles.metricsDropdownBar}>
+                    <div
+                      className={`${styles.metricsDropdownBarFill} ${
+                        metrics.enterprise_growth >= 60 ? styles.positive : metrics.enterprise_growth < 40 ? styles.warning : styles.neutral
+                      }`}
+                      style={{ width: `${metrics.enterprise_growth}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className={styles.metricsDropdownItem}>
+                  <div className={styles.metricsDropdownName}>Tech Debt</div>
+                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.tech_debt)}</div>
+                  <div className={styles.metricsDropdownBar}>
+                    <div
+                      className={`${styles.metricsDropdownBarFill} ${
+                        metrics.tech_debt >= 60 ? styles.warning : metrics.tech_debt < 40 ? styles.positive : styles.neutral
+                      }`}
+                      style={{ width: `${metrics.tech_debt}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className={styles.topBarRight}>

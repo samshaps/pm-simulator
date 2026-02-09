@@ -143,7 +143,16 @@ export default function SprintRetro() {
     const insights: string[] = [];
     const deltas = retroData.retro.metric_deltas;
 
-    // Sentiment insights
+    // CEO sentiment insights (now included prominently)
+    if (deltas.ceo_sentiment && deltas.ceo_sentiment < -15) {
+      insights.push("CEO sentiment dropped sharply. You're on their radar now—and not in a good way.");
+    } else if (deltas.ceo_sentiment && deltas.ceo_sentiment < -10) {
+      insights.push("CEO sentiment dropped. Priorities may need realignment.");
+    } else if (deltas.ceo_sentiment && deltas.ceo_sentiment > 10) {
+      insights.push("CEO sentiment improved significantly. You're building credibility.");
+    }
+
+    // Team sentiment insights
     if (deltas.team_sentiment && deltas.team_sentiment < -10) {
       insights.push("Team morale took a significant hit. Consider lighter loads next sprint.");
     } else if (deltas.team_sentiment && deltas.team_sentiment > 10) {
@@ -165,10 +174,7 @@ export default function SprintRetro() {
       insights.push("Tech debt improved. Engineering team appreciates the focus.");
     }
 
-    // Stakeholder insights
-    if (deltas.ceo_sentiment && deltas.ceo_sentiment < -10) {
-      insights.push("CEO sentiment dropped. Priorities may need realignment.");
-    }
+    // Other stakeholder insights
     if (deltas.sales_sentiment && deltas.sales_sentiment < -10) {
       insights.push("Sales team is frustrated. Enterprise deals may be at risk.");
     }
@@ -232,16 +238,33 @@ export default function SprintRetro() {
             <div className={styles.narrativeText}>{narrative}</div>
           </div>
 
-          {/* Key Insights */}
-          {insights.length > 0 && (
+          {/* After-Action Report */}
+          {(insights.length > 0 || (retroData.retro.events && retroData.retro.events.length > 0)) && (
             <>
-              <div className={styles.sectionLabel}>Key Takeaways</div>
+              <div className={styles.sectionLabel}>After-Action Report</div>
               <div className={styles.feedbackCard}>
-                <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
-                  {insights.map((insight, index) => (
-                    <li key={index}>{insight}</li>
-                  ))}
-                </ul>
+                {insights.length > 0 && (
+                  <>
+                    <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Key Insights</div>
+                    <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
+                      {insights.map((insight, index) => (
+                        <li key={index}>{insight}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                {retroData.retro.events && retroData.retro.events.length > 0 && (
+                  <div style={{ marginTop: insights.length > 0 ? '16px' : '0' }}>
+                    <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Events This Sprint</div>
+                    <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
+                      {retroData.retro.events.map((event: any, index: number) => (
+                        <li key={index}>
+                          <strong>{event.title}</strong> — {event.description}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </>
           )}
