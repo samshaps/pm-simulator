@@ -17,7 +17,7 @@
       "id": "evt_r_002",
       "title": "Board Meeting Prep",
       "trigger_type": "random",
-      "trigger_chance_per_sprint": 1.0,
+      "trigger_chance_per_sprint": 0.25,
       "description": "Executive preparation begins for quarterly board presentation. The CEO's focus immediately shifts to whichever growth metric looks worst on the spreadsheet.",
       "metric_effects": {
         "ceo_sentiment": -5
