@@ -233,12 +233,6 @@ export default function SprintRetro() {
           <div className={styles.retroSubtitle}>What happened, and why it matters</div>
         </div>
 
-          {/* Narrative */}
-          <div className={styles.sectionLabel}>Sprint Summary</div>
-          <div className={styles.narrativeCard}>
-            <div className={styles.narrativeText}>{narrative}</div>
-          </div>
-
           {/* After-Action Report */}
           {(insights.length > 0 || (retroData.retro.events && retroData.retro.events.length > 0)) && (
             <>
@@ -258,8 +252,8 @@ export default function SprintRetro() {
                   <div style={{ marginTop: insights.length > 0 ? '16px' : '0' }}>
                     <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Events This Sprint</div>
                     <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
-                      {retroData.retro.events.map((event: any, index: number) => (
-                        <li key={index}>
+                      {Array.from(new Map(retroData.retro.events.map((event: any) => [event.title, event])).values()).map((event: any, index: number) => (
+                        <li key={`${event.title}-${index}`}>
                           <strong>{event.title}</strong> — {event.description}
                         </li>
                       ))}

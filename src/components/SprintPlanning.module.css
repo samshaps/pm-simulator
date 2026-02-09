@@ -1078,26 +1078,46 @@
 }
 
 .metricsDropdownBar {
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
   overflow: hidden;
 }
 
 .metricsDropdownBarFill {
   height: 100%;
   transition: width 0.3s ease;
-  border-radius: 4px;
+  border-radius: 100px;
 }
 
 .metricsDropdownBarFill.positive {
-  background: linear-gradient(90deg, #4ade80, #22c55e);
+  background: var(--green);
 }
 
 .metricsDropdownBarFill.warning {
-  background: linear-gradient(90deg, #f87171, #ef4444);
+  background: var(--amber);
 }
 
 .metricsDropdownBarFill.neutral {
-  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  background: var(--text-secondary);
+}
+
+.metricsDropdownValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.metricsDropdownDelta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.deltaPositive {
+  color: #4ade80;
+}
+
+.deltaNegative {
+  color: #f87171;
 }

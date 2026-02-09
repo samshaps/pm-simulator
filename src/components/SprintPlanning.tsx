@@ -619,7 +619,7 @@ export default function SprintPlanning() {
               onClick={() => setIsMetricsExpanded(!isMetricsExpanded)}
               title={isMetricsExpanded ? 'Collapse detailed metrics' : 'Expand detailed metrics'}
             >
-              {isMetricsExpanded ? '▲' : '▼'}
+              {isMetricsExpanded ? 'Collapse' : 'Expand'}
             </button>
           </div>
 
@@ -629,7 +629,14 @@ export default function SprintPlanning() {
               <div className={styles.metricsDropdownGrid}>
                 <div className={styles.metricsDropdownItem}>
                   <div className={styles.metricsDropdownName}>Team Sentiment</div>
-                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.team_sentiment)}</div>
+                  <div className={styles.metricsDropdownValueRow}>
+                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.team_sentiment)}</div>
+                    {previousDeltas && previousDeltas.team_sentiment !== undefined && previousDeltas.team_sentiment !== 0 && (
+                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.team_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
+                        {previousDeltas.team_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.team_sentiment)}
+                      </div>
+                    )}
+                  </div>
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
@@ -641,7 +648,14 @@ export default function SprintPlanning() {
                 </div>
                 <div className={styles.metricsDropdownItem}>
                   <div className={styles.metricsDropdownName}>CEO Sentiment</div>
-                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.ceo_sentiment)}</div>
+                  <div className={styles.metricsDropdownValueRow}>
+                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.ceo_sentiment)}</div>
+                    {previousDeltas && previousDeltas.ceo_sentiment !== undefined && previousDeltas.ceo_sentiment !== 0 && (
+                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.ceo_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
+                        {previousDeltas.ceo_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.ceo_sentiment)}
+                      </div>
+                    )}
+                  </div>
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
@@ -653,7 +667,14 @@ export default function SprintPlanning() {
                 </div>
                 <div className={styles.metricsDropdownItem}>
                   <div className={styles.metricsDropdownName}>Sales Sentiment</div>
-                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.sales_sentiment)}</div>
+                  <div className={styles.metricsDropdownValueRow}>
+                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.sales_sentiment)}</div>
+                    {previousDeltas && previousDeltas.sales_sentiment !== undefined && previousDeltas.sales_sentiment !== 0 && (
+                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.sales_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
+                        {previousDeltas.sales_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.sales_sentiment)}
+                      </div>
+                    )}
+                  </div>
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
@@ -665,7 +686,14 @@ export default function SprintPlanning() {
                 </div>
                 <div className={styles.metricsDropdownItem}>
                   <div className={styles.metricsDropdownName}>CTO Sentiment</div>
-                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.cto_sentiment)}</div>
+                  <div className={styles.metricsDropdownValueRow}>
+                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.cto_sentiment)}</div>
+                    {previousDeltas && previousDeltas.cto_sentiment !== undefined && previousDeltas.cto_sentiment !== 0 && (
+                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.cto_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
+                        {previousDeltas.cto_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.cto_sentiment)}
+                      </div>
+                    )}
+                  </div>
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
@@ -677,7 +705,14 @@ export default function SprintPlanning() {
                 </div>
                 <div className={styles.metricsDropdownItem}>
                   <div className={styles.metricsDropdownName}>Self-Serve Growth</div>
-                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.self_serve_growth)}</div>
+                  <div className={styles.metricsDropdownValueRow}>
+                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.self_serve_growth)}</div>
+                    {previousDeltas && previousDeltas.self_serve_growth !== undefined && previousDeltas.self_serve_growth !== 0 && (
+                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.self_serve_growth > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
+                        {previousDeltas.self_serve_growth > 0 ? '+' : ''}{Math.round(previousDeltas.self_serve_growth)}
+                      </div>
+                    )}
+                  </div>
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
@@ -689,7 +724,14 @@ export default function SprintPlanning() {
                 </div>
                 <div className={styles.metricsDropdownItem}>
                   <div className={styles.metricsDropdownName}>Enterprise Growth</div>
-                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.enterprise_growth)}</div>
+                  <div className={styles.metricsDropdownValueRow}>
+                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.enterprise_growth)}</div>
+                    {previousDeltas && previousDeltas.enterprise_growth !== undefined && previousDeltas.enterprise_growth !== 0 && (
+                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.enterprise_growth > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
+                        {previousDeltas.enterprise_growth > 0 ? '+' : ''}{Math.round(previousDeltas.enterprise_growth)}
+                      </div>
+                    )}
+                  </div>
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
@@ -701,7 +743,14 @@ export default function SprintPlanning() {
                 </div>
                 <div className={styles.metricsDropdownItem}>
                   <div className={styles.metricsDropdownName}>Tech Debt</div>
-                  <div className={styles.metricsDropdownValue}>{Math.round(metrics.tech_debt)}</div>
+                  <div className={styles.metricsDropdownValueRow}>
+                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.tech_debt)}</div>
+                    {previousDeltas && previousDeltas.tech_debt !== undefined && previousDeltas.tech_debt !== 0 && (
+                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.tech_debt > 0 ? styles.deltaNegative : styles.deltaPositive}`}>
+                        {previousDeltas.tech_debt > 0 ? '+' : ''}{Math.round(previousDeltas.tech_debt)}
+                      </div>
+                    )}
+                  </div>
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${

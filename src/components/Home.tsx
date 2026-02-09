@@ -15,12 +15,38 @@ interface PastRun {
 type Difficulty = 'good' | 'ok' | 'bad';
 type ApiDifficulty = 'easy' | 'normal' | 'hard';
 
+const loadingMessages = [
+  'Syncing with stakeholders...',
+  'Updating the JIRA board nobody reads...',
+  'Waiting for CI/CD...',
+  'Your manager is typing...',
+  'Calibrating expectations downward...',
+  'Refreshing LinkedIn to see if anyone noticed...',
+  'Resolving a merge conflict in the roadmap...',
+  'Asking ChatGPT to write your standup notes...',
+  'Convincing the designer this is MVP...',
+  'Calculating the blast radius...',
+  'Checking if anyone read the PRD...',
+  'Pretending to understand the architecture diagram...',
+  'Running it by legal, just in case...',
+  'Sprint planning is easy, they said...',
+  'Deploying to production on a Friday...'
+];
+
+const pickRandomMessages = (messages: string[], count: number) => {
+  const shuffled = [...messages].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+};
+
 export default function Home() {
   const router = useRouter();
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('ok');
   const [hasSaveGame, setHasSaveGame] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [pastRuns, setPastRuns] = useState<PastRun[]>([]);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [loadingSequence, setLoadingSequence] = useState<string[]>([]);
+  const [loadingIndex, setLoadingIndex] = useState(0);
 
   const formatRunDate = (iso: string) => {
     const date = new Date(iso);
@@ -138,7 +164,19 @@ export default function Home() {
       });
 
       if (response.ok) {
-        router.replace('/sprint-planning');
+        setIsNavigating(true);
+        const sequence = pickRandomMessages(loadingMessages, 4);
+        setLoadingSequence(sequence);
+        setLoadingIndex(0);
+
+        const interval = window.setInterval(() => {
+          setLoadingIndex((index) => (index + 1) % sequence.length);
+        }, 1500);
+
+        setTimeout(() => {
+          window.clearInterval(interval);
+          router.replace('/sprint-planning');
+        }, 2000);
       } else {
         console.error('Failed to create game');
         setIsLoading(false);
@@ -151,12 +189,39 @@ export default function Home() {
 
   const handleContinue = () => {
     if (hasSaveGame) {
-      router.replace('/sprint-planning');
+      setIsNavigating(true);
+      const sequence = pickRandomMessages(loadingMessages, 4);
+      setLoadingSequence(sequence);
+      setLoadingIndex(0);
+
+      const interval = window.setInterval(() => {
+        setLoadingIndex((index) => (index + 1) % sequence.length);
+      }, 1500);
+
+      setTimeout(() => {
+        window.clearInterval(interval);
+        router.replace('/sprint-planning');
+      }, 2000);
     }
   };
 
+  const activeLoadingMessage =
+    loadingSequence[loadingIndex] || loadingMessages[0];
+
   return (
     <div className={styles.container}>
+      {isNavigating && (
+        <div className={styles.loadingOverlay} aria-live="polite">
+          <div className={styles.loadingCard}>
+            <div key={loadingIndex} className={styles.loadingMessage}>
+              {activeLoadingMessage}
+            </div>
+            <div className={styles.loadingProgress}>
+              <div className={styles.loadingProgressBar}></div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Title */}
       <div className={styles.titleBlock}>
         <div className={styles.titleSub}>Product Management</div>
