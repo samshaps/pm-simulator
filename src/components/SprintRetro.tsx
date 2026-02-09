@@ -33,6 +33,7 @@ interface RetroData {
     ticket_outcomes: any[];
     metric_deltas: Record<string, number>;
     narrative: string;
+    events?: Array<{ title: string; description: string }>;
   };
   isQuarterEnd: boolean;
 }
