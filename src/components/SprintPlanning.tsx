@@ -694,26 +694,9 @@ export default function SprintPlanning() {
       <div className={styles.ceoFocusBanner}>
         <div className={styles.ceoFocusRow}>
           <span className={styles.ceoFocusLabel}>CEO Focus this Quarter:</span>
-          {gameState.game.current_sprint === 1 && ceoFocusShiftNarrative && showCeoShift && ceoFocusShiftFrom && (
-            <span className={styles.ceoFocusOld}>{formatCeoFocus(ceoFocusShiftFrom)}</span>
-          )}
           <span className={styles.ceoFocusValue}>{formatCeoFocus(ceoFocusShiftTo)}</span>
           <span className={styles.ceoFocusHint}>— aligned tickets get +12% success chance</span>
-          {gameState.game.current_sprint === 1 && ceoFocusShiftNarrative && showCeoShift && (
-            <button
-              className={styles.ceoShiftDismiss}
-              onClick={() => setShowCeoShift(false)}
-              aria-label="Dismiss CEO focus update"
-            >
-              ×
-            </button>
-          )}
         </div>
-        {gameState.game.current_sprint === 1 && ceoFocusShiftNarrative && showCeoShift && (
-          <div className={styles.ceoShiftNarrative}>
-            “{ceoFocusShiftNarrative}”
-          </div>
-        )}
       </div>
 
       {/* Main Content */}

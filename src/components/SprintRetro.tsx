@@ -35,6 +35,12 @@ interface RetroData {
     narrative: string;
     events?: Array<{ title: string; description: string }>;
   };
+  ceo_focus_shift?: {
+    narrative?: string | null;
+    from?: string | null;
+    to?: string | null;
+    kind?: string | null;
+  } | null;
   isQuarterEnd: boolean;
 }
 
@@ -234,10 +240,18 @@ export default function SprintRetro() {
         </div>
 
           {/* After-Action Report */}
-          {(insights.length > 0 || (retroData.retro.events && retroData.retro.events.length > 0)) && (
+          {(insights.length > 0 || (retroData.retro.events && retroData.retro.events.length > 0) || (retroData.ceo_focus_shift?.narrative)) && (
             <>
               <div className={styles.sectionLabel}>After-Action Report</div>
               <div className={styles.feedbackCard}>
+                {retroData.ceo_focus_shift?.narrative && (
+                  <>
+                    <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>CEO Focus Shift</div>
+                    <div style={{ marginBottom: insights.length > 0 || (retroData.retro.events && retroData.retro.events.length > 0) ? '16px' : '0', fontStyle: 'italic', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                      "{retroData.ceo_focus_shift.narrative}"
+                    </div>
+                  </>
+                )}
                 {insights.length > 0 && (
                   <>
                     <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Key Insights</div>
@@ -249,7 +263,7 @@ export default function SprintRetro() {
                   </>
                 )}
                 {retroData.retro.events && retroData.retro.events.length > 0 && (
-                  <div style={{ marginTop: insights.length > 0 ? '16px' : '0' }}>
+                  <div style={{ marginTop: (retroData.ceo_focus_shift?.narrative || insights.length > 0) ? '16px' : '0' }}>
                     <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Events This Sprint</div>
                     <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
                       {Array.from(new Map(retroData.retro.events.map((event: any) => [event.title, event])).values()).map((event: any, index: number) => (
