@@ -132,11 +132,24 @@ export default function SprintRetro() {
                        'self_serve_growth', 'enterprise_growth', 'tech_debt'];
 
   const metricDeltas = retroData.retro.metric_deltas;
-  const metricChanges: MetricChange[] = coreMetrics.map(key => ({
-    name: metricNameMap[key] || key,
-    change: Math.round((metricDeltas[key] as number) || 0),
-    changeType: (metricDeltas[key] || 0) > 0 ? 'positive' as const : (metricDeltas[key] || 0) < 0 ? 'negative' as const : 'neutral' as const
-  }));
+  const metricChanges: MetricChange[] = coreMetrics.map(key => {
+    const delta = (metricDeltas[key] as number) || 0;
+    // For tech_debt, invert the changeType (increase is bad, decrease is good)
+    const isInverseMetric = key === 'tech_debt';
+    let changeType: 'positive' | 'negative' | 'neutral';
+    if (delta > 0) {
+      changeType = isInverseMetric ? 'negative' : 'positive';
+    } else if (delta < 0) {
+      changeType = isInverseMetric ? 'positive' : 'negative';
+    } else {
+      changeType = 'neutral';
+    }
+    return {
+      name: metricNameMap[key] || key,
+      change: Math.round(delta),
+      changeType
+    };
+  });
 
   const ticketOutcomes: TicketOutcome[] = retroData.retro.ticket_outcomes.map(ticket => ({
     title: ticket.title,

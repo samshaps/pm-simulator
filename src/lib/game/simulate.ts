@@ -464,6 +464,52 @@ export function generateBacklog(
     selected.push({ ...candidate });
   }
 
+  // Helper to pick a ticket by size
+  const pickBySize = (minEffort: number, maxEffort: number) => {
+    const pool = templates.filter(
+      (t) => !usedIds.has(t.id) && t.effort >= minEffort && t.effort <= maxEffort
+    );
+    if (pool.length === 0) return null;
+    return rng.pick(pool);
+  };
+
+  // Enforce size distribution: aim for ~1 small, ~2 medium, ~1 large with variance
+  const targetSmall = rng.int(1, 2); // 1-2 small tickets
+  const targetMedium = rng.int(2, 3); // 2-3 medium tickets
+  const targetLarge = rng.int(1, 2); // 1-2 large tickets
+
+  let smallCount = selected.filter((t) => t.effort <= 3).length;
+  let mediumCount = selected.filter((t) => t.effort >= 4 && t.effort <= 6).length;
+  let largeCount = selected.filter((t) => t.effort >= 7).length;
+
+  // Add small tickets if needed
+  while (smallCount < targetSmall && selected.length < count) {
+    const ticket = pickBySize(1, 3);
+    if (!ticket) break;
+    usedIds.add(ticket.id);
+    selected.push({ ...ticket });
+    smallCount++;
+  }
+
+  // Add medium tickets if needed
+  while (mediumCount < targetMedium && selected.length < count) {
+    const ticket = pickBySize(4, 6);
+    if (!ticket) break;
+    usedIds.add(ticket.id);
+    selected.push({ ...ticket });
+    mediumCount++;
+  }
+
+  // Add large tickets if needed
+  while (largeCount < targetLarge && selected.length < count) {
+    const ticket = pickBySize(7, 10);
+    if (!ticket) break;
+    usedIds.add(ticket.id);
+    selected.push({ ...ticket });
+    largeCount++;
+  }
+
+  // Fill remaining slots with weighted random selection
   while (selected.length < count) {
     const category = pickCategory();
     const candidate = pickUniqueFromCategory(category);
@@ -619,10 +665,11 @@ export function applyOutcome(
     deltas[metric] = (deltas[metric] ?? 0) + delta;
   };
 
-  const impactScale = Math.max(
-    0.9,
-    1.15 * (1 + (ticket.effort - 5) * 0.04)
-  );
+  // Hidden impact: 70% correlation with description/expectations, 30% surprise
+  // Remove direct effort correlation - impact is independent of effort
+  const baseImpact = 1.0;
+  const randomVariance = rng.next() * 0.6 - 0.3; // -0.3 to +0.3
+  const impactScale = Math.max(0.7, Math.min(1.5, baseImpact + randomVariance));
   const wildScale = impactScale + 0.1;
   const failureScale = impactScale + 0.2;
   const scaleDelta = (delta: number, scale: number) =>

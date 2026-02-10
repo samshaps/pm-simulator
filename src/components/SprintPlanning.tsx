@@ -94,7 +94,33 @@ const loadingMessages = [
   'Pretending to understand the architecture diagram...',
   'Running it by legal, just in case...',
   'Sprint planning is easy, they said...',
-  'Deploying to production on a Friday...'
+  'Deploying to production on a Friday...',
+  'Explaining to sales why we can\'t just "make it faster"...',
+  'Waiting for design to finish "one more iteration"...',
+  'Reprioritizing the backlog for the 47th time...',
+  'Adding "synergy" to the slide deck...',
+  'Scheduling a meeting to discuss the meeting...',
+  'Rescheduling the 1:1 you forgot about...',
+  'Sending a Slack message that could have been an email...',
+  'Searching for the GitHub issue you closed by accident...',
+  'Convincing engineering this is "technically possible"...',
+  'Telling the CEO "we\'re on track" with a straight face...',
+  'Googling "how to write user stories"...',
+  'Merging 17 calendar invites into one...',
+  'Debugging why staging looks different from prod...',
+  'Explaining agile to someone who thinks it means "no planning"...',
+  'Updating the status in 5 different tools...',
+  'Converting coffee into roadmap updates...',
+  'Finding a meeting room that actually has a working HDMI cable...',
+  'Pretending the demo won\'t break...',
+  'Writing release notes nobody will read...',
+  'Reconciling "MVP" with what sales already promised...',
+  'Changing "urgent" to "high priority" in the backlog...',
+  'Estimating in story points to avoid accountability...',
+  'Asking "any blockers?" for the third time this week...',
+  'Renaming tickets to sound more important...',
+  'Hoping nobody asks about the technical debt...',
+  'Translating "the customers want this" into "sales wants this"...'
 ];
 
 const metricLabelMap: Record<keyof MetricsState, string> = {
@@ -345,6 +371,17 @@ export default function SprintPlanning() {
       return;
     }
 
+    // Check for mandatory tickets
+    const mandatoryTickets = backlogTickets.filter(t => t.isMandatory);
+    const committedIds = new Set(committedTickets.map(t => t.id));
+    const missingMandatory = mandatoryTickets.filter(t => !committedIds.has(t.id));
+
+    if (missingMandatory.length > 0) {
+      const titles = missingMandatory.map(t => t.title).join('\n• ');
+      alert(`You must commit all mandatory tickets before starting the sprint:\n\n• ${titles}\n\nThese tickets are non-negotiable. The stakeholders won't let you start without them.`);
+      return;
+    }
+
     const commitStartedAt = Date.now();
     setIsCommitting(true);
     try {
@@ -559,7 +596,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
-                        metrics.team_sentiment >= 60 ? styles.positive : metrics.team_sentiment < 40 ? styles.warning : styles.neutral
+                        metrics.team_sentiment >= 70 ? styles.positive : metrics.team_sentiment < 50 ? styles.warning : styles.neutral
                       }`}
                       style={{ width: `${metrics.team_sentiment}%` }}
                     ></div>
@@ -578,7 +615,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
-                        metrics.ceo_sentiment >= 60 ? styles.positive : metrics.ceo_sentiment < 40 ? styles.warning : styles.neutral
+                        metrics.ceo_sentiment >= 70 ? styles.positive : metrics.ceo_sentiment < 50 ? styles.warning : styles.neutral
                       }`}
                       style={{ width: `${metrics.ceo_sentiment}%` }}
                     ></div>
@@ -597,7 +634,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
-                        metrics.sales_sentiment >= 60 ? styles.positive : metrics.sales_sentiment < 40 ? styles.warning : styles.neutral
+                        metrics.sales_sentiment >= 70 ? styles.positive : metrics.sales_sentiment < 50 ? styles.warning : styles.neutral
                       }`}
                       style={{ width: `${metrics.sales_sentiment}%` }}
                     ></div>
@@ -616,7 +653,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
-                        metrics.cto_sentiment >= 60 ? styles.positive : metrics.cto_sentiment < 40 ? styles.warning : styles.neutral
+                        metrics.cto_sentiment >= 70 ? styles.positive : metrics.cto_sentiment < 50 ? styles.warning : styles.neutral
                       }`}
                       style={{ width: `${metrics.cto_sentiment}%` }}
                     ></div>
@@ -635,7 +672,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
-                        metrics.self_serve_growth >= 60 ? styles.positive : metrics.self_serve_growth < 40 ? styles.warning : styles.neutral
+                        metrics.self_serve_growth >= 70 ? styles.positive : metrics.self_serve_growth < 50 ? styles.warning : styles.neutral
                       }`}
                       style={{ width: `${metrics.self_serve_growth}%` }}
                     ></div>
@@ -654,7 +691,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
-                        metrics.enterprise_growth >= 60 ? styles.positive : metrics.enterprise_growth < 40 ? styles.warning : styles.neutral
+                        metrics.enterprise_growth >= 70 ? styles.positive : metrics.enterprise_growth < 50 ? styles.warning : styles.neutral
                       }`}
                       style={{ width: `${metrics.enterprise_growth}%` }}
                     ></div>
@@ -673,7 +710,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownBar}>
                     <div
                       className={`${styles.metricsDropdownBarFill} ${
-                        metrics.tech_debt >= 60 ? styles.warning : metrics.tech_debt < 40 ? styles.positive : styles.neutral
+                        metrics.tech_debt >= 70 ? styles.warning : metrics.tech_debt < 50 ? styles.positive : styles.neutral
                       }`}
                       style={{ width: `${metrics.tech_debt}%` }}
                     ></div>

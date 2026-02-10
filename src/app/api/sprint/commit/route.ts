@@ -626,6 +626,13 @@ export async function POST(request: Request) {
     applyMetricDelta("cto_sentiment", 2);
   }
 
+  // Apply tech debt cap on CTO sentiment
+  if (updatedMetrics.tech_debt > 75) {
+    updatedMetrics.cto_sentiment = Math.min(updatedMetrics.cto_sentiment, 60);
+  } else if (updatedMetrics.tech_debt > 60) {
+    updatedMetrics.cto_sentiment = Math.min(updatedMetrics.cto_sentiment, 75);
+  }
+
   if (!hasUxOrSelfServeShipped && !prevUxOrSelfServeShipped) {
     applyMetricDelta("nps", -3);
   }
