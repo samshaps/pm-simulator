@@ -303,7 +303,7 @@ export function computeQuarterlyReview(
   );
 
   // Base rating from score with stricter thresholds
-  let rating =
+  let rating: "strong" | "solid" | "mixed" | "below_expectations" =
     rawScore >= 80
       ? "strong"
       : rawScore >= 65
