@@ -1,0 +1,177 @@
+PM SIMULATOR - TESTING INSTRUCTIONS
+====================================
+
+IMPORTANT: Before testing, reseed the database with new events:
+```bash
+npm run seed
+```
+
+✅ COMPLETED CHANGES
+====================
+
+1. ✅ Randomized Starting Conditions (±25% variance, balanced totals)
+2. ✅ Hidden Impact (removed effort correlation)
+3. ✅ Tech Debt CTO Sentiment Cap
+4. ✅ Mandatory Ticket Auto-Add & Lock
+5. ✅ Emoji/Color Threshold Alignment (70/50/30)
+6. ✅ Tech Debt Color Inversion Fix
+7. ✅ Ticket Size Distribution (1-2 small, 2-3 medium, 1-2 large)
+8. ✅ 41 Total Loading Messages
+9. ✅ 35 Random Events (was 20, added 15 new)
+10. ✅ 18 CEO Focus Shift Narratives (new)
+
+🧪 QUICK SMOKE TEST (5-10 minutes)
+===================================
+
+1. START NEW GAME
+   - Verify metrics are randomized (not all the same as last game)
+   - Check backlog has mixed ticket sizes
+
+2. SPRINT 1
+   - If mandatory ticket appears: verify it's auto-added with 🔒 icon
+   - Try to remove mandatory ticket → should show alert
+   - Complete sprint → check loading message variety
+
+3. RETRO SCREEN
+   - Verify tech debt changes use correct colors:
+     * Tech debt INCREASE = red/negative
+     * Tech debt DECREASE = green/positive
+   - Check that emoji faces align with bar colors
+
+4. CONTINUE PLAYING
+   - Play 2-3 more sprints
+   - Watch for random events in retro (should see variety)
+   - Monitor CTO sentiment when tech debt is high (should cap at 60-75)
+
+🔬 DEEP TESTING (15-20 minutes)
+================================
+
+RANDOMIZED START
+----------------
+✓ Start 3 new games on SAME difficulty
+✓ Verify starting metrics are different each time
+✓ Check that games don't feel obviously "easier" or "harder"
+
+MANDATORY TICKETS
+-----------------
+✓ Get sales/CTO/CEO sentiment below 25
+✓ Wait for mandatory ticket (roadmap hijack)
+✓ Verify ticket is auto-added to sprint
+✓ Verify lock icon (🔒) appears on committed ticket
+✓ Try to remove it → should get alert
+✓ Try starting sprint → should work (no manual check needed)
+
+HIDDEN IMPACT
+-------------
+✓ Complete 10+ tickets across multiple sprints
+✓ Observe that:
+   - Small tickets (1-3pts) sometimes have huge impact
+   - Large tickets (7-10pts) sometimes fizzle
+   - Impact doesn't obviously correlate with effort
+
+TECH DEBT CAP
+-------------
+✓ Let tech debt climb to 80+
+✓ Ship successful infrastructure/tech debt tickets
+✓ Verify CTO sentiment CANNOT exceed 60
+✓ Reduce tech debt to 65
+✓ Verify CTO sentiment CANNOT exceed 75
+
+EMOJI/COLOR ALIGNMENT
+---------------------
+✓ Get any sentiment to exactly 60
+   - Bar should be GRAY
+   - Face should be NEUTRAL 😐
+✓ Get any sentiment to 70
+   - Bar should be GREEN
+   - Face should be HAPPY 😊
+✓ Get any sentiment to 50
+   - Bar should be GRAY
+   - Face should be NEUTRAL 😐
+
+TECH DEBT COLORS
+----------------
+✓ Complete sprint where tech debt INCREASES
+   - Retro should show increase in RED
+   - Dropdown delta should show as NEGATIVE (red)
+✓ Complete sprint where tech debt DECREASES
+   - Retro should show decrease in GREEN
+   - Dropdown delta should show as POSITIVE (green)
+
+RANDOM EVENTS
+-------------
+✓ Play through 8-12 sprints
+✓ Track random events in retro "Key Insights" section
+✓ Verify variety (should NOT see same 3-4 repeatedly)
+✓ Verify both positive and negative events appear
+✓ Examples to watch for:
+   - Positive: "Unexpected BI Support", "Positive G2 Reviews", "Product Hunt Success"
+   - Negative: "Cloud Provider Incident", "Budget Cuts", "API Rate Limit Complaints"
+
+CEO FOCUS SHIFTS
+----------------
+✓ Play through quarterly transitions
+✓ Verify CEO focus shift narratives have variety
+✓ Should see different messages for same focus type
+✓ Examples:
+   - Self-serve: "PLG is the only defensible growth engine"
+   - Enterprise: "Fortune 500 prospect call"
+   - Tech debt: "Production incident during demo"
+
+TICKET SIZE MIX
+---------------
+✓ Check 5+ sprint planning screens
+✓ Count ticket sizes in backlog:
+   - Small (1-3pts): Should see 1-2 per sprint
+   - Medium (4-6pts): Should see 2-3 per sprint
+   - Large (7-10pts): Should see 1-2 per sprint
+✓ Verify mix isn't always exact same distribution
+
+🐛 KNOWN ISSUES TO WATCH
+=========================
+
+1. Single-point capacity bug (user reported but couldn't reproduce)
+   - If you get only 1 point capacity, note the game state
+
+2. CEO focus display mismatch
+   - If retro says one focus but planning shows different, report it
+
+📊 TESTING METRICS
+==================
+
+PASS CRITERIA:
+- Starting conditions vary across 3 games ✓
+- Mandatory tickets auto-add and lock ✓
+- Tech debt color inversion fixed ✓
+- CTO caps work at 60/75 based on debt ✓
+- Emoji/colors align at 70/50/30 ✓
+- Random events show variety (10+ unique in 12 sprints) ✓
+- CEO narratives show variety (5+ unique across quarters) ✓
+- Ticket sizes have good mix (verified in 5 sprints) ✓
+
+FAIL CRITERIA:
+- Same starting metrics in 2+ games
+- Mandatory ticket can be removed
+- Tech debt increase shows green
+- CTO >60 when debt >75
+- Emoji/color mismatch at thresholds
+- Same 3-4 events repeat constantly
+- All CEO shifts use same message
+
+🚀 MERGE TO MAIN
+================
+
+After testing passes, run:
+```bash
+./merge-to-main.sh
+```
+
+The script will:
+1. Commit all changes
+2. Merge to main
+3. Push to origin
+
+Make sure to reseed database in production after deploy:
+```bash
+npm run seed
+```

@@ -275,6 +275,230 @@
       "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_021",
+      "title": "Unexpected BI Support",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.07,
+      "description": "Business Intelligence team offered to help with analytics infrastructure. Sprint capacity increases as they handle data pipeline work that was blocking product development.",
+      "metric_effects": {
+        "sprint_capacity": 3
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null,
+      "sprint_duration": 1
+    },
+    {
+      "id": "evt_r_022",
+      "title": "Cloud Provider Incident",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "AWS had a partial outage affecting three enterprise customers. Support load increased, tech debt became visible, and the CTO is now demanding infrastructure improvements.",
+      "metric_effects": {
+        "tech_debt": 6,
+        "cto_sentiment": -5,
+        "enterprise_growth": -3
+      },
+      "ceo_focus_shift": "tech_debt",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_023",
+      "title": "Industry Award Nomination",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.04,
+      "description": "The product was nominated for an industry innovation award. Team morale improved, CEO sentiment increased, and self-serve growth benefited from the credibility boost.",
+      "metric_effects": {
+        "team_sentiment": 5,
+        "ceo_sentiment": 6,
+        "self_serve_growth": 4
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_024",
+      "title": "Competitor Acquired",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.03,
+      "description": "A direct competitor was acquired by a larger player. Market uncertainty has temporarily slowed enterprise deals but increased self-serve interest from customers hedging their bets.",
+      "metric_effects": {
+        "enterprise_growth": -4,
+        "self_serve_growth": 5,
+        "sales_sentiment": -3
+      },
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_025",
+      "title": "Team Offsite Scheduled",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.06,
+      "description": "Engineering team offsite is happening next sprint. Capacity will be reduced but team sentiment improves from the break and bonding opportunity.",
+      "metric_effects": {
+        "team_sentiment": 7,
+        "sprint_capacity": -4
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null,
+      "sprint_duration": 1
+    },
+    {
+      "id": "evt_r_026",
+      "title": "Sales Quota Missed",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.07,
+      "description": "Sales team missed quarterly quota by 18%. CEO is pivoting to enterprise focus and demanding features that close deals, not theoretical improvements.",
+      "metric_effects": {
+        "sales_sentiment": -8,
+        "ceo_sentiment": -6,
+        "enterprise_growth": -3
+      },
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": "enterprise_feature",
+      "quarter_restriction": [2, 3, 4]
+    },
+    {
+      "id": "evt_r_027",
+      "title": "Product Hunt Launch Success",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "New feature launched on Product Hunt and hit #2 for the day. Self-serve signups spiked, team morale improved from the validation, and NPS benefited from enthusiastic early adopters.",
+      "metric_effects": {
+        "self_serve_growth": 8,
+        "team_sentiment": 6,
+        "nps": 4
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_028",
+      "title": "Budget Cuts Announced",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.04,
+      "description": "Finance announced 10% budget reduction across all departments. Team sentiment declined as hiring freeze begins and everyone worries about headcount reductions.",
+      "metric_effects": {
+        "team_sentiment": -7,
+        "ceo_sentiment": -4
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": [3, 4]
+    },
+    {
+      "id": "evt_r_029",
+      "title": "Customer Advisory Board Feedback",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.06,
+      "description": "Top customers provided detailed product feedback in quarterly advisory board. UX and enterprise priorities became clear, NPS improved from feeling heard.",
+      "metric_effects": {
+        "nps": 5,
+        "enterprise_growth": 3
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": "ux_improvement",
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_030",
+      "title": "Infrastructure Cost Spike",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "Cloud costs increased 40% month-over-month due to unoptimized queries and data retention. CTO is demanding immediate tech debt reduction and the CEO is questioning engineering discipline.",
+      "metric_effects": {
+        "tech_debt": 8,
+        "cto_sentiment": -7,
+        "ceo_sentiment": -5
+      },
+      "ceo_focus_shift": "tech_debt",
+      "forced_ticket_category": "tech_debt_reduction",
+      "quarter_restriction": null,
+      "trigger_condition_override": "tech_debt > 50"
+    },
+    {
+      "id": "evt_r_031",
+      "title": "Hackathon Results",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.07,
+      "description": "Company hackathon produced two viable feature prototypes. Team morale spiked from creative freedom and one prototype is accelerating a self-serve initiative.",
+      "metric_effects": {
+        "team_sentiment": 8,
+        "self_serve_growth": 3,
+        "sprint_capacity": 2
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null,
+      "sprint_duration": 1
+    },
+    {
+      "id": "evt_r_032",
+      "title": "API Rate Limit Complaints",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.06,
+      "description": "Multiple enterprise customers complained about API rate limits affecting their integrations. Sales sentiment dropped, NPS declined, and enterprise growth stalled.",
+      "metric_effects": {
+        "nps": -6,
+        "sales_sentiment": -5,
+        "enterprise_growth": -4
+      },
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_033",
+      "title": "Positive G2 Reviews",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.08,
+      "description": "Recent G2 reviews averaged 4.7 stars with detailed praise for ease of use. Self-serve growth accelerated, NPS improved, and the CEO finally stopped second-guessing product strategy.",
+      "metric_effects": {
+        "self_serve_growth": 6,
+        "nps": 5,
+        "ceo_sentiment": 4
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_034",
+      "title": "Design System Overhaul Started",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.05,
+      "description": "Design team began comprehensive component library rebuild. This will improve UX long-term but creates short-term tech debt and reduces sprint capacity as engineers context-switch.",
+      "metric_effects": {
+        "tech_debt": 5,
+        "sprint_capacity": -3
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null,
+      "sprint_duration": 2
+    },
+    {
+      "id": "evt_r_035",
+      "title": "Enterprise Deal Closed Early",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.04,
+      "description": "Sales closed a six-figure enterprise deal three weeks ahead of schedule. CEO sentiment improved, sales team morale spiked, and enterprise growth momentum increased.",
+      "metric_effects": {
+        "enterprise_growth": 9,
+        "sales_sentiment": 8,
+        "ceo_sentiment": 6
+      },
+      "ceo_focus_shift": null,
+      "forced_ticket_category": null,
+      "quarter_restriction": null
     }
   ],
   "threshold_events": [

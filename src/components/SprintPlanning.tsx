@@ -233,6 +233,19 @@ export default function SprintPlanning() {
     } else {
       setIsMetricsExpanded(true); // Auto-open for Sprint 2+
     }
+
+    // Auto-add mandatory tickets to sprint
+    const mandatoryTickets = gameState.sprint.backlog.filter(t => t.is_mandatory);
+    if (mandatoryTickets.length > 0) {
+      const mandatoryCommitted = mandatoryTickets.map(ticket => ({
+        id: ticket.id,
+        title: ticket.title,
+        effort: ticket.effort,
+        category: ticket.category,
+        categoryClass: categoryToClass[ticket.category] || 'catDefault'
+      }));
+      setCommittedTickets(mandatoryCommitted);
+    }
   }, [gameState]);
 
   if (isLoading || !gameState) {
@@ -357,6 +370,12 @@ export default function SprintPlanning() {
   };
 
   const handleRemoveTicket = (ticketId: string) => {
+    // Check if ticket is mandatory
+    const ticket = backlogTickets.find(t => t.id === ticketId);
+    if (ticket?.isMandatory) {
+      alert('This ticket is MANDATORY and cannot be removed from the sprint. Stakeholder demand is non-negotiable.');
+      return;
+    }
     setCommittedTickets(committedTickets.filter(t => t.id !== ticketId));
   };
 
@@ -368,17 +387,6 @@ export default function SprintPlanning() {
 
     if (usedCapacity > stretchCapacity) {
       alert(`${usedCapacity} points? Really? That's ${usedCapacity - stretchCapacity} points over max capacity. Even your over-optimistic estimates have limits. The API will reject this, but nice try.`);
-      return;
-    }
-
-    // Check for mandatory tickets
-    const mandatoryTickets = backlogTickets.filter(t => t.isMandatory);
-    const committedIds = new Set(committedTickets.map(t => t.id));
-    const missingMandatory = mandatoryTickets.filter(t => !committedIds.has(t.id));
-
-    if (missingMandatory.length > 0) {
-      const titles = missingMandatory.map(t => t.title).join('\n• ');
-      alert(`You must commit all mandatory tickets before starting the sprint:\n\n• ${titles}\n\nThese tickets are non-negotiable. The stakeholders won't let you start without them.`);
       return;
     }
 
@@ -850,20 +858,29 @@ export default function SprintPlanning() {
 
             {committedTickets.length > 0 ? (
               <div className={styles.committedTickets}>
-                {committedTickets.map(ticket => (
-                  <div key={ticket.id} className={styles.committedTicket}>
-                    <div className={styles.committedTicketLeft}>
-                      <span className={`${styles.ticketCategory} ${styles[ticket.categoryClass]}`} style={{ fontSize: '9px' }}>
-                        {ticket.category}
-                      </span>
-                      <span className={styles.committedTicketTitle}>{ticket.title}</span>
-                      <span className={styles.committedTicketEffort}>{ticket.effort} pts</span>
+                {committedTickets.map(ticket => {
+                  const isMandatory = backlogTickets.find(t => t.id === ticket.id)?.isMandatory;
+                  return (
+                    <div key={ticket.id} className={styles.committedTicket}>
+                      <div className={styles.committedTicketLeft}>
+                        <span className={`${styles.ticketCategory} ${styles[ticket.categoryClass]}`} style={{ fontSize: '9px' }}>
+                          {ticket.category}
+                        </span>
+                        <span className={styles.committedTicketTitle}>{ticket.title}</span>
+                        <span className={styles.committedTicketEffort}>{ticket.effort} pts</span>
+                      </div>
+                      {isMandatory ? (
+                        <span className={styles.committedTicketRemove} style={{ cursor: 'not-allowed', opacity: 0.5 }} title="Mandatory - cannot remove">
+                          🔒
+                        </span>
+                      ) : (
+                        <span className={styles.committedTicketRemove} onClick={() => handleRemoveTicket(ticket.id)}>
+                          ×
+                        </span>
+                      )}
                     </div>
-                    <span className={styles.committedTicketRemove} onClick={() => handleRemoveTicket(ticket.id)}>
-                      ×
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : null}
 

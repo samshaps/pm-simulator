@@ -638,5 +638,97 @@
       "quarter": 4,
       "template": "{{next_quarter}}. The year ends here. Every decision in {{next_quarter}} will be evaluated within the context of the full year. You have a body of work behind you. {{next_quarter}} is about either cementing it as a strong year or revealing that the trajectory was overestimated. The team is tired. The board is impatient. Stakeholders are eager for next year's strategy. Your job is to navigate {{next_quarter}} with clarity and deliver what you promised. Let the outcomes speak."
     }
+  ],
+  "ceo_focus_shifts": [
+    {
+      "id": "ceo_shift_self_serve_01",
+      "new_focus": "self_serve",
+      "text": "The CEO spent an hour reviewing self-serve metrics and became convinced that PLG is the only defensible growth engine. All priorities are now filtered through the lens of activation, conversion, and virality."
+    },
+    {
+      "id": "ceo_shift_self_serve_02",
+      "new_focus": "self_serve",
+      "text": "After seeing competitor self-serve numbers, the CEO has decided that bottom-up adoption is the future. Enterprise sales are still important, but self-serve growth is now the primary strategic focus."
+    },
+    {
+      "id": "ceo_shift_self_serve_03",
+      "new_focus": "self_serve",
+      "text": "The CEO read a thread about product-led growth and is now convinced we need to double down on self-serve experience. Everything else is a distraction from the real opportunity."
+    },
+    {
+      "id": "ceo_shift_self_serve_04",
+      "new_focus": "self_serve",
+      "text": "Board feedback suggested that self-serve expansion is the key to reaching Series C valuation multiples. CEO has pivoted hard toward optimizing the end-to-end PLG motion."
+    },
+    {
+      "id": "ceo_shift_self_serve_05",
+      "new_focus": "self_serve",
+      "text": "Recent self-serve cohort data looked promising and the CEO is now convinced this is where the leverage is. Enterprise will always be there, but self-serve is the growth unlock."
+    },
+    {
+      "id": "ceo_shift_enterprise_01",
+      "new_focus": "enterprise",
+      "text": "The CEO just got off a call with a Fortune 500 prospect and is now laser-focused on enterprise readiness. Self-serve is fine, but big deals are what matters for the next funding round."
+    },
+    {
+      "id": "ceo_shift_enterprise_02",
+      "new_focus": "enterprise",
+      "text": "Sales presented a pipeline forecast showing enterprise could triple revenue in 18 months. CEO has shifted all attention to making the product enterprise-ready and closing seven-figure deals."
+    },
+    {
+      "id": "ceo_shift_enterprise_03",
+      "new_focus": "enterprise",
+      "text": "After reviewing ARR breakdown, the CEO realized enterprise contracts drive 80% of revenue. The new priority is enterprise features, compliance, and anything that closes six-figure deals."
+    },
+    {
+      "id": "ceo_shift_enterprise_04",
+      "new_focus": "enterprise",
+      "text": "A competitor just announced a massive enterprise partnership and the CEO is convinced we're losing the upmarket battle. All focus is now on enterprise go-to-market and product capabilities."
+    },
+    {
+      "id": "ceo_shift_enterprise_05",
+      "new_focus": "enterprise",
+      "text": "The CEO met with three enterprise customers last week and came back energized about moving upmarket. Self-serve is table stakes, but enterprise is where we need to differentiate."
+    },
+    {
+      "id": "ceo_shift_tech_debt_01",
+      "new_focus": "tech_debt",
+      "text": "A production incident during a demo call convinced the CEO that tech debt is no longer negotiable. All new feature work is paused until infrastructure and reliability are addressed."
+    },
+    {
+      "id": "ceo_shift_tech_debt_02",
+      "new_focus": "tech_debt",
+      "text": "The CTO presented infrastructure cost projections that alarmed the CEO. Tech debt reduction is now the top priority to avoid compounding technical and financial problems."
+    },
+    {
+      "id": "ceo_shift_tech_debt_03",
+      "new_focus": "tech_debt",
+      "text": "After three escalations from enterprise customers about performance issues, the CEO has declared that product velocity means nothing if the product doesn't work. Tech debt is now priority zero."
+    },
+    {
+      "id": "ceo_shift_tech_debt_04",
+      "new_focus": "tech_debt",
+      "text": "The CEO read an article about technical bankruptcy and became convinced we're heading there. Strategic focus has shifted entirely to paying down tech debt before it compounds further."
+    },
+    {
+      "id": "ceo_shift_tech_debt_05",
+      "new_focus": "tech_debt",
+      "text": "Board member asked pointed questions about engineering efficiency and system reliability. CEO is now focused on tech debt reduction to demonstrate operational maturity."
+    },
+    {
+      "id": "ceo_shift_any_01",
+      "new_focus": "any",
+      "text": "After reviewing quarterly metrics, the CEO has decided to change strategic direction. New priorities are in effect immediately."
+    },
+    {
+      "id": "ceo_shift_any_02",
+      "new_focus": "any",
+      "text": "The CEO returned from the board meeting with a new perspective on what matters. Strategic focus has shifted based on investor feedback."
+    },
+    {
+      "id": "ceo_shift_any_03",
+      "new_focus": "any",
+      "text": "Market dynamics have changed and the CEO is adjusting strategy accordingly. New priorities will drive the next quarter of execution."
+    }
   ]
 }
