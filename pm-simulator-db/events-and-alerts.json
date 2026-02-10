@@ -18,11 +18,11 @@
       "title": "Board Meeting Prep",
       "trigger_type": "random",
       "trigger_chance_per_sprint": 0.25,
-      "description": "Executive preparation begins for quarterly board presentation. The CEO's focus immediately shifts to whichever growth metric looks worst on the spreadsheet.",
+      "description": "Executive preparation begins for quarterly board presentation. The CEO is scrutinizing all metrics and stress levels have increased across leadership.",
       "metric_effects": {
         "ceo_sentiment": -5
       },
-      "ceo_focus_shift": "weakest_growth_metric",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": [1, 2, 3]
     },
@@ -31,7 +31,7 @@
       "title": "Competitor Launches Feature",
       "trigger_type": "random",
       "trigger_chance_per_sprint": 0.10,
-      "description": "A competitor just shipped something that was theoretically impossible last week. The CEO has pivoted to demanding we ship an equivalent self-serve experience immediately.",
+      "description": "A competitor just shipped something that was theoretically impossible last week. The CEO is demanding an immediate strategic response.",
       "metric_effects": {
         "self_serve_growth": -5
       },
@@ -228,7 +228,7 @@
       "title": "Strategic Partnership Opportunity",
       "trigger_type": "random",
       "trigger_chance_per_sprint": 0.05,
-      "description": "A large enterprise vendor wants to integrate the product into their platform. The CEO sees significant revenue potential and has refocused entirely on enterprise go-to-market.",
+      "description": "A large enterprise vendor wants to integrate the product into their platform. The CEO sees significant revenue potential and strategic priorities are being reconsidered.",
       "metric_effects": {
         "enterprise_growth": 5,
         "ceo_sentiment": 3
@@ -242,7 +242,7 @@
       "title": "CEO's Kid Used the Product",
       "trigger_type": "random",
       "trigger_chance_per_sprint": 0.06,
-      "description": "The CEO's child downloaded the free tier during the weekend and had a delightful experience. The CEO is now convinced that self-serve is the path to profitability and all strategic questions should be evaluated through this lens.",
+      "description": "The CEO's child downloaded the free tier during the weekend and had a delightful experience. The CEO arrived Monday morning with renewed enthusiasm and several strong opinions about product strategy.",
       "metric_effects": {
         "ceo_sentiment": 3
       },
@@ -355,7 +355,7 @@
       "title": "Sales Quota Missed",
       "trigger_type": "random",
       "trigger_chance_per_sprint": 0.07,
-      "description": "Sales team missed quarterly quota by 18%. CEO is pivoting to enterprise focus and demanding features that close deals, not theoretical improvements.",
+      "description": "Sales team missed quarterly quota by 18%. The CEO is demanding features that close deals, not theoretical improvements.",
       "metric_effects": {
         "sales_sentiment": -8,
         "ceo_sentiment": -6,
@@ -534,7 +534,7 @@
       "title": "CTO Escalation",
       "trigger_type": "threshold",
       "trigger_condition": "cto_sentiment < 15",
-      "description": "The CTO has made formal complaints to executive leadership about technical direction. The CEO has mandated tech debt reduction for the remainder of the quarter.",
+      "description": "The CTO has made formal complaints to executive leadership about technical direction. Executive leadership is reassessing strategic priorities.",
       "metric_effects": {},
       "ceo_focus_shift": "tech_debt",
       "forced_ticket_category": null

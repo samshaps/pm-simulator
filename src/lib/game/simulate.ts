@@ -237,9 +237,50 @@ export function computeQuarterlyReview(
 
   const moralePenalty = lowTeamSprints >= 2 ? -5 : 0;
 
-  const techDebtBonus = metrics.tech_debt < 30 ? 5 : metrics.tech_debt > 70 ? -3 : 0;
+  // Tech debt: gradient penalties for concerning levels
+  const techDebtBonus =
+    metrics.tech_debt < 30 ? 5
+    : metrics.tech_debt > 75 ? -8
+    : metrics.tech_debt > 65 ? -5
+    : metrics.tech_debt > 50 ? -2
+    : 0;
+
+  // Team sentiment: gradient bonuses/penalties
   const teamBonus =
-    metrics.team_sentiment > 60 ? 3 : metrics.team_sentiment < 30 ? -3 : 0;
+    metrics.team_sentiment > 70 ? 5
+    : metrics.team_sentiment > 60 ? 3
+    : metrics.team_sentiment < 35 ? -5
+    : metrics.team_sentiment < 45 ? -3
+    : 0;
+
+  // CTO sentiment: critical for tech credibility
+  const ctoBonus =
+    metrics.cto_sentiment > 70 ? 4
+    : metrics.cto_sentiment > 60 ? 2
+    : metrics.cto_sentiment < 35 ? -6
+    : metrics.cto_sentiment < 45 ? -3
+    : 0;
+
+  // Sales sentiment: affects revenue and enterprise deals
+  const salesBonus =
+    metrics.sales_sentiment > 70 ? 4
+    : metrics.sales_sentiment > 60 ? 2
+    : metrics.sales_sentiment < 35 ? -6
+    : metrics.sales_sentiment < 45 ? -3
+    : 0;
+
+  // Critical stakeholder failure: if 2+ stakeholders are unhappy, major penalty
+  const criticalStakeholders = [
+    metrics.team_sentiment,
+    metrics.ceo_sentiment,
+    metrics.sales_sentiment,
+    metrics.cto_sentiment
+  ];
+  const unhappyStakeholders = criticalStakeholders.filter(s => s < 40).length;
+  const stakeholderCrisisPenalty =
+    unhappyStakeholders >= 3 ? -15
+    : unhappyStakeholders >= 2 ? -10
+    : 0;
 
   const rawScore = Math.max(
     0,
@@ -253,25 +294,45 @@ export function computeQuarterlyReview(
           alignmentBonus +
           moralePenalty +
           techDebtBonus +
-          teamBonus
+          teamBonus +
+          ctoBonus +
+          salesBonus +
+          stakeholderCrisisPenalty
       )
     )
   );
 
-  const rating =
-    rawScore >= 75
+  // Base rating from score with stricter thresholds
+  let rating =
+    rawScore >= 80
       ? "strong"
-      : rawScore >= 55
+      : rawScore >= 65
       ? "solid"
-      : rawScore >= 35
+      : rawScore >= 45
       ? "mixed"
       : "below_expectations";
+
+  // Hard downgrade rules: critical stakeholder failures override score
+  // If 3+ stakeholders are very unhappy (<40), automatic "below_expectations"
+  if (unhappyStakeholders >= 3) {
+    rating = "below_expectations";
+  }
+  // If 2+ stakeholders are very unhappy, force "below_expectations"
+  else if (unhappyStakeholders >= 2) {
+    rating = "below_expectations";
+  }
+  // If tech debt is critical (>75) and team morale is low (<40), force "mixed" at best
+  else if (metrics.tech_debt > 75 && metrics.team_sentiment < 40) {
+    if (rating === "strong" || rating === "solid") {
+      rating = "mixed";
+    }
+  }
 
   return {
     quarter,
     raw_score: rawScore,
     rating,
-    narrative: `Quarter ${quarter} review: ${rating.replace("_", " ")}. Alignment and growth were ${rawScore >= 55 ? "adequate" : "inconsistent"}.`,
+    narrative: `Quarter ${quarter} review: ${rating.replace("_", " ")}. Alignment and growth were ${rawScore >= 60 ? "adequate" : "inconsistent"}.`,
     factors: {
       ceo_alignment_score: ceoAlignment,
       growth_trajectory_score: growthUp,
@@ -281,7 +342,10 @@ export function computeQuarterlyReview(
       morale_penalty: moralePenalty,
       alignment_ratio: Number(alignmentRatio.toFixed(2)),
       tech_debt_bonus: techDebtBonus,
-      team_bonus: teamBonus
+      team_bonus: teamBonus,
+      cto_bonus: ctoBonus,
+      sales_bonus: salesBonus,
+      stakeholder_crisis_penalty: stakeholderCrisisPenalty
     }
   };
 }
