@@ -503,10 +503,10 @@ export default function SprintPlanning() {
     return labels[focus] || focus;
   };
 
+  // Always use the actual current quarter's CEO focus for consistency
+  const currentCeoFocus = gameState.quarter.ceo_focus;
   const ceoFocusShift = ceoShiftOverride ?? gameState.ceo_focus_shift ?? null;
   const ceoFocusShiftNarrative = ceoFocusShift?.narrative ?? null;
-  const ceoFocusShiftFrom = ceoFocusShift?.from ?? null;
-  const ceoFocusShiftTo = ceoFocusShift?.to ?? gameState.quarter.ceo_focus;
   const activeLoadingMessage =
     loadingSequence[loadingIndex] || loadingMessages[0];
 
@@ -739,7 +739,7 @@ export default function SprintPlanning() {
       <div className={styles.ceoFocusBanner}>
         <div className={styles.ceoFocusRow}>
           <span className={styles.ceoFocusLabel}>CEO Focus this Quarter:</span>
-          <span className={styles.ceoFocusValue}>{formatCeoFocus(ceoFocusShiftTo)}</span>
+          <span className={styles.ceoFocusValue}>{formatCeoFocus(currentCeoFocus)}</span>
           <span className={styles.ceoFocusHint}>— aligned tickets get +12% success chance</span>
         </div>
       </div>
