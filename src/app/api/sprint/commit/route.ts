@@ -1145,7 +1145,7 @@ export async function POST(request: Request) {
             team_sentiment: updatedMetrics.team_sentiment,
             tech_debt: updatedMetrics.tech_debt,
             ceo_sentiment: updatedMetrics.ceo_sentiment,
-            death_spiral: true
+            death_spiral: 1
           }
         };
 
