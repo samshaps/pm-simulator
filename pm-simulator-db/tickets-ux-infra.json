@@ -2,7 +2,7 @@
   {
     "id": "ux_001",
     "title": "Accessibility Audit Phase 1",
-    "description": "WCAG 2.1 AA compliance review of core user flows.",
+    "description": "WCAG 2.1 AA compliance review of core user flows \u2014 the audit nobody requested until legal did.",
     "category": "ux_improvement",
     "effort": 3,
     "primary_metric": "nps",
@@ -30,17 +30,17 @@
     "tradeoff_metric": null,
     "tradeoff_impact": null,
     "outcomes": {
-      "clear_success": "Three screen-reader users moved from frustrated to functional and Everyone else never noticed,; someone writes \"great job\" in all-hands.",
+      "clear_success": "Three screen-reader users moved from frustrated to functional, and everyone else never noticed; someone writes \"great job\" in all-hands.",
       "partial_success": "Alt text was added to 60% of images; we declare victory and move on.",
       "unexpected_impact": "We discovered 8% of users were blocked by color-only validation errors; it wasn't in the deck, but sure.",
       "soft_failure": "WCAG compliance achieved in staging; a retro bullet absorbs the pain.",
-      "catastrophe": "The audit revealed the settings page is completely inaccessible and Fixing it properly will cost 40 unbudgeted hours; legal wants a meeting."
+      "catastrophe": "The audit revealed the settings page is completely inaccessible and fixing it properly will cost 40 unbudgeted hours; legal wants a meeting."
     }
   },
   {
     "id": "ux_002",
     "title": "Mobile Responsive Fixes",
-    "description": "Address layout breaks on 375px and below viewports.",
+    "description": "Fix layout breaks on viewports 375px and below, because it turns out people still use phones to do things.",
     "category": "ux_improvement",
     "effort": 4,
     "primary_metric": "nps",
@@ -71,14 +71,14 @@
       "clear_success": "Mobile NPS improved three points; the exec summary suddenly has room.",
       "partial_success": "Buttons are tappable now and modals still overflow, but we call that a scrolling experience; the footnote does the heavy lifting.",
       "unexpected_impact": "Users on 6-inch phones report better navigation; the roadmap did not mention this part.",
-      "soft_failure": "Responsive design is now mostly compliant and There is a tablet breakpoint nobody owns anymore; the postmortem gets a new slide.",
+      "soft_failure": "Responsive design is now mostly compliant and there is a tablet breakpoint nobody owns anymore; the postmortem gets a new slide.",
       "catastrophe": "The sticky header fix broke input focus on iPhone 12; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ux_003",
     "title": "Loading State Clarity",
-    "description": "Replace vague spinners with contextual loading messages and add skeleton screens to data-heavy pages and clarify estimated wait times.",
+    "description": "Replace vague spinners with contextual loading messages and skeleton screens so users know the app is working, not frozen.",
     "category": "ux_improvement",
     "effort": 3,
     "primary_metric": "nps",
@@ -110,13 +110,13 @@
       "partial_success": "Skeleton screens exist on three pages and the other twelve still spin like they could mean anything; we call it progress.",
       "unexpected_impact": "One user thanked us for the loading message; we pretend that was the plan.",
       "soft_failure": "Loading states are more informative, but faster load times would be more informative still; we blame 'execution risk'.",
-      "catastrophe": "Estimated wait times are hardcoded to five seconds and Queries that take 45 seconds now look broken; this becomes a quarterly lesson."
+      "catastrophe": "Estimated wait times are hardcoded to five seconds and queries that take 45 seconds now look broken; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ux_004",
     "title": "Error Messages Rewrite",
-    "description": "Replace technical error strings with actionable user guidance.",
+    "description": "Replace cryptic error strings with messages that actually help users instead of scaring them.",
     "category": "ux_improvement",
     "effort": 4,
     "primary_metric": "nps",
@@ -154,7 +154,7 @@
   {
     "id": "ux_005",
     "title": "Color Contrast Audit",
-    "description": "Ensure all text meets WCAG AA contrast ratios (4.5:1 for body text, 3:1 for large text).",
+    "description": "Design and implement a responsive, modular dashboard that works on every viewport and doesn't make designers cry.",
     "category": "ux_improvement",
     "effort": 3,
     "primary_metric": "nps",
@@ -183,16 +183,16 @@
     },
     "outcomes": {
       "clear_success": "Users with low vision can read the interface now and the subtle gray-on-gray aesthetic is now merely subtle; someone writes \"great job\" in all-hands.",
-      "partial_success": "Primary text passed AA and Secondary labels still fail on specific monitors; we declare victory and move on.",
-      "unexpected_impact": "The new palette accidentally made the app look more professional and Everyone thinks we rebranded; it wasn't in the deck, but sure.",
-      "soft_failure": "Light mode is compliant and Dark mode is aspirationally accessible; a retro bullet absorbs the pain.",
+      "partial_success": "Primary text passed AA and secondary labels still fail on specific monitors; we declare victory and move on.",
+      "unexpected_impact": "The new palette accidentally made the app look more professional and everyone thinks we rebranded; it wasn't in the deck, but sure.",
+      "soft_failure": "Light mode is compliant and dark mode is aspirationally accessible; a retro bullet absorbs the pain.",
       "catastrophe": "Remapping colors broke custom themes and users with red-green colorblindness lost contrast in data visualizations; legal wants a meeting."
     }
   },
   {
     "id": "ux_006",
     "title": "Keyboard Navigation Improvements",
-    "description": "Implement tab order logic, focus indicators,.",
+    "description": "Implement proper tab order, focus indicators, and keyboard shortcuts so the product is usable without a mouse.",
     "category": "ux_improvement",
     "effort": 4,
     "primary_metric": "nps",
@@ -220,9 +220,9 @@
     "tradeoff_metric": null,
     "tradeoff_impact": null,
     "outcomes": {
-      "clear_success": "Power users found the shortcuts and One person is now 200% more efficient at a task nobody should optimize for; the exec summary suddenly has room.",
-      "partial_success": "Tab order is logical on forms and Tab order in navigation is still mysterious; the footnote does the heavy lifting.",
-      "unexpected_impact": "A user without a mouse had a better experience and Everyone else uses a mouse, so this is invisible; the roadmap did not mention this part.",
+      "clear_success": "Power users found the shortcuts \u2014 one person is now 200% more efficient at a task nobody should optimize for; the exec summary suddenly has room.",
+      "partial_success": "Tab order is logical on forms but still mysterious in navigation; the footnote does the heavy lifting.",
+      "unexpected_impact": "A user without a mouse had a noticeably better experience \u2014 everyone else uses a mouse, so this is invisible; the roadmap did not mention this part.",
       "soft_failure": "Keyboard navigation works in the main flow; the postmortem gets a new slide.",
       "catastrophe": "The Tab key now skips through 47 hidden elements before reaching content; everyone pretends it was unforeseeable."
     }
@@ -230,7 +230,7 @@
   {
     "id": "ux_007",
     "title": "Settings Page Redesign",
-    "description": "Reorganize controls by feature area instead of alphabetically and add preview panels for theme and layout changes.",
+    "description": "Consolidate five different upload flows into one consistent drag-and-drop experience with progress indicators.",
     "category": "ux_improvement",
     "effort": 5,
     "primary_metric": "nps",
@@ -260,7 +260,7 @@
     "outcomes": {
       "clear_success": "Users found settings 40% faster; leadership takes a victory lap.",
       "partial_success": "Settings are organized logically and the preview panel only works for themes, not for notifications or data retention; we call it progress.",
-      "unexpected_impact": "Three users discovered features they did not know existed and Two of them were unintentional discoveries; we pretend that was the plan.",
+      "unexpected_impact": "Three users discovered features they did not know existed and two of them were unintentional discoveries; we pretend that was the plan.",
       "soft_failure": "The redesign is an improvement over the previous chaos and it is still not self-explanatory; we blame 'execution risk'.",
       "catastrophe": "Settings is now inviting enough that users tweak advanced options they do not understand and support volume increased 8%; this becomes a quarterly lesson."
     }
@@ -299,14 +299,14 @@
       "clear_success": "First-time users are no longer confused by blank screens; it becomes a QBR 'win'.",
       "partial_success": "Empty states have helpful messages on 70% of pages; it still makes the slide deck.",
       "unexpected_impact": "The new illustrations became an internal meme and the design team's intent no longer matters; nobody had that in the model.",
-      "soft_failure": "Empty states are no longer bleak and they are now minimally encouraging in a way that feels passive-aggressive; it goes into the learning pile.",
-      "catastrophe": "The no-data illustration offended roughly half the company and HR is now in a thread about it that will never end; update your resume."
+      "soft_failure": "Empty states are no longer bleak \u2014 they're now minimally encouraging in a way that feels passive-aggressive; it goes into the learning pile.",
+      "catastrophe": "The no-data illustration offended roughly half the company, and HR is now in a thread about it that will never end; update your resume."
     }
   },
   {
     "id": "ux_009",
     "title": "Onboarding Tooltip Pass",
-    "description": "Audit and refresh contextual tooltips on first-time feature discovery and Standardize tone, timing, and dismissal behavior across product.",
+    "description": "Audit and refresh contextual tooltips for first-time feature discovery \u2014 standardize tone, timing, and the art of not being annoying.",
     "category": "ux_improvement",
     "effort": 3,
     "primary_metric": "nps",
@@ -335,7 +335,7 @@
     "tradeoff_impact": null,
     "outcomes": {
       "clear_success": "Tooltips are consistent and helpful; someone writes \"great job\" in all-hands.",
-      "partial_success": "Timing improved on critical flows and Half the tooltips still pop up mid-task to demand attention; we declare victory and move on.",
+      "partial_success": "Timing improved on critical flows, but half the tooltips still pop up mid-task to demand attention; we declare victory and move on.",
       "unexpected_impact": "Someone customized tooltips for their account and it broke experiment metrics, but they are happy; it wasn't in the deck, but sure.",
       "soft_failure": "Tooltips are clearer but less discoverable and the tradeoff feels wrong even if the math says it is fine; a retro bullet absorbs the pain.",
       "catastrophe": "A tooltip bug shows the same message on different features and users assume the features are the same; legal wants a meeting."
@@ -344,7 +344,7 @@
   {
     "id": "ux_010",
     "title": "Search UX Overhaul",
-    "description": "Add autocomplete suggestions, result previews, and filter chips and Implement fuzzy matching and recent search history.",
+    "description": "Add autocomplete, result previews, filter chips, and fuzzy matching to search so it actually helps people find things.",
     "category": "ux_improvement",
     "effort": 5,
     "primary_metric": "nps",
@@ -376,7 +376,7 @@
       "partial_success": "Autocomplete works beautifully and fuzzy matching catches 85% of misspellings; we call it progress.",
       "unexpected_impact": "Users discovered they can search for things that do not exist and are mad we made it easy to find nothing; we pretend that was the plan.",
       "soft_failure": "Search is faster but still not fast enough and users perceive a 200ms delay with supernatural accuracy; we blame 'execution risk'.",
-      "catastrophe": "Recent search history leaked internal admin queries into user autocomplete and Privacy incident, low severity, still an incident; this becomes a quarterly lesson."
+      "catastrophe": "Recent search history leaked internal admin queries into user autocomplete and privacy incident, low severity, still an incident; this becomes a quarterly lesson."
     }
   },
   {
@@ -414,13 +414,13 @@
       "partial_success": "Real-time validation works on text inputs and dropdowns still validate on submit because the codebase is old; it still makes the slide deck.",
       "unexpected_impact": "A user sent a thank-you email about instant email validation; nobody had that in the model.",
       "soft_failure": "Validation is friendlier but users still cannot tell if red means wrong or required without trying; it goes into the learning pile.",
-      "catastrophe": "Success checkmarks are so cheerful that users submit incomplete forms thinking they are done and form completion rate went up; actual completion rate went down; update your resume."
+      "catastrophe": "Checkmarks are so cheerful that users submit incomplete forms thinking they're done \u2014 actual completion dropped; update your resume."
     }
   },
   {
     "id": "ux_012",
     "title": "Dark Mode Implementation",
-    "description": "Implement system preference detection and user toggle for dark mode and Audit color palette for WCAG compliance in both modes.",
+    "description": "Implement dark mode with system preference detection, user toggle, and WCAG-compliant colors in both themes.",
     "category": "ux_improvement",
     "effort": 5,
     "primary_metric": "nps",
@@ -449,8 +449,8 @@
     },
     "outcomes": {
       "clear_success": "Night-shift NPS improved five points; someone writes \"great job\" in all-hands.",
-      "partial_success": "Dark mode works, but some components were not updated and Light buttons on dark backgrounds are now a design choice; we declare victory and move on.",
-      "unexpected_impact": "OLED power consumption dropped and Nobody measured it; it wasn't in the deck, but sure.",
+      "partial_success": "Dark mode works, but some components were not updated and light buttons on dark backgrounds are now a design choice; we declare victory and move on.",
+      "unexpected_impact": "OLED power consumption dropped and nobody measured it; it wasn't in the deck, but sure.",
       "soft_failure": "Dark mode is available but buggy in PDF exports and it is not a common use case, but someone is doing it; a retro bullet absorbs the pain.",
       "catastrophe": "Dark mode broke the custom theme system and users with saved themes now live in an unusable gray void; legal wants a meeting."
     }
@@ -487,16 +487,16 @@
     "tradeoff_impact": null,
     "outcomes": {
       "clear_success": "Notification overload dropped 40%; the exec summary suddenly has room.",
-      "partial_success": "The center is unified and Preferences control only 60% of notification types because the other 40% are system-critical; the footnote does the heavy lifting.",
-      "unexpected_impact": "Users discovered they can silence notifications and Several people are now missing critical alerts they needed; the roadmap did not mention this part.",
-      "soft_failure": "Notifications are better organized and Delivery still arrives in random order because the queue does what it wants; the postmortem gets a new slide.",
+      "partial_success": "The center is unified, but preferences only control 60% of notification types \u2014 the other 40% are system-critical; the footnote does the heavy lifting.",
+      "unexpected_impact": "Users discovered they can silence notifications, and several people are now missing critical alerts; the roadmap did not mention this part.",
+      "soft_failure": "Notifications are better organized, but delivery still arrives in random order because the queue does what it wants; the postmortem gets a new slide.",
       "catastrophe": "The preferences UI is so good at hiding alerts that a critical security notification went unseen for two weeks; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ux_014",
     "title": "Page Transition Animations",
-    "description": "Add smooth fade and slide transitions between major sections and Ensure animations respect prefers-reduced-motion.",
+    "description": "Add smooth page transition animations that respect prefers-reduced-motion, because polish matters even if nobody can prove it in a metric.",
     "category": "ux_improvement",
     "effort": 3,
     "primary_metric": "nps",
@@ -515,8 +515,8 @@
     "tradeoff_metric": null,
     "tradeoff_impact": null,
     "outcomes": {
-      "clear_success": "Navigation feels smoother and users on 2G connections experience brief freezes,; leadership takes a victory lap.",
-      "partial_success": "Transitions are smooth on modern browsers and Safari 2019 still looks choppy, but that is not our target audience; we call it progress.",
+      "clear_success": "Navigation feels smoother, though users on 2G connections experience brief freezes; leadership takes a victory lap.",
+      "partial_success": "Transitions are smooth on modern browsers and safari 2019 still looks choppy, but that is not our target audience; we call it progress.",
       "unexpected_impact": "One user with vestibular disorder disabled motion and thanked us; we pretend that was the plan.",
       "soft_failure": "Animations are under 300ms; we blame 'execution risk'.",
       "catastrophe": "Animations caused layout shift on mobile and CLS went up, complaints went up, performance did not change; this becomes a quarterly lesson."
@@ -556,14 +556,14 @@
       "clear_success": "Data-heavy workflows are 30% faster; it becomes a QBR 'win'.",
       "partial_success": "Tables are beautiful and functional; it still makes the slide deck.",
       "unexpected_impact": "The column visibility toggle is so good that users hid critical columns and forgot they were hidden; nobody had that in the model.",
-      "soft_failure": "Tables are great on desktop and Mobile card view is a half-measure that is better than nothing but not ideal; it goes into the learning pile.",
+      "soft_failure": "Tables are great on desktop and mobile card view is a half-measure that is better than nothing but not ideal; it goes into the learning pile.",
       "catastrophe": "Sticky headers broke absolutely positioned elements inside cells; update your resume."
     }
   },
   {
     "id": "ux_016",
     "title": "Empty State Microcopy",
-    "description": "Rewrite empty states with clear next steps and example data and Tiny effort, clearer first-use experience.",
+    "description": "Rewrite empty states with clear next steps and example data \u2014 tiny effort, much less confusion.",
     "category": "ux_improvement",
     "effort": 2,
     "primary_metric": "nps",
@@ -593,15 +593,15 @@
     "outcomes": {
       "clear_success": "Empty states tell users exactly what to do next and support tickets dropped; someone writes \"great job\" in all-hands.",
       "partial_success": "Half the empty states are helpful, the other half still say no data and users are less confused, but not unconfused; we declare victory and move on.",
-      "unexpected_impact": "Users copy the example data verbatim and Three demos now feature the same fictional customer name; it wasn't in the deck, but sure.",
+      "unexpected_impact": "Users copy the example data verbatim and three demos now feature the same fictional customer name; it wasn't in the deck, but sure.",
       "soft_failure": "Copy is better, but setup is still hard and users read the instructions; a retro bullet absorbs the pain.",
-      "catastrophe": "A localization bug replaced empty-state copy with raw template tokens and Every screen looked broken in three languages; legal wants a meeting."
+      "catastrophe": "A localization bug replaced empty-state copy with raw template tokens and every screen looked broken in three languages; legal wants a meeting."
     }
   },
   {
     "id": "inf_001",
     "title": "CDN Migration Plan",
-    "description": "Migrate static assets from self-hosted to global CDN and Implement cache headers and versioning.",
+    "description": "Migrate static assets from self-hosted servers to a global CDN with proper cache headers and versioning.",
     "category": "infrastructure",
     "effort": 5,
     "primary_metric": "tech_debt",
@@ -633,13 +633,13 @@
       "partial_success": "Most assets are on the CDN and SVG files are still self-hosted because nobody owns the icon system anymore; we call it progress.",
       "unexpected_impact": "Cache invalidation is now a problem we can see and before, it was a problem we could not measure; we pretend that was the plan.",
       "soft_failure": "The CDN works but edge cases exist and users in certain regions get stale assets for reasons we do not understand yet; we blame 'execution risk'.",
-      "catastrophe": "A CDN misconfiguration cached the API response and Every user saw the same data for 45 minutes; this becomes a quarterly lesson."
+      "catastrophe": "A CDN misconfiguration cached the API response and every user saw the same data for 45 minutes; this becomes a quarterly lesson."
     }
   },
   {
     "id": "inf_002",
     "title": "Auto-Scaling Configuration",
-    "description": "Set up horizontal pod autoscaling based on CPU and memory thresholds and Configure burst limits and cooldown periods.",
+    "description": "Set up horizontal pod autoscaling based on CPU and memory thresholds, with burst limits and cooldown periods configured.",
     "category": "infrastructure",
     "effort": 4,
     "primary_metric": "tech_debt",
@@ -668,7 +668,7 @@
     },
     "outcomes": {
       "clear_success": "The system scales automatically during traffic spikes; it becomes a QBR 'win'.",
-      "partial_success": "Auto-scaling works for stateless services and Stateful services still scale manually because that is more fun; it still makes the slide deck.",
+      "partial_success": "Auto-scaling works for stateless services \u2014 stateful services still scale manually because no one wants to automate that; it still makes the slide deck.",
       "unexpected_impact": "Cost increased during the test spike; nobody had that in the model.",
       "soft_failure": "Scaling works but takes 90 seconds to activate; it goes into the learning pile.",
       "catastrophe": "A cascading failure caused rapid scale-out followed by rapid scale-in; update your resume."
@@ -677,7 +677,7 @@
   {
     "id": "inf_003",
     "title": "Database Read Replicas",
-    "description": "Deploy read replicas for reporting and analytics queries and Implement connection pooling and replica failover.",
+    "description": "Deploy database read replicas for reporting and analytics queries so the primary stops sweating during dashboard refreshes.",
     "category": "infrastructure",
     "effort": 6,
     "primary_metric": "tech_debt",
@@ -708,14 +708,14 @@
       "clear_success": "Primary database CPU dropped 35%; someone writes \"great job\" in all-hands.",
       "partial_success": "Read replicas work for analytics, but consistency adds 2-5 seconds of lag and breaks freshness expectations; we declare victory and move on.",
       "unexpected_impact": "A user discovered they could query stale data from the replica, built a workflow around it, and complained when we fixed it; it wasn't in the deck, but sure.",
-      "soft_failure": "Replicas work most of the time and During network partitions you choose between stale data; a retro bullet absorbs the pain.",
-      "catastrophe": "A replica fell out of sync with primary and For 40 minutes, analytics reported fabricated numbers; legal wants a meeting."
+      "soft_failure": "Replicas work most of the time and during network partitions you choose between stale data; a retro bullet absorbs the pain.",
+      "catastrophe": "A replica fell out of sync with primary, and for 40 minutes analytics reported fabricated numbers; legal wants a meeting."
     }
   },
   {
     "id": "inf_004",
     "title": "Disaster Recovery Testing",
-    "description": "Implement monthly DR drills simulating complete region failure and Test database restore, failover procedures, and RTO/RPO metrics.",
+    "description": "Run monthly disaster recovery drills simulating complete region failure \u2014 test restores, failover, and RTO/RPO metrics before you need them for real.",
     "category": "infrastructure",
     "effort": 4,
     "primary_metric": "tech_debt",
@@ -744,8 +744,8 @@
     },
     "outcomes": {
       "clear_success": "We discovered we could recover in 45 minutes; the exec summary suddenly has room.",
-      "partial_success": "DR playbooks exist and Half are outdated; the footnote does the heavy lifting.",
-      "unexpected_impact": "The first drill broke production and Everyone learned something valuable about testing in staging; the roadmap did not mention this part.",
+      "partial_success": "DR playbooks exist and half are outdated; the footnote does the heavy lifting.",
+      "unexpected_impact": "The first drill accidentally broke production \u2014 everyone learned something valuable about the difference between staging and prod; the roadmap did not mention this part.",
       "soft_failure": "Recovery procedures work but require manual steps and people who know the system, so they are fragile by nature; the postmortem gets a new slide.",
       "catastrophe": "A restore test corrupted the backup and we spent 36 hours discovering our disaster recovery plan was itself a disaster; everyone pretends it was unforeseeable."
     }
@@ -753,7 +753,7 @@
   {
     "id": "inf_005",
     "title": "Load Balancer Optimization",
-    "description": "Tune connection limits, timeouts, and health check parameters and Implement connection draining for graceful shutdowns.",
+    "description": "Tune load balancer connection limits, timeouts, and health checks, and implement connection draining for graceful shutdowns.",
     "category": "infrastructure",
     "effort": 4,
     "primary_metric": "tech_debt",
@@ -781,9 +781,9 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Request routing is more efficient and Failed connections dropped 60%; leadership takes a victory lap.",
-      "partial_success": "Health checks are better and False positives still happen during GC pauses in production; we call it progress.",
-      "unexpected_impact": "Tracing headers revealed users send malformed requests we never noticed and Everything still works anyway; we pretend that was the plan.",
+      "clear_success": "Request routing is more efficient and failed connections dropped 60%; leadership takes a victory lap.",
+      "partial_success": "Health checks are better and false positives still happen during GC pauses in production; we call it progress.",
+      "unexpected_impact": "Tracing headers revealed users send malformed requests we never noticed and everything still works anyway; we pretend that was the plan.",
       "soft_failure": "The load balancer is optimized; we blame 'execution risk'.",
       "catastrophe": "The new timeout was too aggressive and long-running reports failed; this becomes a quarterly lesson."
     }
@@ -791,7 +791,7 @@
   {
     "id": "inf_006",
     "title": "Log Aggregation Pipeline",
-    "description": "Centralize logs from all services into distributed logging platform and Implement structured logging format.",
+    "description": "Centralize logs from all services into a structured logging platform so debugging doesn't require checking five different systems.",
     "category": "infrastructure",
     "effort": 6,
     "primary_metric": "tech_debt",
@@ -819,17 +819,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Log searchability improved from nonexistent to useful and Debugging is now 40% less painful; it becomes a QBR 'win'.",
-      "partial_success": "Most services log correctly and Legacy services still write unstructured logs that make parsing impossible; it still makes the slide deck.",
+      "clear_success": "Log searchability improved from nonexistent to useful and debugging is now 40% less painful; it becomes a QBR 'win'.",
+      "partial_success": "Most services log correctly and legacy services still write unstructured logs that make parsing impossible; it still makes the slide deck.",
       "unexpected_impact": "We can now see exactly how often users hit error paths and the numbers are higher than anyone expected; nobody had that in the model.",
-      "soft_failure": "Centralized logging works and Retaining six months of logs costs more than expected; it goes into the learning pile.",
+      "soft_failure": "Centralized logging works and retaining six months of logs costs more than expected; it goes into the learning pile.",
       "catastrophe": "The logging pipeline started dropping events under load; update your resume."
     }
   },
   {
     "id": "inf_007",
     "title": "Container Orchestration Migration",
-    "description": "Migrate from manual container management to Kubernetes and Set up stateful sets, config maps, and persistent volumes.",
+    "description": "Migrate from manual container management to Kubernetes \u2014 stateful sets, config maps, persistent volumes, the whole party.",
     "category": "infrastructure",
     "effort": 7,
     "primary_metric": "tech_debt",
@@ -861,13 +861,13 @@
       "partial_success": "Orchestration works and PersistentVolume claims still glitch; we declare victory and move on.",
       "unexpected_impact": "Kubernetes manages resources so well that developers stopped thinking about resource usage entirely; it wasn't in the deck, but sure.",
       "soft_failure": "Services migrate smoothly until one stateful service sits in CrashLoopBackOff for three hours and confuses everyone; a retro bullet absorbs the pain.",
-      "catastrophe": "A misconfigured StatefulSet replica corrupted data and Recovery took 18 hours; legal wants a meeting."
+      "catastrophe": "A misconfigured StatefulSet replica corrupted data \u2014 recovery took 18 hours; legal wants a meeting."
     }
   },
   {
     "id": "inf_008",
     "title": "Blue-Green Deployment Setup",
-    "description": "Implement blue-green deployment strategy for zero-downtime releases and automate traffic switching and rollback procedures.",
+    "description": "Implement blue-green deployments for zero-downtime releases with automated traffic switching and rollback.",
     "category": "infrastructure",
     "effort": 5,
     "primary_metric": "tech_debt",
@@ -896,8 +896,8 @@
     },
     "outcomes": {
       "clear_success": "Deployments happen without downtime and release anxiety dropped; the exec summary suddenly has room.",
-      "partial_success": "Blue-green works for stateless services and Stateful services still require manual coordination; the footnote does the heavy lifting.",
-      "unexpected_impact": "Instant rollback made developers more confident about shipping and Bug fix velocity increased 25%; the roadmap did not mention this part.",
+      "partial_success": "Blue-green works for stateless services and stateful services still require manual coordination; the footnote does the heavy lifting.",
+      "unexpected_impact": "Instant rollback made developers more confident about shipping and bug fix velocity increased 25%; the roadmap did not mention this part.",
       "soft_failure": "Zero-downtime deploys work, but database migrations still require downtime windows; the postmortem gets a new slide.",
       "catastrophe": "A green deploy contained a load-only bug; everyone pretends it was unforeseeable."
     }
@@ -905,7 +905,7 @@
   {
     "id": "inf_009",
     "title": "Service Mesh Implementation",
-    "description": "Deploy service mesh for inter-service communication, circuit breaking, and observability and Start with canary rollout to 20% of traffic.",
+    "description": "Deploy a service mesh for inter-service communication, circuit breaking, and observability \u2014 start with canary rollout to 20% of traffic.",
     "category": "infrastructure",
     "effort": 6,
     "primary_metric": "tech_debt",
@@ -933,17 +933,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Circuit breakers now prevent cascading failures and the infrastructure is resilient in ways impossible to appreciate on a quiet day; leadership takes a victory lap.",
+      "clear_success": "Circuit breakers prevent cascading failures and the infrastructure is resilient in ways that are impossible to appreciate on a quiet day; leadership takes a victory lap.",
       "partial_success": "Service mesh is deployed to 20% of traffic; we call it progress.",
       "unexpected_impact": "The mesh added 50ms of latency; we pretend that was the plan.",
-      "soft_failure": "The mesh works but adds complexity and Only two people understand its configuration; we blame 'execution risk'.",
-      "catastrophe": "A mesh rule misconfiguration caused traffic to loop and Services talked to themselves for eight minutes until retry storms crashed them; this becomes a quarterly lesson."
+      "soft_failure": "The mesh works but adds complexity and only two people understand its configuration; we blame 'execution risk'.",
+      "catastrophe": "A mesh rule misconfiguration caused traffic to loop and services talked to themselves for eight minutes until retry storms crashed them; this becomes a quarterly lesson."
     }
   },
   {
     "id": "inf_010",
     "title": "API Gateway Deployment",
-    "description": "Deploy centralized API gateway for routing, rate limiting, and authentication and replace direct service endpoints.",
+    "description": "Deploy a centralized API gateway for routing, rate limiting, and authentication to replace the current chaos of direct service endpoints.",
     "category": "infrastructure",
     "effort": 5,
     "primary_metric": "tech_debt",
@@ -971,17 +971,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "The API gateway is now the single point of control and Rate limiting works; someone writes \"great job\" in all-hands.",
-      "partial_success": "The gateway routes traffic correctly and Authentication still happens at the service level because migration is incomplete; we declare victory and move on.",
+      "clear_success": "The API gateway is the single point of control and rate limiting actually works; someone writes \"great job\" in all-hands.",
+      "partial_success": "The gateway routes traffic correctly and authentication still happens at the service level because migration is incomplete; we declare victory and move on.",
       "unexpected_impact": "Gateway metrics revealed that 30% of API traffic is from unknown sources; it wasn't in the deck, but sure.",
-      "soft_failure": "The gateway works and it is another layer in the stack that can fail between user; a retro bullet absorbs the pain.",
-      "catastrophe": "The rate limiter was too strict and Legitimate bulk operations got 429s for an hour during migration; legal wants a meeting."
+      "soft_failure": "The gateway works but it's another layer in the stack that can fail between the user and their data; a retro bullet absorbs the pain.",
+      "catastrophe": "The rate limiter was too strict and legitimate bulk operations got 429s for an hour during migration; legal wants a meeting."
     }
   },
   {
     "id": "inf_011",
     "title": "Distributed Caching Layer",
-    "description": "Deploy Redis cluster for distributed caching and Implement cache invalidation strategy and cache-aside patterns.",
+    "description": "Deploy a Redis cluster for distributed caching with a cache invalidation strategy that someone has actually thought through.",
     "category": "infrastructure",
     "effort": 5,
     "primary_metric": "tech_debt",
@@ -1010,10 +1010,10 @@
     },
     "outcomes": {
       "clear_success": "Database load dropped 35%; the exec summary suddenly has room.",
-      "partial_success": "Caching works beautifully and Cache invalidation is still wrong in three places; the footnote does the heavy lifting.",
+      "partial_success": "Caching works beautifully and cache invalidation is still wrong in three places; the footnote does the heavy lifting.",
       "unexpected_impact": "Redis became a single point of failure and we are not prepared for that failure; the roadmap did not mention this part.",
-      "soft_failure": "Caching increases hits and Stale data is occasionally served but it is cache-level stale, so we call it acceptable; the postmortem gets a new slide.",
-      "catastrophe": "Redis ran out of memory during a traffic spike and Everything went to cache misses, the database melted,; everyone pretends it was unforeseeable."
+      "soft_failure": "Caching increases hits and stale data is occasionally served but it is cache-level stale, so we call it acceptable; the postmortem gets a new slide.",
+      "catastrophe": "Redis ran out of memory during a traffic spike \u2014 everything fell to cache misses and the database melted; everyone pretends it was unforeseeable."
     }
   },
   {
@@ -1047,17 +1047,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Distributed tracing shows request paths across the system and Debugging time dropped 40%; leadership takes a victory lap.",
-      "partial_success": "Tracing works for most paths and Async tasks still lack good trace context; we call it progress.",
+      "clear_success": "Distributed tracing shows request paths across the system and debugging time dropped 40%; leadership takes a victory lap.",
+      "partial_success": "Tracing works for most paths and async tasks still lack good trace context; we call it progress.",
       "unexpected_impact": "Observability data revealed that 15% of requests time out at layer seven; we pretend that was the plan.",
-      "soft_failure": "The platform is more observable and Some teams still do not know how to read the dashboards; we blame 'execution risk'.",
+      "soft_failure": "The platform is more observable and some teams still do not know how to read the dashboards; we blame 'execution risk'.",
       "catastrophe": "Cardinality explosion overloaded the metrics database; this becomes a quarterly lesson."
     }
   },
   {
     "id": "inf_013",
     "title": "Backup Automation Enhancement",
-    "description": "Implement incremental backups and automated retention policies and Test weekly restores to staging.",
+    "description": "Automate incremental backups with retention policies and test weekly restores to staging, because untested backups are just hope.",
     "category": "infrastructure",
     "effort": 4,
     "primary_metric": "tech_debt",
@@ -1086,7 +1086,7 @@
     },
     "outcomes": {
       "clear_success": "Backups are automated and verified weekly; it becomes a QBR 'win'.",
-      "partial_success": "Backups work automatically and Retention still deletes anything older than 30 days,; it still makes the slide deck.",
+      "partial_success": "Backups work automatically, but retention still deletes anything older than 30 days; it still makes the slide deck.",
       "unexpected_impact": "Incremental backups saved 60% of storage costs; nobody had that in the model.",
       "soft_failure": "Automated backups are reliable and they run at random times; it goes into the learning pile.",
       "catastrophe": "A restore test corrupted data and we now had the original problem; update your resume."
@@ -1095,7 +1095,7 @@
   {
     "id": "inf_014",
     "title": "Performance Profiling Tools",
-    "description": "Implement continuous profiling in production and Set up CPU and memory flame graphs.",
+    "description": "Set up continuous CPU and memory profiling in production so performance issues are visible before customers report them.",
     "category": "infrastructure",
     "effort": 4,
     "primary_metric": "tech_debt",
@@ -1125,7 +1125,7 @@
     "outcomes": {
       "clear_success": "Profiling revealed one function consuming 35% of CPU; someone writes \"great job\" in all-hands.",
       "partial_success": "Profiling works but overhead is noticeable and we enable it only during off-peak hours; we declare victory and move on.",
-      "unexpected_impact": "Flame graphs are beautiful and Engineers stare at them; it wasn't in the deck, but sure.",
+      "unexpected_impact": "Flame graphs are beautiful and engineers stare at them; it wasn't in the deck, but sure.",
       "soft_failure": "Profiling is accurate and you just need to know how to read it; a retro bullet absorbs the pain.",
       "catastrophe": "Profiling overhead caused a timeout cascade during a traffic spike and we turned it off; legal wants a meeting."
     }
@@ -1133,7 +1133,7 @@
   {
     "id": "inf_015",
     "title": "Network Security Audit",
-    "description": "Review firewall rules, network segmentation, and ingress policies and Implement network policies for pod-to-pod communication.",
+    "description": "Audit firewall rules, network segmentation, and ingress policies, then implement pod-to-pod network policies for the parts that are currently wide open.",
     "category": "infrastructure",
     "effort": 6,
     "primary_metric": "tech_debt",
@@ -1162,16 +1162,16 @@
     },
     "outcomes": {
       "clear_success": "Network is segmented properly and TLS certificates rotate automatically; the exec summary suddenly has room.",
-      "partial_success": "Network policies exist and Debugging blocked traffic takes longer than implementing the rules did; the footnote does the heavy lifting.",
-      "unexpected_impact": "The audit found services talking to things they should not and Breaking those links revealed unused dependencies; the roadmap did not mention this part.",
+      "partial_success": "Network policies exist and debugging blocked traffic takes longer than implementing the rules did; the footnote does the heavy lifting.",
+      "unexpected_impact": "The audit found services talking to things they should not and breaking those links revealed unused dependencies; the roadmap did not mention this part.",
       "soft_failure": "Security posture improved and operational complexity rose proportionally; the postmortem gets a new slide.",
-      "catastrophe": "A network policy typo isolated a critical service and Database connections failed; everyone pretends it was unforeseeable."
+      "catastrophe": "A network policy typo isolated a critical service and database connections failed; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "inf_016",
     "title": "Alert Deduping Rules",
-    "description": "Reduce duplicate alerts and add noise-suppression rules for on-call and Low effort, immediate sanity gains.",
+    "description": "Add alert deduplication and noise-suppression rules for on-call \u2014 low effort, immediate sanity gains for the humans holding pagers.",
     "category": "infrastructure",
     "effort": 2,
     "primary_metric": "tech_debt",
@@ -1202,7 +1202,7 @@
       "clear_success": "Pager noise dropped 40%; leadership takes a victory lap.",
       "partial_success": "Duplicate alerts are mostly gone and the remaining ones are the worst offenders; we call it progress.",
       "unexpected_impact": "Noise rules suppressed a real incident for 15 minutes; we pretend that was the plan.",
-      "soft_failure": "Deduping only applied to one service and Everything else still screams; we blame 'execution risk'.",
+      "soft_failure": "Deduping only applied to one service and everything else still screams; we blame 'execution risk'.",
       "catastrophe": "A deduping rule swallowed a critical outage alert; this becomes a quarterly lesson."
     }
   }

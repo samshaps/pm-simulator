@@ -39,17 +39,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Acme's buyer called it acceptable in Slack and the renewal is no longer actively at risk,; someone writes \"great job\" in all-hands.",
+      "clear_success": "Acme's buyer called it 'acceptable' in Slack, and the renewal is no longer actively at risk; someone writes \"great job\" in all-hands.",
       "partial_success": "Reports generate, but they query 47 tables; we declare victory and move on.",
       "unexpected_impact": "A competitor copied the UI and sales got two demo requests from Acme's competitors asking for the same thing; it wasn't in the deck, but sure.",
-      "soft_failure": "Report generation takes three minutes and the CFO opened it once, closed it,; a retro bullet absorbs the pain.",
+      "soft_failure": "Report generation takes three minutes and the CFO opened it once, then closed it; a retro bullet absorbs the pain.",
       "catastrophe": "The XLSX export included six months of deleted user data and legal got a call from Acme's compliance officer; legal wants a meeting."
     }
   },
   {
     "id": "sr_002",
     "title": "Demo Environment Isolation",
-    "description": "Three enterprise prospects want to see 'clean' data—not their competitors' workflows in the shared demo.",
+    "description": "Three enterprise prospects want to see 'clean' data\u2014not their competitors' workflows in the shared demo.",
     "category": "sales_request",
     "effort": 6,
     "primary_metric": "sales_sentiment",
@@ -89,7 +89,7 @@
       "clear_success": "All three prospects closed and sales sent a Venmo request as a joke; the exec summary suddenly has room.",
       "partial_success": "Two prospects got sandboxes and entered trials; the footnote does the heavy lifting.",
       "unexpected_impact": "A prospect demanded production-scale testing; the roadmap did not mention this part.",
-      "soft_failure": "One sandbox did not sync custom fields and sales blamed engineering, engineering blamed the migration script,; the postmortem gets a new slide.",
+      "soft_failure": "One sandbox didn't sync custom fields \u2014 sales blamed engineering, engineering blamed the migration script; the postmortem gets a new slide.",
       "catastrophe": "A demo environment exposed PII from another customer's test account; everyone pretends it was unforeseeable."
     }
   },
@@ -136,14 +136,14 @@
       "clear_success": "TechCorp signed and the integration became the flagship reference; leadership takes a victory lap.",
       "partial_success": "Integration works but sync runs every 30 minutes instead of real time; we call it progress.",
       "unexpected_impact": "The integration is so tight that TechCorp's Salesforce admins joined your escalation chain; we pretend that was the plan.",
-      "soft_failure": "Sync breaks every time TechCorp runs monthly data cleanup and they are in trial, the relationship is tense,; we blame 'execution risk'.",
+      "soft_failure": "Sync breaks every time TechCorp runs monthly data cleanup, and they're in trial \u2014 the relationship is tense; we blame 'execution risk'.",
       "catastrophe": "Salesforce API rate limits were exceeded mid-quarter; this becomes a quarterly lesson."
     }
   },
   {
     "id": "sr_004",
     "title": "CSV Export for Apex",
-    "description": "Apex Finance needs to export all their analytics to CSV for their legacy reporting tool (which nobody has touched.",
+    "description": "Apex Finance needs CSV export for their legacy reporting tool, which nobody has touched since the Obama administration.",
     "category": "sales_request",
     "effort": 5,
     "primary_metric": "sales_sentiment",
@@ -180,8 +180,8 @@
       ]
     },
     "outcomes": {
-      "clear_success": "CSV exports and Apex is happy, now referenceable,; it becomes a QBR 'win'.",
-      "partial_success": "CSV works but the column order does not match Apex's legacy system and they manually reordered, signed,; it still makes the slide deck.",
+      "clear_success": "CSV exports work and Apex is happy \u2014 now referenceable; it becomes a QBR 'win'.",
+      "partial_success": "CSV works but the column order doesn't match Apex's legacy system \u2014 they manually reordered and signed anyway; it still makes the slide deck.",
       "unexpected_impact": "Three other customers asked for CSV export immediately; nobody had that in the model.",
       "soft_failure": "The export hangs on datasets over 50k rows; it goes into the learning pile.",
       "catastrophe": "The CSV used raw timestamps and apex's legacy system could not parse them; update your resume."
@@ -228,7 +228,7 @@
     },
     "outcomes": {
       "clear_success": "GlobalTech onboarding was 40% faster than previous cohorts; someone writes \"great job\" in all-hands.",
-      "partial_success": "Portal shipped and Sixty percent of GlobalTech users found it; we declare victory and move on.",
+      "partial_success": "Portal shipped and sixty percent of GlobalTech users found it; we declare victory and move on.",
       "unexpected_impact": "GlobalTech used the portal to document internal processes and now wants customization; it wasn't in the deck, but sure.",
       "soft_failure": "The portal was built but never publicized internally at GlobalTech and the email landed in spam; a retro bullet absorbs the pain.",
       "catastrophe": "A support video went live with internal passwords visible; legal wants a meeting."
@@ -325,13 +325,13 @@
       "partial_success": "Onboarding took three weeks instead of 10 days; we call it progress.",
       "unexpected_impact": "Citadel wants the same treatment for a new team next quarter; we pretend that was the plan.",
       "soft_failure": "Pre-filled configs covered 70% of the use case; we blame 'execution risk'.",
-      "catastrophe": "The assigned success manager left and Citadel demanded someone who knew their setup; this becomes a quarterly lesson."
+      "catastrophe": "The assigned success manager left and citadel demanded someone who knew their setup; this becomes a quarterly lesson."
     }
   },
   {
     "id": "sr_008",
     "title": "Competitor Displacement Feature",
-    "description": "Vertex has been using a competitor.",
+    "description": "Vertex has been using a competitor for two years and needs a migration tool that makes switching painless \u2014 or at least less painful than staying.",
     "category": "sales_request",
     "effort": 8,
     "primary_metric": "sales_sentiment",
@@ -371,7 +371,7 @@
       "clear_success": "Vertex migrated cleanly at 99.8% accuracy; it becomes a QBR 'win'.",
       "partial_success": "Migration hit 98% accuracy; it still makes the slide deck.",
       "unexpected_impact": "The tool was so good Vertex used it to audit their own data and found inconsistencies; nobody had that in the model.",
-      "soft_failure": "Migration took twice as long as estimated and Vertex went live with a reduced feature set until manual remapping finished; it goes into the learning pile.",
+      "soft_failure": "Migration took twice as long as estimated and vertex went live with a reduced feature set until manual remapping finished; it goes into the learning pile.",
       "catastrophe": "A foreign key issue corrupted 15% of workflow history; update your resume."
     }
   },
@@ -416,10 +416,10 @@
     },
     "outcomes": {
       "clear_success": "Export tool built in three weeks and heritage's auditors approved it; someone writes \"great job\" in all-hands.",
-      "partial_success": "Export works but misses four event types and Auditors accepted it with caveats; we declare victory and move on.",
+      "partial_success": "Export works but misses four event types and auditors accepted it with caveats; we declare victory and move on.",
       "unexpected_impact": "The export uncovered 12 months of logging gaps; it wasn't in the deck, but sure.",
-      "soft_failure": "The export runs but the format is non-standard and Auditors manually validated it anyway; a retro bullet absorbs the pain.",
-      "catastrophe": "The export included PII that should have been hashed and Auditors flagged it, the board demanded remediation,; legal wants a meeting."
+      "soft_failure": "The export runs but the format is non-standard and auditors manually validated it anyway; a retro bullet absorbs the pain.",
+      "catastrophe": "The export included PII that should have been hashed and auditors flagged it, the board demanded remediation; legal wants a meeting."
     }
   },
   {
@@ -511,15 +511,15 @@
     "outcomes": {
       "clear_success": "Meridian's satisfaction jumped 35 points; it becomes a QBR 'win'.",
       "partial_success": "Response time hits two hours 80% of the time; it still makes the slide deck.",
-      "unexpected_impact": "Meridian routes all questions through the dedicated contact, urgent or not and your support person is now a full-time Meridian resource; nobody had that in the model.",
-      "soft_failure": "Response time is reliably two hours, but the dedicated contact cannot escalate and Meridian waits another two hours for actual resolution; it goes into the learning pile.",
+      "unexpected_impact": "Meridian routes all questions through the dedicated contact, urgent or not \u2014 your support person is now a full-time Meridian resource; nobody had that in the model.",
+      "soft_failure": "Response time is reliably two hours, but the dedicated contact cannot escalate and meridian waits another two hours for actual resolution; it goes into the learning pile.",
       "catastrophe": "Meridian hired away your dedicated contact and they now demand backpay for time spent on-site; update your resume."
     }
   },
   {
     "id": "sr_012",
     "title": "Webhook Customization",
-    "description": "Logistics Co and needs custom webhook payloads and retry logic that doesn't exist in the product.",
+    "description": "Logistics Co needs custom webhook payloads and retry logic that doesn't exist in the product yet, and they're not subtle about it.",
     "category": "sales_request",
     "effort": 6,
     "primary_metric": "sales_sentiment",
@@ -556,11 +556,11 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Custom webhooks shipped and Logistics Co; someone writes \"great job\" in all-hands.",
+      "clear_success": "Custom webhooks shipped and Logistics Co integrated in a week; someone writes \"great job\" in all-hands.",
       "partial_success": "Payloads are customizable but retry logic is limited to exponential backoff; we declare victory and move on.",
       "unexpected_impact": "Two other customers immediately asked for custom webhooks; it wasn't in the deck, but sure.",
       "soft_failure": "Custom webhooks work 90% of the time; a retro bullet absorbs the pain.",
-      "catastrophe": "A retry loop went infinite and hammered Logistics Co; legal wants a meeting."
+      "catastrophe": "A retry loop went infinite and hammered Logistics Co's endpoint for hours; legal wants a meeting."
     }
   },
   {
@@ -607,13 +607,13 @@
       "partial_success": "API access granted with rate limits and DataFlow can build, but throttling hits during peak hours; the footnote does the heavy lifting.",
       "unexpected_impact": "DataFlow became the only company customers call for advanced integrations; the roadmap did not mention this part.",
       "soft_failure": "API docs were incomplete and DataFlow reverse-engineered half the API; the postmortem gets a new slide.",
-      "catastrophe": "DataFlow exposed your API spec in a public GitHub repo and Competitors scraped it; everyone pretends it was unforeseeable."
+      "catastrophe": "DataFlow exposed your API spec in a public GitHub repo and competitors scraped it; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "sr_014",
     "title": "Renewal Automation Workflows",
-    "description": "Synapse Corp.",
+    "description": "Synapse Corp wants automated renewal workflows so their procurement team stops losing track of contract dates in email threads.",
     "category": "sales_request",
     "effort": 7,
     "primary_metric": "sales_sentiment",
@@ -651,16 +651,16 @@
     },
     "outcomes": {
       "clear_success": "Synapse's renewal automation runs flawlessly; leadership takes a victory lap.",
-      "partial_success": "Automation works but approvals still need manual intervention and Cycle time dropped 30%; we call it progress.",
+      "partial_success": "Automation works but approvals still need manual intervention and cycle time dropped 30%; we call it progress.",
       "unexpected_impact": "The automation is so effective their procurement team wants to use it for other vendors; we pretend that was the plan.",
-      "soft_failure": "Automation works but does not integrate with their email system and Routing is manual; we blame 'execution risk'.",
+      "soft_failure": "Automation works but does not integrate with their email system and routing is manual; we blame 'execution risk'.",
       "catastrophe": "A bug auto-approved a renewal on the wrong date; this becomes a quarterly lesson."
     }
   },
   {
     "id": "sr_015",
     "title": "Account Hierarchy Modeling",
-    "description": "Constellation Group operates 47 subsidiary companies.",
+    "description": "Constellation Group operates 47 subsidiary companies and needs account hierarchy modeling that can handle the org chart from hell.",
     "category": "sales_request",
     "effort": 8,
     "primary_metric": "sales_sentiment",
@@ -697,11 +697,11 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Account hierarchy works perfectly and Constellation signed, it became a product feature,; it becomes a QBR 'win'.",
+      "clear_success": "Account hierarchy works perfectly \u2014 Constellation signed and it became a product feature; it becomes a QBR 'win'.",
       "partial_success": "The hierarchy works for 95% of their use case; it still makes the slide deck.",
       "unexpected_impact": "Constellation's hierarchy is so complex that support tickets are four times longer than average; nobody had that in the model.",
-      "soft_failure": "The hierarchy UI is unintuitive and Admins need weekly training; it goes into the learning pile.",
-      "catastrophe": "A permission inheritance bug leaked one subsidiary's data to another and legal is involved, GDPR violations are assessed,; update your resume."
+      "soft_failure": "The hierarchy UI is unintuitive and admins need weekly training; it goes into the learning pile.",
+      "catastrophe": "A permission inheritance bug leaked one subsidiary's data to another \u2014 legal is involved, GDPR violations are being assessed; update your resume."
     }
   },
   {
@@ -744,10 +744,10 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Territory mapping shipped and All three deals signed; someone writes \"great job\" in all-hands.",
-      "partial_success": "Territory mapping works but cannot handle complex overlaps and Two deals signed; we declare victory and move on.",
+      "clear_success": "Territory mapping shipped and all three deals signed; someone writes \"great job\" in all-hands.",
+      "partial_success": "Territory mapping works but cannot handle complex overlaps and two deals signed; we declare victory and move on.",
       "unexpected_impact": "Territory mapping became so useful customers used it for internal resource allocation; it wasn't in the deck, but sure.",
-      "soft_failure": "Territory mapping works but requires heavy manual data entry and One customer abandoned it after a week; a retro bullet absorbs the pain.",
+      "soft_failure": "Territory mapping works but requires heavy manual data entry and one customer abandoned it after a week; a retro bullet absorbs the pain.",
       "catastrophe": "A bulk import overwrote the database instead of inserting and we rebuilt from backups; legal wants a meeting."
     }
   },
@@ -792,7 +792,7 @@
     },
     "outcomes": {
       "clear_success": "Champion tracking shipped and account managers use it religiously; the exec summary suddenly has room.",
-      "partial_success": "Champion tracking works for structure but does not integrate with email or calendar data and useful, but manual upkeep is required; the footnote does the heavy lifting.",
+      "partial_success": "Champion tracking works for org structure but doesn't integrate with email or calendar \u2014 useful, but manual upkeep required; the footnote does the heavy lifting.",
       "unexpected_impact": "Customer success used champion tracking to identify at-risk relationships; the roadmap did not mention this part.",
       "soft_failure": "Champion tracking exists but adoption is low; the postmortem gets a new slide.",
       "catastrophe": "A bug exposed champion names and contact info in an API response that Google indexed; everyone pretends it was unforeseeable."
@@ -838,7 +838,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "The custom ledger integrates perfectly with Zenith's accounting system and Reconciliation is clean every month, the deal is signed,; leadership takes a victory lap.",
+      "clear_success": "The custom ledger integrates perfectly with Zenith's accounting system \u2014 reconciliation is clean every month and the deal is signed; leadership takes a victory lap.",
       "partial_success": "The ledger works with minor reconciliation differences, usually under $500 a month; we call it progress.",
       "unexpected_impact": "Your billing system is now the source of truth for Zenith's revenue recognition; we pretend that was the plan.",
       "soft_failure": "The ledger generates correct numbers but Zenith's finance team needs a weekly review call to explain the methodology; we blame 'execution risk'.",
@@ -885,8 +885,8 @@
       ]
     },
     "outcomes": {
-      "clear_success": "ROI summary shipped and sales uses it in every late-stage deal, cycles shortened,; it becomes a QBR 'win'.",
-      "partial_success": "The PDF exists but needs manual edits and sales still uses it with a note that says numbers approximate; it still makes the slide deck.",
+      "clear_success": "ROI summary shipped and sales uses it in every late-stage deal \u2014 cycles shortened measurably; it becomes a QBR 'win'.",
+      "partial_success": "The PDF exists but needs manual edits \u2014 sales still uses it with a note saying 'numbers approximate'; it still makes the slide deck.",
       "unexpected_impact": "Prospects forwarded the PDF to finance and finance asked for methodology; nobody had that in the model.",
       "soft_failure": "The summary lives in the enablement folder and sales forgets it exists; it goes into the learning pile.",
       "catastrophe": "The ROI template had the wrong baseline assumptions and a prospect caught it; update your resume."
@@ -933,7 +933,7 @@
     },
     "outcomes": {
       "clear_success": "Usage-based pricing rolled out; the exec summary suddenly has room.",
-      "partial_success": "The model went live and Twelve percent of users upgraded; the footnote does the heavy lifting.",
+      "partial_success": "The model went live and 12% of users upgraded; the footnote does the heavy lifting.",
       "unexpected_impact": "Power users gamed the metrics and you redefined usage three times; the roadmap did not mention this part.",
       "soft_failure": "Usage-based pricing confused the market; the postmortem gets a new slide.",
       "catastrophe": "An edge case made bills 5x higher for some customers; everyone pretends it was unforeseeable."
@@ -942,7 +942,7 @@
   {
     "id": "mon_002",
     "title": "Seat-Based Licensing Tiers",
-    "description": "Introduce per-seat pricing with feature differentiation by tier and Enterprise gets everything, Pro gets most things, Basic gets foundations.",
+    "description": "Introduce per-seat pricing with feature differentiation: Enterprise gets everything, Pro gets most things, Basic gets the idea.",
     "category": "monetization",
     "effort": 5,
     "primary_metric": "enterprise_growth",
@@ -980,7 +980,7 @@
   {
     "id": "mon_003",
     "title": "Premium Feature Gating",
-    "description": "Gate advanced features (workflows, integrations, advanced reporting) behind a 'Premium' or 'Enterprise' tier.",
+    "description": "Gate advanced features (workflows, integrations, reporting) behind a Premium tier and see who blinks first.",
     "category": "monetization",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -1008,17 +1008,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Feature gates deployed and Eighteen percent of free users upgraded; it becomes a QBR 'win'.",
+      "clear_success": "Feature gates deployed and eighteen percent of free users upgraded; it becomes a QBR 'win'.",
       "partial_success": "Feature gating works with an 11% upgrade rate and $45k/month in revenue; it still makes the slide deck.",
       "unexpected_impact": "Free users found API workarounds to access gated features and you added API-level checks; nobody had that in the model.",
-      "soft_failure": "Feature gating reduced discovery and Engagement dropped 20%; it goes into the learning pile.",
-      "catastrophe": "A critical bug made all gated features free for eight hours and Ten thousand users discovered them, upgrade rate collapsed to 2%,; update your resume."
+      "soft_failure": "Feature gating reduced discovery and engagement dropped 20%; it goes into the learning pile.",
+      "catastrophe": "A critical bug made all gated features free for eight hours and ten thousand users discovered them, upgrade rate collapsed to 2%; update your resume."
     }
   },
   {
     "id": "mon_004",
     "title": "In-App Upsell Prompts",
-    "description": "Add contextual upsell prompts when users hit free tier limits and Estimated 8-12% conversion.",
+    "description": "Show contextual upsell prompts when users hit free-tier limits \u2014 estimated 8-12% conversion if the timing doesn't make them hate us.",
     "category": "monetization",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -1046,7 +1046,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Upsell prompts deployed and Ten percent conversion on first interaction, revenue impact positive, users tolerate it, NPS barely moves; someone writes \"great job\" in all-hands.",
+      "clear_success": "Upsell prompts deployed at 10% conversion on first interaction \u2014 revenue impact positive, users tolerate it, NPS barely moves; someone writes \"great job\" in all-hands.",
       "partial_success": "Prompts are live with a 6% conversion rate; we declare victory and move on.",
       "unexpected_impact": "Prompts triggered mid-workflow and users abandoned; it wasn't in the deck, but sure.",
       "soft_failure": "Users skipped prompts 95% of the time; a retro bullet absorbs the pain.",
@@ -1085,8 +1085,8 @@
     },
     "outcomes": {
       "clear_success": "A 15% discount lifted annual subscriptions 22%; the exec summary suddenly has room.",
-      "partial_success": "Annual plans worked and Twelve percent upgraded, net revenue rose 8%; the footnote does the heavy lifting.",
-      "unexpected_impact": "Annual customers churned right at renewal because they were committed; the roadmap did not mention this part.",
+      "partial_success": "Annual plans worked \u2014 12% upgraded, net revenue rose 8%; the footnote does the heavy lifting.",
+      "unexpected_impact": "Annual customers churned right at renewal because they'd been committed, not satisfied; the roadmap did not mention this part.",
       "soft_failure": "The annual discount campaign had 3% uptake; the postmortem gets a new slide.",
       "catastrophe": "Customers on a 20% annual discount hit product limits mid-year and demanded refunds; everyone pretends it was unforeseeable."
     }
@@ -1094,7 +1094,7 @@
   {
     "id": "mon_006",
     "title": "Premium Support Tier",
-    "description": "Offer dedicated support, Slack integration, and priority queuing for $500/month add-on and Targeting mid-market.",
+    "description": "Offer dedicated support, Slack integration, and priority queuing for $500/month add-on and targeting mid-market.",
     "category": "monetization",
     "effort": 5,
     "primary_metric": "enterprise_growth",
@@ -1132,7 +1132,7 @@
   {
     "id": "mon_007",
     "title": "Add-On Marketplace",
-    "description": "Launch a partner add-on marketplace (integrations, templates, extensions) and Revenue share 30/70 split.",
+    "description": "Launch a partner add-on marketplace (integrations, templates, extensions) and revenue share 30/70 split.",
     "category": "monetization",
     "effort": 6,
     "primary_metric": "self_serve_growth",
@@ -1163,14 +1163,14 @@
       "clear_success": "Marketplace launched with 12 partners and hit $60k MRR by month six; it becomes a QBR 'win'.",
       "partial_success": "Marketplace has five partners and $15k MRR; it still makes the slide deck.",
       "unexpected_impact": "A partner built a competing product inside the marketplace and undermined direct sales; nobody had that in the model.",
-      "soft_failure": "Marketplace launched with no partners and Revenue was $0 for four months; it goes into the learning pile.",
+      "soft_failure": "Marketplace launched with no partners and revenue was $0 for four months; it goes into the learning pile.",
       "catastrophe": "A partner add-on had a security vulnerability that compromised customer data; update your resume."
     }
   },
   {
     "id": "mon_008",
     "title": "Consumption Metering System",
-    "description": "Build consumption metering infrastructure to track 10+ product dimensions (API calls, storage, compute minutes, etc.",
+    "description": "Build consumption metering to track 10+ dimensions (API calls, storage, compute minutes, etc.) so billing reflects actual usage.",
     "category": "monetization",
     "effort": 7,
     "primary_metric": "enterprise_growth",
@@ -1198,7 +1198,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Metering system deployed and Enterprise customers can see consumption; someone writes \"great job\" in all-hands.",
+      "clear_success": "Metering system deployed and enterprise customers can see consumption; someone writes \"great job\" in all-hands.",
       "partial_success": "Metering works for 8 of 10 dimensions; we declare victory and move on.",
       "unexpected_impact": "Transparent consumption made price-sensitive customers paranoid; it wasn't in the deck, but sure.",
       "soft_failure": "Metering is buggy and readings are off by 5-10%; a retro bullet absorbs the pain.",
@@ -1208,7 +1208,7 @@
   {
     "id": "mon_009",
     "title": "Overage Charges Implementation",
-    "description": "Add overage charges when users exceed plan limits (API calls, storage, users) and Expects 8-12% of accounts will trigger overages.",
+    "description": "Add overage charges when users exceed plan limits (API calls, storage, users) and expects 8-12% of accounts will trigger overages.",
     "category": "monetization",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -1236,8 +1236,8 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Overages are live and Ten percent of accounts triggered them, revenue is $35k/month,; the exec summary suddenly has room.",
-      "partial_success": "Overages are implemented and Six percent of accounts triggered charges, revenue is $18k/month,; the footnote does the heavy lifting.",
+      "clear_success": "Overages are live \u2014 10% of accounts triggered them, adding $35k/month; the exec summary suddenly has room.",
+      "partial_success": "Overages are implemented \u2014 6% of accounts triggered charges, adding $18k/month; the footnote does the heavy lifting.",
       "unexpected_impact": "Customers sandbagged usage estimates during signup to avoid overages; the roadmap did not mention this part.",
       "soft_failure": "Overages triggered only 2% of the time; the postmortem gets a new slide.",
       "catastrophe": "A calculation bug charged one customer $47k for a single month; everyone pretends it was unforeseeable."
@@ -1246,7 +1246,7 @@
   {
     "id": "mon_010",
     "title": "Enterprise Pricing Restructure",
-    "description": "Move enterprise from per-seat to consumption-based with negotiated minimums and Simplifies sales, improves margins for usage-heavy accounts.",
+    "description": "Move enterprise from per-seat to consumption-based pricing with negotiated minimums \u2014 simpler for sales, scarier for customers.",
     "category": "monetization",
     "effort": 6,
     "primary_metric": "enterprise_growth",
@@ -1284,7 +1284,7 @@
   {
     "id": "mon_011",
     "title": "Payment Method Expansion",
-    "description": "Add wire transfers, ACH, invoice-based billing, and crypto payment options and Removes friction for enterprise and international buyers.",
+    "description": "Add wire transfers, ACH, invoice billing, and crypto payments so enterprise and international buyers stop bouncing at checkout.",
     "category": "monetization",
     "effort": 5,
     "primary_metric": "enterprise_growth",
@@ -1312,7 +1312,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "All payment methods are live and Enterprise close rate improved 22%; someone writes \"great job\" in all-hands.",
+      "clear_success": "All payment methods are live and enterprise close rate improved 22%; someone writes \"great job\" in all-hands.",
       "partial_success": "Wire and ACH work; we declare victory and move on.",
       "unexpected_impact": "Crypto payments attracted customers in unstable currencies; it wasn't in the deck, but sure.",
       "soft_failure": "Payment methods exist but adoption is minimal; a retro bullet absorbs the pain.",
@@ -1350,17 +1350,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Dunning optimization is live and Recovery rate is 76%, churn dropped two points,; the exec summary suddenly has room.",
-      "partial_success": "Dunning is live and Recovery rate is 70%; the footnote does the heavy lifting.",
-      "unexpected_impact": "Dunning emails were too aggressive and Some customers complained; the roadmap did not mention this part.",
-      "soft_failure": "The dunning flow barely moved the needle and Recovery rate is 62%; the postmortem gets a new slide.",
+      "clear_success": "Dunning optimization is live \u2014 recovery rate hit 76% and churn dropped two points; the exec summary suddenly has room.",
+      "partial_success": "Dunning is live and recovery rate is 70%; the footnote does the heavy lifting.",
+      "unexpected_impact": "Dunning emails were too aggressive and some customers complained about the tone; the roadmap did not mention this part.",
+      "soft_failure": "The dunning flow barely moved the needle and recovery rate is 62%; the postmortem gets a new slide.",
       "catastrophe": "A dunning email with the wrong customer name went to a large enterprise account; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "mon_013",
     "title": "Trial-to-Paid Conversion Optimization",
-    "description": "Redesign trial experience: onboarding, feature highlights, purchase prompts at optimal moments.",
+    "description": "Redesign the trial experience with better onboarding, feature highlights, and well-timed purchase prompts.",
     "category": "monetization",
     "effort": 5,
     "primary_metric": "self_serve_growth",
@@ -1391,14 +1391,14 @@
       "clear_success": "Trial redesign complete; leadership takes a victory lap.",
       "partial_success": "Trial conversion is 10.5%; we call it progress.",
       "unexpected_impact": "Prompts appeared too early and trial users skipped features; we pretend that was the plan.",
-      "soft_failure": "The redesign had minimal impact and Conversion is 8.5%; we blame 'execution risk'.",
+      "soft_failure": "The redesign had minimal impact and conversion is 8.5%; we blame 'execution risk'.",
       "catastrophe": "A trial variant extended duration indefinitely; this becomes a quarterly lesson."
     }
   },
   {
     "id": "mon_014",
     "title": "Pricing Page Redesign",
-    "description": "Redesign pricing page for clarity, add comparison tables, calculators, and social proof and Current pricing page conversion is 12%.",
+    "description": "Redesign pricing page for clarity, add comparison tables, calculators, and social proof and current pricing page conversion is 12%.",
     "category": "monetization",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -1428,15 +1428,15 @@
     "outcomes": {
       "clear_success": "Pricing page redesigned; it becomes a QBR 'win'.",
       "partial_success": "The page is cleaner and conversion is 13%; it still makes the slide deck.",
-      "unexpected_impact": "Comparison tables made the product look more expensive than competitors and Negotiation power decreased; nobody had that in the model.",
-      "soft_failure": "The redesign did not move the needle and Conversion is still 12%; it goes into the learning pile.",
+      "unexpected_impact": "Comparison tables made the product look more expensive than competitors and negotiation power decreased; nobody had that in the model.",
+      "soft_failure": "The redesign did not move the needle and conversion is still 12%; it goes into the learning pile.",
       "catastrophe": "A pricing calculator bug showed prices 10x lower; update your resume."
     }
   },
   {
     "id": "mon_015",
     "title": "Annual Plan Nudge",
-    "description": "Add an in-app and email nudge to upgrade to annual billing with a small discount and Low effort, should lift cash flow.",
+    "description": "Add an in-app and email nudge to upgrade to annual billing with a small discount and low effort, should lift cash flow.",
     "category": "monetization",
     "effort": 3,
     "primary_metric": "self_serve_growth",
@@ -1476,8 +1476,8 @@
       "clear_success": "Annual upgrades jumped 18%; someone writes \"great job\" in all-hands.",
       "partial_success": "Annual upgrades rose 7%; we declare victory and move on.",
       "unexpected_impact": "Users asked for refunds after forgetting they chose annual and support tickets spiked; it wasn't in the deck, but sure.",
-      "soft_failure": "The nudge blended into UI noise and Conversion barely moved, but NPS dipped anyway because users noticed the pop-up; a retro bullet absorbs the pain.",
-      "catastrophe": "A bug pre-selected annual billing at checkout and Chargebacks flooded in, NPS cratered,; legal wants a meeting."
+      "soft_failure": "The nudge blended into UI noise and conversion barely moved, but NPS dipped anyway because users noticed the pop-up; a retro bullet absorbs the pain.",
+      "catastrophe": "A bug pre-selected annual billing at checkout \u2014 chargebacks flooded in and NPS cratered; legal wants a meeting."
     }
   },
   {
@@ -1520,8 +1520,8 @@
       ]
     },
     "outcomes": {
-      "clear_success": "AI suggestions shipped and Engagement jumped 28%, feature discovery rose 35%,; it becomes a QBR 'win'.",
-      "partial_success": "AI suggestions work and Engagement is up 15%; it still makes the slide deck.",
+      "clear_success": "AI suggestions shipped \u2014 engagement jumped 28% and feature discovery rose 35%; it becomes a QBR 'win'.",
+      "partial_success": "AI suggestions work and engagement is up 15%; it still makes the slide deck.",
       "unexpected_impact": "The model suggested features that directly competed with your roadmap and users wanted them before strategy intended; nobody had that in the model.",
       "soft_failure": "Accuracy was 64%; it goes into the learning pile.",
       "catastrophe": "The model suggested a delete all data feature to 50k users; update your resume."
@@ -1530,7 +1530,7 @@
   {
     "id": "ms_002",
     "title": "Real-Time Collaboration Layer",
-    "description": "Add multi-user real-time collaboration (Figma-style cursors, live commenting, simultaneous editing).",
+    "description": "Add multi-user real-time collaboration (Figma-style cursors, live commenting, simultaneous editing) and find out if your architecture can handle it.",
     "category": "moonshot",
     "effort": 10,
     "primary_metric": "self_serve_growth",
@@ -1567,7 +1567,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Real-time collaboration is live and team adoption jumped 75%, design agencies signed,; someone writes \"great job\" in all-hands.",
+      "clear_success": "Real-time collaboration is live \u2014 team adoption jumped 75% and design agencies signed on; someone writes \"great job\" in all-hands.",
       "partial_success": "Collaboration works but has 1-2% sync issues; we declare victory and move on.",
       "unexpected_impact": "Collaboration became the main use case and the original product became a side quest; it wasn't in the deck, but sure.",
       "soft_failure": "Collaboration works but adoption is 35%; a retro bullet absorbs the pain.",
@@ -1577,7 +1577,7 @@
   {
     "id": "ms_003",
     "title": "Predictive Analytics Engine",
-    "description": "Build predictive analytics engine that forecasts user churn, revenue, and feature adoption based on behavioral signals.",
+    "description": "Build a predictive analytics engine that forecasts churn, revenue, and feature adoption \u2014 high upside, higher expectations.",
     "category": "moonshot",
     "effort": 9,
     "primary_metric": "enterprise_growth",
@@ -1614,17 +1614,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Predictive engine deployed and Churn predictions are 87% accurate, enterprises use it for planning,; the exec summary suddenly has room.",
+      "clear_success": "Predictive engine deployed \u2014 churn predictions are 87% accurate and enterprises use it for planning; the exec summary suddenly has room.",
       "partial_success": "The engine works at 72% accuracy; the footnote does the heavy lifting.",
       "unexpected_impact": "Predictions made customers paranoid about their own health; the roadmap did not mention this part.",
       "soft_failure": "Accuracy hit 58%, barely better than random; the postmortem gets a new slide.",
-      "catastrophe": "The model flagged 100 customers as high churn risk with 91% confidence; everyone pretends it was unforeseeable."
+      "catastrophe": "The model flagged 100 customers as high churn risk with 91% confidence \u2014 and it was right; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ms_004",
     "title": "White-Label Platform",
-    "description": "Enable customers to white-label the platform.",
+    "description": "Enable customers to white-label the entire platform and resell it under their own brand, because why have one product when you can have many.",
     "category": "moonshot",
     "effort": 10,
     "primary_metric": "enterprise_growth",
@@ -1661,11 +1661,11 @@
       ]
     },
     "outcomes": {
-      "clear_success": "White-label is live and Eight partners are reselling, $2.5M ARR in year one,; leadership takes a victory lap.",
+      "clear_success": "White-label is live \u2014 eight partners are reselling and year-one ARR hit $2.5M; leadership takes a victory lap.",
       "partial_success": "White-label works with three partners reselling and $400k ARR; we call it progress.",
       "unexpected_impact": "One partner became a competitor and ate into direct sales; we pretend that was the plan.",
-      "soft_failure": "White-label shipped but only one partner was interested and Revenue is minimal; we blame 'execution risk'.",
-      "catastrophe": "A partner's brand infringement triggered a trademark dispute and legal fees exceeded channel revenue, the partner sued for IP ownership,; this becomes a quarterly lesson."
+      "soft_failure": "White-label shipped but only one partner was interested and revenue is minimal; we blame 'execution risk'.",
+      "catastrophe": "A partner's brand infringement triggered a trademark dispute \u2014 legal fees exceeded channel revenue and the partner sued for IP ownership; this becomes a quarterly lesson."
     }
   },
   {
@@ -1711,7 +1711,7 @@
       "clear_success": "Marketplace is live with 45 apps; it becomes a QBR 'win'.",
       "partial_success": "Marketplace exists with 15 apps and $200k ARR; it still makes the slide deck.",
       "unexpected_impact": "Quality control turned into a full-time job and low-quality apps tanked trust, so you built a review process; nobody had that in the model.",
-      "soft_failure": "Marketplace launched with five apps and Developers are not building; it goes into the learning pile.",
+      "soft_failure": "Marketplace launched with five apps and developers aren't building more; it goes into the learning pile.",
       "catastrophe": "A marketplace app got hacked and exposed data for 10,000 users; update your resume."
     }
   },
@@ -1755,17 +1755,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Workflow builder is live and 52% of users built at least one workflow, engagement rose 55%, enterprise customers are locked in,; someone writes \"great job\" in all-hands.",
+      "clear_success": "Workflow builder is live \u2014 52% of users built at least one workflow, engagement rose 55%, and enterprise customers are locked in; someone writes \"great job\" in all-hands.",
       "partial_success": "The builder works and 28% of users tried it; we declare victory and move on.",
-      "unexpected_impact": "Users built workflows that broke when APIs changed and Workflow breakage is now 30% of the support queue; it wasn't in the deck, but sure.",
-      "soft_failure": "The UI is confusing and Only 15% of users built workflows; a retro bullet absorbs the pain.",
+      "unexpected_impact": "Users built workflows that break when APIs change \u2014 workflow breakage is now 30% of the support queue; it wasn't in the deck, but sure.",
+      "soft_failure": "The UI is confusing and only 15% of users built workflows; a retro bullet absorbs the pain.",
       "catastrophe": "A user built an infinite loop that burned $80k in compute before auto-kill; legal wants a meeting."
     }
   },
   {
     "id": "ms_007",
     "title": "Natural Language Search",
-    "description": "Replace keyword search with NLP-powered natural language search that understands intent and High risk: hallucinations, mismatched results, LLM latency.",
+    "description": "Replace keyword search with NLP-powered natural language search that understands intent \u2014 high upside, high risk of hallucinations.",
     "category": "moonshot",
     "effort": 8,
     "primary_metric": "self_serve_growth",
@@ -1793,7 +1793,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Natural language search is live and Satisfaction jumped 38%, users find things twice as fast, engagement is up 22%,; the exec summary suddenly has room.",
+      "clear_success": "Natural language search is live \u2014 satisfaction jumped 38%, users find things twice as fast, engagement up 22%; the exec summary suddenly has room.",
       "partial_success": "NL search works at 78% accuracy and satisfaction is up 15%; the footnote does the heavy lifting.",
       "unexpected_impact": "Search latency increased 400ms per query; the roadmap did not mention this part.",
       "soft_failure": "Accuracy is 62%; the postmortem gets a new slide.",
@@ -1840,17 +1840,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Embedded BI is live and Enterprises ditched external tools, dashboards became core,; leadership takes a victory lap.",
+      "clear_success": "Embedded BI is live \u2014 enterprises ditched external tools and dashboards became core product; leadership takes a victory lap.",
       "partial_success": "BI works and 40% of enterprises use it as their primary dashboard; we call it progress.",
       "unexpected_impact": "Users demanded drill-downs and custom SQL; we pretend that was the plan.",
       "soft_failure": "BI exists but adoption is 15%; we blame 'execution risk'.",
-      "catastrophe": "Large datasets crashed browsers and big-data customers could not use the feature, perf investigations ate six weeks,; this becomes a quarterly lesson."
+      "catastrophe": "Large datasets crashed browsers \u2014 big-data customers couldn't use the feature and perf investigations ate six weeks; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ms_009",
     "title": "Mobile App Launch",
-    "description": "Build native iOS and Android apps to increase mobile engagement and reach and High risk: platform maintenance, app store policies, feature parity.",
+    "description": "Build native iOS and Android apps for mobile engagement \u2014 high impact, high maintenance, high risk of the App Store rejecting your first submission.",
     "category": "moonshot",
     "effort": 10,
     "primary_metric": "self_serve_growth",
@@ -1887,9 +1887,9 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Apps are live on both stores and Mobile users jumped 140%, field teams adopted immediately,; it becomes a QBR 'win'.",
-      "partial_success": "Apps are live and Mobile usage is up 80%; it still makes the slide deck.",
-      "unexpected_impact": "Mobile became the primary interface and Desktop usage declined,; nobody had that in the model.",
+      "clear_success": "Apps are live on both stores \u2014 mobile users jumped 140% and field teams adopted immediately; it becomes a QBR 'win'.",
+      "partial_success": "Apps are live and mobile usage is up 80%; it still makes the slide deck.",
+      "unexpected_impact": "Mobile became the primary interface and desktop usage declined; nobody had that in the model.",
       "soft_failure": "Apps launched but adoption is 40% of expected; it goes into the learning pile.",
       "catastrophe": "iOS got rejected for compliance issues; update your resume."
     }
@@ -1897,7 +1897,7 @@
   {
     "id": "ms_010",
     "title": "Voice Interface Layer",
-    "description": "Add voice command interface that lets users control product via voice (Alexa-style) and Accessibility feature with enterprise appeal.",
+    "description": "Add voice command interface that lets users control product via voice (Alexa-style) and accessibility feature with enterprise appeal.",
     "category": "moonshot",
     "effort": 8,
     "primary_metric": "enterprise_growth",
@@ -1934,7 +1934,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Voice interface shipped and 34% tried it, 18% use it regularly, accessibility scores improved,; the exec summary suddenly has room.",
+      "clear_success": "Voice interface shipped \u2014 34% tried it, 18% use it regularly, and accessibility scores improved; the exec summary suddenly has room.",
       "partial_success": "Voice works at 82% accuracy; the footnote does the heavy lifting.",
       "unexpected_impact": "Privacy concerns exploded and you added a kill-switch; the roadmap did not mention this part.",
       "soft_failure": "Voice accuracy is 68%; the postmortem gets a new slide.",
@@ -1976,7 +1976,7 @@
       "partial_success": "Health scoring works at 76% accuracy; we call it progress.",
       "unexpected_impact": "CSMs started gaming the score with 'health hygiene' instead of real adoption work; we pretend that was the plan.",
       "soft_failure": "Accuracy is 64%; we blame 'execution risk'.",
-      "catastrophe": "The model showed bias against certain cohorts and Startups got flagged as high-risk, CSMs neglected them,; this becomes a quarterly lesson."
+      "catastrophe": "The model showed bias against certain cohorts \u2014 startups got flagged as high-risk and CSMs neglected them; this becomes a quarterly lesson."
     }
   },
   {

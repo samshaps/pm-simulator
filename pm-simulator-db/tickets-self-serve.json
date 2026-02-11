@@ -2,7 +2,7 @@
   {
     "id": "ss_001",
     "title": "Self-Serve Upgrade Flow",
-    "description": "Enable users to upgrade tiers directly in the product instead of emailing sales.",
+    "description": "Let users upgrade their plan directly in the product, because making them email sales in 2026 is embarrassing.",
     "category": "self_serve_feature",
     "effort": 5,
     "primary_metric": "self_serve_growth",
@@ -39,7 +39,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Upgrade flow shipped and 34% of signups now self-serve upgrade within 14 days; the exec summary suddenly has room.",
+      "clear_success": "Upgrade flow shipped and 34% of signups self-serve upgrade within 14 days; the exec summary suddenly has room.",
       "partial_success": "The flow works but only 18% of users complete it; the footnote does the heavy lifting.",
       "unexpected_impact": "Self-serve upgrades skew higher tier but 23% lower ACV than sales-assisted deals; the roadmap did not mention this part.",
       "soft_failure": "Upgrade button is live and conversion is 7%; the postmortem gets a new slide.",
@@ -49,7 +49,7 @@
   {
     "id": "ss_002",
     "title": "Freemium Tier Launch",
-    "description": "Create a free plan with limited features to expand TAM and Should drive top-of-funnel volume significantly.",
+    "description": "Launch a free tier with limited features to expand top-of-funnel \u2014 because nothing says 'growth strategy' like giving the product away.",
     "category": "self_serve_feature",
     "effort": 8,
     "primary_metric": "self_serve_growth",
@@ -86,7 +86,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Freemium launched and Signups tripled in six weeks; leadership takes a victory lap.",
+      "clear_success": "Freemium launched and signups tripled in six weeks; leadership takes a victory lap.",
       "partial_success": "Freemium brought volume but conversion is 8%; we call it progress.",
       "unexpected_impact": "Free users now dominate feature requests and the backlog shifted to freeware use cases; we pretend that was the plan.",
       "soft_failure": "Signup volume is there but day-30 retention is 19%; we blame 'execution risk'.",
@@ -124,17 +124,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Tutorial shipped and Time to first meaningful action dropped from 18 minutes to 11; it becomes a QBR 'win'.",
+      "clear_success": "Tutorial shipped and time-to-first-action dropped from 18 minutes to 11; it becomes a QBR 'win'.",
       "partial_success": "Tutorial cuts activation time by 6 minutes; it still makes the slide deck.",
-      "unexpected_impact": "The tutorial nails the happy path and hides the advanced features people paid for; nobody had that in the model.",
+      "unexpected_impact": "The tutorial nails the happy path but hides the advanced features people actually paid for; nobody had that in the model.",
       "soft_failure": "Tutorial has a 34% skip-through rate; it goes into the learning pile.",
-      "catastrophe": "Tutorial tracking leaked memory and After 10 minutes the tab ate 800MB; update your resume."
+      "catastrophe": "Tutorial tracking leaked memory \u2014 after 10 minutes the tab was eating 800MB; update your resume."
     }
   },
   {
     "id": "ss_004",
     "title": "Usage Analytics Dashboard",
-    "description": "Self-service analytics showing users how much they're actually using the product and Increases stickiness by making value visible.",
+    "description": "Give users a self-service analytics dashboard showing how much they actually use the product, because making value visible is cheaper than explaining it.",
     "category": "self_serve_feature",
     "effort": 6,
     "primary_metric": "self_serve_growth",
@@ -171,8 +171,8 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Dashboard launched; someone writes \"great job\" in all-hands.",
-      "partial_success": "Dashboard is used and weekly actives are up 6%; we declare victory and move on.",
+      "clear_success": "Dashboard launched and weekly actives are up 14%; someone writes \"great job\" in all-hands.",
+      "partial_success": "Dashboard is live and weekly actives are up 6%; we declare victory and move on.",
       "unexpected_impact": "Customer success turned the dashboard into a renewal weapon; it wasn't in the deck, but sure.",
       "soft_failure": "Dashboard shipped and only 19% ever visit it; a retro bullet absorbs the pain.",
       "catastrophe": "Aggregation query ran unindexed for 5 days; legal wants a meeting."
@@ -181,7 +181,7 @@
   {
     "id": "ss_005",
     "title": "Notification Preference Center",
-    "description": "Let users control what emails and in-app alerts they receive and Should reduce unsubscribe rates and inbox spam complaints.",
+    "description": "Let users control what emails and in-app alerts they receive so they stop unsubscribing from everything out of spite.",
     "category": "self_serve_feature",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -209,17 +209,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Preference center shipped and Unsubscribes dropped from 3.2% to 1.8%; the exec summary suddenly has room.",
-      "partial_success": "Preference center is live and Unsubscribes fell 1.4 points, not the 1.8 we modeled; the footnote does the heavy lifting.",
+      "clear_success": "Preference center shipped and unsubscribe rate dropped from 3.2% to 1.8%; the exec summary suddenly has room.",
+      "partial_success": "Preference center is live \u2014 unsubscribes fell 1.4 points, not the 1.8 we modeled; the footnote does the heavy lifting.",
       "unexpected_impact": "Users turned off billing alerts and finance found three failed cards 60 days later; the roadmap did not mention this part.",
-      "soft_failure": "Preference center exists but is buried three clicks deep and Only 6% ever find it; the postmortem gets a new slide.",
+      "soft_failure": "Preference center exists but is buried three clicks deep and only 6% ever find it; the postmortem gets a new slide.",
       "catastrophe": "Preferences did not sync to the backend and users opted out; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ss_006",
     "title": "Mobile App Redesign",
-    "description": "Modernize the mobile experience to match web capabilities and Should unlock mobile-first segment.",
+    "description": "Modernize the mobile experience to match web capabilities and unlock the mobile-first segment that keeps showing up in the TAM slide.",
     "category": "self_serve_feature",
     "effort": 8,
     "primary_metric": "self_serve_growth",
@@ -258,7 +258,7 @@
     "outcomes": {
       "clear_success": "Redesigned app shipped on iOS and Android; leadership takes a victory lap.",
       "partial_success": "Redesign shipped and DAU is up 24%; we call it progress.",
-      "unexpected_impact": "Mobile-first users started filing requests that make no sense on web and the roadmap split in two; we pretend that was the plan.",
+      "unexpected_impact": "Mobile-first users started filing requests that make no sense on web, and the roadmap split in two; we pretend that was the plan.",
       "soft_failure": "Redesign shipped and mobile metrics did not move; we blame 'execution risk'.",
       "catastrophe": "iOS 2.0 sync bug dropped local changes on the floor; this becomes a quarterly lesson."
     }
@@ -266,7 +266,7 @@
   {
     "id": "ss_007",
     "title": "Knowledge Base Expansion",
-    "description": "Build out self-serve documentation and how-to guides to deflect common support questions and Low engineering effort, high content burden.",
+    "description": "Build out self-serve documentation and how-to guides to deflect common support questions \u2014 low engineering effort, high content burden.",
     "category": "self_serve_feature",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -296,7 +296,7 @@
     "outcomes": {
       "clear_success": "Knowledge base launched with 47 core articles; it becomes a QBR 'win'.",
       "partial_success": "KB shipped with 32 articles; it still makes the slide deck.",
-      "unexpected_impact": "KB started ranking above marketing pages and Unqualified traffic now reads advanced docs they cannot use; nobody had that in the model.",
+      "unexpected_impact": "KB articles started ranking above marketing pages, sending unqualified traffic to advanced docs they can't use; nobody had that in the model.",
       "soft_failure": "KB has 40 articles but only 6% of support questions reference them; it goes into the learning pile.",
       "catastrophe": "An article was correct for v2.3 and wrong for v3.1; update your resume."
     }
@@ -304,7 +304,7 @@
   {
     "id": "ss_008",
     "title": "Referral Program Launch",
-    "description": "Users earn credits for referring other users and Should drive organic acquisition.",
+    "description": "Let users earn credits for referring other users, because organic acquisition sounds better in a board deck than paid ads.",
     "category": "self_serve_feature",
     "effort": 5,
     "primary_metric": "self_serve_growth",
@@ -342,7 +342,7 @@
   {
     "id": "ss_009",
     "title": "Feature Gating by Tier",
-    "description": "Gate advanced features behind higher tier plans, encourage in-product upgrades and Should increase conversion velocity and feature adoption.",
+    "description": "Gate advanced features behind higher-tier plans to encourage in-product upgrades and give the pricing page a reason to exist.",
     "category": "self_serve_feature",
     "effort": 5,
     "primary_metric": "self_serve_growth",
@@ -380,16 +380,16 @@
     },
     "outcomes": {
       "clear_success": "Gates shipped and 14% of users convert within 7 days; the exec summary suddenly has room.",
-      "partial_success": "Gates deployed and Conversion at gate-hit is 8%; the footnote does the heavy lifting.",
-      "unexpected_impact": "Enterprise customers hit freemium gates because of tier mapping; the roadmap did not mention this part.",
-      "soft_failure": "Gates exist but the upgrade flow is confusing and users hit the paywall; the postmortem gets a new slide.",
+      "partial_success": "Gates deployed and conversion at gate-hit is 8%; the footnote does the heavy lifting.",
+      "unexpected_impact": "Enterprise customers hit freemium gates due to a tier-mapping bug; the roadmap did not mention this part.",
+      "soft_failure": "Gates exist but the upgrade flow is confusing \u2014 users hit the paywall, get frustrated, and leave; the postmortem gets a new slide.",
       "catastrophe": "Gate logic bug let enterprise users share API keys with free users; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ss_010",
     "title": "User Segmentation Engine",
-    "description": "Dynamically segment users by behavior to personalize experience and messaging and Should improve activation and retention.",
+    "description": "Dynamically segment users by behavior to personalize their experience, because treating everyone the same stopped working in 2019.",
     "category": "self_serve_feature",
     "effort": 6,
     "primary_metric": "self_serve_growth",
@@ -429,14 +429,14 @@
       "clear_success": "Segmentation engine shipped and we can target power users; it becomes a QBR 'win'.",
       "partial_success": "Segmentation works but we only have 4 segments instead of 9; it still makes the slide deck.",
       "unexpected_impact": "Segmentation revealed an at-risk persona nobody planned for; nobody had that in the model.",
-      "soft_failure": "Segments exist but targeting does not and Infrastructure without strategy is just a fancy spreadsheet; it goes into the learning pile.",
-      "catastrophe": "Batch job race condition reassigned segments all day and users saw three onboarding flows in one session; update your resume."
+      "soft_failure": "Segments exist but targeting doesn't \u2014 infrastructure without strategy is just a fancy spreadsheet; it goes into the learning pile.",
+      "catastrophe": "A batch job race condition reassigned segments all day \u2014 users saw three onboarding flows in one session; update your resume."
     }
   },
   {
     "id": "ss_011",
     "title": "Developer API Documentation",
-    "description": "Ship self-serve API docs and SDKs to unlock developer integrations and Should expand use cases and integration opportunities.",
+    "description": "Ship self-serve API docs and SDKs so developers can integrate without filing a support ticket and waiting three business days.",
     "category": "self_serve_feature",
     "effort": 6,
     "primary_metric": "self_serve_growth",
@@ -465,16 +465,16 @@
     },
     "outcomes": {
       "clear_success": "API docs and Python/JS SDKs launched; someone writes \"great job\" in all-hands.",
-      "partial_success": "Docs are live and Interest increased but not dramatically; we declare victory and move on.",
+      "partial_success": "Docs are live and interest increased but not dramatically; we declare victory and move on.",
       "unexpected_impact": "Two developers built alternative UIs on top of the API and started reselling; it wasn't in the deck, but sure.",
-      "soft_failure": "Docs exist but usage is light and Most users want clicks, not code; a retro bullet absorbs the pain.",
-      "catastrophe": "Docs included an example with an undocumented admin parameter and Eight customers used it; legal wants a meeting."
+      "soft_failure": "Docs exist but usage is light and most users want clicks, not code; a retro bullet absorbs the pain.",
+      "catastrophe": "Docs included an example with an undocumented admin parameter and eight customers used it; legal wants a meeting."
     }
   },
   {
     "id": "ss_012",
     "title": "Pricing Page Redesign",
-    "description": "Simplify pricing to make tier comparison easier and reduce sales friction and Should improve conversion before trial.",
+    "description": "Simplify the pricing page so users can compare tiers without a spreadsheet \u2014 current conversion suggests the page is doing more harm than good.",
     "category": "self_serve_feature",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -504,7 +504,7 @@
     "outcomes": {
       "clear_success": "Pricing page simplified to three tiers; the exec summary suddenly has room.",
       "partial_success": "Redesigned page lifted trial conversion 12%; the footnote does the heavy lifting.",
-      "unexpected_impact": "New comparisons made the mid-tier look silly and Most signups now skip to the top tier; the roadmap did not mention this part.",
+      "unexpected_impact": "New comparisons made the mid-tier look silly and most signups now skip to the top tier; the roadmap did not mention this part.",
       "soft_failure": "Page looks modern but conversion is unchanged; the postmortem gets a new slide.",
       "catastrophe": "Monthly versus annual toggle bug showed monthly prices for annual plans for 6 days; everyone pretends it was unforeseeable."
     }
@@ -512,7 +512,7 @@
   {
     "id": "ss_013",
     "title": "Community Forum",
-    "description": "Ship a community forum where users can ask questions.",
+    "description": "Ship a community forum so users can help each other instead of emailing us.",
     "category": "self_serve_feature",
     "effort": 6,
     "primary_metric": "self_serve_growth",
@@ -550,7 +550,7 @@
     },
     "outcomes": {
       "clear_success": "Forum launched and power users answer questions; leadership takes a victory lap.",
-      "partial_success": "Forum is active but uneven and Some categories get answers in minutes, others in days; we call it progress.",
+      "partial_success": "Forum is active but uneven \u2014 some categories get answers in minutes, others in days; we call it progress.",
       "unexpected_impact": "Forum became a place to discuss pricing and competitors; we pretend that was the plan.",
       "soft_failure": "Forum exists with 12 posts, most from support trying to seed it; we blame 'execution risk'.",
       "catastrophe": "A wrong billing integration answer was marked as the solution by 47 users; this becomes a quarterly lesson."
@@ -559,7 +559,7 @@
   {
     "id": "ss_014",
     "title": "Template Library",
-    "description": "Curate templates for common use cases to help users get started faster and Quick value delivery.",
+    "description": "Curate templates for common use cases so new users can get value before they get confused.",
     "category": "self_serve_feature",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -590,14 +590,14 @@
       "clear_success": "Template library launched with 8 templates; it becomes a QBR 'win'.",
       "partial_success": "Templates are live and 14% of new users use them; it still makes the slide deck.",
       "unexpected_impact": "Users copy templates and then hack them into shapes they were never designed for; nobody had that in the model.",
-      "soft_failure": "Template library is invisible and Only 8% of new users know it exists; it goes into the learning pile.",
+      "soft_failure": "Template library is invisible and only 8% of new users know it exists; it goes into the learning pile.",
       "catastrophe": "A template built on a beta workflow no longer works and 340 users hit errors; update your resume."
     }
   },
   {
     "id": "ss_015",
     "title": "Search and Filter Overhaul",
-    "description": "Improve search relevance and faceted filtering to help users find what they need and Should reduce time-to-task.",
+    "description": "Overhaul search relevance and add faceted filtering so users can actually find what they need before giving up.",
     "category": "self_serve_feature",
     "effort": 5,
     "primary_metric": "self_serve_growth",
@@ -629,13 +629,13 @@
       "partial_success": "Search improved but top results are relevant 73% of the time; we declare victory and move on.",
       "unexpected_impact": "Better search surfaced niche features and shifted support from where is X to how do I use X; it wasn't in the deck, but sure.",
       "soft_failure": "ML ranking shipped and results feel unpredictable; a retro bullet absorbs the pain.",
-      "catastrophe": "Date indexing bug stored timestamps as integers and Filters returned chaos for 9 days, we disabled them to stop the bleeding,; legal wants a meeting."
+      "catastrophe": "A date indexing bug stored timestamps as integers \u2014 filters returned chaos for 9 days and we disabled them to stop the bleeding; legal wants a meeting."
     }
   },
   {
     "id": "ss_016",
     "title": "Integrations Marketplace",
-    "description": "Platform for third-party integrations with popular tools and Should expand product value without building every integration ourselves.",
+    "description": "Build a platform for third-party integrations so the product does more without us building every connector ourselves.",
     "category": "self_serve_feature",
     "effort": 7,
     "primary_metric": "self_serve_growth",
@@ -674,7 +674,7 @@
     "outcomes": {
       "clear_success": "Marketplace launched with 12 integrations; the exec summary suddenly has room.",
       "partial_success": "Marketplace live with 7 integrations; the footnote does the heavy lifting.",
-      "unexpected_impact": "Third-party integrations exposed product gaps we ignored and the Slack integration made real-time notifications a promise we do not keep; the roadmap did not mention this part.",
+      "unexpected_impact": "Third-party integrations exposed product gaps we'd been ignoring \u2014 the Slack integration made real-time notifications a promise we don't keep; the roadmap did not mention this part.",
       "soft_failure": "Marketplace exists but only 6% connect an integration; the postmortem gets a new slide.",
       "catastrophe": "A Zapier integration sent duplicate records every 4 hours for 400 customers; everyone pretends it was unforeseeable."
     }
@@ -682,7 +682,7 @@
   {
     "id": "ss_017",
     "title": "Dark Mode Interface",
-    "description": "Ship dark mode to satisfy power users and reduce eye strain complaints and nice-to-have quality of life feature.",
+    "description": "Ship dark mode to satisfy power users and reduce the eye strain complaints that keep appearing in NPS verbatims.",
     "category": "self_serve_feature",
     "effort": 5,
     "primary_metric": "self_serve_growth",
@@ -723,13 +723,13 @@
       "partial_success": "Dark mode live with 28% adoption; we call it progress.",
       "unexpected_impact": "Late-night usage in Asia jumped and session timing shifted; we pretend that was the plan.",
       "soft_failure": "Dark mode adoption is 11%; we blame 'execution risk'.",
-      "catastrophe": "Global invert CSS nuked SVG chart readability and 1,200 power users reported broken visuals; this becomes a quarterly lesson."
+      "catastrophe": "A global CSS invert nuked SVG chart readability \u2014 1,200 power users reported broken visuals; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ss_018",
     "title": "Localization and i18n",
-    "description": "Expand into non-English markets with localized UI and i18n support and Should unlock international expansion.",
+    "description": "Add i18n support and localize the UI for non-English markets, because 'international expansion' requires more than a flag emoji.",
     "category": "self_serve_feature",
     "effort": 7,
     "primary_metric": "self_serve_growth",
@@ -758,9 +758,9 @@
     },
     "outcomes": {
       "clear_success": "i18n shipped with Spanish and German; it becomes a QBR 'win'.",
-      "partial_success": "Spanish and German are live; it still makes the slide deck.",
+      "partial_success": "Spanish and german are live; it still makes the slide deck.",
       "unexpected_impact": "Localization exposed English-centric assumptions in dates, currency, and idioms; nobody had that in the model.",
-      "soft_failure": "Framework shipped but only English and Spanish are live; it goes into the learning pile.",
+      "soft_failure": "Framework shipped but only English and spanish are live; it goes into the learning pile.",
       "catastrophe": "German copy mixed formal and informal pronouns; update your resume."
     }
   },
@@ -795,8 +795,8 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Smart defaults shipped and Time to first meaningful action dropped 11 minutes; someone writes \"great job\" in all-hands.",
-      "partial_success": "Defaults are live and Setup time dropped 7 minutes but 22% of users override immediately; we declare victory and move on.",
+      "clear_success": "Smart defaults shipped and time-to-first-action dropped 11 minutes; someone writes \"great job\" in all-hands.",
+      "partial_success": "Defaults are live and setup time dropped 7 minutes, but 22% of users override immediately; we declare victory and move on.",
       "unexpected_impact": "Enterprise prospects read the defaults as a signal we are too basic; it wasn't in the deck, but sure.",
       "soft_failure": "Defaults depend on a signup questionnaire users skip; a retro bullet absorbs the pain.",
       "catastrophe": "Manufacturing defaults created 3,000 wrong records on signup; legal wants a meeting."
@@ -805,7 +805,7 @@
   {
     "id": "ss_020",
     "title": "Single Sign-On Integration",
-    "description": "Support SSO (SAML, OAuth) for enterprise customers and Should reduce enterprise sales friction and increase security perception.",
+    "description": "Support SSO (SAML, OAuth) for enterprise customers \u2014 it's table stakes, and every sales call without it ends the same way.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
@@ -843,7 +843,7 @@
     },
     "outcomes": {
       "clear_success": "SSO shipped and enterprise deal velocity improved; leadership takes a victory lap.",
-      "partial_success": "SSO works for Okta and Azure AD; we call it progress.",
+      "partial_success": "SSO works for Okta and azure AD; we call it progress.",
       "unexpected_impact": "SSO turned us into a compliance artifact with their IT change windows; we pretend that was the plan.",
       "soft_failure": "SSO exists but customers did not adopt it; we blame 'execution risk'.",
       "catastrophe": "Token refresh bug left users logged in; this becomes a quarterly lesson."
@@ -852,7 +852,7 @@
   {
     "id": "ss_021",
     "title": "In-App Feedback Widget",
-    "description": "Collect qualitative feedback from users without leaving the product and Should drive product development priorities.",
+    "description": "Add an in-app feedback widget so users can tell us what's broken without leaving the product or writing a tweet.",
     "category": "self_serve_feature",
     "effort": 4,
     "primary_metric": "self_serve_growth",
@@ -882,7 +882,7 @@
     "outcomes": {
       "clear_success": "Feedback widget shipped and 340 submissions in month one; it becomes a QBR 'win'.",
       "partial_success": "Widget is live and collected 120 pieces of feedback; it still makes the slide deck.",
-      "unexpected_impact": "Feedback surfaced heavy use of a feature we thought was dead and Roadmap adjusted to serve the quiet segment; nobody had that in the model.",
+      "unexpected_impact": "Feedback surfaced heavy use of a feature we thought was dead and roadmap adjusted to serve the quiet segment; nobody had that in the model.",
       "soft_failure": "Widget exists but only 2% of users click it; it goes into the learning pile.",
       "catastrophe": "Multiline feedback truncated at 50 characters; update your resume."
     }
@@ -890,7 +890,7 @@
   {
     "id": "ss_022",
     "title": "A/B Testing Framework",
-    "description": "Infrastructure for rapid A/B testing of product changes and Enables data-driven decisions.",
+    "description": "Build A/B testing infrastructure so product decisions can cite data instead of the loudest person in the room.",
     "category": "self_serve_feature",
     "effort": 8,
     "primary_metric": "self_serve_growth",
@@ -918,17 +918,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "A/B testing framework is production-ready and First 12 experiments drove 3-4% improvements; someone writes \"great job\" in all-hands.",
-      "partial_success": "Framework is live with six experiments running and Rigor is solid; we declare victory and move on.",
-      "unexpected_impact": "Experiments showed segments respond differently to the same change and Segmented strategies became necessary,; it wasn't in the deck, but sure.",
+      "clear_success": "A/B testing framework is production-ready and first 12 experiments drove 3-4% improvements each; someone writes \"great job\" in all-hands.",
+      "partial_success": "Framework is live with six experiments running \u2014 rigor is solid; we declare victory and move on.",
+      "unexpected_impact": "Experiments revealed that segments respond differently to the same change, making segmented strategies necessary; it wasn't in the deck, but sure.",
       "soft_failure": "Framework exists but adoption is low; a retro bullet absorbs the pain.",
-      "catastrophe": "Variant assignment bug broke randomization by timezone and Ninety days of experiments were invalid; legal wants a meeting."
+      "catastrophe": "A variant assignment bug broke randomization by timezone \u2014 90 days of experiments were invalid; legal wants a meeting."
     }
   },
   {
     "id": "ss_023",
     "title": "Getting Started Checklist",
-    "description": "Add a lightweight checklist that nudges users through three key setup steps and Low effort, should lift activation.",
+    "description": "Add a lightweight setup checklist that nudges new users through three key steps \u2014 low effort, should lift activation.",
     "category": "self_serve_feature",
     "effort": 2,
     "primary_metric": "self_serve_growth",
@@ -956,11 +956,11 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Checklist shipped and Activation improved; the exec summary suddenly has room.",
+      "clear_success": "Checklist shipped and activation improved measurably; the exec summary suddenly has room.",
       "partial_success": "Checklist exists with 31% completion; the footnote does the heavy lifting.",
       "unexpected_impact": "Users treat checklist items as requirements and support gets tickets about steps they cannot complete yet; the roadmap did not mention this part.",
       "soft_failure": "Checklist is ignored with a 7% completion rate; the postmortem gets a new slide.",
-      "catastrophe": "Checklist step linked to a broken flow and New users got stuck in a loop; everyone pretends it was unforeseeable."
+      "catastrophe": "Checklist step linked to a broken flow \u2014 new users got stuck in a loop; everyone pretends it was unforeseeable."
     }
   }
 ]

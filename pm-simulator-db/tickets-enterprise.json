@@ -2,7 +2,7 @@
   {
     "id": "ent_001",
     "title": "SSO Integration",
-    "description": "Implement SAML/OIDC-based single sign-on for enterprise customers and sales has three deals pending this feature.",
+    "description": "Implement SAML/OIDC-based single sign-on for enterprise customers \u2014 sales has three deals pending on this, so no pressure.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
@@ -39,7 +39,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "SSO is live and Three deals close within 30 days; someone writes \"great job\" in all-hands.",
+      "clear_success": "SSO is live and three deals close within 30 days; someone writes \"great job\" in all-hands.",
       "partial_success": "OIDC works but SAML attribute mapping is still manual per client and sales stops complaining in steering meetings; we declare victory and move on.",
       "unexpected_impact": "SSO exposed a critical session-management flaw and forced an auth refactor; it wasn't in the deck, but sure.",
       "soft_failure": "SSO is functional but admin UX is confusing enough to require a two-hour setup call per customer; a retro bullet absorbs the pain.",
@@ -49,7 +49,7 @@
   {
     "id": "ent_002",
     "title": "SCIM User Provisioning",
-    "description": "Implement SCIM 2.0 endpoint for automated user provisioning and deprovisioning and Required for three prospects already in late sales stages.",
+    "description": "Build a SCIM 2.0 endpoint for automated user provisioning and deprovisioning \u2014 three late-stage prospects are literally waiting.",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
@@ -87,8 +87,8 @@
     },
     "outcomes": {
       "clear_success": "SCIM launched and all three pending enterprise deals closed in month one; the exec summary suddenly has room.",
-      "partial_success": "SCIM works but attribute mapping is manual and Two deals move forward; the footnote does the heavy lifting.",
-      "unexpected_impact": "SCIM exposed inconsistencies between roles and permissions; the roadmap did not mention this part.",
+      "partial_success": "SCIM works but attribute mapping is manual \u2014 two deals move forward anyway; the footnote does the heavy lifting.",
+      "unexpected_impact": "SCIM exposed inconsistencies between roles and permissions nobody knew existed; the roadmap did not mention this part.",
       "soft_failure": "SCIM is live but only one customer deploys it; the postmortem gets a new slide.",
       "catastrophe": "A race condition left 300 deprovisioned users active; everyone pretends it was unforeseeable."
     }
@@ -96,7 +96,7 @@
   {
     "id": "ent_003",
     "title": "Role-Based Access Control",
-    "description": "Design and implement granular role-based permissions (admin, viewer, editor, auditor, plus custom roles).",
+    "description": "Design and implement granular role-based permissions (admin, viewer, editor, auditor, plus custom roles) so access control stops being a spreadsheet.",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
@@ -134,9 +134,9 @@
     },
     "outcomes": {
       "clear_success": "RBAC is live with predefined roles and a custom builder; leadership takes a victory lap.",
-      "partial_success": "Predefined roles work but custom roles need engineering help and customers adapt their orgs to our model; we call it progress.",
+      "partial_success": "Predefined roles work but custom roles need engineering help, so customers adapt their orgs to our model; we call it progress.",
       "unexpected_impact": "The permission schema created edge cases with inheritance and delegation; we pretend that was the plan.",
-      "soft_failure": "RBAC works but the admin UI is cluttered and customers email support about permission denied errors, each taking 30 minutes to diagnose; we blame 'execution risk'.",
+      "soft_failure": "RBAC works but the admin UI is cluttered \u2014 customers email support about permission-denied errors that each take 30 minutes to diagnose; we blame 'execution risk'.",
       "catastrophe": "A role inheritance bug granted unintended permissions to 12% of users at a large customer; this becomes a quarterly lesson."
     }
   },
@@ -181,8 +181,8 @@
     },
     "outcomes": {
       "clear_success": "Audit logs are comprehensive and immutable; it becomes a QBR 'win'.",
-      "partial_success": "Most changes are logged but custom integrations are not and Auditors noted the gap; it still makes the slide deck.",
-      "unexpected_impact": "Audit log storage grew faster than planned and we compressed; nobody had that in the model.",
+      "partial_success": "Most changes are logged but custom integrations are not \u2014 auditors noted the gap; it still makes the slide deck.",
+      "unexpected_impact": "Audit log storage grew faster than anyone projected and we had to compress retroactively; nobody had that in the model.",
       "soft_failure": "Audit logs work but search and filtering are painfully slow on large datasets; it goes into the learning pile.",
       "catastrophe": "A retention misconfig deleted logs that were supposed to be immutable; update your resume."
     }
@@ -190,7 +190,7 @@
   {
     "id": "ent_005",
     "title": "Custom Branding & White-Label",
-    "description": "Allow enterprise customers to customize UI colors, logos, email templates, and domain branding.",
+    "description": "Allow enterprise customers to customize UI colors, logos, email templates, and domain branding so it looks like they built it themselves.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
@@ -227,9 +227,9 @@
       ]
     },
     "outcomes": {
-      "clear_success": "White-label branding shipped and Both prospects converted; someone writes \"great job\" in all-hands.",
-      "partial_success": "UI rebranding works but emails and embedded widgets still show our branding; we declare victory and move on.",
-      "unexpected_impact": "Brand customization multiplied UI variants and Visual regression testing became a weekly ritual; it wasn't in the deck, but sure.",
+      "clear_success": "White-label branding shipped and both prospects converted; someone writes \"great job\" in all-hands.",
+      "partial_success": "UI rebranding works but emails and embedded widgets still show our logo; we declare victory and move on.",
+      "unexpected_impact": "Brand customization multiplied UI variants and visual regression testing became a weekly ritual; it wasn't in the deck, but sure.",
       "soft_failure": "Branding works but requires engineering per customer to wire custom CSS; a retro bullet absorbs the pain.",
       "catastrophe": "A caching issue served one customer's branding to another for six hours; legal wants a meeting."
     }
@@ -237,7 +237,7 @@
   {
     "id": "ent_006",
     "title": "Data Residency Compliance",
-    "description": "Support customer requests for data to remain within specific geographic regions (EU, US, APAC, etc.",
+    "description": "Support data residency requirements so customer data stays within specific geographic regions (EU, US, APAC) \u2014 because sovereignty is not optional.",
     "category": "enterprise_feature",
     "effort": 8,
     "primary_metric": "enterprise_growth",
@@ -275,16 +275,16 @@
     },
     "outcomes": {
       "clear_success": "Data residency is configurable at onboarding; the exec summary suddenly has room.",
-      "partial_success": "Residency works for primary databases, but analytics still run on shared infra and the DACH customer accepts a compliance addendum; the footnote does the heavy lifting.",
+      "partial_success": "Residency works for primary databases but analytics still run on shared infra \u2014 the DACH customer accepted a compliance addendum; the footnote does the heavy lifting.",
       "unexpected_impact": "Residency added latency to cross-region operations; the roadmap did not mention this part.",
-      "soft_failure": "Residency is implemented but region selection is unclear and Three customers picked the wrong region; the postmortem gets a new slide.",
-      "catastrophe": "Replication lag corrupted the EU backup during a failover test and Recovery required seven-day-old snapshots; everyone pretends it was unforeseeable."
+      "soft_failure": "Residency is implemented but region selection is unclear \u2014 three customers picked the wrong one; the postmortem gets a new slide.",
+      "catastrophe": "Replication lag corrupted the EU backup during a failover test, and recovery required seven-day-old snapshots; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ent_007",
     "title": "Enterprise SLA Dashboard",
-    "description": "Create a customer-facing dashboard showing uptime guarantees, incident response times, and support SLA metrics in real-time.",
+    "description": "Build a customer-facing dashboard showing uptime, incident response times, and SLA metrics in real-time \u2014 the transparency no one asked for until procurement did.",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
@@ -331,7 +331,7 @@
   {
     "id": "ent_008",
     "title": "Enterprise Admin Console",
-    "description": "Build a dedicated admin portal for enterprise customers to manage users, audit logs, integrations, and security settings from one place.",
+    "description": "Build a dedicated admin portal for enterprise customers to manage users, audit logs, integrations, and security settings from one place instead of six.",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
@@ -368,7 +368,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Admin console launched with all promised features and Enterprise customers moved workflows into it within weeks; it becomes a QBR 'win'.",
+      "clear_success": "Admin console launched with all promised features and enterprise customers moved workflows into it within weeks; it becomes a QBR 'win'.",
       "partial_success": "The console covers about 70% of use cases; it still makes the slide deck.",
       "unexpected_impact": "The console got so feature-rich that customers asked for API access to automate console actions; nobody had that in the model.",
       "soft_failure": "The console shipped but the IA is confusing and customers click through nested menus to find basic settings; it goes into the learning pile.",
@@ -378,7 +378,7 @@
   {
     "id": "ent_009",
     "title": "Bulk User Management",
-    "description": "Implement CSV import and bulk user operations (enable/disable/delete in batches).",
+    "description": "Enable bulk import and export of users, data, and configs via CSV and API so enterprise onboarding doesn't require a full-time coordinator.",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
@@ -415,8 +415,8 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Bulk import is live and Enterprises onboard hundreds of users in minutes instead of hours; someone writes \"great job\" in all-hands.",
-      "partial_success": "Bulk import works for basic creation but custom attributes still need manual entry and helpful, not fully self-serve; we declare victory and move on.",
+      "clear_success": "Bulk import is live and enterprises onboard hundreds of users in minutes instead of hours; someone writes \"great job\" in all-hands.",
+      "partial_success": "Bulk import works for basic creation but custom attributes still need manual entry \u2014 helpful, not fully self-serve; we declare victory and move on.",
       "unexpected_impact": "Bulk import exposed customer data quality issues; it wasn't in the deck, but sure.",
       "soft_failure": "Bulk import is sound but gives no feedback until completion; a retro bullet absorbs the pain.",
       "catastrophe": "A race condition processed the same CSV twice, creating 4,000 duplicate users; legal wants a meeting."
@@ -425,7 +425,7 @@
   {
     "id": "ent_010",
     "title": "Custom API Rate Limits",
-    "description": "Allow enterprise customers to request higher API rate limits customized to their usage patterns, with monitoring and alerts.",
+    "description": "Let enterprise customers request higher API rate limits with monitoring and alerts, because apparently the default limits are 'insulting.'",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
@@ -464,7 +464,7 @@
     "outcomes": {
       "clear_success": "Custom rate limits are live and the scaling customer hits targets without throttling; leadership takes a victory lap.",
       "partial_success": "Custom limits work but require manual provisioning per customer; we call it progress.",
-      "unexpected_impact": "Higher limits exposed inefficient API usage and Instead of optimizing, the customer asked for even higher limits; we pretend that was the plan.",
+      "unexpected_impact": "Higher limits exposed wildly inefficient API usage \u2014 instead of optimizing, the customer asked for even higher limits; we pretend that was the plan.",
       "soft_failure": "Custom limits exist but the customer did not know they could request them; we blame 'execution risk'.",
       "catastrophe": "A calculation error set one customer's limit 100x too high; this becomes a quarterly lesson."
     }
@@ -472,7 +472,7 @@
   {
     "id": "ent_011",
     "title": "Dedicated Support Portal",
-    "description": "Build a customer-facing support portal with ticket tracking, SLA visibility, and direct escalation paths.",
+    "description": "Build a customer-facing portal where enterprise customers can submit, track, and escalate support tickets without emailing anyone.",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
@@ -510,7 +510,7 @@
     },
     "outcomes": {
       "clear_success": "Support portal launched with ticket tracking and SLA transparency; it becomes a QBR 'win'.",
-      "partial_success": "The portal works for basic submissions but escalation paths are still manual and Complex issues route inconsistently; it still makes the slide deck.",
+      "partial_success": "The portal works for basic submissions but escalation paths are still manual \u2014 complex issues route inconsistently; it still makes the slide deck.",
       "unexpected_impact": "The portal exposed response-time differences by customer size; nobody had that in the model.",
       "soft_failure": "The portal exists but adoption is low; it goes into the learning pile.",
       "catastrophe": "A sync error marked resolved tickets as awaiting customer response for weeks; update your resume."
@@ -519,7 +519,7 @@
   {
     "id": "ent_012",
     "title": "SOC 2 Compliance Mode",
-    "description": "Implement compliance features required for SOC 2 Type II attestation: detailed audit trails.",
+    "description": "Implement compliance features for SOC 2 Type II attestation \u2014 audit trails, access controls, the works \u2014 because enterprise deals die in procurement.",
     "category": "enterprise_feature",
     "effort": 8,
     "primary_metric": "enterprise_growth",
@@ -566,7 +566,7 @@
   {
     "id": "ent_013",
     "title": "HIPAA Compliance Features",
-    "description": "Implement HIPAA-required features: encryption of PHI, audit logging of access, data retention policies, and breach notification procedures.",
+    "description": "Build HIPAA-required features: PHI encryption, access logging, retention policies, and breach notification, because healthcare customers do not negotiate on compliance.",
     "category": "enterprise_feature",
     "effort": 8,
     "primary_metric": "enterprise_growth",
@@ -605,7 +605,7 @@
     "outcomes": {
       "clear_success": "HIPAA features are live and verified by the customer's compliance team; the exec summary suddenly has room.",
       "partial_success": "Requirements are mostly met, but BAAs and ongoing training are mandatory; the footnote does the heavy lifting.",
-      "unexpected_impact": "HIPAA constraints spread across the codebase and Features that were simple now need PHI guardrails; the roadmap did not mention this part.",
+      "unexpected_impact": "HIPAA constraints spread across the codebase and features that were simple now need PHI guardrails; the roadmap did not mention this part.",
       "soft_failure": "HIPAA features shipped but the customer's audit found gaps; the postmortem gets a new slide.",
       "catastrophe": "A data export included PHI in an unencrypted CSV and the customer's breach notification mentioned our platform; everyone pretends it was unforeseeable."
     }
@@ -650,7 +650,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Reporting engine is live and Enterprise customers build custom reports in hours instead of weeks of engineering support,; leadership takes a victory lap.",
+      "clear_success": "Reporting engine is live and enterprise customers build custom reports in hours instead of weeks; leadership takes a victory lap.",
       "partial_success": "Common use cases are covered, but complex multi-table queries still require engineering and customers like the foundation; we call it progress.",
       "unexpected_impact": "Some customers built monster queries that caused performance issues; we pretend that was the plan.",
       "soft_failure": "The UI is powerful but overwhelming and customers use a small fraction of capabilities; we blame 'execution risk'.",
@@ -660,7 +660,7 @@
   {
     "id": "ent_015",
     "title": "Advanced Permission Model",
-    "description": "Extend RBAC to include object-level permissions, attribute-based access control, and delegated administration.",
+    "description": "Implement end-to-end encryption for data at rest and in transit \u2014 because 'we take security seriously' should mean something.",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
@@ -746,15 +746,15 @@
     "outcomes": {
       "clear_success": "Multi-tenancy shipped with guaranteed isolation and the financial services customer provisions three business units; someone writes \"great job\" in all-hands.",
       "partial_success": "Multi-tenancy works but analytics and backups still share infrastructure; we declare victory and move on.",
-      "unexpected_impact": "Tenant-aware changes touched the entire platform and Every feature now needs tenant context; it wasn't in the deck, but sure.",
-      "soft_failure": "Multi-tenancy is implemented but a bug shows tenant A users in tenant B search results and the customer spotted it immediately; a retro bullet absorbs the pain.",
+      "unexpected_impact": "Tenant-aware changes touched the entire platform \u2014 every feature now needs tenant context; it wasn't in the deck, but sure.",
+      "soft_failure": "Multi-tenancy is implemented but a search bug briefly showed tenant A's users in tenant B's results \u2014 the customer spotted it immediately; a retro bullet absorbs the pain.",
       "catastrophe": "A backup restore loaded all tenant data into a single tenant; legal wants a meeting."
     }
   },
   {
     "id": "ent_017",
     "title": "Contract Management Integration",
-    "description": "Integrate contract details (term end dates, renewal clauses, pricing tier) into the platform for visibility and alerts.",
+    "description": "Support real-time streaming via webhooks and server-sent events so enterprise integrations can stop polling us every 30 seconds.",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
@@ -801,7 +801,7 @@
   {
     "id": "ent_018",
     "title": "Custom Data Retention",
-    "description": "Allow enterprise customers to define custom data retention policies (delete/archive after N days.",
+    "description": "Let enterprise customers define custom data retention policies (delete or archive after N days) so their legal teams can sleep at night.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
@@ -848,7 +848,7 @@
   {
     "id": "ent_019",
     "title": "Enterprise Onboarding Wizard",
-    "description": "Build a guided, multi-step onboarding workflow for enterprise customers covering setup, user provisioning, and integration configuration.",
+    "description": "Build a guided, multi-step onboarding wizard for enterprise customers covering setup, provisioning, and integration config \u2014 handholding, but make it scalable.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
@@ -886,7 +886,7 @@
     },
     "outcomes": {
       "clear_success": "The onboarding wizard is live; it becomes a QBR 'win'.",
-      "partial_success": "The wizard covers basic setup but complex integrations still need professional services and Onboarding drops to 2-3 weeks; it still makes the slide deck.",
+      "partial_success": "The wizard covers basic setup but complex integrations still need professional services and onboarding drops to 2-3 weeks; it still makes the slide deck.",
       "unexpected_impact": "The wizard makes choices that customers later want to undo; nobody had that in the model.",
       "soft_failure": "The wizard works but abandonment is high; it goes into the learning pile.",
       "catastrophe": "The integration step connected to customer systems using generic credentials; update your resume."
@@ -932,7 +932,7 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Sandboxes are available and Enterprise customers clone production, test integrations,; the exec summary suddenly has room.",
+      "clear_success": "Sandboxes are available and enterprise customers clone production to test integrations safely; the exec summary suddenly has room.",
       "partial_success": "Sandboxes work but cloning takes four hours and needs manual credential rotation; the footnote does the heavy lifting.",
       "unexpected_impact": "Support requests for sandboxes became common; the roadmap did not mention this part.",
       "soft_failure": "Sandboxes exist but provisioning is not self-serve; the postmortem gets a new slide.",
@@ -979,17 +979,17 @@
       ]
     },
     "outcomes": {
-      "clear_success": "Approval workflows are live and Enterprise customers configure multi-stage approvals for sensitive operations; leadership takes a victory lap.",
-      "partial_success": "Basic approvals work but escalation logic is manual and Complex chains require intervention; we call it progress.",
-      "unexpected_impact": "Approval workflows add friction and Tasks that took minutes now take hours; we pretend that was the plan.",
-      "soft_failure": "Workflows exist but notifications are unreliable and Approvers miss requests, we switch to email,; we blame 'execution risk'.",
+      "clear_success": "Approval workflows are live and enterprise customers configure multi-stage approvals for sensitive operations; leadership takes a victory lap.",
+      "partial_success": "Basic approvals work but escalation logic is manual \u2014 complex chains still require intervention; we call it progress.",
+      "unexpected_impact": "Approval workflows add friction everywhere \u2014 tasks that took minutes now take hours; we pretend that was the plan.",
+      "soft_failure": "Workflows exist but notifications are unreliable \u2014 approvers miss requests, so we fell back to email; we blame 'execution risk'.",
       "catastrophe": "A state-machine bug left requests stuck in pending indefinitely; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ent_022",
     "title": "Enterprise Support SLA Tiers",
-    "description": "Define tiered support SLAs for enterprise customers (critical: 1-hour response, high: 4-hour response, normal: 24-hour response).",
+    "description": "Define tiered support SLAs for enterprise customers (critical: 1hr, high: 4hr, normal: 24hr) so expectations are contractual instead of aspirational.",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
@@ -1027,9 +1027,9 @@
     },
     "outcomes": {
       "clear_success": "SLA tiers are live and sales closes deals at three price points; it becomes a QBR 'win'.",
-      "partial_success": "SLA tiers are defined but critical response times are missed 12% due to staffing gaps; it still makes the slide deck.",
+      "partial_success": "SLA tiers are defined but critical response times are missed 12% of the time due to staffing gaps; it still makes the slide deck.",
       "unexpected_impact": "Support burns out trying to meet critical SLAs; nobody had that in the model.",
-      "soft_failure": "SLA tiers exist but tracking is manual in a spreadsheet and Transparency is low; it goes into the learning pile.",
+      "soft_failure": "SLA tiers exist but tracking lives in a manual spreadsheet with low transparency; it goes into the learning pile.",
       "catastrophe": "A data entry error assigned a normal-tier customer to the critical SLA; update your resume."
     }
   },
