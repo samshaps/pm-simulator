@@ -24,14 +24,14 @@ const BASE_METRICS: Record<Difficulty, MetricsState> = {
     velocity: 20
   },
   hard: {
-    team_sentiment: 50,
-    ceo_sentiment: 40,
-    sales_sentiment: 40,
-    cto_sentiment: 45,
-    self_serve_growth: 30,
-    enterprise_growth: 30,
-    tech_debt: 50,
-    nps: 45,
+    team_sentiment: 55,
+    ceo_sentiment: 45,
+    sales_sentiment: 45,
+    cto_sentiment: 48,
+    self_serve_growth: 32,
+    enterprise_growth: 32,
+    tech_debt: 45,
+    nps: 48,
     velocity: 20
   }
 };

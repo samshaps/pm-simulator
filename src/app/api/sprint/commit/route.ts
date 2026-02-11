@@ -535,11 +535,11 @@ export async function POST(request: Request) {
     const enterpriseRatio = enterpriseCount / totalSelected;
 
     if (growthRatio > 0.5) {
-      applyMetricDelta("tech_debt", 3);
-      applyMetricDelta("team_sentiment", -2);
+      applyMetricDelta("tech_debt", 2);
+      applyMetricDelta("team_sentiment", -1);
     }
     if (growthRatio > 0.7) {
-      applyMetricDelta("tech_debt", 2);
+      applyMetricDelta("tech_debt", 1);
       applyMetricDelta("team_sentiment", -1);
     }
 
@@ -601,24 +601,21 @@ export async function POST(request: Request) {
   const hasSelfServeShipped = hasShipped(ticketOutcomes, selfServeCategories);
   const prevSelfServeShipped = hasShipped(prevOutcomes, selfServeCategories);
 
-  if (!hasEnterpriseShipped) {
-    applyMetricDelta(
-      "sales_sentiment",
-      prevEnterpriseShipped ? -6 : -10
-    );
+  if (!hasEnterpriseShipped && !prevEnterpriseShipped) {
+    applyMetricDelta("sales_sentiment", -8);
   }
 
   const techDebtDrift =
-    !hasTechDebtShipped && !prevTechDebtShipped ? 6 : 3;
+    !hasTechDebtShipped && !prevTechDebtShipped ? 5 : 2;
   applyMetricDelta("tech_debt", techDebtDrift);
   if (updatedMetrics.tech_debt > 75) {
-    applyMetricDelta("tech_debt", 2);
+    applyMetricDelta("tech_debt", 1);
   }
 
   if (hasTechDebtShipped) {
     applyMetricDelta("cto_sentiment", 3);
   } else {
-    applyMetricDelta("cto_sentiment", -4);
+    applyMetricDelta("cto_sentiment", -3);
   }
   if (updatedMetrics.tech_debt > 70) {
     applyMetricDelta("cto_sentiment", -3);
@@ -638,7 +635,7 @@ export async function POST(request: Request) {
   }
 
   if (!hasSelfServeShipped && !prevSelfServeShipped) {
-    applyMetricDelta("self_serve_growth", -3);
+    applyMetricDelta("self_serve_growth", -2);
   }
 
   const eventsLog = Array.isArray(game.events_log) ? [...game.events_log] : [];

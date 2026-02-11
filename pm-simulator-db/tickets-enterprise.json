@@ -2,461 +2,1082 @@
   {
     "id": "ent_001",
     "title": "SSO Integration",
-    "description": "Implement SAML/OIDC-based single sign-on for enterprise customers. Sales has three deals pending this feature. Engineering estimates 6 weeks of work, during which the platform team cannot tackle any self-serve improvements.",
+    "description": "Implement SAML/OIDC-based single sign-on for enterprise customers and sales has three deals pending this feature.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "primary_impact": {
+      "success": [
+        7,
+        11
+      ],
+      "partial": [
+        3,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "self_serve_growth",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "SSO is live. Three deals close within 30 days and IT calls it acceptable, which is apparently praise. The product team resumes self-serve work only three weeks behind.",
-      "partial_success": "OIDC works but SAML attribute mapping is still manual per client. Sales stops complaining in steering meetings. The self-serve roadmap stays on ice.",
-      "unexpected_impact": "SSO exposed a critical session-management flaw and forced an auth refactor. The fix is real, the SSO story vanished from the board deck.",
-      "soft_failure": "SSO is functional but admin UX is confusing enough to require a two-hour setup call per customer. Support runs eight a month. We call it mature because support is tired.",
-      "catastrophe": "A SAML metadata config error provisioned all users at one customer as admins. Audit logs show 47 users accessed data they should not. Legal joined, and the incident channel hit 91 people."
+      "clear_success": "SSO is live and Three deals close within 30 days; someone writes \"great job\" in all-hands.",
+      "partial_success": "OIDC works but SAML attribute mapping is still manual per client and sales stops complaining in steering meetings; we declare victory and move on.",
+      "unexpected_impact": "SSO exposed a critical session-management flaw and forced an auth refactor; it wasn't in the deck, but sure.",
+      "soft_failure": "SSO is functional but admin UX is confusing enough to require a two-hour setup call per customer; a retro bullet absorbs the pain.",
+      "catastrophe": "A SAML metadata config error provisioned all users at one customer as admins; legal wants a meeting."
     }
   },
   {
     "id": "ent_002",
     "title": "SCIM User Provisioning",
-    "description": "Implement SCIM 2.0 endpoint for automated user provisioning and deprovisioning. Required for three prospects already in late sales stages. The feature requires careful permission modeling and audit logging, which pulls engineering from infrastructure work.",
+    "description": "Implement SCIM 2.0 endpoint for automated user provisioning and deprovisioning and Required for three prospects already in late sales stages.",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "primary_impact": {
+      "success": [
+        8,
+        12
+      ],
+      "partial": [
+        4,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "SCIM launched and all three pending enterprise deals closed in month one. Provisioning automation removed admin overhead. Engineering called the debt normal, which is how we cope now.",
-      "partial_success": "SCIM works but attribute mapping is manual. Two deals move forward and the third delays. Sales calls it acceptable, which is the bar.",
-      "unexpected_impact": "SCIM exposed inconsistencies between roles and permissions. We added workarounds in the SCIM layer and the architecture doc grew by eight pages.",
-      "soft_failure": "SCIM is live but only one customer deploys it. The other two want custom integrations because the docs are thin. Technically complete, commercially underwhelming.",
-      "catastrophe": "A race condition left 300 deprovisioned users active. Customers discovered it during a security audit. Forensic analysis covered seven months of logs and a lot of shame."
+      "clear_success": "SCIM launched and all three pending enterprise deals closed in month one; the exec summary suddenly has room.",
+      "partial_success": "SCIM works but attribute mapping is manual and Two deals move forward; the footnote does the heavy lifting.",
+      "unexpected_impact": "SCIM exposed inconsistencies between roles and permissions; the roadmap did not mention this part.",
+      "soft_failure": "SCIM is live but only one customer deploys it; the postmortem gets a new slide.",
+      "catastrophe": "A race condition left 300 deprovisioned users active; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ent_003",
     "title": "Role-Based Access Control",
-    "description": "Design and implement granular role-based permissions (admin, viewer, editor, auditor, plus custom roles). Enterprise deals uniformly demand this. Implementation requires database schema changes that conflict with planned performance optimizations.",
+    "description": "Design and implement granular role-based permissions (admin, viewer, editor, auditor, plus custom roles).",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "primary_impact": {
+      "success": [
+        8,
+        12
+      ],
+      "partial": [
+        4,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "RBAC is live with predefined roles and a custom builder. Enterprise customers migrated cleanly and sales closed two deals citing it. Queries are 12% slower, which nobody noticed because they were celebrating.",
-      "partial_success": "Predefined roles work but custom roles need engineering help. Customers adapt their orgs to our model. Sales is mollified, which is apparently a milestone.",
-      "unexpected_impact": "The permission schema created edge cases with inheritance and delegation. We built a second permission layer to explain the first. The docs are now longer than the feature.",
-      "soft_failure": "RBAC works but the admin UI is cluttered. Customers email support about permission denied errors, each taking 30 minutes to diagnose. We call them usage questions to feel better.",
-      "catastrophe": "A role inheritance bug granted unintended permissions to 12% of users at a large customer. It was discovered in a compliance review. Remediation required auditing and resetting permissions for 1,847 users across seven months."
+      "clear_success": "RBAC is live with predefined roles and a custom builder; leadership takes a victory lap.",
+      "partial_success": "Predefined roles work but custom roles need engineering help and customers adapt their orgs to our model; we call it progress.",
+      "unexpected_impact": "The permission schema created edge cases with inheritance and delegation; we pretend that was the plan.",
+      "soft_failure": "RBAC works but the admin UI is cluttered and customers email support about permission denied errors, each taking 30 minutes to diagnose; we blame 'execution risk'.",
+      "catastrophe": "A role inheritance bug granted unintended permissions to 12% of users at a large customer; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ent_004",
     "title": "Comprehensive Audit Logging",
-    "description": "Implement detailed audit logs for all entity changes, with filtering, export, and tamper-proof storage. Finance and compliance demand this for SOC 2 readiness. Requires a separate data pipeline that competes for database resources.",
+    "description": "Implement detailed audit logs for all entity changes, with filtering, export, and tamper-proof storage.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "primary_impact": {
+      "success": [
+        7,
+        11
+      ],
+      "partial": [
+        3,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "team_sentiment",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "Audit logs are comprehensive and immutable. SOC 2 auditors found no gaps and enterprise customers export trails for compliance. Sales used it to close two deals, as promised.",
-      "partial_success": "Most changes are logged but custom integrations are not. Auditors noted the gap and moved on. Customers find the logs useful for basic troubleshooting, not much else.",
-      "unexpected_impact": "Audit log storage grew faster than planned. We compressed and archived after 90 days, which broke multi-year audit expectations. Customers were not thrilled with our definition of history.",
-      "soft_failure": "Audit logs work but search and filtering are painfully slow on large datasets. Customers export weekly snapshots instead. The feature exists, the experience does not.",
-      "catastrophe": "A retention misconfig deleted logs that were supposed to be immutable. Six months later an incident had no evidence trail. Regulators asked if deletion was intentional, and we opened nine years of backups."
+      "clear_success": "Audit logs are comprehensive and immutable; it becomes a QBR 'win'.",
+      "partial_success": "Most changes are logged but custom integrations are not and Auditors noted the gap; it still makes the slide deck.",
+      "unexpected_impact": "Audit log storage grew faster than planned and we compressed; nobody had that in the model.",
+      "soft_failure": "Audit logs work but search and filtering are painfully slow on large datasets; it goes into the learning pile.",
+      "catastrophe": "A retention misconfig deleted logs that were supposed to be immutable; update your resume."
     }
   },
   {
     "id": "ent_005",
     "title": "Custom Branding & White-Label",
-    "description": "Allow enterprise customers to customize UI colors, logos, email templates, and domain branding. Two prospects explicitly require this. Implementation requires rearchitecting how CSS and templates are served, adding complexity to deployment.",
+    "description": "Allow enterprise customers to customize UI colors, logos, email templates, and domain branding.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "primary_impact": {
+      "success": [
+        7,
+        11
+      ],
+      "partial": [
+        3,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "self_serve_growth",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "White-label branding shipped. Both prospects converted and end-users see only customer branding. Sales calls these our stickiest accounts because we are effectively invisible.",
-      "partial_success": "UI rebranding works but emails and embedded widgets still show our branding. Sales closes one deal and discounts the other because the feature is half-finished.",
-      "unexpected_impact": "Brand customization multiplied UI variants. Visual regression testing became a weekly ritual and every release now checks N permutations of the rainbow.",
-      "soft_failure": "Branding works but requires engineering per customer to wire custom CSS. The feature is available, just not self-serve. Customers treat it as a managed service add-on.",
-      "catastrophe": "A caching issue served one customer's branding to another for six hours. Three thousand users saw the wrong logos. Confidentiality concerns escalated to a CEO-level postmortem."
+      "clear_success": "White-label branding shipped and Both prospects converted; someone writes \"great job\" in all-hands.",
+      "partial_success": "UI rebranding works but emails and embedded widgets still show our branding; we declare victory and move on.",
+      "unexpected_impact": "Brand customization multiplied UI variants and Visual regression testing became a weekly ritual; it wasn't in the deck, but sure.",
+      "soft_failure": "Branding works but requires engineering per customer to wire custom CSS; a retro bullet absorbs the pain.",
+      "catastrophe": "A caching issue served one customer's branding to another for six hours; legal wants a meeting."
     }
   },
   {
     "id": "ent_006",
     "title": "Data Residency Compliance",
-    "description": "Support customer requests for data to remain within specific geographic regions (EU, US, APAC, etc.). Required for a 7-figure enterprise deal in DACH. Requires multi-region database and infrastructure provisioning that doubles storage costs.",
+    "description": "Support customer requests for data to remain within specific geographic regions (EU, US, APAC, etc.",
     "category": "enterprise_feature",
     "effort": 8,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "primary_impact": {
+      "success": [
+        9,
+        12
+      ],
+      "partial": [
+        4,
+        7
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "Data residency is configurable at onboarding. The seven-figure DACH customer signs and two more regulated prospects convert. Infrastructure costs rise, but revenue rises with them, so we call it balanced.",
-      "partial_success": "Residency works for primary databases, but analytics still run on shared infra. The DACH customer accepts a compliance addendum and the deal narrowly survives.",
-      "unexpected_impact": "Residency added latency to cross-region operations. We published acceptable latency ranges by region and then spent weeks explaining why they were exceeded.",
-      "soft_failure": "Residency is implemented but region selection is unclear. Three customers picked the wrong region and needed manual migration. Functional, but awkward and expensive.",
-      "catastrophe": "Replication lag corrupted the EU backup during a failover test. Recovery required seven-day-old snapshots. A customer nearly filed a breach notification over data loss we could not hide."
+      "clear_success": "Data residency is configurable at onboarding; the exec summary suddenly has room.",
+      "partial_success": "Residency works for primary databases, but analytics still run on shared infra and the DACH customer accepts a compliance addendum; the footnote does the heavy lifting.",
+      "unexpected_impact": "Residency added latency to cross-region operations; the roadmap did not mention this part.",
+      "soft_failure": "Residency is implemented but region selection is unclear and Three customers picked the wrong region; the postmortem gets a new slide.",
+      "catastrophe": "Replication lag corrupted the EU backup during a failover test and Recovery required seven-day-old snapshots; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ent_007",
     "title": "Enterprise SLA Dashboard",
-    "description": "Create a customer-facing dashboard showing uptime guarantees, incident response times, and support SLA metrics in real-time. Enterprise RFPs are asking for this. Requires new data collection and a separate analytics service.",
+    "description": "Create a customer-facing dashboard showing uptime guarantees, incident response times, and support SLA metrics in real-time.",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "primary_impact": {
+      "success": [
+        6,
+        10
+      ],
+      "partial": [
+        3,
+        5
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "team_sentiment",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "SLA dashboard launched with real-time uptime and response times. Enterprise customers cite it in their own reports and no breaches occur in Q1. Sales adds it to every pitch deck, as foretold.",
-      "partial_success": "The dashboard exists but calculations are still manual and update every 24 hours. Customers find it useful but not real-time. Sales calls it a foundation for automation.",
-      "unexpected_impact": "The dashboard showed tickets closing in 18 hours against a 12-hour SLA. Rather than fix the process, we redefined categories to exclude the slow ones. The dashboard says compliant and customers are not fooled.",
-      "soft_failure": "The dashboard works but the visuals confuse everyone. Customers request custom reports, support builds them monthly, and the dashboard becomes a forgotten tab within six months.",
-      "catastrophe": "A calculation error reported 99.98% uptime during 47 minutes of downtime. Customers trusted the number and cited it in vendor reviews. The discrepancy was found in an audit, not by us."
+      "clear_success": "SLA dashboard launched with real-time uptime and response times; leadership takes a victory lap.",
+      "partial_success": "The dashboard exists but calculations are still manual and update every 24 hours; we call it progress.",
+      "unexpected_impact": "The dashboard showed tickets closing in 18 hours against a 12-hour SLA; we pretend that was the plan.",
+      "soft_failure": "The dashboard works but the visuals confuse everyone; we blame 'execution risk'.",
+      "catastrophe": "A calculation error reported 99.98% uptime during 47 minutes of downtime; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ent_008",
     "title": "Enterprise Admin Console",
-    "description": "Build a dedicated admin portal for enterprise customers to manage users, audit logs, integrations, and security settings from one place. Scope is substantial but sales says it's table-stakes. Requires six months of dedicated frontend work.",
+    "description": "Build a dedicated admin portal for enterprise customers to manage users, audit logs, integrations, and security settings from one place.",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "primary_impact": {
+      "success": [
+        8,
+        12
+      ],
+      "partial": [
+        4,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "self_serve_growth",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "Admin console launched with all promised features. Enterprise customers moved workflows into it within weeks and admin tickets fell 34%. Sales closed two deals citing the console in the final calls.",
-      "partial_success": "The console covers about 70% of use cases. Edge cases still need support, so IT keeps spreadsheets for exceptions. Sales softened the gaps and moved on.",
-      "unexpected_impact": "The console got so feature-rich that customers asked for API access to automate console actions. We built an API for the console and added a meta-problem to the roadmap.",
-      "soft_failure": "The console shipped but the IA is confusing. Customers click through nested menus to find basic settings and training calls became mandatory. Adoption is slower than the launch plan.",
-      "catastrophe": "A permission bug let lower admins view and modify restricted settings. Twenty-two users across three customers gained full-tenant access. Remediation required credential rotation and a manual audit."
+      "clear_success": "Admin console launched with all promised features and Enterprise customers moved workflows into it within weeks; it becomes a QBR 'win'.",
+      "partial_success": "The console covers about 70% of use cases; it still makes the slide deck.",
+      "unexpected_impact": "The console got so feature-rich that customers asked for API access to automate console actions; nobody had that in the model.",
+      "soft_failure": "The console shipped but the IA is confusing and customers click through nested menus to find basic settings; it goes into the learning pile.",
+      "catastrophe": "A permission bug let lower admins view and modify restricted settings; update your resume."
     }
   },
   {
     "id": "ent_009",
     "title": "Bulk User Management",
-    "description": "Implement CSV import and bulk user operations (enable/disable/delete in batches). Enterprise customers managing 2,000+ users have been doing this manually or via API scripts. Engineering must build safe, auditable batch processing.",
+    "description": "Implement CSV import and bulk user operations (enable/disable/delete in batches).",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "primary_impact": {
+      "success": [
+        6,
+        10
+      ],
+      "partial": [
+        3,
+        5
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "Bulk import is live. Enterprises onboard hundreds of users in minutes instead of hours and support tickets drop 40%. Operations are audited and reversible, which is the only reason anyone slept.",
-      "partial_success": "Bulk import works for basic creation but custom attributes still need manual entry. Helpful, not fully self-serve. Sales appreciates the time saved.",
-      "unexpected_impact": "Bulk import exposed customer data quality issues. The validator flagged duplicates and bad emails. Customers asked for a validation-only mode to clean their data before they break it.",
-      "soft_failure": "Bulk import is sound but gives no feedback until completion. A 5,000-user import runs 15 minutes with no progress bar, and support gets to explain that nothing is on fire.",
-      "catastrophe": "A race condition processed the same CSV twice, creating 4,000 duplicate users. Downstream systems provisioned them before we noticed. Remediation required a manual dedupe script and eight hours of engineering."
+      "clear_success": "Bulk import is live and Enterprises onboard hundreds of users in minutes instead of hours; someone writes \"great job\" in all-hands.",
+      "partial_success": "Bulk import works for basic creation but custom attributes still need manual entry and helpful, not fully self-serve; we declare victory and move on.",
+      "unexpected_impact": "Bulk import exposed customer data quality issues; it wasn't in the deck, but sure.",
+      "soft_failure": "Bulk import is sound but gives no feedback until completion; a retro bullet absorbs the pain.",
+      "catastrophe": "A race condition processed the same CSV twice, creating 4,000 duplicate users; legal wants a meeting."
     }
   },
   {
     "id": "ent_010",
     "title": "Custom API Rate Limits",
-    "description": "Allow enterprise customers to request higher API rate limits customized to their usage patterns, with monitoring and alerts. Required for a customer scaling to 100K API calls/day. Requires rate limit system redesign.",
+    "description": "Allow enterprise customers to request higher API rate limits customized to their usage patterns, with monitoring and alerts.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "primary_impact": {
+      "success": [
+        7,
+        11
+      ],
+      "partial": [
+        3,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "team_sentiment",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "Custom rate limits are live. The scaling customer hits targets without throttling and two others sign for higher limits. The rate-limit system is auditable and fair, which is a new sentence for us.",
-      "partial_success": "Custom limits work but require manual provisioning per customer. The scaling customer shipped, but onboarding took three weeks. Sales framed it as a managed service.",
-      "unexpected_impact": "Higher limits exposed inefficient API usage. Instead of optimizing, the customer asked for even higher limits. Platform throughput became the bottleneck.",
-      "soft_failure": "Custom limits exist but the customer did not know they could request them. Support discovered it mid-investigation. Adoption now requires sales outreach.",
-      "catastrophe": "A calculation error set one customer's limit 100x too high. They burned 10 million calls in two weeks and API tail latency spiked 400%. Other customers slowed to unacceptable levels."
+      "clear_success": "Custom rate limits are live and the scaling customer hits targets without throttling; leadership takes a victory lap.",
+      "partial_success": "Custom limits work but require manual provisioning per customer; we call it progress.",
+      "unexpected_impact": "Higher limits exposed inefficient API usage and Instead of optimizing, the customer asked for even higher limits; we pretend that was the plan.",
+      "soft_failure": "Custom limits exist but the customer did not know they could request them; we blame 'execution risk'.",
+      "catastrophe": "A calculation error set one customer's limit 100x too high; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ent_011",
     "title": "Dedicated Support Portal",
-    "description": "Build a customer-facing support portal with ticket tracking, SLA visibility, and direct escalation paths. Enterprise customers demand structured support workflows. Requires integration with internal ticketing system and governance overhead.",
+    "description": "Build a customer-facing support portal with ticket tracking, SLA visibility, and direct escalation paths.",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "primary_impact": {
+      "success": [
+        6,
+        10
+      ],
+      "partial": [
+        3,
+        5
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "team_sentiment",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "Support portal launched with ticket tracking and SLA transparency. Enterprise customers feel heard because there is a dashboard that says so. Structured intake reduced miscommunication and CSAT rose 12%.",
-      "partial_success": "The portal works for basic submissions but escalation paths are still manual. Complex issues route inconsistently. Customers like the visibility even when the workflow does not.",
-      "unexpected_impact": "The portal exposed response-time differences by customer size. Smaller enterprise customers feel deprioritized and sales gets a new fairness complaint category.",
-      "soft_failure": "The portal exists but adoption is low. Customers prefer email, so support runs two workflows in parallel. Operational complexity increases with no offsetting benefit.",
-      "catastrophe": "A sync error marked resolved tickets as awaiting customer response for weeks. Customers believed issues were stalled and we spent 40 hours correcting records and apologizing."
+      "clear_success": "Support portal launched with ticket tracking and SLA transparency; it becomes a QBR 'win'.",
+      "partial_success": "The portal works for basic submissions but escalation paths are still manual and Complex issues route inconsistently; it still makes the slide deck.",
+      "unexpected_impact": "The portal exposed response-time differences by customer size; nobody had that in the model.",
+      "soft_failure": "The portal exists but adoption is low; it goes into the learning pile.",
+      "catastrophe": "A sync error marked resolved tickets as awaiting customer response for weeks; update your resume."
     }
   },
   {
     "id": "ent_012",
     "title": "SOC 2 Compliance Mode",
-    "description": "Implement compliance features required for SOC 2 Type II attestation: detailed audit trails, immutable logging, encryption at rest, and quarterly security attestations. Three enterprise deals require this. Requires security audit infrastructure.",
+    "description": "Implement compliance features required for SOC 2 Type II attestation: detailed audit trails.",
     "category": "enterprise_feature",
     "effort": 8,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "primary_impact": {
+      "success": [
+        9,
+        12
+      ],
+      "partial": [
+        4,
+        7
+      ]
+    },
     "secondary_metric": "ceo_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "SOC 2 Mode is live and verified by external auditors. All three deals close and marketing turns compliance into a headline. Enterprise win rate increases 18% in the next quarters.",
-      "partial_success": "Most requirements are met but immutable logging carries performance tradeoffs. Auditors require compensating controls and the deals close with addendums.",
-      "unexpected_impact": "Compliance infrastructure is expensive to maintain. Annual audits cost $85K and monthly reporting became a permanent operations tax. We built a feature and a cost center.",
-      "soft_failure": "SOC 2 Mode is implemented but documentation is thin. Customers ask what is actually covered and sales runs explanation theater on calls.",
-      "catastrophe": "Auditors found that immutable logs were being deleted by retention. The audit paused while we proved we fixed it. Trust in the feature took the hit."
+      "clear_success": "SOC 2 Mode is live and verified by external auditors; someone writes \"great job\" in all-hands.",
+      "partial_success": "Most requirements are met but immutable logging carries performance tradeoffs; we declare victory and move on.",
+      "unexpected_impact": "Compliance infrastructure is expensive to maintain; it wasn't in the deck, but sure.",
+      "soft_failure": "SOC 2 Mode is implemented but documentation is thin; a retro bullet absorbs the pain.",
+      "catastrophe": "Auditors found that immutable logs were being deleted by retention; legal wants a meeting."
     }
   },
   {
     "id": "ent_013",
     "title": "HIPAA Compliance Features",
-    "description": "Implement HIPAA-required features: encryption of PHI, audit logging of access, data retention policies, and breach notification procedures. A healthcare customer is asking for this to onboard patient data. Full compliance requires security redesign.",
+    "description": "Implement HIPAA-required features: encryption of PHI, audit logging of access, data retention policies, and breach notification procedures.",
     "category": "enterprise_feature",
     "effort": 8,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "primary_impact": {
+      "success": [
+        9,
+        12
+      ],
+      "partial": [
+        4,
+        7
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "HIPAA features are live and verified by the customer's compliance team. The healthcare deal closes at $500K ARR and we start marketing to the vertical. Legal now reviews every new feature.",
-      "partial_success": "Requirements are mostly met, but BAAs and ongoing training are mandatory. The deal closes at a discount. Compliance becomes a permanent constraint, not a checkbox.",
-      "unexpected_impact": "HIPAA constraints spread across the codebase. Features that were simple now need PHI guardrails. Development velocity drops for everything, not just healthcare.",
-      "soft_failure": "HIPAA features shipped but the customer's audit found gaps. We added features mid-contract and customer satisfaction turned into compliance meetings.",
-      "catastrophe": "A data export included PHI in an unencrypted CSV. The customer's breach notification mentioned our platform. Insurance opened an investigation and legal stopped sleeping."
+      "clear_success": "HIPAA features are live and verified by the customer's compliance team; the exec summary suddenly has room.",
+      "partial_success": "Requirements are mostly met, but BAAs and ongoing training are mandatory; the footnote does the heavy lifting.",
+      "unexpected_impact": "HIPAA constraints spread across the codebase and Features that were simple now need PHI guardrails; the roadmap did not mention this part.",
+      "soft_failure": "HIPAA features shipped but the customer's audit found gaps; the postmortem gets a new slide.",
+      "catastrophe": "A data export included PHI in an unencrypted CSV and the customer's breach notification mentioned our platform; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ent_014",
     "title": "Custom Reporting Engine",
-    "description": "Build flexible reporting allowing enterprise customers to create custom dashboards and exports without engineering support. Sales says this is high-value. Requires significant work on query optimization and UI complexity.",
+    "description": "Build flexible reporting allowing enterprise customers to create custom dashboards and exports without engineering support.",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "primary_impact": {
+      "success": [
+        8,
+        12
+      ],
+      "partial": [
+        4,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "self_serve_growth",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "Reporting engine is live. Enterprise customers build custom reports in hours instead of weeks of engineering support, and report-request tickets drop to near zero. Sales closed two deals citing it.",
-      "partial_success": "Common use cases are covered, but complex multi-table queries still require engineering. Customers like the foundation. Sales calls it a beta with room to grow.",
-      "unexpected_impact": "Some customers built monster queries that caused performance issues. We added timeouts, and customers complained that their reasonable queries were being killed.",
-      "soft_failure": "The UI is powerful but overwhelming. Customers use a small fraction of capabilities and support questions shift from can you build it to how do I use it.",
-      "catastrophe": "A SQL injection vulnerability let a customer extract data they did not have permission to view. Three months passed before discovery. Audit logs show unauthorized queries and no one can prove how much leaked."
+      "clear_success": "Reporting engine is live and Enterprise customers build custom reports in hours instead of weeks of engineering support,; leadership takes a victory lap.",
+      "partial_success": "Common use cases are covered, but complex multi-table queries still require engineering and customers like the foundation; we call it progress.",
+      "unexpected_impact": "Some customers built monster queries that caused performance issues; we pretend that was the plan.",
+      "soft_failure": "The UI is powerful but overwhelming and customers use a small fraction of capabilities; we blame 'execution risk'.",
+      "catastrophe": "A SQL injection vulnerability let a customer extract data they did not have permission to view; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ent_015",
     "title": "Advanced Permission Model",
-    "description": "Extend RBAC to include object-level permissions, attribute-based access control, and delegated administration. A large enterprise customer needs fine-grained control over data access. Requires architectural changes to the permission system.",
+    "description": "Extend RBAC to include object-level permissions, attribute-based access control, and delegated administration.",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "primary_impact": {
+      "success": [
+        8,
+        12
+      ],
+      "partial": [
+        4,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "Advanced permissions are live. The large customer deploys complex structures that match their org and two other prospects cite it as table-stakes. Performance stays acceptable, which is the nicest thing anyone said.",
-      "partial_success": "Most scenarios work but some delegation patterns need manual configuration. The customer adapts their org to the system. Sales calls it adequate, which is a win in enterprise.",
-      "unexpected_impact": "Permission evaluation adds latency to every request. Caching helps but revoked permissions can remain effective for up to five minutes. We documented acceptable staleness like it was a feature.",
-      "soft_failure": "Advanced permissions are implemented but the UI is complex. Customers need training and adoption is slow. The capability exists, the usability does not.",
-      "catastrophe": "A caching bug left a removed user with permissions for 72 hours. The customer found it during a security review and we ran a full audit of permission state."
+      "clear_success": "Advanced permissions are live and the large customer deploys complex structures that match their org; it becomes a QBR 'win'.",
+      "partial_success": "Most scenarios work but some delegation patterns need manual configuration and the customer adapts their org to the system; it still makes the slide deck.",
+      "unexpected_impact": "Permission evaluation adds latency to every request; nobody had that in the model.",
+      "soft_failure": "Advanced permissions are implemented but the UI is complex and customers need training; it goes into the learning pile.",
+      "catastrophe": "A caching bug left a removed user with permissions for 72 hours; update your resume."
     }
   },
   {
     "id": "ent_016",
     "title": "Multi-Tenancy Isolation",
-    "description": "Isolate enterprise tenants with guaranteed data separation, separate rate limits, and independent compliance posture. Required for a financial services customer wanting to run multiple business units. Requires database schema redesign and testing rigor.",
+    "description": "Isolate enterprise tenants with guaranteed data separation, separate rate limits, and independent compliance posture.",
     "category": "enterprise_feature",
     "effort": 8,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [9, 12], "partial": [4, 7] },
+    "primary_impact": {
+      "success": [
+        9,
+        12
+      ],
+      "partial": [
+        4,
+        7
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "Multi-tenancy shipped with guaranteed isolation. The financial services customer provisions three business units and audits pass. Two more customers request the feature as soon as it exists.",
-      "partial_success": "Multi-tenancy works but analytics and backups still share infrastructure. The customer accepts compliance documentation and we call logical isolation good enough.",
-      "unexpected_impact": "Tenant-aware changes touched the entire platform. Every feature now needs tenant context and development velocity drops about 20%. We built a feature and bought a tax.",
-      "soft_failure": "Multi-tenancy is implemented but a bug shows tenant A users in tenant B search results. The customer spotted it immediately. The fix was easy, the trust loss was not.",
-      "catastrophe": "A backup restore loaded all tenant data into a single tenant. Four gigabytes of other customers' data appeared in one instance. We restored from older backups and lost six hours of data."
+      "clear_success": "Multi-tenancy shipped with guaranteed isolation and the financial services customer provisions three business units; someone writes \"great job\" in all-hands.",
+      "partial_success": "Multi-tenancy works but analytics and backups still share infrastructure; we declare victory and move on.",
+      "unexpected_impact": "Tenant-aware changes touched the entire platform and Every feature now needs tenant context; it wasn't in the deck, but sure.",
+      "soft_failure": "Multi-tenancy is implemented but a bug shows tenant A users in tenant B search results and the customer spotted it immediately; a retro bullet absorbs the pain.",
+      "catastrophe": "A backup restore loaded all tenant data into a single tenant; legal wants a meeting."
     }
   },
   {
     "id": "ent_017",
     "title": "Contract Management Integration",
-    "description": "Integrate contract details (term end dates, renewal clauses, pricing tier) into the platform for visibility and alerts. Sales asks for this to track renewal opportunities. Requires syncing with Salesforce and handling contract amendments.",
+    "description": "Integrate contract details (term end dates, renewal clauses, pricing tier) into the platform for visibility and alerts.",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "primary_impact": {
+      "success": [
+        6,
+        10
+      ],
+      "partial": [
+        3,
+        5
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "team_sentiment",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "Contract data synced from Salesforce and renewal alerts fire 90 days out. Sales can see contract details without switching tools and renewal win rate improves 7%.",
-      "partial_success": "Integration works but amendments do not sync automatically. Sales updates records manually after changes. Useful, not complete.",
-      "unexpected_impact": "Salesforce data is stale by 2-3 days, so alerts occasionally fire at the wrong time. We added a manual sync option and almost nobody uses it.",
-      "soft_failure": "Contract data is integrated but not prominent. Sales keeps using Salesforce as the source of truth. The feature exists and is politely ignored.",
-      "catastrophe": "A sync error shifted contract end dates by 30 days for 18 customers. Alerts fired late, renewals slipped, and sales learned to distrust the dashboard."
+      "clear_success": "Contract data synced from Salesforce and renewal alerts fire 90 days out; the exec summary suddenly has room.",
+      "partial_success": "Integration works but amendments do not sync automatically and sales updates records manually after changes; the footnote does the heavy lifting.",
+      "unexpected_impact": "Salesforce data is stale by 2-3 days, so alerts occasionally fire at the wrong time; the roadmap did not mention this part.",
+      "soft_failure": "Contract data is integrated but not prominent and sales keeps using Salesforce as the source of truth; the postmortem gets a new slide.",
+      "catastrophe": "A sync error shifted contract end dates by 30 days for 18 customers; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ent_018",
     "title": "Custom Data Retention",
-    "description": "Allow enterprise customers to define custom data retention policies (delete/archive after N days, keep indefinitely for compliance, separate rules per data type). Required for a financial services prospect. Involves complex data lifecycle management.",
+    "description": "Allow enterprise customers to define custom data retention policies (delete/archive after N days.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "primary_impact": {
+      "success": [
+        7,
+        11
+      ],
+      "partial": [
+        3,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "Custom retention policies are live. The financial services customer applies rules per data type, auditors approve, and the deal closes. Compliance gets their slider and sales gets their signature.",
-      "partial_success": "Policies work but edge cases like child records need manual handling. The customer adapts and sales calls it functional.",
-      "unexpected_impact": "Retention jobs at scale took longer than expected and hammered the database. We rate-limited cleanup to weekdays and pretended that was the plan.",
-      "soft_failure": "Policies are available but the UI is confusing. Customers ask support to configure them and self-serve adoption stays low.",
-      "catastrophe": "A retention bug applied policies in reverse: temporary data kept forever and important data deleted. The customer found missing history during a compliance review. We restored from backups."
+      "clear_success": "Custom retention policies are live; leadership takes a victory lap.",
+      "partial_success": "Policies work but edge cases like child records need manual handling and the customer adapts; we call it progress.",
+      "unexpected_impact": "Retention jobs at scale took longer than expected and hammered the database; we pretend that was the plan.",
+      "soft_failure": "Policies are available but the UI is confusing and customers ask support to configure them; we blame 'execution risk'.",
+      "catastrophe": "A retention bug applied policies in reverse: temporary data kept forever and important data deleted; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ent_019",
     "title": "Enterprise Onboarding Wizard",
-    "description": "Build a guided, multi-step onboarding workflow for enterprise customers covering setup, user provisioning, and integration configuration. Large customers typically take 3-4 weeks to go live. A wizard could reduce this to 2 weeks.",
+    "description": "Build a guided, multi-step onboarding workflow for enterprise customers covering setup, user provisioning, and integration configuration.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "primary_impact": {
+      "success": [
+        7,
+        11
+      ],
+      "partial": [
+        3,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "self_serve_growth",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "The onboarding wizard is live. Enterprise customers go live in 10-12 days instead of 3-4 weeks and time-to-value improves. Sales closes deals faster and one customer calls the wizard surprisingly competent.",
-      "partial_success": "The wizard covers basic setup but complex integrations still need professional services. Onboarding drops to 2-3 weeks. Sales is satisfied with the incremental win.",
-      "unexpected_impact": "The wizard makes choices that customers later want to undo. Reversals require support. The wizard is helpful until it becomes a lock-in.",
-      "soft_failure": "The wizard works but abandonment is high. Customers start it and then switch to manual setup after a few steps. Adoption is lower than forecast.",
-      "catastrophe": "The integration step connected to customer systems using generic credentials. Three customers did not realize it and data pushed to production. Two threatened to terminate."
+      "clear_success": "The onboarding wizard is live; it becomes a QBR 'win'.",
+      "partial_success": "The wizard covers basic setup but complex integrations still need professional services and Onboarding drops to 2-3 weeks; it still makes the slide deck.",
+      "unexpected_impact": "The wizard makes choices that customers later want to undo; nobody had that in the model.",
+      "soft_failure": "The wizard works but abandonment is high; it goes into the learning pile.",
+      "catastrophe": "The integration step connected to customer systems using generic credentials; update your resume."
     }
   },
   {
     "id": "ent_020",
     "title": "Sandbox Environments",
-    "description": "Provide customers with isolated sandbox instances for testing and development before deploying to production. Enterprise customers and prospects ask for this to reduce risk. Requires instance cloning and separate credential management.",
+    "description": "Provide customers with isolated sandbox instances for testing and development before deploying to production.",
     "category": "enterprise_feature",
     "effort": 6,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [7, 11], "partial": [3, 6] },
+    "primary_impact": {
+      "success": [
+        7,
+        11
+      ],
+      "partial": [
+        3,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "tech_debt",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "Sandboxes are available. Enterprise customers clone production, test integrations, and deploy with confidence. Risk perception drops and sales closes two deals citing sandbox access.",
-      "partial_success": "Sandboxes work but cloning takes four hours and needs manual credential rotation. Valuable, but the overhead is real. Sales calls it acceptable.",
-      "unexpected_impact": "Support requests for sandboxes became common. Some customers created sandboxes and forgot them, turning into storage liabilities with no owner.",
-      "soft_failure": "Sandboxes exist but provisioning is not self-serve. Customers email support and adoption stays low. The feature works on paper.",
-      "catastrophe": "A cloning bug included a live production API key in a sandbox. The customer revoked it and panicked about abuse. Postmortem says no misuse, but trust does not roll back."
+      "clear_success": "Sandboxes are available and Enterprise customers clone production, test integrations,; the exec summary suddenly has room.",
+      "partial_success": "Sandboxes work but cloning takes four hours and needs manual credential rotation; the footnote does the heavy lifting.",
+      "unexpected_impact": "Support requests for sandboxes became common; the roadmap did not mention this part.",
+      "soft_failure": "Sandboxes exist but provisioning is not self-serve; the postmortem gets a new slide.",
+      "catastrophe": "A cloning bug included a live production API key in a sandbox and the customer revoked it; everyone pretends it was unforeseeable."
     }
   },
   {
     "id": "ent_021",
     "title": "Approval Workflows",
-    "description": "Implement configurable approval workflows for sensitive operations (data export, user access grants, contract changes). Enterprise security teams demand this for control and auditability. Requires state machine implementation and notification system.",
+    "description": "Implement configurable approval workflows for sensitive operations (data export, user access grants, contract changes).",
     "category": "enterprise_feature",
     "effort": 7,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [8, 12], "partial": [4, 6] },
+    "primary_impact": {
+      "success": [
+        8,
+        12
+      ],
+      "partial": [
+        4,
+        6
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [4, 6], "partial": [2, 3] },
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "tradeoff_metric": "team_sentiment",
-    "tradeoff_impact": { "success": [-3, -5], "partial": [-2, -3] },
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
     "outcomes": {
-      "clear_success": "Approval workflows are live. Enterprise customers configure multi-stage approvals for sensitive operations and auditors approve the control structure. Sales uses it as a differentiator and no one argues.",
-      "partial_success": "Basic approvals work but escalation logic is manual. Complex chains require intervention. Useful, but not autonomous.",
-      "unexpected_impact": "Approval workflows add friction. Tasks that took minutes now take hours. Users complain, security teams applaud, and the rest of us wait.",
-      "soft_failure": "Workflows exist but notifications are unreliable. Approvers miss requests, we switch to email, and the workflow visibility is bypassed.",
-      "catastrophe": "A state-machine bug left requests stuck in pending indefinitely. A user access request sat for three days before ops forced it through."
+      "clear_success": "Approval workflows are live and Enterprise customers configure multi-stage approvals for sensitive operations; leadership takes a victory lap.",
+      "partial_success": "Basic approvals work but escalation logic is manual and Complex chains require intervention; we call it progress.",
+      "unexpected_impact": "Approval workflows add friction and Tasks that took minutes now take hours; we pretend that was the plan.",
+      "soft_failure": "Workflows exist but notifications are unreliable and Approvers miss requests, we switch to email,; we blame 'execution risk'.",
+      "catastrophe": "A state-machine bug left requests stuck in pending indefinitely; this becomes a quarterly lesson."
     }
   },
   {
     "id": "ent_022",
     "title": "Enterprise Support SLA Tiers",
-    "description": "Define tiered support SLAs for enterprise customers (critical: 1-hour response, high: 4-hour response, normal: 24-hour response). Sales needs this to close deals at different price points. Requires support process changes and staffing plans.",
+    "description": "Define tiered support SLAs for enterprise customers (critical: 1-hour response, high: 4-hour response, normal: 24-hour response).",
     "category": "enterprise_feature",
     "effort": 5,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [6, 10], "partial": [3, 5] },
+    "primary_impact": {
+      "success": [
+        6,
+        10
+      ],
+      "partial": [
+        3,
+        5
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [3, 6], "partial": [1, 3] },
+    "secondary_impact": {
+      "success": [
+        3,
+        6
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
     "tradeoff_metric": "team_sentiment",
-    "tradeoff_impact": { "success": [-2, -4], "partial": [-1, -2] },
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -4
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
     "outcomes": {
-      "clear_success": "SLA tiers are live. Sales closes deals at three price points and support has clear expectations. Premium and critical customers report satisfaction with response times, which is a sentence support wanted to hear.",
-      "partial_success": "SLA tiers are defined but critical response times are missed 12% due to staffing gaps. Customers get credits and sales keeps using SLAs as a selling point.",
-      "unexpected_impact": "Support burns out trying to meet critical SLAs. Overtime rises and headcount requests follow. The critical tier is less profitable than the spreadsheet said.",
-      "soft_failure": "SLA tiers exist but tracking is manual in a spreadsheet. Transparency is low and sales cannot confidently promise SLAs.",
-      "catastrophe": "A data entry error assigned a normal-tier customer to the critical SLA. Support responded at critical speed for six weeks and billing caused a dispute and churn threat."
+      "clear_success": "SLA tiers are live and sales closes deals at three price points; it becomes a QBR 'win'.",
+      "partial_success": "SLA tiers are defined but critical response times are missed 12% due to staffing gaps; it still makes the slide deck.",
+      "unexpected_impact": "Support burns out trying to meet critical SLAs; nobody had that in the model.",
+      "soft_failure": "SLA tiers exist but tracking is manual in a spreadsheet and Transparency is low; it goes into the learning pile.",
+      "catastrophe": "A data entry error assigned a normal-tier customer to the critical SLA; update your resume."
     }
   },
   {
     "id": "ent_023",
     "title": "Security Questionnaire Export",
-    "description": "Generate a standard security questionnaire export (hosting, encryption, access controls) for procurement reviews. Low effort, high demand. Tradeoff: you now own keeping the document current.",
+    "description": "Generate a standard security questionnaire export (hosting, encryption, access controls) for procurement reviews.",
     "category": "enterprise_feature",
     "effort": 3,
     "primary_metric": "enterprise_growth",
-    "primary_impact": { "success": [4, 7], "partial": [2, 3] },
+    "primary_impact": {
+      "success": [
+        4,
+        7
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
     "secondary_metric": "sales_sentiment",
-    "secondary_impact": { "success": [2, 4], "partial": [1, 2] },
+    "secondary_impact": {
+      "success": [
+        2,
+        4
+      ],
+      "partial": [
+        1,
+        2
+      ]
+    },
     "tradeoff_metric": "team_sentiment",
-    "tradeoff_impact": { "success": [-1, -2], "partial": [-1, -1] },
+    "tradeoff_impact": {
+      "success": [
+        -1,
+        -2
+      ],
+      "partial": [
+        -1,
+        -1
+      ]
+    },
     "outcomes": {
-      "clear_success": "Questionnaire export shipped and procurement cycles shrink by weeks. Sales calls it a deal accelerator and asks for three more versions before lunch.",
-      "partial_success": "Export works but uses last quarter's wording. Sales sends it anyway and spends the call explaining what changed since the PDF was generated.",
-      "unexpected_impact": "Security teams treat the export as the official source of truth. We now have a standing meeting just to keep a PDF current.",
-      "soft_failure": "Procurement wanted a spreadsheet, not a PDF. We built a PDF. They asked again. The loop continues.",
-      "catastrophe": "The export claims encryption coverage we do not have. A prospect flags the gap and pauses the deal pending a full security review."
+      "clear_success": "Questionnaire export shipped and procurement cycles shrink by weeks; someone writes \"great job\" in all-hands.",
+      "partial_success": "Export works but uses last quarter's wording and sales sends it anyway; we declare victory and move on.",
+      "unexpected_impact": "Security teams treat the export as the official source of truth; it wasn't in the deck, but sure.",
+      "soft_failure": "Procurement wanted a spreadsheet, not a PDF; a retro bullet absorbs the pain.",
+      "catastrophe": "The export claims encryption coverage we do not have and a prospect flags the gap; legal wants a meeting."
     }
   }
 ]

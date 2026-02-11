@@ -382,18 +382,18 @@ export function computeYearEndReview(
 
   const calibrationRange =
     difficulty === "easy"
-      ? { min: -8, max: 12 }
+      ? { min: -5, max: 8 }
       : difficulty === "hard"
-      ? { min: -18, max: 10 }
-      : { min: -15, max: 15 };
+      ? { min: -12, max: 8 }
+      : { min: -10, max: 10 };
   let calibrationModifier = rng.int(
     calibrationRange.min,
     calibrationRange.max
   );
   if (rawComposite >= 90) {
-    calibrationModifier = Math.max(calibrationModifier, -2);
+    calibrationModifier = Math.max(calibrationModifier, -3);
   } else if (rawComposite >= 80) {
-    calibrationModifier = Math.max(calibrationModifier, -5);
+    calibrationModifier = Math.max(calibrationModifier, -6);
   }
   const finalScore = Math.max(
     0,
