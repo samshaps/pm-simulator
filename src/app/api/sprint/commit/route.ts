@@ -415,6 +415,10 @@ export async function POST(request: Request) {
   const overbookFraction = overAmount > 0 ? Math.min(overAmount / maxOverbook, 1) : 0;
   const isOverbooked = overAmount > 0;
 
+  const underAmount = Math.max(0, effectiveCapacity - totalEffort);
+  const underbookFraction = underAmount > 0 ? Math.min(underAmount / effectiveCapacity, 0.5) : 0;
+  const isUnderbooked = underAmount > 0;
+
   for (const ticket of selectedTickets) {
     const ceoAligned = isCeoAlignedCategory(ceoFocus, ticket.category);
     const outcome = rollOutcome(rng, {
@@ -422,6 +426,7 @@ export async function POST(request: Request) {
       teamSentiment: updatedMetrics.team_sentiment,
       isOverbooked,
       overbookFraction,
+      underbookFraction,
       isMoonshot: ticket.category === "moonshot",
       ceoAligned,
       difficulty: game.difficulty
@@ -486,11 +491,24 @@ export async function POST(request: Request) {
     }
   }
 
-  if (!isOverbooked && failureRate < 0.25) {
+  if (isUnderbooked) {
+    // Base bonus for being under capacity
+    let bonus = 2;
+
+    // Extra bonus if things went well
+    if (failureRate < 0.25) {
+      bonus += 3;
+    } else if (failureRate < 0.5) {
+      bonus += 1;  // Small bonus even with some failures
+    }
+
+    // Scale by how much under capacity
+    bonus = Math.round(bonus * (1 + underbookFraction));
+
     updatedMetrics.team_sentiment = clampMetric(
-      updatedMetrics.team_sentiment + 4
+      updatedMetrics.team_sentiment + bonus
     );
-    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + 4;
+    metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) + bonus;
   }
 
   if (clearPartialRate > 0.75) {
@@ -506,10 +524,15 @@ export async function POST(request: Request) {
   }
 
   if (failureRate >= 0.5) {
-    applyMetricDelta("team_sentiment", -4);
-    applyMetricDelta("ceo_sentiment", -3);
-    applyMetricDelta("sales_sentiment", -2);
-    applyMetricDelta("cto_sentiment", -2);
+    // If significantly underbooked, reduce penalties (they planned well, just got unlucky)
+    const penaltyScale = isUnderbooked && underbookFraction > 0.1
+      ? Math.max(0.5, 1 - underbookFraction)
+      : 1.0;
+
+    applyMetricDelta("team_sentiment", Math.round(-4 * penaltyScale));
+    applyMetricDelta("ceo_sentiment", Math.round(-3 * penaltyScale));
+    applyMetricDelta("sales_sentiment", Math.round(-2 * penaltyScale));
+    applyMetricDelta("cto_sentiment", Math.round(-2 * penaltyScale));
   } else if (clearPartialRate >= 0.75 && failureRate < 0.25) {
     applyMetricDelta("team_sentiment", 2);
     applyMetricDelta("ceo_sentiment", 2);
@@ -793,6 +816,8 @@ export async function POST(request: Request) {
     ticket_outcomes: ticketOutcomes,
     metric_deltas: metricDeltas,
     events: triggeredEvents,
+    is_overbooked: isOverbooked,
+    failure_rate: failureRate,
     narrative:
       template?.template
         ?.replace("{tickets_shipped}", String(successes))
@@ -1102,10 +1127,75 @@ export async function POST(request: Request) {
             : 0;
       }
 
-      const nextCapacity = Math.max(
-        1,
-        computeEffectiveCapacity(updatedMetrics) + capacityDelta
-      );
+      const rawCapacity =
+        computeEffectiveCapacity(updatedMetrics) + capacityDelta;
+      const nextCapacity = Math.max(5, rawCapacity);
+
+      // Death spiral check: if capacity is critically low, fire the PM immediately
+      if (rawCapacity <= 5) {
+        // Create a "you're fired" quarterly review
+        const deathSpiralReview: QuarterlyReview = {
+          quarter: currentQuarter,
+          raw_score: 0,
+          rating: "below_expectations",
+          calibration_outcome: "terminated",
+          narrative: "Team capacity has collapsed to unsustainable levels. With morale at rock bottom, tech debt out of control, and the team unable to deliver even basic work, the organization has lost confidence in leadership. This is a failure of planning, execution, and stakeholder management. Your tenure as PM has ended.",
+          factors: {
+            capacity_collapse: rawCapacity,
+            team_sentiment: updatedMetrics.team_sentiment,
+            tech_debt: updatedMetrics.tech_debt,
+            ceo_sentiment: updatedMetrics.ceo_sentiment,
+            death_spiral: true
+          }
+        };
+
+        // Save the death spiral review to the current quarter
+        await supabase
+          .from("quarters")
+          .update({
+            quarterly_review: deathSpiralReview
+          })
+          .eq("game_id", game.id)
+          .eq("number", currentQuarter);
+
+        // Mark game as completed (fired)
+        await supabase
+          .from("games")
+          .update({
+            metrics_state: updatedMetrics,
+            state: "completed",
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", game.id);
+
+        // Return with special "fired" indicator
+        return NextResponse.json({
+          game: {
+            id: game.id,
+            difficulty: game.difficulty,
+            current_quarter: currentQuarter,
+            current_sprint: currentSprint,
+            metrics_state: updatedMetrics
+          },
+          sprint: null,
+          retro,
+          quarter: {
+            ceo_focus: ceoFocus,
+            product_pulse: null,
+            quarterly_review: deathSpiralReview
+          },
+          death_spiral: true,
+          capacity_collapse: rawCapacity,
+          ceo_focus_shift: null,
+          quarter_summary: {
+            quarter: currentQuarter,
+            product_pulse: null,
+            quarterly_review: deathSpiralReview
+          },
+          year_end_review: null
+        });
+      }
+
       const { data: inserted } = await supabase
         .from("sprints")
         .insert({

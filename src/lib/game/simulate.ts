@@ -37,6 +37,7 @@ export type QuarterlyReview = {
   quarter: number;
   raw_score: number;
   rating: "strong" | "solid" | "mixed" | "below_expectations";
+  calibration_outcome?: "survived" | "promoted" | "pip" | "terminated";
   narrative: string;
   factors: Record<string, number | string>;
 };
@@ -590,6 +591,7 @@ type OutcomeContext = {
   teamSentiment: number;
   isOverbooked: boolean;
   overbookFraction?: number;
+  underbookFraction?: number;
   isMoonshot: boolean;
   ceoAligned: boolean;
   difficulty: Difficulty;
@@ -640,6 +642,18 @@ export function rollOutcome(rng: Rng, context: OutcomeContext): Outcome {
     mod.partial_success -= 2 * overbookFraction;
     mod.soft_failure += 5 * overbookFraction;
     mod.catastrophe += 2 * overbookFraction;
+  }
+
+  // Reward conservative planning with underbooking bonus
+  const underbookFraction = Math.max(
+    0,
+    Math.min(0.5, context.underbookFraction ?? 0)
+  );
+  if (underbookFraction > 0) {
+    mod.clear_success += 6 * underbookFraction;
+    mod.partial_success += 3 * underbookFraction;
+    mod.soft_failure -= 4 * underbookFraction;
+    mod.catastrophe -= 2 * underbookFraction;
   }
 
   if (context.isMoonshot) {

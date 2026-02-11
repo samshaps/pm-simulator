@@ -34,6 +34,8 @@ interface RetroData {
     metric_deltas: Record<string, number>;
     narrative: string;
     events?: Array<{ title: string; description: string }>;
+    is_overbooked?: boolean;
+    failure_rate?: number;
   };
   ceo_focus_shift?: {
     narrative?: string | null;
@@ -42,6 +44,7 @@ interface RetroData {
     kind?: string | null;
   } | null;
   isQuarterEnd: boolean;
+  death_spiral?: boolean;
 }
 
 const outcomeStatusMap: Record<string, 'success' | 'partial' | 'failure'> = {
@@ -99,6 +102,11 @@ export default function SprintRetro() {
         const storedRetro = sessionStorage.getItem('lastRetro');
         if (storedRetro) {
           const parsed = JSON.parse(storedRetro);
+          if (parsed.death_spiral) {
+            router.replace('/quarterly-review');
+            setIsLoading(false);
+            return;
+          }
           setRetroData(parsed);
           // Don't remove here - Sprint Planning will read and remove it
         }
@@ -174,7 +182,14 @@ export default function SprintRetro() {
 
     // Team sentiment insights
     if (deltas.team_sentiment && deltas.team_sentiment < -10) {
-      insights.push("Team morale took a significant hit. Consider lighter loads next sprint.");
+      // Different message based on root cause
+      if (retroData.retro.is_overbooked) {
+        insights.push("Team morale took a significant hit. Consider lighter loads next sprint.");
+      } else if (retroData.retro.failure_rate && retroData.retro.failure_rate >= 0.5) {
+        insights.push("Team morale took a significant hit from ticket failures. Focus on execution quality and reducing risk.");
+      } else {
+        insights.push("Team morale took a significant hit. Review what caused the decline.");
+      }
     } else if (deltas.team_sentiment && deltas.team_sentiment > 10) {
       insights.push("Team morale improved. Momentum is building.");
     }

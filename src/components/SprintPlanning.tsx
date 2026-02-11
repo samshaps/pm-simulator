@@ -403,8 +403,9 @@ export default function SprintPlanning() {
 
       if (response.ok) {
         const data = await response.json();
+        const deathSpiral = Boolean(data.death_spiral);
         // Store retro data for the retro page
-        const isQuarterEnd = gameState.game.current_sprint === 3;
+        const isQuarterEnd = deathSpiral || gameState.game.current_sprint === 3;
         sessionStorage.setItem('lastRetro', JSON.stringify({
           game: data.game,
           completedSprint: {
@@ -415,14 +416,16 @@ export default function SprintPlanning() {
           isQuarterEnd,
           quarterSummary: data.quarter_summary,
           yearEndReview: data.year_end_review,
-          ceo_focus_shift: data.ceo_focus_shift ?? null
+          ceo_focus_shift: data.ceo_focus_shift ?? null,
+          death_spiral: deathSpiral,
+          capacity_collapse: data.capacity_collapse ?? null
         }));
         const elapsed = Date.now() - commitStartedAt;
         if (elapsed < 2000) {
           await new Promise(resolve => setTimeout(resolve, 2000 - elapsed));
         }
-        // Navigate to sprint retro
-        router.replace('/sprint-retro');
+        // Navigate to appropriate next screen
+        router.replace(deathSpiral ? '/quarterly-review' : '/sprint-retro');
       } else {
         const error = await response.json();
         alert(`Failed to commit sprint: ${error.error || 'Unknown error'}`);
