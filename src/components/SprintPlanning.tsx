@@ -173,7 +173,7 @@ export default function SprintPlanning() {
   const [showEventPopup, setShowEventPopup] = useState(false);
   const [isMetricsExpanded, setIsMetricsExpanded] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'effort' | 'category' | 'none'>('none');
+  const [sortBy, setSortBy] = useState<'effort-asc' | 'effort-desc' | 'category' | 'none'>('effort-asc');
 
   useEffect(() => {
     // Fetch active sprint data
@@ -311,8 +311,10 @@ export default function SprintPlanning() {
   }
 
   // Apply sorting
-  if (sortBy === 'effort') {
+  if (sortBy === 'effort-asc') {
     backlogTickets = [...backlogTickets].sort((a, b) => a.effort - b.effort);
+  } else if (sortBy === 'effort-desc') {
+    backlogTickets = [...backlogTickets].sort((a, b) => b.effort - a.effort);
   } else if (sortBy === 'category') {
     backlogTickets = [...backlogTickets].sort((a, b) => a.category.localeCompare(b.category));
   }
@@ -789,28 +791,35 @@ export default function SprintPlanning() {
           <div className={styles.filterSortControls}>
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Filter:</label>
-              <select
-                className={styles.filterSelect}
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-              >
-                <option value="all">All Categories</option>
-                {uniqueCategories.map(cat => (
-                  <option key={cat} value={cat}>{cat.replace(/_/g, ' ')}</option>
-                ))}
-              </select>
+              <div className={styles.customSelect}>
+                <select
+                  className={styles.filterSelect}
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                >
+                  <option value="all">✓ All Categories</option>
+                  {uniqueCategories.map(cat => (
+                    <option key={cat} value={cat}>{cat.replace(/_/g, ' ')}</option>
+                  ))}
+                </select>
+                <span className={styles.selectArrow}>▼</span>
+              </div>
             </div>
             <div className={styles.sortGroup}>
               <label className={styles.sortLabel}>Sort by:</label>
-              <select
-                className={styles.sortSelect}
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'effort' | 'category' | 'none')}
-              >
-                <option value="none">Default</option>
-                <option value="effort">Points (Low to High)</option>
-                <option value="category">Category</option>
-              </select>
+              <div className={styles.customSelect}>
+                <select
+                  className={styles.sortSelect}
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'effort-asc' | 'effort-desc' | 'category' | 'none')}
+                >
+                  <option value="effort-asc">Points (Low to High)</option>
+                  <option value="effort-desc">Points (High to Low)</option>
+                  <option value="category">Category</option>
+                  <option value="none">Random</option>
+                </select>
+                <span className={styles.selectArrow}>▼</span>
+              </div>
             </div>
           </div>
 

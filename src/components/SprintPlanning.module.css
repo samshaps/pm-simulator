@@ -469,18 +469,27 @@
   white-space: nowrap;
 }
 
+.customSelect {
+  position: relative;
+  display: inline-block;
+  min-width: 160px;
+}
+
 .filterSelect,
 .sortSelect {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
-  padding: 6px 10px;
+  padding: 6px 32px 6px 10px;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.15s ease;
-  min-width: 160px;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .filterSelect:hover,
@@ -492,8 +501,23 @@
 .filterSelect:focus,
 .sortSelect:focus {
   outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+  border-color: var(--purple-primary);
+  box-shadow: 0 0 0 2px rgba(124, 92, 191, 0.15);
+}
+
+.selectArrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 8px;
+  color: var(--text-dim);
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+.customSelect:hover .selectArrow {
+  color: var(--purple-light);
 }
 
 /* ── TICKET CARD ── */
