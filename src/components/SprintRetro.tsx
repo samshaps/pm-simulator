@@ -17,6 +17,10 @@ interface TicketOutcome {
   outcome: string;
 }
 
+interface GroupedTicketOutcome extends TicketOutcome {
+  category: string;
+}
+
 interface RetroData {
   game: {
     id: string;
@@ -65,6 +69,28 @@ const metricNameMap: Record<string, string> = {
   'tech_debt': 'Tech Debt',
   'nps': 'NPS',
   'velocity': 'Velocity'
+};
+
+const categoryNameMap: Record<string, string> = {
+  'self_serve_feature': 'Self-Serve Feature',
+  'enterprise_feature': 'Enterprise Feature',
+  'sales_request': 'Sales Request',
+  'tech_debt_reduction': 'Tech Debt Reduction',
+  'infrastructure': 'Infrastructure',
+  'ux_improvement': 'UX Improvement',
+  'monetization': 'Monetization',
+  'moonshot': 'Moonshot'
+};
+
+const categoryColorMap: Record<string, string> = {
+  'self_serve_feature': 'var(--green)',
+  'enterprise_feature': 'var(--amber)',
+  'sales_request': 'var(--amber)',
+  'tech_debt_reduction': 'var(--purple-light)',
+  'infrastructure': 'var(--purple-light)',
+  'ux_improvement': 'var(--blue)',
+  'monetization': 'var(--green)',
+  'moonshot': 'var(--red)'
 };
 
 export default function SprintRetro() {
@@ -159,12 +185,22 @@ export default function SprintRetro() {
     };
   });
 
-  const ticketOutcomes: TicketOutcome[] = retroData.retro.ticket_outcomes.map(ticket => ({
+  const ticketOutcomes: GroupedTicketOutcome[] = retroData.retro.ticket_outcomes.map(ticket => ({
     title: ticket.title,
     status: outcomeStatusMap[ticket.outcome] || 'partial',
     impact: ticket.outcome_narrative || 'Completed with mixed results.',
-    outcome: ticket.outcome
+    outcome: ticket.outcome,
+    category: ticket.category
   }));
+
+  const ticketsByCategory = ticketOutcomes.reduce((acc, ticket) => {
+    const category = ticket.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(ticket);
+    return acc;
+  }, {} as Record<string, GroupedTicketOutcome[]>);
 
   // Generate actionable insights based on metric changes
   const generateInsights = () => {
@@ -326,17 +362,27 @@ export default function SprintRetro() {
         <div className={styles.rightPanel}>
           <div className={styles.sectionLabel}>Ticket Outcomes</div>
           <div className={styles.ticketOutcomes}>
-            {ticketOutcomes.map((ticket, index) => (
-              <div key={index} className={`${styles.outcomeCard} ${styles[ticket.status]}`}>
-                <div className={styles.outcomeHeader}>
-                  <span className={styles.outcomeTitle}>{ticket.title}</span>
-                  <span className={`${styles.outcomeStatus} ${styles[ticket.status]}`}>
-                    {ticket.status === 'success' ? '✓ Success' :
-                     ticket.status === 'partial' ? '◐ Partial' :
-                     '✗ Failed'}
-                  </span>
+            {Object.entries(ticketsByCategory).map(([category, tickets]) => (
+              <div key={category} className={styles.categoryGroup}>
+                <div
+                  className={styles.categoryHeader}
+                  style={{ color: categoryColorMap[category] || 'var(--text-secondary)' }}
+                >
+                  {categoryNameMap[category] || category}
                 </div>
-                <div className={styles.outcomeImpact}>{ticket.impact}</div>
+                {tickets.map((ticket, index) => (
+                  <div key={index} className={`${styles.outcomeCard} ${styles[ticket.status]}`}>
+                    <div className={styles.outcomeHeader}>
+                      <span className={styles.outcomeTitle}>{ticket.title}</span>
+                      <span className={`${styles.outcomeStatus} ${styles[ticket.status]}`}>
+                        {ticket.status === 'success' ? '✓ Success' :
+                         ticket.status === 'partial' ? '◐ Partial' :
+                         '✗ Failed'}
+                      </span>
+                    </div>
+                    <div className={styles.outcomeImpact}>{ticket.impact}</div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>

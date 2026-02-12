@@ -60,9 +60,9 @@ export async function GET() {
   const ceoShiftEvent = [...eventsLog].reverse().find(
     (entry) =>
       entry?.type === "ceo_focus_shift" &&
-      entry?.shift_kind === "quarter" &&
       entry?.quarter === game.current_quarter &&
-      entry?.sprint === 1
+      (entry?.shift_kind === "quarter" || entry?.source === "quarterly_pivot") &&
+      (entry?.sprint === 1 || entry?.sprint === 0 || entry?.sprint == null)
   );
   const ceoFocusShift = ceoShiftEvent
     ? {
@@ -76,10 +76,66 @@ export async function GET() {
       }
     : null;
 
+  // Extract active capacity modifiers
+  const capacityModifiers = eventsLog.filter(
+    (entry) =>
+      entry?.type === "capacity_modifier" &&
+      typeof entry?.delta === "number" &&
+      (entry?.remaining_sprints ?? 0) > 0
+  );
+
+  const totalCapacityDelta = capacityModifiers.reduce(
+    (sum, entry) => sum + (entry.delta ?? 0),
+    0
+  );
+
+  const modifierEventIds = capacityModifiers
+    .map((entry) => entry.event_id)
+    .filter(Boolean);
+  let eventDetails: Record<string, { title?: string; description?: string }> = {};
+
+  if (modifierEventIds.length > 0) {
+    const { data: events } = await supabase
+      .from("event_catalog")
+      .select("id, payload")
+      .in("id", modifierEventIds);
+
+    if (events) {
+      for (const event of events) {
+        const eventId = event.id ?? event.payload?.id;
+        if (!eventId) continue;
+        eventDetails[eventId] = {
+          title: event.payload?.title,
+          description: event.payload?.description
+        };
+      }
+    }
+  }
+
+  const quarterData = quarter
+    ? {
+        ...quarter,
+        ceo_focus_shift_narrative:
+          typeof ceoShiftEvent?.narrative === "string"
+            ? ceoShiftEvent.narrative
+            : null
+      }
+    : null;
+
   return NextResponse.json({
     game,
     sprint,
-    quarter: quarter ?? null,
-    ceo_focus_shift: ceoFocusShift
+    quarter: quarterData,
+    ceo_focus_shift: ceoFocusShift,
+    capacity_modifiers: capacityModifiers.map((entry) => ({
+      event_id: entry.event_id,
+      delta: entry.delta,
+      remaining_sprints: entry.remaining_sprints,
+      title: entry.event_id ? eventDetails[entry.event_id]?.title : undefined,
+      description: entry.event_id
+        ? eventDetails[entry.event_id]?.description
+        : undefined
+    })),
+    total_capacity_delta: totalCapacityDelta
   });
 }

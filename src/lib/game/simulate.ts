@@ -62,6 +62,7 @@ export type TicketInstance = TicketTemplate & {
   outcome?: Outcome;
   outcome_narrative?: string;
   metric_impacts?: Partial<Record<MetricKey, number>>;
+  hackathon_boosted?: boolean;
 };
 
 type Rng = {
@@ -595,6 +596,7 @@ type OutcomeContext = {
   isMoonshot: boolean;
   ceoAligned: boolean;
   difficulty: Difficulty;
+  hackathonBoosted?: boolean;
 };
 
 export function rollOutcome(rng: Rng, context: OutcomeContext): Outcome {
@@ -613,6 +615,13 @@ export function rollOutcome(rng: Rng, context: OutcomeContext): Outcome {
     mod.partial_success += 6;
     mod.soft_failure -= 8;
     mod.catastrophe -= 2;
+  }
+
+  if (context.hackathonBoosted) {
+    mod.clear_success += 12;
+    mod.partial_success += 6;
+    mod.soft_failure -= 8;
+    mod.catastrophe -= 4;
   }
 
   if (context.techDebt > 80) {
@@ -828,7 +837,7 @@ export function applyOutcome(
     );
     applyDelta(
       "team_sentiment",
-      scaleDelta(rng.int(-9, -5), failureScale)
+      scaleDelta(rng.int(-6, -3), failureScale)
     );
     applyDelta("tech_debt", scaleDelta(rng.int(2, 5), failureScale));
     if (stakeholder !== "team_sentiment") {

@@ -14,6 +14,8 @@ interface Ticket {
   is_mandatory?: boolean;
   isMandatory?: boolean;
   isCEOAligned?: boolean;
+  hackathon_boosted?: boolean;
+  isHackathonBoosted?: boolean;
   outcomes?: Record<string, string>;
 }
 
@@ -37,6 +39,14 @@ interface MetricsState {
   velocity: number;
 }
 
+interface CapacityModifier {
+  event_id: string;
+  delta: number;
+  remaining_sprints: number;
+  title?: string;
+  description?: string;
+}
+
 interface GameState {
   game: {
     id: string;
@@ -53,6 +63,7 @@ interface GameState {
   };
   quarter: {
     ceo_focus: string;
+    ceo_focus_shift_narrative?: string | null;
   };
   ceo_focus_shift?: {
     narrative?: string | null;
@@ -60,6 +71,8 @@ interface GameState {
     to?: string | null;
     kind?: string | null;
   } | null;
+  capacity_modifiers?: CapacityModifier[];
+  total_capacity_delta?: number;
 }
 
 const categoryToClass: Record<string, string> = {
@@ -288,7 +301,8 @@ export default function SprintPlanning() {
     ...ticket,
     categoryClass: categoryToClass[ticket.category] || 'catDefault',
     isMandatory: ticket.is_mandatory,
-    isCEOAligned: isTicketCEOAligned(ticket.category)
+    isCEOAligned: isTicketCEOAligned(ticket.category),
+    isHackathonBoosted: ticket.hackathon_boosted
   }));
 
   // Apply category filter
@@ -475,25 +489,25 @@ export default function SprintPlanning() {
     return 'Angry';
   };
 
-  const getGrowthIndicator = (value: number) => {
-    if (value >= 70) {
-      return { label: '↗', className: styles.trendUp };
-    }
-    if (value >= 50) {
+  const getGrowthIndicator = (delta: number | undefined) => {
+    if (delta === undefined || delta === 0) {
       return { label: '→', className: styles.trendFlat };
+    }
+    if (delta > 0) {
+      return { label: '↗', className: styles.trendUp };
     }
     return { label: '↘', className: styles.trendMounting };
   };
 
-  const getTechDebtIndicator = (value: number) => {
-    // Tech debt is inverted: low is good, high is bad
-    if (value < 50) {
-      return { label: '↘', className: styles.trendUp };
-    }
-    if (value < 70) {
+  const getTechDebtIndicator = (delta: number | undefined) => {
+    // Tech debt is inverted: decrease is good (↘), increase is bad (↗)
+    if (delta === undefined || delta === 0) {
       return { label: '→', className: styles.trendFlat };
     }
-    return { label: '↗', className: styles.trendMounting };
+    if (delta > 0) {
+      return { label: '↗', className: styles.trendMounting };
+    }
+    return { label: '↘', className: styles.trendUp };
   };
 
   const formatCeoFocus = (focus: string) => {
@@ -508,12 +522,17 @@ export default function SprintPlanning() {
   // Always use the actual current quarter's CEO focus for consistency
   const currentCeoFocus = gameState.quarter.ceo_focus;
   const ceoFocusShift = ceoShiftOverride ?? gameState.ceo_focus_shift ?? null;
-  const ceoFocusShiftNarrative = ceoFocusShift?.narrative ?? null;
+  const ceoFocusShiftNarrative =
+    ceoFocusShift?.narrative ??
+    gameState.quarter.ceo_focus_shift_narrative ??
+    null;
+  const isNewQuarter =
+    gameState.game.current_sprint === 1 && gameState.game.current_quarter > 1;
   const activeLoadingMessage =
     loadingSequence[loadingIndex] || loadingMessages[0];
-  const selfServeIndicator = getGrowthIndicator(metrics.self_serve_growth);
-  const enterpriseIndicator = getGrowthIndicator(metrics.enterprise_growth);
-  const techDebtIndicator = getTechDebtIndicator(metrics.tech_debt);
+  const selfServeIndicator = getGrowthIndicator(previousDeltas?.self_serve_growth);
+  const enterpriseIndicator = getGrowthIndicator(previousDeltas?.enterprise_growth);
+  const techDebtIndicator = getTechDebtIndicator(previousDeltas?.tech_debt);
 
   return (
     <div className={styles.pageContainer}>
@@ -600,7 +619,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownName}>Team Sentiment</div>
                   <div className={styles.metricsDropdownValueRow}>
                     <div className={styles.metricsDropdownValue}>{Math.round(metrics.team_sentiment)}</div>
-                    {previousDeltas && previousDeltas.team_sentiment !== undefined && previousDeltas.team_sentiment !== 0 && (
+                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.team_sentiment !== undefined && previousDeltas.team_sentiment !== 0 && (
                       <div className={`${styles.metricsDropdownDelta} ${previousDeltas.team_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
                         {previousDeltas.team_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.team_sentiment)}
                       </div>
@@ -619,7 +638,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownName}>CEO Sentiment</div>
                   <div className={styles.metricsDropdownValueRow}>
                     <div className={styles.metricsDropdownValue}>{Math.round(metrics.ceo_sentiment)}</div>
-                    {previousDeltas && previousDeltas.ceo_sentiment !== undefined && previousDeltas.ceo_sentiment !== 0 && (
+                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.ceo_sentiment !== undefined && previousDeltas.ceo_sentiment !== 0 && (
                       <div className={`${styles.metricsDropdownDelta} ${previousDeltas.ceo_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
                         {previousDeltas.ceo_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.ceo_sentiment)}
                       </div>
@@ -638,7 +657,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownName}>Sales Sentiment</div>
                   <div className={styles.metricsDropdownValueRow}>
                     <div className={styles.metricsDropdownValue}>{Math.round(metrics.sales_sentiment)}</div>
-                    {previousDeltas && previousDeltas.sales_sentiment !== undefined && previousDeltas.sales_sentiment !== 0 && (
+                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.sales_sentiment !== undefined && previousDeltas.sales_sentiment !== 0 && (
                       <div className={`${styles.metricsDropdownDelta} ${previousDeltas.sales_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
                         {previousDeltas.sales_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.sales_sentiment)}
                       </div>
@@ -657,7 +676,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownName}>CTO Sentiment</div>
                   <div className={styles.metricsDropdownValueRow}>
                     <div className={styles.metricsDropdownValue}>{Math.round(metrics.cto_sentiment)}</div>
-                    {previousDeltas && previousDeltas.cto_sentiment !== undefined && previousDeltas.cto_sentiment !== 0 && (
+                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.cto_sentiment !== undefined && previousDeltas.cto_sentiment !== 0 && (
                       <div className={`${styles.metricsDropdownDelta} ${previousDeltas.cto_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
                         {previousDeltas.cto_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.cto_sentiment)}
                       </div>
@@ -676,7 +695,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownName}>Self-Serve Growth</div>
                   <div className={styles.metricsDropdownValueRow}>
                     <div className={styles.metricsDropdownValue}>{Math.round(metrics.self_serve_growth)}</div>
-                    {previousDeltas && previousDeltas.self_serve_growth !== undefined && previousDeltas.self_serve_growth !== 0 && (
+                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.self_serve_growth !== undefined && previousDeltas.self_serve_growth !== 0 && (
                       <div className={`${styles.metricsDropdownDelta} ${previousDeltas.self_serve_growth > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
                         {previousDeltas.self_serve_growth > 0 ? '+' : ''}{Math.round(previousDeltas.self_serve_growth)}
                       </div>
@@ -695,7 +714,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownName}>Enterprise Growth</div>
                   <div className={styles.metricsDropdownValueRow}>
                     <div className={styles.metricsDropdownValue}>{Math.round(metrics.enterprise_growth)}</div>
-                    {previousDeltas && previousDeltas.enterprise_growth !== undefined && previousDeltas.enterprise_growth !== 0 && (
+                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.enterprise_growth !== undefined && previousDeltas.enterprise_growth !== 0 && (
                       <div className={`${styles.metricsDropdownDelta} ${previousDeltas.enterprise_growth > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
                         {previousDeltas.enterprise_growth > 0 ? '+' : ''}{Math.round(previousDeltas.enterprise_growth)}
                       </div>
@@ -714,7 +733,7 @@ export default function SprintPlanning() {
                   <div className={styles.metricsDropdownName}>Tech Debt</div>
                   <div className={styles.metricsDropdownValueRow}>
                     <div className={styles.metricsDropdownValue}>{Math.round(metrics.tech_debt)}</div>
-                    {previousDeltas && previousDeltas.tech_debt !== undefined && previousDeltas.tech_debt !== 0 && (
+                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.tech_debt !== undefined && previousDeltas.tech_debt !== 0 && (
                       <div className={`${styles.metricsDropdownDelta} ${previousDeltas.tech_debt > 0 ? styles.deltaNegative : styles.deltaPositive}`}>
                         {previousDeltas.tech_debt > 0 ? '+' : ''}{Math.round(previousDeltas.tech_debt)}
                       </div>
@@ -748,6 +767,13 @@ export default function SprintPlanning() {
           <span className={styles.ceoFocusHint}>— aligned tickets get +12% success chance</span>
         </div>
       </div>
+
+      {isNewQuarter && ceoFocusShiftNarrative && showCeoShift && (
+        <div className={styles.ceoNarrativeBanner} onClick={() => setShowCeoShift(false)}>
+          <span className={styles.ceoNarrativeText}>{ceoFocusShiftNarrative}</span>
+          <span className={styles.ceoNarrativeDismiss}>&times;</span>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className={styles.mainContent}>
@@ -806,6 +832,7 @@ export default function SprintPlanning() {
                   </span>
                   {ticket.isCEOAligned && <span className={styles.ticketCeoTag}>★ CEO Aligned</span>}
                   {ticket.isMandatory && <span className={styles.ticketMandatoryTag}>MANDATORY</span>}
+                  {ticket.isHackathonBoosted && <span className={styles.ticketHackathonTag}>⚡ HACKATHON BOOST</span>}
                 </div>
                 <div className={styles.ticketDesc}>
                   {ticket.description}
@@ -825,6 +852,36 @@ export default function SprintPlanning() {
                 <span className={styles.used}>{usedCapacity}</span> / {sprintCapacity} pts used
               </span>
             </div>
+
+            {/* Active Capacity Modifiers */}
+            {gameState.capacity_modifiers && gameState.capacity_modifiers.length > 0 && (
+              <div style={{
+                background: gameState.total_capacity_delta && gameState.total_capacity_delta > 0
+                  ? 'rgba(100, 255, 150, 0.1)'
+                  : 'rgba(255, 100, 100, 0.1)',
+                border: gameState.total_capacity_delta && gameState.total_capacity_delta > 0
+                  ? '1px solid rgba(100, 255, 150, 0.3)'
+                  : '1px solid rgba(255, 100, 100, 0.3)',
+                borderRadius: '6px',
+                padding: '10px 12px',
+                marginBottom: '12px',
+                fontSize: '13px'
+              }}>
+                {gameState.capacity_modifiers.map((modifier, idx) => (
+                  <div
+                    key={`${modifier.event_id}-${idx}`}
+                    style={{
+                      color: modifier.delta > 0 ? '#6bffb0' : '#ff6b6b',
+                      marginBottom: idx < gameState.capacity_modifiers!.length - 1 ? '6px' : '0'
+                    }}
+                  >
+                    <strong>{modifier.title || 'Event Effect'}:</strong> {modifier.delta > 0 ? '+' : ''}{modifier.delta} pts capacity
+                    {modifier.remaining_sprints > 1 && ` (${modifier.remaining_sprints} sprints remaining)`}
+                    {modifier.remaining_sprints === 1 && ` (this sprint only)`}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Team Morale Alert */}
             {metrics.team_sentiment < 40 && (

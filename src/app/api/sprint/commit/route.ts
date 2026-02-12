@@ -139,6 +139,7 @@ type EventPayload = {
   quarter_restriction?: number[] | null;
   trigger_condition?: string;
   trigger_condition_override?: string;
+  trigger_condition_logic?: string;
   metric_effects?: Record<string, number>;
   ceo_focus_shift?: string | null;
   forced_ticket_category?: string | null;
@@ -429,7 +430,8 @@ export async function POST(request: Request) {
       underbookFraction,
       isMoonshot: ticket.category === "moonshot",
       ceoAligned,
-      difficulty: game.difficulty
+      difficulty: game.difficulty,
+      hackathonBoosted: ticket.hackathon_boosted ?? false
     });
 
     const { updated, deltas } = applyOutcome(rng, updatedMetrics, ticket, outcome);
@@ -751,6 +753,14 @@ export async function POST(request: Request) {
       }
     }
 
+    if (event.trigger_condition_logic) {
+      if (updatedMetrics.ceo_sentiment > 60) {
+        applyMetricDelta("team_sentiment", 5);
+      } else if (updatedMetrics.ceo_sentiment < 40) {
+        applyMetricDelta("team_sentiment", -5);
+      }
+    }
+
     if (event.forced_ticket_category) {
       eventsLog.push({
         type: "forced_ticket",
@@ -784,7 +794,8 @@ export async function POST(request: Request) {
   };
 
   let firedRandomEvent: EventPayload | null = null;
-  for (const event of randomEvents) {
+  const shuffledRandomEvents = [...randomEvents].sort(() => rng.next() - 0.5);
+  for (const event of shuffledRandomEvents) {
     const quarters = event.quarter_restriction;
     if (Array.isArray(quarters) && !quarters.includes(currentQuarter)) {
       continue;
@@ -1057,6 +1068,7 @@ export async function POST(request: Request) {
         new_focus: nextCeoFocus,
         old_focus: ceoFocus,
         shift_kind: "quarter",
+        source: "quarterly_pivot",
         narrative: ceoFocusShiftNarrative
       });
     } else {
@@ -1173,6 +1185,42 @@ export async function POST(request: Request) {
       }
       backlog = mergeBacklog(backlog, hijacks.forced);
       backlog = mergeBacklog(backlog, forcedTickets);
+
+      // Hackathon results: boost a self-serve ticket in the next sprint backlog
+      const hackathonEvent = eventsLog.find(
+        (entry) =>
+          entry?.type === "random_event" &&
+          entry?.event_id === "evt_r_031" &&
+          entry?.quarter === currentQuarter &&
+          entry?.sprint === currentSprint
+      );
+
+      if (hackathonEvent) {
+        let selfServeTicket = backlog.find(
+          (ticket) => ticket.category === "self_serve_feature"
+        );
+
+        if (!selfServeTicket) {
+          const selfServePool = ticketTemplates.filter(
+            (ticket) => ticket.category === "self_serve_feature"
+          );
+          if (selfServePool.length > 0) {
+            selfServeTicket = rng.pick(selfServePool);
+            backlog.unshift(selfServeTicket);
+          }
+        }
+
+        if (selfServeTicket) {
+          const index = backlog.findIndex((t) => t.id === selfServeTicket!.id);
+          if (index !== -1) {
+            backlog[index] = {
+              ...backlog[index],
+              effort: Math.max(1, backlog[index].effort - 2),
+              hackathon_boosted: true
+            };
+          }
+        }
+      }
 
       const capacityModifiers = eventsLog.filter(
         (entry) =>

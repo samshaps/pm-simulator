@@ -9,7 +9,7 @@
       "metric_effects": {
         "ceo_sentiment": 0
       },
-      "ceo_focus_shift": "random",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
     },
@@ -35,7 +35,7 @@
       "metric_effects": {
         "self_serve_growth": -5
       },
-      "ceo_focus_shift": "self_serve",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
     },
@@ -49,7 +49,7 @@
         "enterprise_growth": -5,
         "sales_sentiment": -8
       },
-      "ceo_focus_shift": "enterprise",
+      "ceo_focus_shift": null,
       "forced_ticket_category": "sales_request",
       "quarter_restriction": null
     },
@@ -95,7 +95,7 @@
         "team_sentiment": -3,
         "sales_sentiment": -3
       },
-      "ceo_focus_shift": "tech_debt",
+      "ceo_focus_shift": null,
       "forced_ticket_category": "tech_debt_reduction",
       "quarter_restriction": null,
       "trigger_condition_override": "tech_debt > 70"
@@ -107,7 +107,7 @@
       "trigger_chance_per_sprint": 0.10,
       "description": "The CEO spent forty minutes on LinkedIn this morning and now is convinced that the company needs to pivot toward whatever trend has seventeen thousand likes. Focus has shifted based on algorithmic whimsy.",
       "metric_effects": {},
-      "ceo_focus_shift": "random",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
     },
@@ -147,7 +147,7 @@
       "metric_effects": {
         "ceo_sentiment": -3
       },
-      "ceo_focus_shift": "self_serve",
+      "ceo_focus_shift": null,
       "forced_ticket_category": "self_serve_feature",
       "quarter_restriction": null
     },
@@ -175,7 +175,7 @@
       "metric_effects": {
         "ceo_sentiment": -8
       },
-      "ceo_focus_shift": "enterprise",
+      "ceo_focus_shift": null,
       "forced_ticket_category": "enterprise_feature",
       "quarter_restriction": null
     },
@@ -233,7 +233,7 @@
         "enterprise_growth": 5,
         "ceo_sentiment": 3
       },
-      "ceo_focus_shift": "enterprise",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
     },
@@ -246,7 +246,7 @@
       "metric_effects": {
         "ceo_sentiment": 3
       },
-      "ceo_focus_shift": "self_serve",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
     },
@@ -301,7 +301,7 @@
         "cto_sentiment": -5,
         "enterprise_growth": -3
       },
-      "ceo_focus_shift": "tech_debt",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
     },
@@ -331,7 +331,7 @@
         "self_serve_growth": 5,
         "sales_sentiment": -3
       },
-      "ceo_focus_shift": "self_serve",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
     },
@@ -361,7 +361,7 @@
         "ceo_sentiment": -6,
         "enterprise_growth": -3
       },
-      "ceo_focus_shift": "enterprise",
+      "ceo_focus_shift": null,
       "forced_ticket_category": "enterprise_feature",
       "quarter_restriction": [2, 3, 4]
     },
@@ -419,7 +419,7 @@
         "cto_sentiment": -7,
         "ceo_sentiment": -5
       },
-      "ceo_focus_shift": "tech_debt",
+      "ceo_focus_shift": null,
       "forced_ticket_category": "tech_debt_reduction",
       "quarter_restriction": null,
       "trigger_condition_override": "tech_debt > 50"
@@ -451,7 +451,7 @@
         "sales_sentiment": -5,
         "enterprise_growth": -4
       },
-      "ceo_focus_shift": "enterprise",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
     },
@@ -499,6 +499,171 @@
       "ceo_focus_shift": null,
       "forced_ticket_category": null,
       "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_036",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "The board asked pointed questions about enterprise pipeline and willingness to fund a dedicated segment. The CEO has refocused on landing larger contracts.",
+      "metric_effects": {},
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_037",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "A keynote speaker spent thirty minutes explaining why infrastructure investment is strategically important. The CEO is now convinced this applies here.",
+      "metric_effects": {},
+      "ceo_focus_shift": "tech_debt",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_038",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "A competitor's self-serve metrics are growing faster. The CEO has decided this is the only metric that matters.",
+      "metric_effects": {},
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_039",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "Someone with a large following posted about technical debt and the CEO spent two hours reading replies. Strategy has shifted accordingly.",
+      "metric_effects": {},
+      "ceo_focus_shift": "tech_debt",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_040",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "The largest customer demanded a feature that only benefits enterprise deployments. The CEO decided to optimize the entire roadmap around retention.",
+      "metric_effects": {},
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_041",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "The quarterly analysis showed that self-serve users have the highest NPS. The CEO now believes this segment is the path to scale.",
+      "metric_effects": {},
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_042",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "For reasons that cannot be adequately explained, the CEO has become obsessed with reducing technical debt. Pray it is temporary.",
+      "metric_effects": {},
+      "ceo_focus_shift": "tech_debt",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_043",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "Board members questioned whether the business model could scale without a self-serve product. The CEO has pivoted completely.",
+      "metric_effects": {},
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_044",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "A enterprise customer mentioned they could not recommend the product to peers due to stability concerns. Technical debt is now a revenue risk.",
+      "metric_effects": {},
+      "ceo_focus_shift": "tech_debt",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_045",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "A successful founder described their path to profitability through self-serve adoption. The CEO believes this is the exact blueprint to follow.",
+      "metric_effects": {},
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_046",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "An acquihire announcement has the CEO convinced that enterprise focus leads to exits. The company's strategy has shifted accordingly.",
+      "metric_effects": {},
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_047",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "Enterprise customers have three times the lifetime value. This data point now drives all strategic decisions.",
+      "metric_effects": {},
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_048",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "The CEO saw their child using the free tier and now believes consumer-friendly design is the secret to dominance. Priorities have been rearranged.",
+      "metric_effects": {},
+      "ceo_focus_shift": "self_serve",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_049",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "A competitor raised a large Series B focusing on enterprise. The CEO has responded by shifting all resources toward competing in that segment.",
+      "metric_effects": {},
+      "ceo_focus_shift": "enterprise",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
+    },
+    {
+      "id": "evt_r_050",
+      "title": "CEO Focus Shift",
+      "trigger_type": "random",
+      "trigger_chance_per_sprint": 0.12,
+      "description": "No clear reason exists for the strategic pivot that just occurred. Assume the CEO read something on the internet and move forward.",
+      "metric_effects": {},
+      "ceo_focus_shift": "random",
+      "forced_ticket_category": null,
+      "quarter_restriction": null
     }
   ],
   "threshold_events": [
@@ -536,7 +701,7 @@
       "trigger_condition": "cto_sentiment < 15",
       "description": "The CTO has made formal complaints to executive leadership about technical direction. Executive leadership is reassessing strategic priorities.",
       "metric_effects": {},
-      "ceo_focus_shift": "tech_debt",
+      "ceo_focus_shift": null,
       "forced_ticket_category": null
     },
     {

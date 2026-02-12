@@ -192,6 +192,32 @@
   flex-wrap: wrap;
 }
 
+.ceoNarrativeBanner {
+  margin: 10px auto 0;
+  width: min(900px, 92vw);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-left: 3px solid rgba(251, 191, 36, 0.6);
+  cursor: pointer;
+}
+
+.ceoNarrativeText {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.ceoNarrativeDismiss {
+  margin-left: auto;
+  font-size: 16px;
+  color: var(--text-dim);
+}
+
 .ceoFocusLabel {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -611,6 +637,18 @@
   color: var(--red);
   background: var(--red-dim);
   border: 1px solid rgba(248, 113, 113, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.ticketHackathonTag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.3);
   padding: 2px 8px;
   border-radius: 4px;
 }
