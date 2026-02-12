@@ -372,11 +372,11 @@ export async function POST(request: Request) {
     });
   }
 
-  const backlog = (sprint.backlog ?? []) as TicketTemplate[];
+  const backlog = (sprint.backlog ?? []) as TicketInstance[];
   const backlogMap = new Map(backlog.map((ticket) => [ticket.id, ticket]));
-  const selectedTickets: TicketTemplate[] = payload.ticketIds
+  const selectedTickets: TicketInstance[] = payload.ticketIds
     .map((id) => backlogMap.get(id))
-    .filter((ticket): ticket is TicketTemplate => Boolean(ticket));
+    .filter((ticket): ticket is TicketInstance => Boolean(ticket));
 
   if (selectedTickets.length === 0) {
     return NextResponse.json(
