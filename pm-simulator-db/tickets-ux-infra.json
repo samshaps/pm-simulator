@@ -2,7 +2,7 @@
   {
     "id": "ux_001",
     "title": "Accessibility Audit Phase 1",
-    "description": "WCAG 2.1 AA compliance review of core user flows \u2014 the audit nobody requested until legal did.",
+    "description": "WCAG 2.1 AA compliance review of core user flows — the audit nobody requested until legal did.",
     "category": "ux_improvement",
     "effort": 3,
     "primary_metric": "nps",
@@ -220,9 +220,9 @@
     "tradeoff_metric": null,
     "tradeoff_impact": null,
     "outcomes": {
-      "clear_success": "Power users found the shortcuts \u2014 one person is now 200% more efficient at a task nobody should optimize for; the exec summary suddenly has room.",
+      "clear_success": "Power users found the shortcuts — one person is now 200% more efficient at a task nobody should optimize for; the exec summary suddenly has room.",
       "partial_success": "Tab order is logical on forms but still mysterious in navigation; the footnote does the heavy lifting.",
-      "unexpected_impact": "A user without a mouse had a noticeably better experience \u2014 everyone else uses a mouse, so this is invisible; the roadmap did not mention this part.",
+      "unexpected_impact": "A user without a mouse had a noticeably better experience — everyone else uses a mouse, so this is invisible; the roadmap did not mention this part.",
       "soft_failure": "Keyboard navigation works in the main flow; the postmortem gets a new slide.",
       "catastrophe": "The Tab key now skips through 47 hidden elements before reaching content; everyone pretends it was unforeseeable."
     }
@@ -299,14 +299,14 @@
       "clear_success": "First-time users are no longer confused by blank screens; it becomes a QBR 'win'.",
       "partial_success": "Empty states have helpful messages on 70% of pages; it still makes the slide deck.",
       "unexpected_impact": "The new illustrations became an internal meme and the design team's intent no longer matters; nobody had that in the model.",
-      "soft_failure": "Empty states are no longer bleak \u2014 they're now minimally encouraging in a way that feels passive-aggressive; it goes into the learning pile.",
+      "soft_failure": "Empty states are no longer bleak — they're now minimally encouraging in a way that feels passive-aggressive; it goes into the learning pile.",
       "catastrophe": "The no-data illustration offended roughly half the company, and HR is now in a thread about it that will never end; update your resume."
     }
   },
   {
     "id": "ux_009",
     "title": "Onboarding Tooltip Pass",
-    "description": "Audit and refresh contextual tooltips for first-time feature discovery \u2014 standardize tone, timing, and the art of not being annoying.",
+    "description": "Audit and refresh contextual tooltips for first-time feature discovery — standardize tone, timing, and the art of not being annoying.",
     "category": "ux_improvement",
     "effort": 3,
     "primary_metric": "nps",
@@ -414,7 +414,7 @@
       "partial_success": "Real-time validation works on text inputs and dropdowns still validate on submit because the codebase is old; it still makes the slide deck.",
       "unexpected_impact": "A user sent a thank-you email about instant email validation; nobody had that in the model.",
       "soft_failure": "Validation is friendlier but users still cannot tell if red means wrong or required without trying; it goes into the learning pile.",
-      "catastrophe": "Checkmarks are so cheerful that users submit incomplete forms thinking they're done \u2014 actual completion dropped; update your resume."
+      "catastrophe": "Checkmarks are so cheerful that users submit incomplete forms thinking they're done — actual completion dropped; update your resume."
     }
   },
   {
@@ -487,7 +487,7 @@
     "tradeoff_impact": null,
     "outcomes": {
       "clear_success": "Notification overload dropped 40%; the exec summary suddenly has room.",
-      "partial_success": "The center is unified, but preferences only control 60% of notification types \u2014 the other 40% are system-critical; the footnote does the heavy lifting.",
+      "partial_success": "The center is unified, but preferences only control 60% of notification types — the other 40% are system-critical; the footnote does the heavy lifting.",
       "unexpected_impact": "Users discovered they can silence notifications, and several people are now missing critical alerts; the roadmap did not mention this part.",
       "soft_failure": "Notifications are better organized, but delivery still arrives in random order because the queue does what it wants; the postmortem gets a new slide.",
       "catastrophe": "The preferences UI is so good at hiding alerts that a critical security notification went unseen for two weeks; everyone pretends it was unforeseeable."
@@ -563,7 +563,7 @@
   {
     "id": "ux_016",
     "title": "Empty State Microcopy",
-    "description": "Rewrite empty states with clear next steps and example data \u2014 tiny effort, much less confusion.",
+    "description": "Rewrite empty states with clear next steps and example data — tiny effort, much less confusion.",
     "category": "ux_improvement",
     "effort": 2,
     "primary_metric": "nps",
@@ -668,7 +668,7 @@
     },
     "outcomes": {
       "clear_success": "The system scales automatically during traffic spikes; it becomes a QBR 'win'.",
-      "partial_success": "Auto-scaling works for stateless services \u2014 stateful services still scale manually because no one wants to automate that; it still makes the slide deck.",
+      "partial_success": "Auto-scaling works for stateless services — stateful services still scale manually because no one wants to automate that; it still makes the slide deck.",
       "unexpected_impact": "Cost increased during the test spike; nobody had that in the model.",
       "soft_failure": "Scaling works but takes 90 seconds to activate; it goes into the learning pile.",
       "catastrophe": "A cascading failure caused rapid scale-out followed by rapid scale-in; update your resume."
@@ -715,7 +715,7 @@
   {
     "id": "inf_004",
     "title": "Disaster Recovery Testing",
-    "description": "Run monthly disaster recovery drills simulating complete region failure \u2014 test restores, failover, and RTO/RPO metrics before you need them for real.",
+    "description": "Run monthly disaster recovery drills simulating complete region failure — test restores, failover, and RTO/RPO metrics before you need them for real.",
     "category": "infrastructure",
     "effort": 4,
     "primary_metric": "tech_debt",
@@ -745,7 +745,7 @@
     "outcomes": {
       "clear_success": "We discovered we could recover in 45 minutes; the exec summary suddenly has room.",
       "partial_success": "DR playbooks exist and half are outdated; the footnote does the heavy lifting.",
-      "unexpected_impact": "The first drill accidentally broke production \u2014 everyone learned something valuable about the difference between staging and prod; the roadmap did not mention this part.",
+      "unexpected_impact": "The first drill accidentally broke production — everyone learned something valuable about the difference between staging and prod; the roadmap did not mention this part.",
       "soft_failure": "Recovery procedures work but require manual steps and people who know the system, so they are fragile by nature; the postmortem gets a new slide.",
       "catastrophe": "A restore test corrupted the backup and we spent 36 hours discovering our disaster recovery plan was itself a disaster; everyone pretends it was unforeseeable."
     }
@@ -829,7 +829,7 @@
   {
     "id": "inf_007",
     "title": "Container Orchestration Migration",
-    "description": "Migrate from manual container management to Kubernetes \u2014 stateful sets, config maps, persistent volumes, the whole party.",
+    "description": "Migrate from manual container management to Kubernetes — stateful sets, config maps, persistent volumes, the whole party.",
     "category": "infrastructure",
     "effort": 7,
     "primary_metric": "tech_debt",
@@ -861,7 +861,7 @@
       "partial_success": "Orchestration works and PersistentVolume claims still glitch; we declare victory and move on.",
       "unexpected_impact": "Kubernetes manages resources so well that developers stopped thinking about resource usage entirely; it wasn't in the deck, but sure.",
       "soft_failure": "Services migrate smoothly until one stateful service sits in CrashLoopBackOff for three hours and confuses everyone; a retro bullet absorbs the pain.",
-      "catastrophe": "A misconfigured StatefulSet replica corrupted data \u2014 recovery took 18 hours; legal wants a meeting."
+      "catastrophe": "A misconfigured StatefulSet replica corrupted data — recovery took 18 hours; legal wants a meeting."
     }
   },
   {
@@ -905,7 +905,7 @@
   {
     "id": "inf_009",
     "title": "Service Mesh Implementation",
-    "description": "Deploy a service mesh for inter-service communication, circuit breaking, and observability \u2014 start with canary rollout to 20% of traffic.",
+    "description": "Deploy a service mesh for inter-service communication, circuit breaking, and observability — start with canary rollout to 20% of traffic.",
     "category": "infrastructure",
     "effort": 6,
     "primary_metric": "tech_debt",
@@ -1013,7 +1013,7 @@
       "partial_success": "Caching works beautifully and cache invalidation is still wrong in three places; the footnote does the heavy lifting.",
       "unexpected_impact": "Redis became a single point of failure and we are not prepared for that failure; the roadmap did not mention this part.",
       "soft_failure": "Caching increases hits and stale data is occasionally served but it is cache-level stale, so we call it acceptable; the postmortem gets a new slide.",
-      "catastrophe": "Redis ran out of memory during a traffic spike \u2014 everything fell to cache misses and the database melted; everyone pretends it was unforeseeable."
+      "catastrophe": "Redis ran out of memory during a traffic spike — everything fell to cache misses and the database melted; everyone pretends it was unforeseeable."
     }
   },
   {
@@ -1171,7 +1171,7 @@
   {
     "id": "inf_016",
     "title": "Alert Deduping Rules",
-    "description": "Add alert deduplication and noise-suppression rules for on-call \u2014 low effort, immediate sanity gains for the humans holding pagers.",
+    "description": "Add alert deduplication and noise-suppression rules for on-call — low effort, immediate sanity gains for the humans holding pagers.",
     "category": "infrastructure",
     "effort": 2,
     "primary_metric": "tech_debt",
@@ -1204,6 +1204,185 @@
       "unexpected_impact": "Noise rules suppressed a real incident for 15 minutes; we pretend that was the plan.",
       "soft_failure": "Deduping only applied to one service and everything else still screams; we blame 'execution risk'.",
       "catastrophe": "A deduping rule swallowed a critical outage alert; this becomes a quarterly lesson."
+    }
+  },
+  {
+    "id": "ux_017",
+    "title": "Keyboard Navigation Overhaul",
+    "description": "The product is basically unusable without a mouse — add keyboard shortcuts and tab navigation for power users and accessibility.",
+    "category": "ux_improvement",
+    "effort": 5,
+    "primary_metric": "nps",
+    "primary_impact": {
+      "success": [
+        6,
+        9
+      ],
+      "partial": [
+        3,
+        5
+      ]
+    },
+    "secondary_metric": "self_serve_growth",
+    "secondary_impact": {
+      "success": [
+        2,
+        4
+      ],
+      "partial": [
+        1,
+        2
+      ]
+    },
+    "tradeoff_metric": "tech_debt",
+    "tradeoff_impact": {
+      "success": [
+        2,
+        4
+      ],
+      "partial": [
+        1,
+        2
+      ]
+    },
+    "outcomes": {
+      "clear_success": "Keyboard navigation shipped and power users are delighted; it becomes a QBR 'win'.",
+      "partial_success": "Core workflows have keyboard shortcuts but edge cases still require mouse; it still makes the slide deck.",
+      "unexpected_impact": "Keyboard shortcuts conflicted with browser shortcuts and users accidentally closed tabs; nobody had that in the model.",
+      "soft_failure": "Shortcuts exist but are undiscoverable and usage is under 5%; it goes into the learning pile.",
+      "catastrophe": "A focus trap bug locked users in a modal and the only escape was refreshing the page; update your resume."
+    }
+  },
+  {
+    "id": "inf_017",
+    "title": "Kubernetes Migration",
+    "description": "Migrate from EC2 instances to Kubernetes for better resource utilization and auto-scaling — the infrastructure team has been asking for a year.",
+    "category": "infrastructure",
+    "effort": 9,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [
+        -10,
+        -14
+      ],
+      "partial": [
+        -5,
+        -8
+      ]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [
+        5,
+        7
+      ],
+      "partial": [
+        2,
+        4
+      ]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [
+        -3,
+        -4
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
+    "outcomes": {
+      "clear_success": "K8s migration complete and infrastructure costs dropped 28%; leadership takes a victory lap.",
+      "partial_success": "Core services on K8s and legacy services still on EC2; we call it progress.",
+      "unexpected_impact": "Auto-scaling worked too well and scaled to zero during low traffic, taking the site down; we pretend that was the plan.",
+      "soft_failure": "Migration complete but debugging is harder and mean time to resolution increased; we blame 'execution risk'.",
+      "catastrophe": "A pod configuration error caused cascading failures across services; this becomes a quarterly lesson."
+    }
+  },
+  {
+    "id": "ux_018",
+    "title": "Design System Documentation",
+    "description": "The design system exists but documentation is scattered across Figma, Notion, and one designer's head — centralize it before they quit.",
+    "category": "ux_improvement",
+    "effort": 4,
+    "primary_metric": "team_sentiment",
+    "primary_impact": {
+      "success": [
+        5,
+        7
+      ],
+      "partial": [
+        2,
+        4
+      ]
+    },
+    "secondary_metric": "tech_debt",
+    "secondary_impact": {
+      "success": [
+        -3,
+        -5
+      ],
+      "partial": [
+        -1,
+        -3
+      ]
+    },
+    "tradeoff_metric": null,
+    "tradeoff_impact": null,
+    "outcomes": {
+      "clear_success": "Design system docs launched and onboarding time for new designers dropped 60%; it becomes a QBR 'win'.",
+      "partial_success": "Core components documented and edge cases are still tribal knowledge; it still makes the slide deck.",
+      "unexpected_impact": "Documentation revealed inconsistencies in the design system that nobody wanted to acknowledge; nobody had that in the model.",
+      "soft_failure": "Docs exist but are already out of sync with the latest components; it goes into the learning pile.",
+      "catastrophe": "A deprecated component was documented as current and three teams built features using it; update your resume."
+    }
+  },
+  {
+    "id": "inf_018",
+    "title": "Real-Time Monitoring Dashboard",
+    "description": "Build a real-time ops dashboard showing system health, API latency, and error rates — currently we find out about outages from Twitter.",
+    "category": "infrastructure",
+    "effort": 6,
+    "primary_metric": "cto_sentiment",
+    "primary_impact": {
+      "success": [
+        6,
+        9
+      ],
+      "partial": [
+        3,
+        5
+      ]
+    },
+    "secondary_metric": "tech_debt",
+    "secondary_impact": {
+      "success": [
+        -4,
+        -6
+      ],
+      "partial": [
+        -2,
+        -3
+      ]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [
+        -1,
+        -2
+      ],
+      "partial": [
+        -1,
+        -1
+      ]
+    },
+    "outcomes": {
+      "clear_success": "Monitoring dashboard is live and mean time to detection dropped from 12 minutes to 45 seconds; someone writes \"great job\" in all-hands.",
+      "partial_success": "Dashboard works but alerts are noisy and the on-call rotation learned to ignore them; we declare victory and move on.",
+      "unexpected_impact": "Dashboard revealed that services are constantly in degraded state and nobody noticed; it wasn't in the deck, but sure.",
+      "soft_failure": "Dashboard exists but metrics are delayed by 5 minutes and real-time is aspirational; a retro bullet absorbs the pain.",
+      "catastrophe": "A metrics aggregation bug showed all systems green during an outage; legal wants a meeting."
     }
   }
 ]

@@ -1132,7 +1132,7 @@ export async function POST(request: Request) {
         ticketTemplates,
         updatedMetrics,
         rng,
-        rng.int(7, 10)
+        rng.int(15, 18)
       );
       const forcedTicketEntries = eventsLog.filter(
         (entry) =>
