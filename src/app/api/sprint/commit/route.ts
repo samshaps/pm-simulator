@@ -572,6 +572,37 @@ export async function POST(request: Request) {
     if (enterpriseRatio > 0.7) {
       applyMetricDelta("self_serve_growth", -2);
     }
+
+    // Thematic consistency bonus: reward teams for focusing on similar work
+    const maxCategoryCount = Math.max(...Object.values(counts));
+    const hasThematicConsistency = maxCategoryCount >= 2 && totalSelected >= 3;
+    const thematicCategoryName = hasThematicConsistency
+      ? Object.entries(counts).find(([_, count]) => count === maxCategoryCount)?.[0]
+      : null;
+
+    if (hasThematicConsistency && clearPartialRate >= 0.5) {
+      // Light success bonus based on theme strength
+      const themeStrength = maxCategoryCount / totalSelected;
+      const baseBonus = themeStrength >= 0.6 ? 2 : 1;
+
+      // Apply bonuses to relevant metrics based on the theme category
+      if (thematicCategoryName === "tech_debt_reduction" || thematicCategoryName === "infrastructure") {
+        applyMetricDelta("cto_sentiment", baseBonus);
+        applyMetricDelta("tech_debt", -baseBonus);
+      } else if (thematicCategoryName === "enterprise_feature" || thematicCategoryName === "sales_request") {
+        applyMetricDelta("sales_sentiment", baseBonus);
+        applyMetricDelta("enterprise_growth", baseBonus);
+      } else if (thematicCategoryName === "self_serve_feature") {
+        applyMetricDelta("ceo_sentiment", baseBonus);
+        applyMetricDelta("self_serve_growth", baseBonus);
+      } else if (thematicCategoryName === "ux_improvement") {
+        applyMetricDelta("nps", baseBonus);
+        applyMetricDelta("team_sentiment", baseBonus);
+      }
+
+      // Universal team morale boost for thematic consistency
+      applyMetricDelta("team_sentiment", 2);
+    }
   }
 
   const prevSprintRef =
@@ -810,6 +841,44 @@ export async function POST(request: Request) {
     ticketOutcomes.find((ticket) => ticket.outcome === "clear_success") ??
     ticketOutcomes[0];
 
+  // Calculate thematic consistency for retro display
+  const categoryCounts = selectedTickets.reduce<Record<string, number>>((acc, ticket) => {
+    acc[ticket.category] = (acc[ticket.category] ?? 0) + 1;
+    return acc;
+  }, {});
+  const maxCategoryCount = selectedTickets.length > 0 ? Math.max(...Object.values(categoryCounts)) : 0;
+  const hasThematicConsistency = maxCategoryCount >= 2 && selectedTickets.length >= 3;
+  const thematicCategory = hasThematicConsistency
+    ? Object.entries(categoryCounts).find(([_, count]) => count === maxCategoryCount)?.[0]
+    : null;
+
+  const categoryDisplayNames: Record<string, string> = {
+    tech_debt_reduction: "tech debt reduction",
+    infrastructure: "infrastructure",
+    enterprise_feature: "enterprise features",
+    sales_request: "sales requests",
+    self_serve_feature: "self-serve features",
+    ux_improvement: "UX improvements",
+    monetization: "monetization",
+    moonshot: "moonshot projects"
+  };
+
+  let narrativeText = template?.template
+    ?.replace("{tickets_shipped}", String(successes))
+    ?.replace("{tickets_committed}", String(total))
+    ?.replace("{best_ticket_title}", bestTicket?.title ?? "a key ticket")
+    ?.replace(
+      "{best_ticket_outcome_summary}",
+      outcomeSummary(bestTicket?.outcome_narrative)
+    ) ??
+    `Sprint resolved. ${successes} of ${total} tickets landed with some impact. ${failures} slipped or failed.`;
+
+  // Add thematic consistency note to narrative if applicable and successful
+  if (hasThematicConsistency && clearPartialRate >= 0.5 && thematicCategory) {
+    const themeName = categoryDisplayNames[thematicCategory] ?? thematicCategory;
+    narrativeText += ` The team appreciated the consistent focus on ${themeName} this sprint.`;
+  }
+
   const retro = {
     sprint_number: game.current_sprint,
     ceo_focus: ceoFocus,
@@ -818,16 +887,9 @@ export async function POST(request: Request) {
     events: triggeredEvents,
     is_overbooked: isOverbooked,
     failure_rate: failureRate,
-    narrative:
-      template?.template
-        ?.replace("{tickets_shipped}", String(successes))
-        ?.replace("{tickets_committed}", String(total))
-        ?.replace("{best_ticket_title}", bestTicket?.title ?? "a key ticket")
-        ?.replace(
-          "{best_ticket_outcome_summary}",
-          outcomeSummary(bestTicket?.outcome_narrative)
-        ) ??
-      `Sprint resolved. ${successes} of ${total} tickets landed with some impact. ${failures} slipped or failed.`
+    has_thematic_consistency: hasThematicConsistency && clearPartialRate >= 0.5,
+    thematic_category: hasThematicConsistency && clearPartialRate >= 0.5 ? thematicCategory : null,
+    narrative: narrativeText
   };
 
   await supabase
