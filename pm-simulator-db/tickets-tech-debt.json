@@ -172,7 +172,7 @@
     },
     "outcomes": {
       "clear_success": "Security is satisfied and vulnerability scans turned green; someone writes \"great job\" in all-hands.",
-      "partial_success": "Most tests pass with the new version \u2014 three integration tests were skipped because they test deprecated paths; we declare victory and move on.",
+      "partial_success": "Most tests pass with the new version — three integration tests were skipped because they test deprecated paths; we declare victory and move on.",
       "unexpected_impact": "The ORM is faster and exposed a nasty N+1 query problem; it wasn't in the deck, but sure.",
       "soft_failure": "Upgrade is complete but two custom hooks broke, so we vendor-patched the new version and the benefits are now theoretical; a retro bullet absorbs the pain.",
       "catastrophe": "A migration bug silently corrupted 500 customer records; legal wants a meeting."
@@ -220,7 +220,7 @@
     "outcomes": {
       "clear_success": "We now catch issues about 20 minutes before support does; the exec summary suddenly has room.",
       "partial_success": "Monitoring is live for core services; the footnote does the heavy lifting.",
-      "unexpected_impact": "Metrics revealed constant low-level errors we'd never noticed \u2014 panic followed, tickets multiplied; the roadmap did not mention this part.",
+      "unexpected_impact": "Metrics revealed constant low-level errors we'd never noticed — panic followed, tickets multiplied; the roadmap did not mention this part.",
       "soft_failure": "Alerts are configured but overly sensitive and the team learned to ignore them, recreating the exact problem we set out to solve; the postmortem gets a new slide.",
       "catastrophe": "Monitoring crashed during the traffic spike it was supposed to detect, making the incident both invisible and worse; everyone pretends it was unforeseeable."
     }
@@ -260,7 +260,7 @@
       "partial_success": "Coverage reached 68%; we call it progress.",
       "unexpected_impact": "New tests uncovered a latent bug in a supposedly stable module; we pretend that was the plan.",
       "soft_failure": "Tests exist but are brittle and require constant fixes; we blame 'execution risk'.",
-      "catastrophe": "Tests pass in CI but fail intermittently in production \u2014 debugging the test suite now takes longer than fixing actual bugs; this becomes a quarterly lesson."
+      "catastrophe": "Tests pass in CI but fail intermittently in production — debugging the test suite now takes longer than fixing actual bugs; this becomes a quarterly lesson."
     }
   },
   {
@@ -313,7 +313,7 @@
   {
     "id": "td_008",
     "title": "Dependency Version Updates",
-    "description": "The dependency tree has 47 packages with known security vulnerabilities \u2014 the scan report is longer than the README.",
+    "description": "The dependency tree has 47 packages with known security vulnerabilities — the scan report is longer than the README.",
     "category": "tech_debt_reduction",
     "effort": 3,
     "primary_metric": "tech_debt",
@@ -354,7 +354,7 @@
       "partial_success": "Most dependencies updated and three packages broke compatibility; we declare victory and move on.",
       "unexpected_impact": "A safe transitive update changed internal behavior and a subtle error-handling bug now shows up intermittently; it wasn't in the deck, but sure.",
       "soft_failure": "Everything updated successfully and a week later, a security advisory landed for the new version we just installed; a retro bullet absorbs the pain.",
-      "catastrophe": "A minor version update included a breaking change that only triggered under production traffic \u2014 rollback ensued; legal wants a meeting."
+      "catastrophe": "A minor version update included a breaking change that only triggered under production traffic — rollback ensued; legal wants a meeting."
     }
   },
   {
@@ -483,7 +483,7 @@
   {
     "id": "td_012",
     "title": "Migrate to New CDN",
-    "description": "The legacy CDN is being sunset and costs are tripling \u2014 migrate before the invoice arrives.",
+    "description": "The legacy CDN is being sunset and costs are tripling — migrate before the invoice arrives.",
     "category": "tech_debt_reduction",
     "effort": 4,
     "primary_metric": "tech_debt",
@@ -615,7 +615,7 @@
     },
     "outcomes": {
       "clear_success": "API is down to three versions from seven and the test suite runs 40% faster; it becomes a QBR 'win'.",
-      "partial_success": "Deprecated versions are marked for removal with six months' notice \u2014 only one customer will actually migrate; it still makes the slide deck.",
+      "partial_success": "Deprecated versions are marked for removal with six months' notice — only one customer will actually migrate; it still makes the slide deck.",
       "unexpected_impact": "Removing old versions exposed inconsistencies in data handling that nobody knew existed; nobody had that in the model.",
       "soft_failure": "Consolidation completed but introduced subtle behavior changes in rarely used endpoints and customers will notice next month; it goes into the learning pile.",
       "catastrophe": "Version consolidation broke serialization for a custom field type; update your resume."
@@ -624,7 +624,7 @@
   {
     "id": "td_015",
     "title": "Cache Invalidation Refactor",
-    "description": "Build a centralized feature flag service with a UI for toggling, rollout, and targeting \u2014 because everyone having their own flag system is not a system.",
+    "description": "Build a centralized feature flag service with a UI for toggling, rollout, and targeting — because everyone having their own flag system is not a system.",
     "category": "tech_debt_reduction",
     "effort": 5,
     "primary_metric": "tech_debt",
@@ -794,7 +794,7 @@
   {
     "id": "td_019",
     "title": "Session Management Overhaul",
-    "description": "Session tokens live in-memory and vanish on restart, so every deploy logs out every user \u2014 Tuesday mornings are fun.",
+    "description": "Session tokens live in-memory and vanish on restart, so every deploy logs out every user — Tuesday mornings are fun.",
     "category": "tech_debt_reduction",
     "effort": 3,
     "primary_metric": "tech_debt",
@@ -967,13 +967,13 @@
       "partial_success": "The new queue is live for new jobs and old jobs still run on the legacy system because refactoring them is expensive; we declare victory and move on.",
       "unexpected_impact": "Visibility revealed that 15% of jobs have been silently failing and retrying forever; it wasn't in the deck, but sure.",
       "soft_failure": "Upgrade complete, but the new queue is slower and the performance hit cascades across the platform; a retro bullet absorbs the pain.",
-      "catastrophe": "The new queue lost an entire batch of jobs during an upgrade \u2014 email sends, report generation, all gone; legal wants a meeting."
+      "catastrophe": "The new queue lost an entire batch of jobs during an upgrade — email sends, report generation, all gone; legal wants a meeting."
     }
   },
   {
     "id": "td_023",
     "title": "Retire Dead Feature Flags",
-    "description": "Clean up stale feature flags that have been 'temporary' for over a year \u2014 low effort, immediate cognitive relief.",
+    "description": "Clean up stale feature flags that have been 'temporary' for over a year — low effort, immediate cognitive relief.",
     "category": "tech_debt_reduction",
     "effort": 2,
     "primary_metric": "tech_debt",
@@ -1015,6 +1015,147 @@
       "unexpected_impact": "Removing a flag exposed a hidden dependency in a cron job and it only worked because the flag defaulted to false; the roadmap did not mention this part.",
       "soft_failure": "Flags were removed in one service and missed in another; the postmortem gets a new slide.",
       "catastrophe": "A dead flag was actually disabling a compliance workflow; everyone pretends it was unforeseeable."
+    }
+  },
+  {
+    "id": "td_024",
+    "title": "Frontend Build Pipeline Modernization",
+    "description": "The frontend still uses Webpack 4 and builds take 12 minutes — switching to Vite would cut that to under a minute and the team would stop complaining.",
+    "category": "tech_debt_reduction",
+    "effort": 5,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [
+        -7,
+        -9
+      ],
+      "partial": [
+        -3,
+        -5
+      ]
+    },
+    "secondary_metric": "team_sentiment",
+    "secondary_impact": {
+      "success": [
+        4,
+        6
+      ],
+      "partial": [
+        2,
+        3
+      ]
+    },
+    "tradeoff_metric": "cto_sentiment",
+    "tradeoff_impact": {
+      "success": [
+        2,
+        3
+      ],
+      "partial": [
+        1,
+        2
+      ]
+    },
+    "outcomes": {
+      "clear_success": "Build time dropped from 12 minutes to 45 seconds and developer happiness is measurably up; leadership takes a victory lap.",
+      "partial_success": "Build is faster but legacy plugins still run on Webpack and the hybrid setup is brittle; we call it progress.",
+      "unexpected_impact": "Fast builds exposed how often code is poorly tested and CI failures doubled because we now actually run tests; we pretend that was the plan.",
+      "soft_failure": "Migration complete but production builds are still slow because optimization settings were lost in translation; we blame 'execution risk'.",
+      "catastrophe": "A Vite config bug bundled source maps into production and API keys leaked; this becomes a quarterly lesson."
+    }
+  },
+  {
+    "id": "td_025",
+    "title": "Consolidate Duplicate Libraries",
+    "description": "The codebase imports three different date libraries, two HTTP clients, and four logging frameworks — pick one and delete the rest.",
+    "category": "tech_debt_reduction",
+    "effort": 4,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [
+        -6,
+        -8
+      ],
+      "partial": [
+        -3,
+        -5
+      ]
+    },
+    "secondary_metric": "cto_sentiment",
+    "secondary_impact": {
+      "success": [
+        3,
+        5
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [
+        -1,
+        -2
+      ],
+      "partial": [
+        -1,
+        -1
+      ]
+    },
+    "outcomes": {
+      "clear_success": "Libraries consolidated and bundle size dropped 18%; it becomes a QBR 'win'.",
+      "partial_success": "Most duplicates removed but one legacy module needs moment.js and will until heat death; it still makes the slide deck.",
+      "unexpected_impact": "Removing libraries exposed behavioral differences between them and some date parsing now works differently; nobody had that in the model.",
+      "soft_failure": "Consolidation complete but the chosen library is slower and response times regressed; it goes into the learning pile.",
+      "catastrophe": "A timezone bug in the new date library caused invoice generation to shift by one day; update your resume."
+    }
+  },
+  {
+    "id": "td_026",
+    "title": "Mobile Web Performance Audit",
+    "description": "The mobile site loads 4MB of JavaScript and takes 11 seconds on a 3G connection — this is why bounce rate is 60%.",
+    "category": "tech_debt_reduction",
+    "effort": 6,
+    "primary_metric": "tech_debt",
+    "primary_impact": {
+      "success": [
+        -8,
+        -11
+      ],
+      "partial": [
+        -4,
+        -7
+      ]
+    },
+    "secondary_metric": "nps",
+    "secondary_impact": {
+      "success": [
+        3,
+        5
+      ],
+      "partial": [
+        1,
+        3
+      ]
+    },
+    "tradeoff_metric": "team_sentiment",
+    "tradeoff_impact": {
+      "success": [
+        -2,
+        -3
+      ],
+      "partial": [
+        -1,
+        -2
+      ]
+    },
+    "outcomes": {
+      "clear_success": "Mobile load time dropped to 3 seconds and bounce rate fell to 35%; someone writes \"great job\" in all-hands.",
+      "partial_success": "JavaScript reduced to 2MB and load time is 6 seconds; we declare victory and move on.",
+      "unexpected_impact": "Optimizations revealed that mobile users behave differently and desktop metrics stopped being predictive; it wasn't in the deck, but sure.",
+      "soft_failure": "Audit complete and recommendations exist but implementation stalled because it requires coordination across five teams; a retro bullet absorbs the pain.",
+      "catastrophe": "Aggressive code splitting broke lazy loading and mobile users saw blank screens; legal wants a meeting."
     }
   }
 ]

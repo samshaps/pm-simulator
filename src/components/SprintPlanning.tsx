@@ -159,6 +159,8 @@ export default function SprintPlanning() {
   const [eventPopupEvents, setEventPopupEvents] = useState<Array<{ title: string; description: string }>>([]);
   const [showEventPopup, setShowEventPopup] = useState(false);
   const [isMetricsExpanded, setIsMetricsExpanded] = useState(false);
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'effort' | 'category' | 'none'>('none');
 
   useEffect(() => {
     // Fetch active sprint data
@@ -282,12 +284,27 @@ export default function SprintPlanning() {
     return ticketCategory === ceoFocusCategory;
   };
 
-  const backlogTickets: Ticket[] = gameState.sprint.backlog.map(ticket => ({
+  let backlogTickets: Ticket[] = gameState.sprint.backlog.map(ticket => ({
     ...ticket,
     categoryClass: categoryToClass[ticket.category] || 'catDefault',
     isMandatory: ticket.is_mandatory,
     isCEOAligned: isTicketCEOAligned(ticket.category)
   }));
+
+  // Apply category filter
+  if (filterCategory !== 'all') {
+    backlogTickets = backlogTickets.filter(ticket => ticket.category === filterCategory);
+  }
+
+  // Apply sorting
+  if (sortBy === 'effort') {
+    backlogTickets = [...backlogTickets].sort((a, b) => a.effort - b.effort);
+  } else if (sortBy === 'category') {
+    backlogTickets = [...backlogTickets].sort((a, b) => a.category.localeCompare(b.category));
+  }
+
+  // Get unique categories for filter dropdown
+  const uniqueCategories = Array.from(new Set(gameState.sprint.backlog.map(t => t.category)));
 
   const mockBacklogTickets: Ticket[] = [
     {
@@ -741,6 +758,35 @@ export default function SprintPlanning() {
             <span className={styles.panelCount}>{backlogTickets.length} tickets</span>
           </div>
           <div className={styles.panelSubtitle}>Available work. Choose wisely. Or don't.</div>
+
+          {/* Filter and Sort Controls */}
+          <div className={styles.filterSortControls}>
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>Filter:</label>
+              <select
+                className={styles.filterSelect}
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+              >
+                <option value="all">All Categories</option>
+                {uniqueCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat.replace(/_/g, ' ')}</option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.sortGroup}>
+              <label className={styles.sortLabel}>Sort by:</label>
+              <select
+                className={styles.sortSelect}
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'effort' | 'category' | 'none')}
+              >
+                <option value="none">Default</option>
+                <option value="effort">Points (Low to High)</option>
+                <option value="category">Category</option>
+              </select>
+            </div>
+          </div>
 
           {backlogTickets.map(ticket => {
             const isCommitted = committedTickets.some(t => t.id === ticket.id);
