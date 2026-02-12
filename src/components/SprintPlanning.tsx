@@ -320,6 +320,47 @@ export default function SprintPlanning() {
     return ticketCategory === ceoFocusCategory;
   };
 
+  // Calculate impact magnitude and confidence from primary_impact data
+  const calculateImpact = (ticket: any): { magnitude: number; confidence: number; emoji: string } => {
+    if (!ticket.primary_impact) {
+      return { magnitude: 0, confidence: 0, emoji: '' };
+    }
+
+    const successRange = ticket.primary_impact.success || [0, 0];
+    const partialRange = ticket.primary_impact.partial || [0, 0];
+
+    // Calculate average expected impact (weighted: 60% success, 40% partial)
+    const successAvg = (Math.abs(successRange[0]) + Math.abs(successRange[1])) / 2;
+    const partialAvg = (Math.abs(partialRange[0]) + Math.abs(partialRange[1])) / 2;
+    const weightedAvg = successAvg * 0.6 + partialAvg * 0.4;
+
+    // Map to magnitude tiers: 0-4 = low (🔥), 5-8 = medium (🔥🔥), 9+ = high (🔥🔥🔥)
+    let magnitude = 1;
+    let emoji = '🔥';
+    if (weightedAvg >= 9) {
+      magnitude = 3;
+      emoji = '🔥🔥🔥';
+    } else if (weightedAvg >= 5) {
+      magnitude = 2;
+      emoji = '🔥🔥';
+    }
+
+    // Calculate confidence based on range width (tighter range = higher confidence)
+    const successWidth = Math.abs(successRange[1] - successRange[0]);
+    const partialWidth = Math.abs(partialRange[1] - partialRange[0]);
+    const avgWidth = (successWidth + partialWidth) / 2;
+
+    // Map width to confidence: 0-3 = high (1.0), 4-6 = medium (0.7), 7+ = low (0.5)
+    let confidence = 1.0;
+    if (avgWidth >= 7) {
+      confidence = 0.5;
+    } else if (avgWidth >= 4) {
+      confidence = 0.7;
+    }
+
+    return { magnitude, confidence, emoji };
+  };
+
   let backlogTickets: Ticket[] = gameState.sprint.backlog.map(ticket => {
     const impact = calculateImpact(ticket);
     return {
@@ -360,47 +401,6 @@ export default function SprintPlanning() {
   // Format category display name
   const formatCategoryName = (category: string) => {
     return category.replace(/_/g, ' ');
-  };
-
-  // Calculate impact magnitude and confidence from primary_impact data
-  const calculateImpact = (ticket: any): { magnitude: number; confidence: number; emoji: string } => {
-    if (!ticket.primary_impact) {
-      return { magnitude: 0, confidence: 0, emoji: '' };
-    }
-
-    const successRange = ticket.primary_impact.success || [0, 0];
-    const partialRange = ticket.primary_impact.partial || [0, 0];
-
-    // Calculate average expected impact (weighted: 60% success, 40% partial)
-    const successAvg = (Math.abs(successRange[0]) + Math.abs(successRange[1])) / 2;
-    const partialAvg = (Math.abs(partialRange[0]) + Math.abs(partialRange[1])) / 2;
-    const weightedAvg = successAvg * 0.6 + partialAvg * 0.4;
-
-    // Map to magnitude tiers: 0-4 = low (🔥), 5-8 = medium (🔥🔥), 9+ = high (🔥🔥🔥)
-    let magnitude = 1;
-    let emoji = '🔥';
-    if (weightedAvg >= 9) {
-      magnitude = 3;
-      emoji = '🔥🔥🔥';
-    } else if (weightedAvg >= 5) {
-      magnitude = 2;
-      emoji = '🔥🔥';
-    }
-
-    // Calculate confidence based on range width (tighter range = higher confidence)
-    const successWidth = Math.abs(successRange[1] - successRange[0]);
-    const partialWidth = Math.abs(partialRange[1] - partialRange[0]);
-    const avgWidth = (successWidth + partialWidth) / 2;
-
-    // Map width to confidence: 0-3 = high (1.0), 4-6 = medium (0.7), 7+ = low (0.5)
-    let confidence = 1.0;
-    if (avgWidth >= 7) {
-      confidence = 0.5;
-    } else if (avgWidth >= 4) {
-      confidence = 0.7;
-    }
-
-    return { magnitude, confidence, emoji };
   };
 
   // Get display value for filter
