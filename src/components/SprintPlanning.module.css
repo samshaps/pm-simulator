@@ -475,8 +475,7 @@
   min-width: 160px;
 }
 
-.filterSelect,
-.sortSelect {
+.selectButton {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   padding: 6px 32px 6px 10px;
@@ -487,37 +486,85 @@
   cursor: pointer;
   transition: all 0.15s ease;
   width: 100%;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.filterSelect:hover,
-.sortSelect:hover {
+.selectButton:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-active);
 }
 
-.filterSelect:focus,
-.sortSelect:focus {
+.selectButton:focus {
   outline: none;
   border-color: var(--purple-primary);
   box-shadow: 0 0 0 2px rgba(124, 92, 191, 0.15);
 }
 
 .selectArrow {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
   font-size: 8px;
   color: var(--text-dim);
-  pointer-events: none;
   transition: color 0.15s ease;
 }
 
 .customSelect:hover .selectArrow {
   color: var(--purple-light);
+}
+
+.selectDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-active);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  overflow: hidden;
+  animation: dropdownSlide 0.15s ease-out;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.selectOption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 8px 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.selectOption:last-child {
+  border-bottom: none;
+}
+
+.selectOption:hover {
+  background: var(--bg-card-hover);
+  color: var(--purple-light);
+}
+
+.selectOptionActive {
+  background: var(--purple-glow);
+  color: var(--purple-light);
+  font-weight: 600;
+}
+
+.selectOptionActive:hover {
+  background: var(--purple-glow);
 }
 
 /* ── TICKET CARD ── */

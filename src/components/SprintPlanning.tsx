@@ -174,6 +174,8 @@ export default function SprintPlanning() {
   const [isMetricsExpanded, setIsMetricsExpanded] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'effort-asc' | 'effort-desc' | 'category' | 'none'>('effort-asc');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
 
   useEffect(() => {
     // Fetch active sprint data
@@ -263,6 +265,20 @@ export default function SprintPlanning() {
     }
   }, [gameState]);
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(`.${styles.customSelect}`)) {
+        setIsFilterOpen(false);
+        setIsSortOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   if (isLoading || !gameState) {
     return null; // Don't show default loading - home page loading overlay handles it
   }
@@ -321,6 +337,28 @@ export default function SprintPlanning() {
 
   // Get unique categories for filter dropdown
   const uniqueCategories = Array.from(new Set(gameState.sprint.backlog.map(t => t.category)));
+
+  // Format category display name
+  const formatCategoryName = (category: string) => {
+    return category.replace(/_/g, ' ');
+  };
+
+  // Get display value for filter
+  const getFilterDisplayValue = () => {
+    if (filterCategory === 'all') return '✓ All Categories';
+    return formatCategoryName(filterCategory);
+  };
+
+  // Get display value for sort
+  const getSortDisplayValue = () => {
+    const sortLabels: Record<string, string> = {
+      'effort-asc': 'Points (Low to High)',
+      'effort-desc': 'Points (High to Low)',
+      'category': 'Category',
+      'none': 'Random'
+    };
+    return sortLabels[sortBy] || 'Points (Low to High)';
+  };
 
   const mockBacklogTickets: Ticket[] = [
     {
@@ -792,33 +830,96 @@ export default function SprintPlanning() {
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Filter:</label>
               <div className={styles.customSelect}>
-                <select
-                  className={styles.filterSelect}
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
+                <button
+                  className={styles.selectButton}
+                  onClick={() => {
+                    setIsFilterOpen(!isFilterOpen);
+                    setIsSortOpen(false);
+                  }}
                 >
-                  <option value="all">✓ All Categories</option>
-                  {uniqueCategories.map(cat => (
-                    <option key={cat} value={cat}>{cat.replace(/_/g, ' ')}</option>
-                  ))}
-                </select>
-                <span className={styles.selectArrow}>▼</span>
+                  <span>{getFilterDisplayValue()}</span>
+                  <span className={styles.selectArrow}>▼</span>
+                </button>
+                {isFilterOpen && (
+                  <div className={styles.selectDropdown}>
+                    <div
+                      className={`${styles.selectOption} ${filterCategory === 'all' ? styles.selectOptionActive : ''}`}
+                      onClick={() => {
+                        setFilterCategory('all');
+                        setIsFilterOpen(false);
+                      }}
+                    >
+                      ✓ All Categories
+                    </div>
+                    {uniqueCategories.map(cat => (
+                      <div
+                        key={cat}
+                        className={`${styles.selectOption} ${filterCategory === cat ? styles.selectOptionActive : ''}`}
+                        onClick={() => {
+                          setFilterCategory(cat);
+                          setIsFilterOpen(false);
+                        }}
+                      >
+                        {formatCategoryName(cat)}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className={styles.sortGroup}>
               <label className={styles.sortLabel}>Sort by:</label>
               <div className={styles.customSelect}>
-                <select
-                  className={styles.sortSelect}
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'effort-asc' | 'effort-desc' | 'category' | 'none')}
+                <button
+                  className={styles.selectButton}
+                  onClick={() => {
+                    setIsSortOpen(!isSortOpen);
+                    setIsFilterOpen(false);
+                  }}
                 >
-                  <option value="effort-asc">Points (Low to High)</option>
-                  <option value="effort-desc">Points (High to Low)</option>
-                  <option value="category">Category</option>
-                  <option value="none">Random</option>
-                </select>
-                <span className={styles.selectArrow}>▼</span>
+                  <span>{getSortDisplayValue()}</span>
+                  <span className={styles.selectArrow}>▼</span>
+                </button>
+                {isSortOpen && (
+                  <div className={styles.selectDropdown}>
+                    <div
+                      className={`${styles.selectOption} ${sortBy === 'effort-asc' ? styles.selectOptionActive : ''}`}
+                      onClick={() => {
+                        setSortBy('effort-asc');
+                        setIsSortOpen(false);
+                      }}
+                    >
+                      Points (Low to High)
+                    </div>
+                    <div
+                      className={`${styles.selectOption} ${sortBy === 'effort-desc' ? styles.selectOptionActive : ''}`}
+                      onClick={() => {
+                        setSortBy('effort-desc');
+                        setIsSortOpen(false);
+                      }}
+                    >
+                      Points (High to Low)
+                    </div>
+                    <div
+                      className={`${styles.selectOption} ${sortBy === 'category' ? styles.selectOptionActive : ''}`}
+                      onClick={() => {
+                        setSortBy('category');
+                        setIsSortOpen(false);
+                      }}
+                    >
+                      Category
+                    </div>
+                    <div
+                      className={`${styles.selectOption} ${sortBy === 'none' ? styles.selectOptionActive : ''}`}
+                      onClick={() => {
+                        setSortBy('none');
+                        setIsSortOpen(false);
+                      }}
+                    >
+                      Random
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
