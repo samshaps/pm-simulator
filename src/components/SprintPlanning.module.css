@@ -724,6 +724,24 @@
   border-radius: 4px;
 }
 
+.ticketImpactTag {
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 140, 0, 0.08);
+  border: 1px solid rgba(255, 140, 0, 0.2);
+  transition: opacity 0.2s ease;
+  cursor: help;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ticketImpactTag:hover {
+  background: rgba(255, 140, 0, 0.12);
+  border-color: rgba(255, 140, 0, 0.3);
+}
+
 .ticketDesc {
   font-size: 12px;
   line-height: 1.55;

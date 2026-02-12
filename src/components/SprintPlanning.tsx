@@ -17,6 +17,13 @@ interface Ticket {
   hackathon_boosted?: boolean;
   isHackathonBoosted?: boolean;
   outcomes?: Record<string, string>;
+  primary_impact?: {
+    success: [number, number];
+    partial: [number, number];
+  };
+  expectedImpact?: string;
+  impactMagnitude?: number;
+  impactConfidence?: number;
 }
 
 interface CommittedTicket {
@@ -173,7 +180,7 @@ export default function SprintPlanning() {
   const [showEventPopup, setShowEventPopup] = useState(false);
   const [isMetricsExpanded, setIsMetricsExpanded] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'effort-asc' | 'effort-desc' | 'category' | 'none'>('effort-asc');
+  const [sortBy, setSortBy] = useState<'effort-asc' | 'effort-desc' | 'category' | 'impact-desc' | 'none'>('effort-asc');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
 
@@ -313,13 +320,19 @@ export default function SprintPlanning() {
     return ticketCategory === ceoFocusCategory;
   };
 
-  let backlogTickets: Ticket[] = gameState.sprint.backlog.map(ticket => ({
-    ...ticket,
-    categoryClass: categoryToClass[ticket.category] || 'catDefault',
-    isMandatory: ticket.is_mandatory,
-    isCEOAligned: isTicketCEOAligned(ticket.category),
-    isHackathonBoosted: ticket.hackathon_boosted
-  }));
+  let backlogTickets: Ticket[] = gameState.sprint.backlog.map(ticket => {
+    const impact = calculateImpact(ticket);
+    return {
+      ...ticket,
+      categoryClass: categoryToClass[ticket.category] || 'catDefault',
+      isMandatory: ticket.is_mandatory,
+      isCEOAligned: isTicketCEOAligned(ticket.category),
+      isHackathonBoosted: ticket.hackathon_boosted,
+      expectedImpact: impact.emoji,
+      impactMagnitude: impact.magnitude,
+      impactConfidence: impact.confidence
+    };
+  });
 
   // Apply category filter
   if (filterCategory !== 'all') {
@@ -333,6 +346,12 @@ export default function SprintPlanning() {
     backlogTickets = [...backlogTickets].sort((a, b) => b.effort - a.effort);
   } else if (sortBy === 'category') {
     backlogTickets = [...backlogTickets].sort((a, b) => a.category.localeCompare(b.category));
+  } else if (sortBy === 'impact-desc') {
+    backlogTickets = [...backlogTickets].sort((a, b) => {
+      const aMag = a.impactMagnitude || 0;
+      const bMag = b.impactMagnitude || 0;
+      return bMag - aMag;
+    });
   }
 
   // Get unique categories for filter dropdown
@@ -341,6 +360,47 @@ export default function SprintPlanning() {
   // Format category display name
   const formatCategoryName = (category: string) => {
     return category.replace(/_/g, ' ');
+  };
+
+  // Calculate impact magnitude and confidence from primary_impact data
+  const calculateImpact = (ticket: any): { magnitude: number; confidence: number; emoji: string } => {
+    if (!ticket.primary_impact) {
+      return { magnitude: 0, confidence: 0, emoji: '' };
+    }
+
+    const successRange = ticket.primary_impact.success || [0, 0];
+    const partialRange = ticket.primary_impact.partial || [0, 0];
+
+    // Calculate average expected impact (weighted: 60% success, 40% partial)
+    const successAvg = (Math.abs(successRange[0]) + Math.abs(successRange[1])) / 2;
+    const partialAvg = (Math.abs(partialRange[0]) + Math.abs(partialRange[1])) / 2;
+    const weightedAvg = successAvg * 0.6 + partialAvg * 0.4;
+
+    // Map to magnitude tiers: 0-4 = low (🔥), 5-8 = medium (🔥🔥), 9+ = high (🔥🔥🔥)
+    let magnitude = 1;
+    let emoji = '🔥';
+    if (weightedAvg >= 9) {
+      magnitude = 3;
+      emoji = '🔥🔥🔥';
+    } else if (weightedAvg >= 5) {
+      magnitude = 2;
+      emoji = '🔥🔥';
+    }
+
+    // Calculate confidence based on range width (tighter range = higher confidence)
+    const successWidth = Math.abs(successRange[1] - successRange[0]);
+    const partialWidth = Math.abs(partialRange[1] - partialRange[0]);
+    const avgWidth = (successWidth + partialWidth) / 2;
+
+    // Map width to confidence: 0-3 = high (1.0), 4-6 = medium (0.7), 7+ = low (0.5)
+    let confidence = 1.0;
+    if (avgWidth >= 7) {
+      confidence = 0.5;
+    } else if (avgWidth >= 4) {
+      confidence = 0.7;
+    }
+
+    return { magnitude, confidence, emoji };
   };
 
   // Get display value for filter
@@ -355,6 +415,7 @@ export default function SprintPlanning() {
       'effort-asc': 'Points (Low to High)',
       'effort-desc': 'Points (High to Low)',
       'category': 'Category',
+      'impact-desc': 'Impact (High to Low)',
       'none': 'Random'
     };
     return sortLabels[sortBy] || 'Points (Low to High)';
@@ -901,6 +962,15 @@ export default function SprintPlanning() {
                       Points (High to Low)
                     </div>
                     <div
+                      className={`${styles.selectOption} ${sortBy === 'impact-desc' ? styles.selectOptionActive : ''}`}
+                      onClick={() => {
+                        setSortBy('impact-desc');
+                        setIsSortOpen(false);
+                      }}
+                    >
+                      Impact (High to Low)
+                    </div>
+                    <div
                       className={`${styles.selectOption} ${sortBy === 'category' ? styles.selectOptionActive : ''}`}
                       onClick={() => {
                         setSortBy('category');
@@ -943,6 +1013,15 @@ export default function SprintPlanning() {
                   {ticket.isCEOAligned && <span className={styles.ticketCeoTag}>★ CEO Aligned</span>}
                   {ticket.isMandatory && <span className={styles.ticketMandatoryTag}>MANDATORY</span>}
                   {ticket.isHackathonBoosted && <span className={styles.ticketHackathonTag}>⚡ HACKATHON BOOST</span>}
+                  {ticket.expectedImpact && (
+                    <span
+                      className={styles.ticketImpactTag}
+                      style={{ opacity: ticket.impactConfidence || 1 }}
+                      title={`Expected impact magnitude: ${ticket.impactMagnitude}/3 (${Math.round((ticket.impactConfidence || 1) * 100)}% confidence)`}
+                    >
+                      {ticket.expectedImpact}
+                    </span>
+                  )}
                 </div>
                 <div className={styles.ticketDesc}>
                   {ticket.description}
