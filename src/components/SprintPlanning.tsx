@@ -182,13 +182,13 @@ export default function SprintPlanning() {
   const [ceoShiftOverride, setCeoShiftOverride] = useState<GameState['ceo_focus_shift']>(null);
   const [eventPopupEvents, setEventPopupEvents] = useState<Array<{ title: string; description: string }>>([]);
   const [showEventPopup, setShowEventPopup] = useState(false);
-  const [isMetricsExpanded, setIsMetricsExpanded] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'effort-asc' | 'effort-desc' | 'category' | 'impact-desc' | 'none'>('effort-asc');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [hoveredTicketId, setHoveredTicketId] = useState<string | null>(null);
   const [metricPreviews, setMetricPreviews] = useState<Record<string, { value: number; isPositive: boolean }>>({});
+  const [committedPreviews, setCommittedPreviews] = useState<Record<string, Record<string, { value: number; isPositive: boolean }>>>({});
 
   useEffect(() => {
     // Fetch active sprint data
@@ -259,9 +259,6 @@ export default function SprintPlanning() {
     if (!gameState) return;
     if (gameState.game.current_sprint === 1) {
       setShowCeoShift(true);
-      setIsMetricsExpanded(false); // Closed for Sprint 1
-    } else {
-      setIsMetricsExpanded(true); // Auto-open for Sprint 2+
     }
 
     // Auto-add mandatory tickets to sprint
@@ -427,49 +424,109 @@ export default function SprintPlanning() {
     return sortLabels[sortBy] || 'Points (Low to High)';
   };
 
-  // Calculate metric previews when hovering over a ticket
-  const handleTicketHover = (ticketId: string) => {
-    setHoveredTicketId(ticketId);
-    const ticket = backlogTickets.find(t => t.id === ticketId);
-    if (!ticket || !ticket.primary_impact) return;
+  // Calculate metric preview for a single ticket
+  const calculateTicketPreview = (ticket: Ticket): Record<string, { value: number; isPositive: boolean }> => {
+    if (!ticket.primary_impact) return {};
 
-    // Calculate expected metric impacts (simplified - in real app, would use ticket's metric impacts)
     const previews: Record<string, { value: number; isPositive: boolean }> = {};
-
-    // For demo purposes, calculate simple preview based on impact
     const successRange = ticket.primary_impact.success || [0, 0];
     const avgImpact = (successRange[0] + successRange[1]) / 2;
 
     // Map to specific metrics based on category
     if (ticket.category === 'self_serve_feature') {
       previews.self_serve_growth = {
-        value: metrics.self_serve_growth + avgImpact,
+        value: avgImpact,
         isPositive: avgImpact > 0
       };
       previews.team_sentiment = {
-        value: metrics.team_sentiment + (avgImpact * 0.3),
+        value: avgImpact * 0.3,
         isPositive: avgImpact > 0
       };
     } else if (ticket.category === 'enterprise_feature' || ticket.category === 'sales_request') {
       previews.enterprise_growth = {
-        value: metrics.enterprise_growth + avgImpact,
+        value: avgImpact,
         isPositive: avgImpact > 0
       };
       previews.ceo_sentiment = {
-        value: metrics.ceo_sentiment + (avgImpact * 0.5),
+        value: avgImpact * 0.5,
         isPositive: avgImpact > 0
       };
     } else if (ticket.category === 'tech_debt_reduction' || ticket.category === 'infrastructure') {
       previews.tech_debt = {
-        value: metrics.tech_debt - avgImpact,
+        value: -avgImpact,
         isPositive: avgImpact > 0
       };
       previews.cto_sentiment = {
-        value: metrics.cto_sentiment + avgImpact,
+        value: avgImpact,
         isPositive: avgImpact > 0
       };
     }
 
+    return previews;
+  };
+
+  // Convert metric key to display name
+  const metricKeyToDisplayName = (key: string): string => {
+    const mapping: Record<string, string> = {
+      'team_sentiment': 'Team Sentiment',
+      'ceo_sentiment': 'CEO Sentiment',
+      'sales_sentiment': 'Sales Sentiment',
+      'cto_sentiment': 'CTO Sentiment',
+      'self_serve_growth': 'Self-Serve Growth',
+      'enterprise_growth': 'Enterprise Growth',
+      'tech_debt': 'Tech Debt',
+      'nps': 'NPS',
+      'velocity': 'Velocity'
+    };
+    return mapping[key] || key;
+  };
+
+  // Combine committed and hover previews
+  const getCombinedPreviews = (): Record<string, { value: number; isPositive: boolean }> => {
+    const combined: Record<string, { value: number; isPositive: boolean }> = {};
+
+    // Start with base metrics
+    const baseMetrics = { ...metrics };
+
+    // Add all committed ticket impacts
+    Object.values(committedPreviews).forEach(ticketPreviews => {
+      Object.entries(ticketPreviews).forEach(([metricKey, preview]) => {
+        if (!combined[metricKey]) {
+          combined[metricKey] = { value: 0, isPositive: preview.isPositive };
+        }
+        combined[metricKey].value += preview.value;
+      });
+    });
+
+    // Add hover preview on top
+    Object.entries(metricPreviews).forEach(([metricKey, preview]) => {
+      if (!combined[metricKey]) {
+        combined[metricKey] = { value: 0, isPositive: preview.isPositive };
+      }
+      combined[metricKey].value += preview.value;
+    });
+
+    // Convert deltas to absolute values and map to display names
+    const result: Record<string, { value: number; isPositive: boolean }> = {};
+    Object.keys(combined).forEach(metricKey => {
+      const baseValue = baseMetrics[metricKey as keyof MetricsState] || 0;
+      const displayName = metricKeyToDisplayName(metricKey);
+      result[displayName] = {
+        value: baseValue + combined[metricKey].value,
+        isPositive: combined[metricKey].isPositive
+      };
+    });
+
+    return result;
+  };
+
+  // Calculate metric previews when hovering over a ticket
+  const handleTicketHover = (ticketId: string) => {
+    setHoveredTicketId(ticketId);
+    const ticket = backlogTickets.find(t => t.id === ticketId);
+    if (!ticket || !ticket.primary_impact) return;
+
+    const previews = calculateTicketPreview(ticket);
     setMetricPreviews(previews);
   };
 
@@ -549,6 +606,8 @@ export default function SprintPlanning() {
 
   const handleCommitTicket = (ticket: Ticket) => {
     if (committedTickets.find(t => t.id === ticket.id)) return;
+
+    // Add ticket to committed list
     setCommittedTickets([...committedTickets, {
       id: ticket.id,
       title: ticket.title,
@@ -556,6 +615,13 @@ export default function SprintPlanning() {
       category: ticket.category,
       categoryClass: ticket.categoryClass
     }]);
+
+    // Calculate and lock in the preview for this ticket
+    const ticketPreview = calculateTicketPreview(ticket);
+    setCommittedPreviews(prev => ({
+      ...prev,
+      [ticket.id]: ticketPreview
+    }));
   };
 
   const handleRemoveTicket = (ticketId: string) => {
@@ -565,7 +631,16 @@ export default function SprintPlanning() {
       alert('This ticket is MANDATORY and cannot be removed from the sprint. Stakeholder demand is non-negotiable.');
       return;
     }
+
+    // Remove ticket from committed list
     setCommittedTickets(committedTickets.filter(t => t.id !== ticketId));
+
+    // Remove its preview from committed previews
+    setCommittedPreviews(prev => {
+      const updated = { ...prev };
+      delete updated[ticketId];
+      return updated;
+    });
   };
 
   const handleStartSprint = async () => {
@@ -714,201 +789,6 @@ export default function SprintPlanning() {
             <span className={styles.logoText}>PM Simulator</span>
           </div>
           <div className={styles.quarterBadge}>Q{gameState.game.current_quarter} — Sprint {gameState.game.current_sprint} of 3</div>
-        </div>
-
-        {/* Metrics Bar */}
-        <div className={styles.metricsBarWrapper}>
-          <div className={styles.metricsBar}>
-            <div className={styles.metricItem} title={`Team Sentiment: ${getSentimentLabel(metrics.team_sentiment)} (${Math.round(metrics.team_sentiment)}/100)`}>
-              <span className={styles.metricLabel}>Team</span>
-              <span className={styles.metricFace}>{getSentimentFace(metrics.team_sentiment)}</span>
-            </div>
-            <div className={styles.metricItem} title={`CEO Sentiment: ${getSentimentLabel(metrics.ceo_sentiment)} (${Math.round(metrics.ceo_sentiment)}/100)`}>
-              <span className={styles.metricLabel}>CEO</span>
-              <span className={styles.metricFace}>{getSentimentFace(metrics.ceo_sentiment)}</span>
-            </div>
-            <div className={styles.metricItem} title={`Sales Sentiment: ${getSentimentLabel(metrics.sales_sentiment)} (${Math.round(metrics.sales_sentiment)}/100)`}>
-              <span className={styles.metricLabel}>Sales</span>
-              <span className={styles.metricFace}>{getSentimentFace(metrics.sales_sentiment)}</span>
-            </div>
-            <div className={styles.metricItem} title={`CTO Sentiment: ${getSentimentLabel(metrics.cto_sentiment)} (${Math.round(metrics.cto_sentiment)}/100)`}>
-              <span className={styles.metricLabel}>CTO</span>
-              <span className={styles.metricFace}>{getSentimentFace(metrics.cto_sentiment)}</span>
-            </div>
-
-            <div className={styles.metricDivider}></div>
-
-            <div className={styles.metricItem} title={`Self-Serve Growth: ${Math.round(metrics.self_serve_growth)}/100`}>
-              <span className={styles.metricLabel}>Self-Serve</span>
-              <span className={`${styles.metricTrend} ${selfServeIndicator.className}`}>
-                {selfServeIndicator.label}
-              </span>
-            </div>
-            <div className={styles.metricItem} title={`Enterprise Growth: ${Math.round(metrics.enterprise_growth)}/100`}>
-              <span className={styles.metricLabel}>Enterprise</span>
-              <span className={`${styles.metricTrend} ${enterpriseIndicator.className}`}>
-                {enterpriseIndicator.label}
-              </span>
-            </div>
-
-            <div className={styles.metricDivider}></div>
-
-            <div className={styles.metricItem} title={`Tech Debt: ${Math.round(metrics.tech_debt)}/100`}>
-              <span className={styles.metricLabel}>Tech Debt</span>
-              <span className={`${styles.metricTrend} ${techDebtIndicator.className}`}>
-                {techDebtIndicator.label}
-              </span>
-            </div>
-
-            <button
-              className={styles.metricsExpandBtn}
-              onClick={() => setIsMetricsExpanded(!isMetricsExpanded)}
-              title={isMetricsExpanded ? 'Collapse detailed metrics' : 'Expand detailed metrics'}
-            >
-              {isMetricsExpanded ? 'Collapse' : 'Expand'}
-            </button>
-          </div>
-
-          {/* Detailed Metrics Dropdown */}
-          {isMetricsExpanded && (
-            <div className={styles.metricsDropdown}>
-              <div className={styles.metricsDropdownGrid}>
-                <div className={styles.metricsDropdownItem}>
-                  <div className={styles.metricsDropdownName}>Team Sentiment</div>
-                  <div className={styles.metricsDropdownValueRow}>
-                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.team_sentiment)}</div>
-                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.team_sentiment !== undefined && previousDeltas.team_sentiment !== 0 && (
-                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.team_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
-                        {previousDeltas.team_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.team_sentiment)}
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.metricsDropdownBar}>
-                    <div
-                      className={`${styles.metricsDropdownBarFill} ${
-                        metrics.team_sentiment >= 70 ? styles.positive : metrics.team_sentiment < 50 ? styles.warning : styles.neutral
-                      }`}
-                      style={{ width: `${metrics.team_sentiment}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className={styles.metricsDropdownItem}>
-                  <div className={styles.metricsDropdownName}>CEO Sentiment</div>
-                  <div className={styles.metricsDropdownValueRow}>
-                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.ceo_sentiment)}</div>
-                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.ceo_sentiment !== undefined && previousDeltas.ceo_sentiment !== 0 && (
-                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.ceo_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
-                        {previousDeltas.ceo_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.ceo_sentiment)}
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.metricsDropdownBar}>
-                    <div
-                      className={`${styles.metricsDropdownBarFill} ${
-                        metrics.ceo_sentiment >= 70 ? styles.positive : metrics.ceo_sentiment < 50 ? styles.warning : styles.neutral
-                      }`}
-                      style={{ width: `${metrics.ceo_sentiment}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className={styles.metricsDropdownItem}>
-                  <div className={styles.metricsDropdownName}>Sales Sentiment</div>
-                  <div className={styles.metricsDropdownValueRow}>
-                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.sales_sentiment)}</div>
-                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.sales_sentiment !== undefined && previousDeltas.sales_sentiment !== 0 && (
-                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.sales_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
-                        {previousDeltas.sales_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.sales_sentiment)}
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.metricsDropdownBar}>
-                    <div
-                      className={`${styles.metricsDropdownBarFill} ${
-                        metrics.sales_sentiment >= 70 ? styles.positive : metrics.sales_sentiment < 50 ? styles.warning : styles.neutral
-                      }`}
-                      style={{ width: `${metrics.sales_sentiment}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className={styles.metricsDropdownItem}>
-                  <div className={styles.metricsDropdownName}>CTO Sentiment</div>
-                  <div className={styles.metricsDropdownValueRow}>
-                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.cto_sentiment)}</div>
-                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.cto_sentiment !== undefined && previousDeltas.cto_sentiment !== 0 && (
-                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.cto_sentiment > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
-                        {previousDeltas.cto_sentiment > 0 ? '+' : ''}{Math.round(previousDeltas.cto_sentiment)}
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.metricsDropdownBar}>
-                    <div
-                      className={`${styles.metricsDropdownBarFill} ${
-                        metrics.cto_sentiment >= 70 ? styles.positive : metrics.cto_sentiment < 50 ? styles.warning : styles.neutral
-                      }`}
-                      style={{ width: `${metrics.cto_sentiment}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className={styles.metricsDropdownItem}>
-                  <div className={styles.metricsDropdownName}>Self-Serve Growth</div>
-                  <div className={styles.metricsDropdownValueRow}>
-                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.self_serve_growth)}</div>
-                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.self_serve_growth !== undefined && previousDeltas.self_serve_growth !== 0 && (
-                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.self_serve_growth > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
-                        {previousDeltas.self_serve_growth > 0 ? '+' : ''}{Math.round(previousDeltas.self_serve_growth)}
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.metricsDropdownBar}>
-                    <div
-                      className={`${styles.metricsDropdownBarFill} ${
-                        metrics.self_serve_growth >= 70 ? styles.positive : metrics.self_serve_growth < 50 ? styles.warning : styles.neutral
-                      }`}
-                      style={{ width: `${metrics.self_serve_growth}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className={styles.metricsDropdownItem}>
-                  <div className={styles.metricsDropdownName}>Enterprise Growth</div>
-                  <div className={styles.metricsDropdownValueRow}>
-                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.enterprise_growth)}</div>
-                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.enterprise_growth !== undefined && previousDeltas.enterprise_growth !== 0 && (
-                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.enterprise_growth > 0 ? styles.deltaPositive : styles.deltaNegative}`}>
-                        {previousDeltas.enterprise_growth > 0 ? '+' : ''}{Math.round(previousDeltas.enterprise_growth)}
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.metricsDropdownBar}>
-                    <div
-                      className={`${styles.metricsDropdownBarFill} ${
-                        metrics.enterprise_growth >= 70 ? styles.positive : metrics.enterprise_growth < 50 ? styles.warning : styles.neutral
-                      }`}
-                      style={{ width: `${metrics.enterprise_growth}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className={styles.metricsDropdownItem}>
-                  <div className={styles.metricsDropdownName}>Tech Debt</div>
-                  <div className={styles.metricsDropdownValueRow}>
-                    <div className={styles.metricsDropdownValue}>{Math.round(metrics.tech_debt)}</div>
-                    {gameState.game.current_sprint > 1 && previousDeltas && previousDeltas.tech_debt !== undefined && previousDeltas.tech_debt !== 0 && (
-                      <div className={`${styles.metricsDropdownDelta} ${previousDeltas.tech_debt > 0 ? styles.deltaNegative : styles.deltaPositive}`}>
-                        {previousDeltas.tech_debt > 0 ? '+' : ''}{Math.round(previousDeltas.tech_debt)}
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.metricsDropdownBar}>
-                    <div
-                      className={`${styles.metricsDropdownBarFill} ${
-                        metrics.tech_debt >= 70 ? styles.warning : metrics.tech_debt < 50 ? styles.positive : styles.neutral
-                      }`}
-                      style={{ width: `${metrics.tech_debt}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
         <div className={styles.topBarRight}>
@@ -1158,56 +1038,63 @@ export default function SprintPlanning() {
             </div>
 
             <div className={styles.metricsGrid}>
-              {/* Q1: Show only 3 metrics (Team Sentiment, Self-Serve Growth, Enterprise Growth) */}
-              {/* Q2+: Show all 6 metrics */}
-              <MetricBarWithPreview
-                name="Team Sentiment"
-                currentValue={metrics.team_sentiment}
-                previewValue={metricPreviews.team_sentiment?.value}
-                isPositiveImpact={metricPreviews.team_sentiment?.isPositive}
-                showDangerZone={true}
-              />
-              <MetricBarWithPreview
-                name="Self-Serve Growth"
-                currentValue={metrics.self_serve_growth}
-                previewValue={metricPreviews.self_serve_growth?.value}
-                isPositiveImpact={metricPreviews.self_serve_growth?.isPositive}
-                showDangerZone={true}
-              />
-              <MetricBarWithPreview
-                name="Enterprise Growth"
-                currentValue={metrics.enterprise_growth}
-                previewValue={metricPreviews.enterprise_growth?.value}
-                isPositiveImpact={metricPreviews.enterprise_growth?.isPositive}
-                showDangerZone={true}
-              />
+              {(() => {
+                const combinedPreviews = getCombinedPreviews();
+                return (
+                  <>
+                    {/* Q1: Show only 3 metrics (Team Sentiment, Self-Serve Growth, Enterprise Growth) */}
+                    {/* Q2+: Show all 6 metrics */}
+                    <MetricBarWithPreview
+                      name="Team Sentiment"
+                      currentValue={metrics.team_sentiment}
+                      previewValue={combinedPreviews['Team Sentiment']?.value}
+                      isPositiveImpact={combinedPreviews['Team Sentiment']?.isPositive}
+                      showDangerZone={true}
+                    />
+                    <MetricBarWithPreview
+                      name="Self-Serve Growth"
+                      currentValue={metrics.self_serve_growth}
+                      previewValue={combinedPreviews['Self-Serve Growth']?.value}
+                      isPositiveImpact={combinedPreviews['Self-Serve Growth']?.isPositive}
+                      showDangerZone={true}
+                    />
+                    <MetricBarWithPreview
+                      name="Enterprise Growth"
+                      currentValue={metrics.enterprise_growth}
+                      previewValue={combinedPreviews['Enterprise Growth']?.value}
+                      isPositiveImpact={combinedPreviews['Enterprise Growth']?.isPositive}
+                      showDangerZone={true}
+                    />
 
-              {/* Show additional metrics in Q2+ */}
-              {gameState.game.current_quarter >= 2 && (
-                <>
-                  <MetricBarWithPreview
-                    name="CTO Sentiment"
-                    currentValue={metrics.cto_sentiment}
-                    previewValue={metricPreviews.cto_sentiment?.value}
-                    isPositiveImpact={metricPreviews.cto_sentiment?.isPositive}
-                    showDangerZone={true}
-                  />
-                  <MetricBarWithPreview
-                    name="Tech Debt"
-                    currentValue={metrics.tech_debt}
-                    previewValue={metricPreviews.tech_debt?.value}
-                    isPositiveImpact={metricPreviews.tech_debt?.isPositive}
-                    showDangerZone={true}
-                  />
-                  <MetricBarWithPreview
-                    name="CEO Sentiment"
-                    currentValue={metrics.ceo_sentiment}
-                    previewValue={metricPreviews.ceo_sentiment?.value}
-                    isPositiveImpact={metricPreviews.ceo_sentiment?.isPositive}
-                    showDangerZone={true}
-                  />
-                </>
-              )}
+                    {/* Show additional metrics in Q2+ */}
+                    {gameState.game.current_quarter >= 2 && (
+                      <>
+                        <MetricBarWithPreview
+                          name="CTO Sentiment"
+                          currentValue={metrics.cto_sentiment}
+                          previewValue={combinedPreviews['CTO Sentiment']?.value}
+                          isPositiveImpact={combinedPreviews['CTO Sentiment']?.isPositive}
+                          showDangerZone={true}
+                        />
+                        <MetricBarWithPreview
+                          name="Tech Debt"
+                          currentValue={metrics.tech_debt}
+                          previewValue={combinedPreviews['Tech Debt']?.value}
+                          isPositiveImpact={combinedPreviews['Tech Debt']?.isPositive}
+                          showDangerZone={true}
+                        />
+                        <MetricBarWithPreview
+                          name="CEO Sentiment"
+                          currentValue={metrics.ceo_sentiment}
+                          previewValue={combinedPreviews['CEO Sentiment']?.value}
+                          isPositiveImpact={combinedPreviews['CEO Sentiment']?.isPositive}
+                          showDangerZone={true}
+                        />
+                      </>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
@@ -1223,7 +1110,10 @@ export default function SprintPlanning() {
           Only {sprintCapacity} points. Choose wisely.
         </div>
         <div className={styles.bottomBarRight}>
-          <button className={`${styles.btn} ${styles.btnGhost}`} onClick={() => setCommittedTickets([])}>Reset Sprint</button>
+          <button className={`${styles.btn} ${styles.btnGhost}`} onClick={() => {
+            setCommittedTickets([]);
+            setCommittedPreviews({});
+          }}>Reset Sprint</button>
           <button
             className={`${styles.btn} ${styles.btnPrimary}`}
             onClick={handleStartSprint}

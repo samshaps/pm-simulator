@@ -36,17 +36,21 @@ export default function TicketTile({
   onHover,
   onHoverEnd
 }: TicketTileProps) {
-  // Render fire icons based on impact level
+  // Render fire icon with variable fill based on impact level
   const renderImpactIndicator = () => {
-    const fires = [];
-    for (let i = 0; i < 3; i++) {
-      fires.push(
-        <span key={i} className={i < impactLevel ? styles.fireFilled : styles.fireEmpty}>
+    // Calculate fill percentage: 1 = 33%, 2 = 66%, 3 = 100%
+    const fillPercentage = (impactLevel / 3) * 100;
+
+    return (
+      <div className={styles.impactContainer}>
+        <div
+          className={styles.fireIcon}
+          style={{ '--fill-percentage': `${fillPercentage}%` } as React.CSSProperties}
+        >
           🔥
-        </span>
-      );
-    }
-    return <div className={styles.impactRow}>{fires}</div>;
+        </div>
+      </div>
+    );
   };
 
   // Render effort oval (size based on points)
@@ -77,6 +81,21 @@ export default function TicketTile({
     return cat.replace(/_/g, ' ').toUpperCase();
   };
 
+  // Map category to CSS class
+  const getCategoryClass = (cat: string): string => {
+    const categoryToClass: Record<string, string> = {
+      'self_serve_feature': 'catSelfServe',
+      'enterprise_feature': 'catEnterprise',
+      'sales_request': 'catSales',
+      'tech_debt_reduction': 'catTechDebt',
+      'ux_improvement': 'catUx',
+      'monetization': 'catMonetization',
+      'infrastructure': 'catInfra',
+      'moonshot': 'catMoonshot'
+    };
+    return categoryToClass[cat] || '';
+  };
+
   return (
     <div
       className={`${styles.ticketTile} ${isCommitted ? styles.committed : ''} ${isMandatory ? styles.mandatory : ''}`}
@@ -104,7 +123,9 @@ export default function TicketTile({
         {renderModifier()}
       </div>
 
-      <div className={styles.category}>{formatCategory(category)}</div>
+      <div className={`${styles.category} ${styles[getCategoryClass(category)]}`}>
+        {formatCategory(category)}
+      </div>
 
       <div className={styles.title}>{title}</div>
 

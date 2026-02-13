@@ -52,6 +52,8 @@
   transition: all 0.15s ease;
   line-height: 1;
   padding: 0;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .removeButton:hover:not(:disabled) {
@@ -73,20 +75,49 @@
   gap: 8px;
 }
 
-.impactRow {
+.impactContainer {
   display: flex;
-  gap: 2px;
+  align-items: center;
 }
 
-.fireFilled {
-  font-size: 16px;
-  filter: grayscale(0);
+.fireIcon {
+  position: relative;
+  font-size: 18px;
+  line-height: 1;
+  width: 1em;
+  height: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.fireEmpty {
-  font-size: 16px;
-  filter: grayscale(1);
-  opacity: 0.3;
+/* Create the variable fill effect using a gradient mask */
+.fireIcon::before {
+  content: '🔥';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    to top,
+    rgba(255, 140, 0, 1) 0%,
+    rgba(255, 140, 0, 1) var(--fill-percentage, 100%),
+    rgba(128, 128, 128, 0.3) var(--fill-percentage, 100%),
+    rgba(128, 128, 128, 0.3) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: brightness(1.2) contrast(1.1);
+}
+
+/* Hide the original emoji, show only the masked version */
+.fireIcon {
+  color: transparent;
 }
 
 /* Effort Oval */
@@ -124,23 +155,27 @@
   opacity: 0.1;
 }
 
-/* Category */
+/* Category - MAIN FOCUS */
 .category {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--text-dim);
+  line-height: 1.2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
 }
 
-/* Title */
+/* Title - DE-EMPHASIZED FLAVOR TEXT */
 .title {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.4;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-dim);
+  line-height: 1.3;
   flex: 1;
+  opacity: 0.7;
 }
 
 /* Mandatory Badge */
@@ -155,4 +190,45 @@
   padding: 2px 6px;
   border-radius: 3px;
   align-self: flex-start;
+}
+
+/* Category Color Classes */
+.catSelfServe {
+  color: var(--green);
+  background: var(--green-dim);
+}
+
+.catEnterprise {
+  color: var(--blue);
+  background: var(--blue-dim);
+}
+
+.catTechDebt {
+  color: var(--amber);
+  background: var(--amber-dim);
+}
+
+.catUx {
+  color: var(--cyan);
+  background: var(--cyan-dim);
+}
+
+.catSales {
+  color: var(--orange);
+  background: var(--orange-dim);
+}
+
+.catMonetization {
+  color: var(--pink);
+  background: var(--pink-dim);
+}
+
+.catInfra {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.catMoonshot {
+  color: var(--purple-light);
+  background: var(--purple-glow);
 }
