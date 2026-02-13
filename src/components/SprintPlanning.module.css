@@ -454,6 +454,14 @@
   border-radius: 8px;
 }
 
+/* ── TICKET GRID (3 columns) ── */
+.ticketGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
 .filterGroup,
 .sortGroup {
   display: flex;
@@ -855,9 +863,16 @@
 
 /* ── COMMITTED SECTION ── */
 .committedSection {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.committedGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .committedHeader {
@@ -952,6 +967,32 @@
 .committedTicketRemove:hover {
   color: var(--red);
   background: var(--red-dim);
+}
+
+/* ── PERFORMANCE METRICS PANEL ── */
+.performancePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.performancePanelHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.performancePanelTitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.metricsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 /* ── BOTTOM BAR ── */

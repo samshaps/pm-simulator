@@ -1,0 +1,151 @@
+.capacityBarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.capacityHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.capacityLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.capacityNumbers {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.capacityNumbers .used {
+  color: var(--purple-light);
+  font-weight: 700;
+}
+
+/* Stretch Badge */
+.stretchBadge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  padding: 4px 10px;
+  border-radius: 4px;
+  align-self: flex-start;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Overcapacity Warning */
+.overcapacityWarning {
+  font-size: 12px;
+  color: var(--red);
+  background: var(--red-dim);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  padding: 8px 12px;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+
+/* Capacity Bar Track */
+.capacityBarTrack {
+  height: 12px;
+  background: var(--bg-card);
+  border-radius: 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Stretch Zone (cross-hatched background) */
+.stretchZone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 3px,
+    rgba(251, 191, 36, 0.1) 3px,
+    rgba(251, 191, 36, 0.1) 6px
+  );
+  z-index: 1;
+}
+
+/* Normal Capacity Marker */
+.capacityMarker {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--text-dim);
+  z-index: 3;
+  border-radius: 1px;
+}
+
+/* Used Capacity Fill */
+.capacityFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  border-radius: 100px;
+  transition: width 0.3s ease, background 0.3s ease;
+  z-index: 2;
+}
+
+.capacityFill.normal {
+  background: linear-gradient(90deg, var(--purple-dim), var(--purple-primary));
+}
+
+.capacityFill.stretch {
+  background: linear-gradient(90deg, var(--purple-dim), var(--purple-primary));
+  /* Add cross-hatch pattern on top */
+  background-image:
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 3px,
+      rgba(251, 191, 36, 0.15) 3px,
+      rgba(251, 191, 36, 0.15) 6px
+    ),
+    linear-gradient(90deg, var(--purple-dim), var(--purple-primary));
+}
+
+.capacityFill.overcapacity {
+  background: linear-gradient(90deg, var(--red-dim), var(--red));
+}
+
+/* Capacity Labels */
+.capacityLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.label {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.3px;
+}
+
+.label.warn {
+  color: var(--amber);
+}

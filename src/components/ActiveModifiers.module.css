@@ -1,0 +1,54 @@
+.activeModifiersContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(124, 92, 191, 0.08),
+    rgba(124, 92, 191, 0.12),
+    rgba(124, 92, 191, 0.08)
+  );
+  border: 1px solid rgba(124, 92, 191, 0.2);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.modifiersList {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.modifierItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modifierIcon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.modifierLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--purple-light);
+}
+
+.modifierDescription {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+}

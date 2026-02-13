@@ -3,6 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './SprintPlanning.module.css';
+import TicketTile from './TicketTile';
+import CapacityBar from './CapacityBar';
+import MetricBarWithPreview from './MetricBarWithPreview';
+import ActiveModifiers from './ActiveModifiers';
 
 interface Ticket {
   id: string;
@@ -183,6 +187,8 @@ export default function SprintPlanning() {
   const [sortBy, setSortBy] = useState<'effort-asc' | 'effort-desc' | 'category' | 'impact-desc' | 'none'>('effort-asc');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [hoveredTicketId, setHoveredTicketId] = useState<string | null>(null);
+  const [metricPreviews, setMetricPreviews] = useState<Record<string, { value: number; isPositive: boolean }>>({});
 
   useEffect(() => {
     // Fetch active sprint data
@@ -419,6 +425,57 @@ export default function SprintPlanning() {
       'none': 'Random'
     };
     return sortLabels[sortBy] || 'Points (Low to High)';
+  };
+
+  // Calculate metric previews when hovering over a ticket
+  const handleTicketHover = (ticketId: string) => {
+    setHoveredTicketId(ticketId);
+    const ticket = backlogTickets.find(t => t.id === ticketId);
+    if (!ticket || !ticket.primary_impact) return;
+
+    // Calculate expected metric impacts (simplified - in real app, would use ticket's metric impacts)
+    const previews: Record<string, { value: number; isPositive: boolean }> = {};
+
+    // For demo purposes, calculate simple preview based on impact
+    const successRange = ticket.primary_impact.success || [0, 0];
+    const avgImpact = (successRange[0] + successRange[1]) / 2;
+
+    // Map to specific metrics based on category
+    if (ticket.category === 'self_serve_feature') {
+      previews.self_serve_growth = {
+        value: metrics.self_serve_growth + avgImpact,
+        isPositive: avgImpact > 0
+      };
+      previews.team_sentiment = {
+        value: metrics.team_sentiment + (avgImpact * 0.3),
+        isPositive: avgImpact > 0
+      };
+    } else if (ticket.category === 'enterprise_feature' || ticket.category === 'sales_request') {
+      previews.enterprise_growth = {
+        value: metrics.enterprise_growth + avgImpact,
+        isPositive: avgImpact > 0
+      };
+      previews.ceo_sentiment = {
+        value: metrics.ceo_sentiment + (avgImpact * 0.5),
+        isPositive: avgImpact > 0
+      };
+    } else if (ticket.category === 'tech_debt_reduction' || ticket.category === 'infrastructure') {
+      previews.tech_debt = {
+        value: metrics.tech_debt - avgImpact,
+        isPositive: avgImpact > 0
+      };
+      previews.cto_sentiment = {
+        value: metrics.cto_sentiment + avgImpact,
+        isPositive: avgImpact > 0
+      };
+    }
+
+    setMetricPreviews(previews);
+  };
+
+  const handleTicketHoverEnd = () => {
+    setHoveredTicketId(null);
+    setMetricPreviews({});
   };
 
   const mockBacklogTickets: Ticket[] = [
@@ -860,14 +917,36 @@ export default function SprintPlanning() {
       </div>
 
 
-      {/* CEO Focus Banner */}
-      <div className={styles.ceoFocusBanner}>
-        <div className={styles.ceoFocusRow}>
-          <span className={styles.ceoFocusLabel}>CEO Focus this Quarter:</span>
-          <span className={styles.ceoFocusValue}>{formatCeoFocus(currentCeoFocus)}</span>
-          <span className={styles.ceoFocusHint}>— aligned tickets get +12% success chance</span>
-        </div>
-      </div>
+      {/* Active Modifiers */}
+      {(() => {
+        const modifiers = [];
+
+        // Add CEO focus as a modifier
+        modifiers.push({
+          id: 'ceo-focus',
+          icon: '⚡',
+          label: `CEO Focus: ${formatCeoFocus(currentCeoFocus)}`,
+          description: '2x impact'
+        });
+
+        // Add capacity modifiers as debuffs
+        if (gameState.capacity_modifiers && gameState.capacity_modifiers.length > 0) {
+          gameState.capacity_modifiers.forEach((modifier, idx) => {
+            modifiers.push({
+              id: `capacity-${modifier.event_id}-${idx}`,
+              icon: modifier.delta > 0 ? '⚡' : '🐢',
+              label: modifier.title || 'Event Effect',
+              description: `${modifier.delta > 0 ? '+' : ''}${modifier.delta} pts capacity`
+            });
+          });
+        }
+
+        return modifiers.length > 0 ? (
+          <div style={{ padding: '12px 24px 0' }}>
+            <ActiveModifiers modifiers={modifiers} />
+          </div>
+        ) : null;
+      })()}
 
       {isNewQuarter && ceoFocusShiftNarrative && showCeoShift && (
         <div className={styles.ceoNarrativeBanner} onClick={() => setShowCeoShift(false)}>
@@ -994,137 +1073,41 @@ export default function SprintPlanning() {
             </div>
           </div>
 
-          {backlogTickets.map(ticket => {
-            const isCommitted = committedTickets.some(t => t.id === ticket.id);
-            return (
-              <div
-                key={ticket.id}
-                className={`${styles.ticketCard} ${ticket.isCEOAligned ? styles.ceoAligned : ''} ${ticket.isMandatory ? styles.mandatory : ''} ${isCommitted ? styles.committed : ''}`}
-                onClick={() => !isCommitted && handleCommitTicket(ticket)}
-              >
-                <div className={styles.ticketTopRow}>
-                  <span className={styles.ticketTitle}>{ticket.title}</span>
-                  <span className={styles.ticketEffort}>{ticket.effort} pts</span>
-                </div>
-                <div className={styles.ticketTags}>
-                  <span className={`${styles.ticketCategory} ${styles[ticket.categoryClass]}`}>
-                    {ticket.category}
-                  </span>
-                  {ticket.isCEOAligned && <span className={styles.ticketCeoTag}>★ CEO Aligned</span>}
-                  {ticket.isMandatory && <span className={styles.ticketMandatoryTag}>MANDATORY</span>}
-                  {ticket.isHackathonBoosted && <span className={styles.ticketHackathonTag}>⚡ HACKATHON BOOST</span>}
-                  {ticket.expectedImpact && (
-                    <span
-                      className={styles.ticketImpactTag}
-                      style={{ opacity: ticket.impactConfidence || 1 }}
-                      title={`Expected impact magnitude: ${ticket.impactMagnitude}/3 (${Math.round((ticket.impactConfidence || 1) * 100)}% confidence)`}
-                    >
-                      {ticket.expectedImpact}
-                    </span>
-                  )}
-                </div>
-                <div className={styles.ticketDesc}>
-                  {ticket.description}
-                </div>
-              </div>
-            );
-          })}
+          <div className={styles.ticketGrid}>
+            {backlogTickets.map(ticket => {
+              const isCommitted = committedTickets.some(t => t.id === ticket.id);
+              return (
+                <TicketTile
+                  key={ticket.id}
+                  id={ticket.id}
+                  title={ticket.title}
+                  effort={ticket.effort}
+                  category={ticket.category}
+                  impactLevel={ticket.impactMagnitude || 1}
+                  isCEOAligned={ticket.isCEOAligned}
+                  isMandatory={ticket.isMandatory}
+                  isHackathonBoosted={ticket.isHackathonBoosted}
+                  isCommitted={isCommitted}
+                  onClick={() => !isCommitted && handleCommitTicket(ticket)}
+                  onHover={() => handleTicketHover(ticket.id)}
+                  onHoverEnd={handleTicketHoverEnd}
+                />
+              );
+            })}
+          </div>
         </div>
 
         {/* Right Panel: Sprint */}
         <div className={styles.sprintPanel}>
           {/* Capacity Section */}
           <div className={styles.capacitySection}>
-            <div className={styles.capacityHeader}>
-              <span className={styles.capacityLabel}>Sprint Capacity</span>
-              <span className={styles.capacityNumbers}>
-                <span className={styles.used}>{usedCapacity}</span> / {sprintCapacity} pts used
-              </span>
-            </div>
-
-            {/* Active Capacity Modifiers */}
-            {gameState.capacity_modifiers && gameState.capacity_modifiers.length > 0 && (
-              <div style={{
-                background: gameState.total_capacity_delta && gameState.total_capacity_delta > 0
-                  ? 'rgba(100, 255, 150, 0.1)'
-                  : 'rgba(255, 100, 100, 0.1)',
-                border: gameState.total_capacity_delta && gameState.total_capacity_delta > 0
-                  ? '1px solid rgba(100, 255, 150, 0.3)'
-                  : '1px solid rgba(255, 100, 100, 0.3)',
-                borderRadius: '6px',
-                padding: '10px 12px',
-                marginBottom: '12px',
-                fontSize: '13px'
-              }}>
-                {gameState.capacity_modifiers.map((modifier, idx) => (
-                  <div
-                    key={`${modifier.event_id}-${idx}`}
-                    style={{
-                      color: modifier.delta > 0 ? '#6bffb0' : '#ff6b6b',
-                      marginBottom: idx < gameState.capacity_modifiers!.length - 1 ? '6px' : '0'
-                    }}
-                  >
-                    <strong>{modifier.title || 'Event Effect'}:</strong> {modifier.delta > 0 ? '+' : ''}{modifier.delta} pts capacity
-                    {modifier.remaining_sprints > 1 && ` (${modifier.remaining_sprints} sprints remaining)`}
-                    {modifier.remaining_sprints === 1 && ` (this sprint only)`}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Team Morale Alert */}
-            {metrics.team_sentiment < 40 && (
-              <div style={{
-                background: 'rgba(255, 100, 100, 0.1)',
-                border: '1px solid rgba(255, 100, 100, 0.3)',
-                borderRadius: '6px',
-                padding: '8px 12px',
-                marginBottom: '12px',
-                fontSize: '13px',
-                color: '#ff6b6b'
-              }}>
-                Your team is updating their LinkedIn profiles. Capacity reduced to {sprintCapacity} pts
-              </div>
-            )}
-            {metrics.team_sentiment >= 70 && (
-              <div style={{
-                background: 'rgba(100, 255, 150, 0.1)',
-                border: '1px solid rgba(100, 255, 150, 0.3)',
-                borderRadius: '6px',
-                padding: '8px 12px',
-                marginBottom: '12px',
-                fontSize: '13px',
-                color: '#6bffb0'
-              }}>
-                Your team is vibing. Capacity up to {sprintCapacity} pts
-              </div>
-            )}
-            <div className={styles.capacityBarTrack}>
-              <div className={styles.capacityBarStretch} style={{ left: `${capacityLimitPercent}%`, right: 0 }}></div>
-              <div className={styles.capacityBarLimit} style={{ left: `${capacityLimitPercent}%` }}></div>
-              <div className={`${styles.capacityBarFill} ${getCapacityClass()}`} style={{ width: `${capacityPercent}%` }}></div>
-
-              {/* Show lost capacity due to low morale */}
-              {lostCapacityEstimate > 0 && (
-                <div style={{
-                  position: 'absolute',
-                  left: `${capacityLimitPercent}%`,
-                  width: `${lostCapacityPercent}%`,
-                  height: '100%',
-                  backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,100,100,0.2) 0px, rgba(255,100,100,0.2) 2px, transparent 2px, transparent 6px)',
-                  border: '1px dashed rgba(255,100,100,0.4)',
-                  borderRadius: '0 4px 4px 0',
-                  pointerEvents: 'none'
-                }} title={`${lostCapacityEstimate} pts lost to low morale`}></div>
-              )}
-            </div>
-            <div className={styles.capacityLabelsRow}>
-              <span className={styles.capacitySublabel}>0 pts</span>
-              <span className={styles.capacitySublabel} style={{ position: 'relative', left: '-10%' }}>
-                {sprintCapacity} pts capacity{lostCapacityEstimate > 0 && ` (${lostCapacityEstimate} pts lost)`}
-              </span>
-              <span className={`${styles.capacitySublabel} ${styles.warn}`}>{stretchCapacity} pts max (stretch)</span>
-            </div>
+            <CapacityBar
+              usedCapacity={usedCapacity}
+              normalCapacity={sprintCapacity}
+              stretchCapacity={stretchCapacity}
+              showStretchBadge={usedCapacity > sprintCapacity && usedCapacity <= stretchCapacity}
+              showOvercapacityWarning={usedCapacity > stretchCapacity}
+            />
           </div>
 
           {/* Committed Section */}
@@ -1136,38 +1119,95 @@ export default function SprintPlanning() {
               </span>
             </div>
 
-            {committedTickets.length > 0 ? (
-              <div className={styles.committedTickets}>
+            {committedTickets.length > 0 && (
+              <div className={styles.committedGrid}>
                 {committedTickets.map(ticket => {
-                  const isMandatory = backlogTickets.find(t => t.id === ticket.id)?.isMandatory;
+                  const fullTicket = backlogTickets.find(t => t.id === ticket.id);
                   return (
-                    <div key={ticket.id} className={styles.committedTicket}>
-                      <div className={styles.committedTicketLeft}>
-                        <span className={`${styles.ticketCategory} ${styles[ticket.categoryClass]}`} style={{ fontSize: '9px' }}>
-                          {ticket.category}
-                        </span>
-                        <span className={styles.committedTicketTitle}>{ticket.title}</span>
-                        <span className={styles.committedTicketEffort}>{ticket.effort} pts</span>
-                      </div>
-                      {isMandatory ? (
-                        <span className={styles.committedTicketRemove} style={{ cursor: 'not-allowed', opacity: 0.5 }} title="Mandatory - cannot remove">
-                          🔒
-                        </span>
-                      ) : (
-                        <span className={styles.committedTicketRemove} onClick={() => handleRemoveTicket(ticket.id)}>
-                          ×
-                        </span>
-                      )}
-                    </div>
+                    <TicketTile
+                      key={ticket.id}
+                      id={ticket.id}
+                      title={ticket.title}
+                      effort={ticket.effort}
+                      category={ticket.category}
+                      impactLevel={fullTicket?.impactMagnitude || 1}
+                      isCEOAligned={fullTicket?.isCEOAligned}
+                      isMandatory={fullTicket?.isMandatory}
+                      isHackathonBoosted={fullTicket?.isHackathonBoosted}
+                      showRemoveButton={true}
+                      onRemove={() => handleRemoveTicket(ticket.id)}
+                    />
                   );
                 })}
               </div>
-            ) : null}
+            )}
 
             {/* Drop Zone */}
-            <div className={styles.dropZone}>
-              <div className={styles.dropZoneIcon}>↴</div>
-              <div className={styles.dropZoneText}>Click tickets on the left to commit them</div>
+            {committedTickets.length === 0 && (
+              <div className={styles.dropZone}>
+                <div className={styles.dropZoneIcon}>↴</div>
+                <div className={styles.dropZoneText}>Click tickets on the left to commit them</div>
+              </div>
+            )}
+          </div>
+
+          {/* Performance Metrics Panel */}
+          <div className={styles.performancePanel}>
+            <div className={styles.performancePanelHeader}>
+              <span className={styles.performancePanelTitle}>Performance</span>
+            </div>
+
+            <div className={styles.metricsGrid}>
+              {/* Q1: Show only 3 metrics (Team Sentiment, Self-Serve Growth, Enterprise Growth) */}
+              {/* Q2+: Show all 6 metrics */}
+              <MetricBarWithPreview
+                name="Team Sentiment"
+                currentValue={metrics.team_sentiment}
+                previewValue={metricPreviews.team_sentiment?.value}
+                isPositiveImpact={metricPreviews.team_sentiment?.isPositive}
+                showDangerZone={true}
+              />
+              <MetricBarWithPreview
+                name="Self-Serve Growth"
+                currentValue={metrics.self_serve_growth}
+                previewValue={metricPreviews.self_serve_growth?.value}
+                isPositiveImpact={metricPreviews.self_serve_growth?.isPositive}
+                showDangerZone={true}
+              />
+              <MetricBarWithPreview
+                name="Enterprise Growth"
+                currentValue={metrics.enterprise_growth}
+                previewValue={metricPreviews.enterprise_growth?.value}
+                isPositiveImpact={metricPreviews.enterprise_growth?.isPositive}
+                showDangerZone={true}
+              />
+
+              {/* Show additional metrics in Q2+ */}
+              {gameState.game.current_quarter >= 2 && (
+                <>
+                  <MetricBarWithPreview
+                    name="CTO Sentiment"
+                    currentValue={metrics.cto_sentiment}
+                    previewValue={metricPreviews.cto_sentiment?.value}
+                    isPositiveImpact={metricPreviews.cto_sentiment?.isPositive}
+                    showDangerZone={true}
+                  />
+                  <MetricBarWithPreview
+                    name="Tech Debt"
+                    currentValue={metrics.tech_debt}
+                    previewValue={metricPreviews.tech_debt?.value}
+                    isPositiveImpact={metricPreviews.tech_debt?.isPositive}
+                    showDangerZone={true}
+                  />
+                  <MetricBarWithPreview
+                    name="CEO Sentiment"
+                    currentValue={metrics.ceo_sentiment}
+                    previewValue={metricPreviews.ceo_sentiment?.value}
+                    isPositiveImpact={metricPreviews.ceo_sentiment?.isPositive}
+                    showDangerZone={true}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -1187,13 +1227,13 @@ export default function SprintPlanning() {
           <button
             className={`${styles.btn} ${styles.btnPrimary}`}
             onClick={handleStartSprint}
-            disabled={isCommitting || committedTickets.length === 0}
+            disabled={isCommitting || committedTickets.length === 0 || usedCapacity > stretchCapacity}
             style={{
-              opacity: (isCommitting || committedTickets.length === 0) ? 0.4 : 1,
-              cursor: (isCommitting || committedTickets.length === 0) ? 'not-allowed' : 'pointer'
+              opacity: (isCommitting || committedTickets.length === 0 || usedCapacity > stretchCapacity) ? 0.4 : 1,
+              cursor: (isCommitting || committedTickets.length === 0 || usedCapacity > stretchCapacity) ? 'not-allowed' : 'pointer'
             }}
           >
-            {isCommitting ? 'Committing...' : committedTickets.length === 0 ? 'Add Tickets to Start' : 'Start Sprint'}
+            {isCommitting ? 'Committing...' : usedCapacity > stretchCapacity ? 'Overcapacity!' : committedTickets.length === 0 ? 'Add Tickets to Start' : 'Start Sprint'}
           </button>
         </div>
       </div>
