@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './SprintRetro.module.css';
+import MetricBarWithPreview from './MetricBarWithPreview';
 
 interface MetricChange {
   name: string;
@@ -21,12 +22,19 @@ interface GroupedTicketOutcome extends TicketOutcome {
   category: string;
 }
 
+interface AnimationState {
+  phase: 'initial' | 'revealing_tickets' | 'revealing_notes' | 'complete';
+  revealedTickets: number;
+  revealedNotes: number;
+}
+
 interface RetroData {
   game: {
     id: string;
     difficulty: string;
     current_quarter: number;
     current_sprint: number;
+    metrics_state?: Record<string, number>;
   };
   completedSprint: {
     sprint_number: number;
@@ -99,6 +107,12 @@ export default function SprintRetro() {
   const [isLoading, setIsLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [transitionMessage, setTransitionMessage] = useState('Syncing with stakeholders...');
+  const [animState, setAnimState] = useState<AnimationState>({
+    phase: 'initial',
+    revealedTickets: 0,
+    revealedNotes: 0
+  });
+  const timerRefs = useRef<NodeJS.Timeout[]>([]);
 
   const loadingMessages = [
     'Syncing with stakeholders...',
@@ -255,6 +269,151 @@ export default function SprintRetro() {
 
   const insights = generateInsights();
 
+  // Flatten tickets into ordered array for sequential reveal
+  const flattenedTickets = useMemo(() => {
+    let index = 0;
+    return Object.entries(ticketsByCategory).flatMap(([category, tickets]) =>
+      tickets.map(ticket => ({
+        ...ticket,
+        category,
+        flatIndex: index++,
+        isRevealed: animState.revealedTickets > index - 1
+      }))
+    );
+  }, [ticketsByCategory, animState.revealedTickets]);
+
+  // Prepare sticky notes as ordered array
+  const stickyNotes = useMemo(() => {
+    const notes: Array<{ type: string; content: any }> = [];
+
+    if (retroData.ceo_focus_shift?.narrative) {
+      notes.push({ type: 'ceo_focus', content: retroData.ceo_focus_shift });
+    }
+
+    if (insights.length > 0) {
+      notes.push({ type: 'insights', content: insights });
+    }
+
+    if (retroData.retro.events && retroData.retro.events.length > 0) {
+      notes.push({ type: 'events', content: retroData.retro.events });
+    }
+
+    return notes;
+  }, [retroData, insights]);
+
+  const totalTickets = flattenedTickets.length;
+  const totalNotes = stickyNotes.length;
+
+  // Calculate metric preview ranges with progressive narrowing
+  const getMetricPreviewRange = (metricKey: string, currentValue: number, finalDelta: number) => {
+    const uncertaintyFactor = totalTickets > 0 ? 1 - (animState.revealedTickets / totalTickets) : 0;
+    const maxUncertainty = 15;
+
+    const finalValue = currentValue + finalDelta;
+    const uncertainty = uncertaintyFactor * maxUncertainty;
+
+    return {
+      min: Math.max(0, Math.min(100, finalValue - uncertainty)),
+      max: Math.max(0, Math.min(100, finalValue + uncertainty)),
+      isPositive: finalDelta > 0
+    };
+  };
+
+  // Check if animation already completed (from sessionStorage)
+  useEffect(() => {
+    const isComplete = sessionStorage.getItem('retroAnimationComplete');
+    if (isComplete === 'true') {
+      setAnimState({
+        phase: 'complete',
+        revealedTickets: totalTickets,
+        revealedNotes: totalNotes
+      });
+    }
+  }, [totalTickets, totalNotes]);
+
+  // Animation sequence orchestration
+  useEffect(() => {
+    // Skip if already complete or no data
+    if (animState.phase === 'complete' || !retroData) return;
+
+    // Cleanup function to clear all timers
+    return () => {
+      timerRefs.current.forEach(timer => clearTimeout(timer));
+      timerRefs.current = [];
+    };
+  }, [animState.phase, retroData]);
+
+  // Start animation sequence after initial render
+  useEffect(() => {
+    if (!retroData || animState.phase !== 'initial') return;
+
+    // Initial delay before starting ticket reveals
+    const initialTimer = setTimeout(() => {
+      setAnimState(prev => ({ ...prev, phase: 'revealing_tickets' }));
+    }, 500);
+
+    timerRefs.current.push(initialTimer);
+  }, [retroData, animState.phase]);
+
+  // Ticket reveal loop
+  useEffect(() => {
+    if (animState.phase !== 'revealing_tickets') return;
+    if (animState.revealedTickets >= totalTickets) {
+      // All tickets revealed, move to notes phase
+      if (totalNotes > 0) {
+        setAnimState(prev => ({ ...prev, phase: 'revealing_notes' }));
+      } else {
+        // No notes, go straight to complete
+        setAnimState(prev => ({ ...prev, phase: 'complete' }));
+        sessionStorage.setItem('retroAnimationComplete', 'true');
+      }
+      return;
+    }
+
+    // Determine delay based on number of tickets (speed up after 6)
+    const delay = animState.revealedTickets >= 6 ? 300 : 500;
+
+    const timer = setTimeout(() => {
+      setAnimState(prev => ({
+        ...prev,
+        revealedTickets: prev.revealedTickets + 1
+      }));
+    }, delay);
+
+    timerRefs.current.push(timer);
+  }, [animState.phase, animState.revealedTickets, totalTickets, totalNotes]);
+
+  // Sticky note reveal loop
+  useEffect(() => {
+    if (animState.phase !== 'revealing_notes') return;
+    if (animState.revealedNotes >= totalNotes) {
+      // All notes revealed, animation complete
+      setAnimState(prev => ({ ...prev, phase: 'complete' }));
+      sessionStorage.setItem('retroAnimationComplete', 'true');
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setAnimState(prev => ({
+        ...prev,
+        revealedNotes: prev.revealedNotes + 1
+      }));
+    }, 200);
+
+    timerRefs.current.push(timer);
+  }, [animState.phase, animState.revealedNotes, totalNotes]);
+
+  const handleSkipAnimation = () => {
+    timerRefs.current.forEach(timer => clearTimeout(timer));
+    timerRefs.current = [];
+    setAnimState({
+      phase: 'complete',
+      revealedTickets: totalTickets,
+      revealedNotes: totalNotes
+    });
+    sessionStorage.setItem('retroAnimationComplete', 'true');
+  };
+
   const handleContinue = () => {
     if (retroData.isQuarterEnd) {
       router.replace('/quarterly-review');
@@ -270,6 +429,13 @@ export default function SprintRetro() {
 
   return (
     <div className={styles.pageContainer}>
+      {/* Skip Animation Button */}
+      {animState.phase !== 'complete' && (
+        <button className={styles.skipButton} onClick={handleSkipAnimation}>
+          Skip Animation
+        </button>
+      )}
+
       {isTransitioning && (
         <div className={styles.loadingOverlay} aria-live="polite">
           <div className={styles.loadingCard}>
@@ -304,58 +470,58 @@ export default function SprintRetro() {
         </div>
 
           {/* After-Action Report */}
-          {(insights.length > 0 || (retroData.retro.events && retroData.retro.events.length > 0) || (retroData.ceo_focus_shift?.narrative)) && (
+          {stickyNotes.length > 0 && (
             <>
               <div className={styles.sectionLabel}>After-Action Report</div>
               <div className={styles.feedbackCard}>
-                {retroData.ceo_focus_shift?.narrative && (
-                  <>
-                    <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>CEO Focus Shift</div>
-                    <div style={{ marginBottom: insights.length > 0 || (retroData.retro.events && retroData.retro.events.length > 0) ? '16px' : '0', fontStyle: 'italic', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                      "{retroData.ceo_focus_shift.narrative}"
-                    </div>
-                  </>
-                )}
-                {insights.length > 0 && (
-                  <>
-                    <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Key Insights</div>
-                    <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
-                      {insights.map((insight, index) => (
-                        <li key={index}>{insight}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-                {retroData.retro.events && retroData.retro.events.length > 0 && (
-                  <div style={{ marginTop: (retroData.ceo_focus_shift?.narrative || insights.length > 0) ? '16px' : '0' }}>
-                    <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Events This Sprint</div>
-                    <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
-                      {Array.from(new Map(retroData.retro.events.map((event: any) => [event.title, event])).values()).map((event: any, index: number) => (
-                        <li key={`${event.title}-${index}`}>
-                          <strong>{event.title}</strong> — {event.description}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {stickyNotes.map((note, index) => {
+                  const isRevealed = index < animState.revealedNotes;
+                  const className = isRevealed ? styles.stickyNoteAnimated : styles.stickyNoteHidden;
+
+                  if (note.type === 'ceo_focus' && note.content.narrative) {
+                    return (
+                      <div key={index} className={className}>
+                        <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>CEO Focus Shift</div>
+                        <div style={{ marginBottom: index < stickyNotes.length - 1 ? '16px' : '0', fontStyle: 'italic', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                          "{note.content.narrative}"
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (note.type === 'insights' && note.content.length > 0) {
+                    return (
+                      <div key={index} className={className}>
+                        <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Key Insights</div>
+                        <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6', marginBottom: index < stickyNotes.length - 1 ? '16px' : '0' }}>
+                          {note.content.map((insight: string, i: number) => (
+                            <li key={i}>{insight}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+
+                  if (note.type === 'events' && note.content.length > 0) {
+                    return (
+                      <div key={index} className={className}>
+                        <div style={{ fontWeight: 600, marginBottom: '8px', fontSize: '14px' }}>Events This Sprint</div>
+                        <ul style={{ margin: 0, paddingLeft: '20px', listStyle: 'disc', lineHeight: '1.6' }}>
+                          {Array.from(new Map(note.content.map((event: any) => [event.title, event])).values()).map((event: any, i: number) => (
+                            <li key={`${event.title}-${i}`}>
+                              <strong>{event.title}</strong> — {event.description}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+
+                  return null;
+                })}
               </div>
             </>
           )}
-
-          {/* Metric Changes */}
-          <div className={styles.sectionLabel}>Metrics Momentum</div>
-          <div className={styles.metricChangesCard}>
-            <div className={styles.metricChangesGrid}>
-              {metricChanges.map((metric, index) => (
-                <div key={index} className={styles.metricChangeItem}>
-                  <span className={styles.metricChangeName}>{metric.name}</span>
-                  <span className={`${styles.metricChangeValue} ${styles[metric.changeType]}`}>
-                    {formatMetricChange(metric.change)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Right Panel */}
@@ -370,22 +536,73 @@ export default function SprintRetro() {
                 >
                   {categoryNameMap[category] || category}
                 </div>
-                {tickets.map((ticket, index) => (
-                  <div key={index} className={`${styles.outcomeCard} ${styles[ticket.status]}`}>
-                    <div className={styles.outcomeHeader}>
-                      <span className={styles.outcomeTitle}>{ticket.title}</span>
-                      <span className={`${styles.outcomeStatus} ${styles[ticket.status]}`}>
-                        {ticket.status === 'success' ? '✓ Success' :
-                         ticket.status === 'partial' ? '◐ Partial' :
-                         '✗ Failed'}
-                      </span>
+                {tickets.map((ticket) => {
+                  const flatTicket = flattenedTickets.find(ft => ft.title === ticket.title);
+                  const isRevealed = flatTicket ? flatTicket.isRevealed : false;
+
+                  // Determine the outcome class based on whether ticket is revealed
+                  const outcomeClass = isRevealed ? ticket.outcome : 'neutral';
+                  const statusClass = isRevealed ? ticket.status : 'neutral';
+
+                  // Map outcome to CSS class
+                  const outcomeColorClass = isRevealed ? (
+                    outcomeClass === 'clear_success' ? styles.ticketClearSuccess :
+                    outcomeClass === 'partial_success' ? styles.ticketPartialSuccess :
+                    outcomeClass === 'soft_failure' ? styles.ticketSoftFailure :
+                    outcomeClass === 'catastrophe' ? styles.ticketCatastrophe :
+                    styles.ticketNeutral
+                  ) : styles.ticketNeutral;
+
+                  return (
+                    <div
+                      key={ticket.title}
+                      className={`${styles.outcomeCard} ${outcomeColorClass} ${flatTicket?.flatIndex === animState.revealedTickets - 1 ? styles.ticketFlipping : ''}`}
+                    >
+                      <div className={styles.outcomeHeader}>
+                        <span className={styles.outcomeTitle}>{ticket.title}</span>
+                        {isRevealed && (
+                          <span className={`${styles.outcomeStatus} ${styles[statusClass]}`}>
+                            {ticket.status === 'success' ? '✓ Success' :
+                             ticket.status === 'partial' ? '◐ Partial' :
+                             '✗ Failed'}
+                          </span>
+                        )}
+                      </div>
+                      {isRevealed && (
+                        <div className={styles.outcomeImpact}>{ticket.impact}</div>
+                      )}
                     </div>
-                    <div className={styles.outcomeImpact}>{ticket.impact}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ))}
           </div>
+
+          {/* Performance Metrics */}
+          {retroData.game.metrics_state && (
+            <>
+              <div className={styles.sectionLabel} style={{ marginTop: '24px' }}>Performance</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {['team_sentiment', 'ceo_sentiment', 'self_serve_growth', 'enterprise_growth'].map(metricKey => {
+                  const currentValue = retroData.game.metrics_state?.[metricKey] ?? 50;
+                  const delta = retroData.retro.metric_deltas[metricKey] ?? 0;
+                  const preview = getMetricPreviewRange(metricKey, currentValue, delta);
+
+                  return (
+                    <MetricBarWithPreview
+                      key={metricKey}
+                      name={metricNameMap[metricKey] || metricKey}
+                      currentValue={currentValue}
+                      previewMin={preview.min}
+                      previewMax={preview.max}
+                      isPositiveImpact={preview.isPositive}
+                      showDangerZone={metricKey.includes('sentiment')}
+                    />
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -395,7 +612,12 @@ export default function SprintRetro() {
           Sprint {retroData.completedSprint.sprint_number} of 3 complete. {retroData.isQuarterEnd ? 'Time for quarterly review.' : `${3 - retroData.completedSprint.sprint_number} more sprint${3 - retroData.completedSprint.sprint_number > 1 ? 's' : ''} until quarterly review.`}
         </div>
         <div className={styles.bottomBarRight}>
-          <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleContinue}>
+          <button
+            className={`${styles.btn} ${styles.btnPrimary}`}
+            onClick={handleContinue}
+            disabled={animState.phase !== 'complete'}
+            style={{ opacity: animState.phase !== 'complete' ? 0.5 : 1, cursor: animState.phase !== 'complete' ? 'not-allowed' : 'pointer' }}
+          >
             {retroData.isQuarterEnd ? 'View Quarterly Review' : 'Continue to Next Sprint'}
           </button>
         </div>
