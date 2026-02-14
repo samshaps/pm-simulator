@@ -199,22 +199,26 @@ export default function SprintRetro() {
     };
   });
 
-  const ticketOutcomes: GroupedTicketOutcome[] = retroData.retro.ticket_outcomes.map(ticket => ({
-    title: ticket.title,
-    status: outcomeStatusMap[ticket.outcome] || 'partial',
-    impact: ticket.outcome_narrative || 'Completed with mixed results.',
-    outcome: ticket.outcome,
-    category: ticket.category
-  }));
+  const ticketOutcomes: GroupedTicketOutcome[] = useMemo(() =>
+    retroData.retro.ticket_outcomes.map(ticket => ({
+      title: ticket.title,
+      status: outcomeStatusMap[ticket.outcome] || 'partial',
+      impact: ticket.outcome_narrative || 'Completed with mixed results.',
+      outcome: ticket.outcome,
+      category: ticket.category
+    })),
+  [retroData.retro.ticket_outcomes]);
 
-  const ticketsByCategory = ticketOutcomes.reduce((acc, ticket) => {
-    const category = ticket.category;
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(ticket);
-    return acc;
-  }, {} as Record<string, GroupedTicketOutcome[]>);
+  const ticketsByCategory = useMemo(() =>
+    ticketOutcomes.reduce((acc, ticket) => {
+      const category = ticket.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(ticket);
+      return acc;
+    }, {} as Record<string, GroupedTicketOutcome[]>),
+  [ticketOutcomes]);
 
   // Generate actionable insights based on metric changes
   const generateInsights = () => {
@@ -267,7 +271,7 @@ export default function SprintRetro() {
     return insights;
   };
 
-  const insights = generateInsights();
+  const insights = useMemo(() => generateInsights(), [retroData.retro.metric_deltas, retroData.retro.is_overbooked, retroData.retro.failure_rate]);
 
   // Flatten tickets into ordered array for sequential reveal
   const flattenedTickets = useMemo(() => {
