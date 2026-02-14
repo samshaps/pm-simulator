@@ -1080,6 +1080,26 @@ export default function SprintPlanning() {
             <div className={styles.metricsGrid}>
               {(() => {
                 const combinedPreviews = getCombinedPreviews();
+
+                // DEBUG: Log preview values
+                console.log('🔍 Preview Debug:', {
+                  teamSentiment: {
+                    current: metrics.team_sentiment,
+                    min: combinedPreviews['Team Sentiment']?.min,
+                    max: combinedPreviews['Team Sentiment']?.max
+                  },
+                  selfServe: {
+                    current: metrics.self_serve_growth,
+                    min: combinedPreviews['Self-Serve Growth']?.min,
+                    max: combinedPreviews['Self-Serve Growth']?.max
+                  },
+                  enterprise: {
+                    current: metrics.enterprise_growth,
+                    min: combinedPreviews['Enterprise Growth']?.min,
+                    max: combinedPreviews['Enterprise Growth']?.max
+                  }
+                });
+
                 return (
                   <>
                     {/* Q1: Show only 3 metrics (Team Sentiment, Self-Serve Growth, Enterprise Growth) */}
