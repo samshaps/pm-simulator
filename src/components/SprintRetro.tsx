@@ -221,7 +221,7 @@ export default function SprintRetro() {
   [ticketOutcomes]);
 
   // Generate actionable insights based on metric changes
-  const generateInsights = () => {
+  const insights = useMemo(() => {
     const insights: string[] = [];
     const deltas = retroData.retro.metric_deltas;
 
@@ -269,9 +269,7 @@ export default function SprintRetro() {
     }
 
     return insights;
-  };
-
-  const insights = useMemo(() => generateInsights(), [retroData.retro.metric_deltas, retroData.retro.is_overbooked, retroData.retro.failure_rate]);
+  }, [retroData.retro.metric_deltas, retroData.retro.is_overbooked, retroData.retro.failure_rate]);
 
   // Flatten tickets into ordered array for sequential reveal
   const flattenedTickets = useMemo(() => {
