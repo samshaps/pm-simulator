@@ -287,7 +287,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={styles.versionTag}>v2.0 — now with real-time feedback
+      <div className={styles.versionTag}>v2.0 — now with real-time feedback</div>
 
       {/* Settings Icon */}
       <div className={styles.settingsIcon}>
