@@ -430,54 +430,59 @@ export default function SprintPlanning() {
 
     const previews: Record<string, { min: number; max: number; isPositive: boolean }> = {};
 
-    // Get success and partial ranges
+    // Get success and partial ranges from ticket data
     const successRange = ticket.primary_impact.success || [0, 0];
     const partialRange = ticket.primary_impact.partial || [0, 0];
 
-    // Calculate the full range of possible outcomes
-    // Min: smallest value across both ranges (worst case)
-    // Max: largest value across both ranges (best case)
-    const allValues = [successRange[0], successRange[1], partialRange[0], partialRange[1]];
-    const minImpact = Math.min(...allValues);
-    const maxImpact = Math.max(...allValues);
+    // Calculate best case (clear success)
+    const bestCase = Math.max(successRange[0], successRange[1]);
 
-    // Determine if net positive based on expected value
-    const avgImpact = (minImpact + maxImpact) / 2;
-    const isPositive = avgImpact > 0;
+    // Calculate worst case (catastrophe/failure)
+    // Based on src/lib/game/simulate.ts failure logic:
+    // - soft_failure: -6 to -2 on primary metric
+    // - catastrophe: -18 to -10 on primary metric
+    // We use -12 as a reasonable worst-case estimate (average of catastrophe range)
+    const worstCase = -12;
+
+    // Determine if net positive based on expected weighted outcome
+    // Assuming ~70% success, ~20% partial, ~10% failure probability
+    const partialImpact = Math.min(partialRange[0], partialRange[1]);
+    const expectedImpact = (bestCase * 0.7) + (partialImpact * 0.2) + (worstCase * 0.1);
+    const isPositive = expectedImpact > 0;
 
     // Map to specific metrics based on category
     if (ticket.category === 'self_serve_feature') {
       previews.self_serve_growth = {
-        min: minImpact,
-        max: maxImpact,
+        min: worstCase,
+        max: bestCase,
         isPositive
       };
       previews.team_sentiment = {
-        min: minImpact * 0.3,
-        max: maxImpact * 0.3,
-        isPositive
+        min: Math.min(worstCase * 0.5, -3), // Failures hurt team morale
+        max: bestCase * 0.3,
+        isPositive: bestCase * 0.3 > Math.abs(worstCase * 0.5)
       };
     } else if (ticket.category === 'enterprise_feature' || ticket.category === 'sales_request') {
       previews.enterprise_growth = {
-        min: minImpact,
-        max: maxImpact,
+        min: worstCase,
+        max: bestCase,
         isPositive
       };
       previews.ceo_sentiment = {
-        min: minImpact * 0.5,
-        max: maxImpact * 0.5,
-        isPositive
+        min: worstCase * 0.4, // CEO cares about failures
+        max: bestCase * 0.5,
+        isPositive: bestCase * 0.5 > Math.abs(worstCase * 0.4)
       };
     } else if (ticket.category === 'tech_debt_reduction' || ticket.category === 'infrastructure') {
-      // For tech debt, lower is better, so invert the ranges
+      // For tech debt: success reduces it, failure increases it
       previews.tech_debt = {
-        min: -maxImpact, // Best case reduces tech debt the most
-        max: -minImpact, // Worst case reduces tech debt the least
-        isPositive
+        min: -bestCase, // Best case: tech debt goes down
+        max: Math.abs(worstCase * 0.3), // Worst case: tech debt goes up
+        isPositive: false // Lower tech debt is better
       };
       previews.cto_sentiment = {
-        min: minImpact,
-        max: maxImpact,
+        min: worstCase * 0.3,
+        max: bestCase,
         isPositive
       };
     }
