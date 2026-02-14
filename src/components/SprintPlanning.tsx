@@ -378,6 +378,10 @@ export default function SprintPlanning() {
     };
   });
 
+  // Filter out tickets that are already committed
+  const committedIds = new Set(committedTickets.map(t => t.id));
+  backlogTickets = backlogTickets.filter(ticket => !committedIds.has(ticket.id));
+
   // Apply category filter
   if (filterCategory !== 'all') {
     backlogTickets = backlogTickets.filter(ticket => ticket.category === filterCategory);
