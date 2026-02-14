@@ -430,13 +430,13 @@ export default function SprintPlanning() {
 
     const previews: Record<string, { min: number; max: number; isPositive: boolean }> = {};
 
-    // Get success and failure ranges
+    // Get success and partial/failure ranges
     const successRange = ticket.primary_impact.success || [0, 0];
-    const failureRange = ticket.primary_impact.hard_failure || ticket.primary_impact.soft_failure || [0, 0];
+    const partialRange = ticket.primary_impact.partial || [0, 0];
 
-    // Best case: success impact, worst case: failure impact
+    // Best case: max of success range, worst case: min of partial range
     const bestCase = Math.max(successRange[0], successRange[1]);
-    const worstCase = Math.min(failureRange[0], failureRange[1]);
+    const worstCase = Math.min(partialRange[0], partialRange[1]);
 
     // Determine if net positive based on expected value (weighted by probability)
     const avgImpact = (bestCase + worstCase) / 2;
