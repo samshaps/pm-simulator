@@ -430,51 +430,54 @@ export default function SprintPlanning() {
 
     const previews: Record<string, { min: number; max: number; isPositive: boolean }> = {};
 
-    // Get success and partial/failure ranges
+    // Get success and partial ranges
     const successRange = ticket.primary_impact.success || [0, 0];
     const partialRange = ticket.primary_impact.partial || [0, 0];
 
-    // Best case: max of success range, worst case: min of partial range
-    const bestCase = Math.max(successRange[0], successRange[1]);
-    const worstCase = Math.min(partialRange[0], partialRange[1]);
+    // Calculate the full range of possible outcomes
+    // Min: smallest value across both ranges (worst case)
+    // Max: largest value across both ranges (best case)
+    const allValues = [successRange[0], successRange[1], partialRange[0], partialRange[1]];
+    const minImpact = Math.min(...allValues);
+    const maxImpact = Math.max(...allValues);
 
-    // Determine if net positive based on expected value (weighted by probability)
-    const avgImpact = (bestCase + worstCase) / 2;
+    // Determine if net positive based on expected value
+    const avgImpact = (minImpact + maxImpact) / 2;
     const isPositive = avgImpact > 0;
 
     // Map to specific metrics based on category
     if (ticket.category === 'self_serve_feature') {
       previews.self_serve_growth = {
-        min: worstCase,
-        max: bestCase,
+        min: minImpact,
+        max: maxImpact,
         isPositive
       };
       previews.team_sentiment = {
-        min: worstCase * 0.3,
-        max: bestCase * 0.3,
+        min: minImpact * 0.3,
+        max: maxImpact * 0.3,
         isPositive
       };
     } else if (ticket.category === 'enterprise_feature' || ticket.category === 'sales_request') {
       previews.enterprise_growth = {
-        min: worstCase,
-        max: bestCase,
+        min: minImpact,
+        max: maxImpact,
         isPositive
       };
       previews.ceo_sentiment = {
-        min: worstCase * 0.5,
-        max: bestCase * 0.5,
+        min: minImpact * 0.5,
+        max: maxImpact * 0.5,
         isPositive
       };
     } else if (ticket.category === 'tech_debt_reduction' || ticket.category === 'infrastructure') {
       // For tech debt, lower is better, so invert the ranges
       previews.tech_debt = {
-        min: -bestCase, // Best case reduces tech debt the most
-        max: -worstCase, // Worst case reduces tech debt the least
+        min: -maxImpact, // Best case reduces tech debt the most
+        max: -minImpact, // Worst case reduces tech debt the least
         isPositive
       };
       previews.cto_sentiment = {
-        min: worstCase,
-        max: bestCase,
+        min: minImpact,
+        max: maxImpact,
         isPositive
       };
     }
