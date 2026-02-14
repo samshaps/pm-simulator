@@ -158,70 +158,34 @@ export default function SprintRetro() {
       });
   }, []);
 
-  if (isLoading || !retroData) {
-    return null; // Don't show default loading - SprintPlanning loading overlay handles it
-  }
-
-  const narrative = retroData.retro.narrative;
-
-  const formatMetricChange = (value: number): string => {
-    const absValue = Math.abs(Math.round(value));
-    if (value > 15) return `↑↑ Strong Increase`;
-    if (value > 5) return `↑ Increased`;
-    if (value > 0) return `↗ Slight Increase`;
-    if (value === 0) return `→ No Change`;
-    if (value > -5) return `↘ Slight Decrease`;
-    if (value > -15) return `↓ Decreased`;
-    return `↓↓ Strong Decrease`;
-  };
-
-  // Ensure all core metrics are shown, even if they have 0 change
-  const coreMetrics = ['team_sentiment', 'ceo_sentiment', 'sales_sentiment', 'cto_sentiment',
-                       'self_serve_growth', 'enterprise_growth', 'tech_debt'];
-
-  const metricDeltas = retroData.retro.metric_deltas;
-  const metricChanges: MetricChange[] = coreMetrics.map(key => {
-    const delta = (metricDeltas[key] as number) || 0;
-    // For tech_debt, invert the changeType (increase is bad, decrease is good)
-    const isInverseMetric = key === 'tech_debt';
-    let changeType: 'positive' | 'negative' | 'neutral';
-    if (delta > 0) {
-      changeType = isInverseMetric ? 'negative' : 'positive';
-    } else if (delta < 0) {
-      changeType = isInverseMetric ? 'positive' : 'negative';
-    } else {
-      changeType = 'neutral';
-    }
-    return {
-      name: metricNameMap[key] || key,
-      change: Math.round(delta),
-      changeType
-    };
-  });
-
-  const ticketOutcomes: GroupedTicketOutcome[] = useMemo(() =>
-    retroData.retro.ticket_outcomes.map(ticket => ({
+  // All hooks must come BEFORE any early returns
+  // Compute values with useMemo, handling null retroData
+  const ticketOutcomes: GroupedTicketOutcome[] = useMemo(() => {
+    if (!retroData) return [];
+    return retroData.retro.ticket_outcomes.map(ticket => ({
       title: ticket.title,
       status: outcomeStatusMap[ticket.outcome] || 'partial',
       impact: ticket.outcome_narrative || 'Completed with mixed results.',
       outcome: ticket.outcome,
       category: ticket.category
-    })),
-  [retroData.retro.ticket_outcomes]);
+    }));
+  }, [retroData]);
 
-  const ticketsByCategory = useMemo(() =>
-    ticketOutcomes.reduce((acc, ticket) => {
+  const ticketsByCategory = useMemo(() => {
+    if (!retroData) return {};
+    return ticketOutcomes.reduce((acc, ticket) => {
       const category = ticket.category;
       if (!acc[category]) {
         acc[category] = [];
       }
       acc[category].push(ticket);
       return acc;
-    }, {} as Record<string, GroupedTicketOutcome[]>),
-  [ticketOutcomes]);
+    }, {} as Record<string, GroupedTicketOutcome[]>);
+  }, [ticketOutcomes, retroData]);
 
   // Generate actionable insights based on metric changes
   const insights = useMemo(() => {
+    if (!retroData) return [];
     const insights: string[] = [];
     const deltas = retroData.retro.metric_deltas;
 
@@ -269,10 +233,11 @@ export default function SprintRetro() {
     }
 
     return insights;
-  }, [retroData.retro.metric_deltas, retroData.retro.is_overbooked, retroData.retro.failure_rate]);
+  }, [retroData]);
 
   // Flatten tickets into ordered array for sequential reveal
   const flattenedTickets = useMemo(() => {
+    if (!retroData) return [];
     let index = 0;
     return Object.entries(ticketsByCategory).flatMap(([category, tickets]) =>
       tickets.map(ticket => ({
@@ -282,10 +247,11 @@ export default function SprintRetro() {
         isRevealed: animState.revealedTickets > index - 1
       }))
     );
-  }, [ticketsByCategory, animState.revealedTickets]);
+  }, [ticketsByCategory, animState.revealedTickets, retroData]);
 
   // Prepare sticky notes as ordered array
   const stickyNotes = useMemo(() => {
+    if (!retroData) return [];
     const notes: Array<{ type: string; content: any }> = [];
 
     if (retroData.ceo_focus_shift?.narrative) {
@@ -323,6 +289,7 @@ export default function SprintRetro() {
 
   // Check if animation already completed (from sessionStorage)
   useEffect(() => {
+    if (!retroData) return;
     const isComplete = sessionStorage.getItem('retroAnimationComplete');
     if (isComplete === 'true') {
       setAnimState({
@@ -331,7 +298,7 @@ export default function SprintRetro() {
         revealedNotes: totalNotes
       });
     }
-  }, [totalTickets, totalNotes]);
+  }, [totalTickets, totalNotes, retroData]);
 
   // Animation sequence orchestration
   useEffect(() => {
@@ -417,6 +384,7 @@ export default function SprintRetro() {
   };
 
   const handleContinue = () => {
+    if (!retroData) return;
     if (retroData.isQuarterEnd) {
       router.replace('/quarterly-review');
     } else {
@@ -429,6 +397,49 @@ export default function SprintRetro() {
     }
   };
 
+  // Early return AFTER all hooks
+  if (isLoading || !retroData) {
+    return null; // Don't show default loading - SprintPlanning loading overlay handles it
+  }
+
+  const narrative = retroData.retro.narrative;
+
+  const formatMetricChange = (value: number): string => {
+    const absValue = Math.abs(Math.round(value));
+    if (value > 15) return `↑↑ Strong Increase`;
+    if (value > 5) return `↑ Increased`;
+    if (value > 0) return `↗ Slight Increase`;
+    if (value === 0) return `→ No Change`;
+    if (value > -5) return `↘ Slight Decrease`;
+    if (value > -15) return `↓ Decreased`;
+    return `↓↓ Strong Decrease`;
+  };
+
+  // Ensure all core metrics are shown, even if they have 0 change
+  const coreMetrics = ['team_sentiment', 'ceo_sentiment', 'sales_sentiment', 'cto_sentiment',
+                       'self_serve_growth', 'enterprise_growth', 'tech_debt'];
+
+  const metricDeltas = retroData.retro.metric_deltas;
+  const metricChanges: MetricChange[] = coreMetrics.map(key => {
+    const delta = (metricDeltas[key] as number) || 0;
+    // For tech_debt, invert the changeType (increase is bad, decrease is good)
+    const isInverseMetric = key === 'tech_debt';
+    let changeType: 'positive' | 'negative' | 'neutral';
+    if (delta > 0) {
+      changeType = isInverseMetric ? 'negative' : 'positive';
+    } else if (delta < 0) {
+      changeType = isInverseMetric ? 'positive' : 'negative';
+    } else {
+      changeType = 'neutral';
+    }
+    return {
+      name: metricNameMap[key] || key,
+      change: Math.round(delta),
+      changeType
+    };
+  });
+
+  // Render starts here
   return (
     <div className={styles.pageContainer}>
       {/* Skip Animation Button */}
