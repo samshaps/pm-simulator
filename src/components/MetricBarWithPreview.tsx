@@ -75,7 +75,7 @@ export default function MetricBarWithPreview({
             <span
               className={styles.metricDelta}
               style={{
-                color: delta > 0 ? 'var(--success)' : 'var(--error)',
+                color: delta > 0 ? '#4ade80' : '#f87171',
                 marginLeft: '8px',
                 fontSize: '14px',
                 fontWeight: 500
@@ -114,6 +114,8 @@ export default function MetricBarWithPreview({
               height: '100%',
               background: 'rgba(74, 222, 128, 0.9)',
               borderRight: '2px solid rgb(74, 222, 128)',
+              borderTopRightRadius: '4px',
+              borderBottomRightRadius: '4px',
               zIndex: 2
             }}
           ></div>
@@ -130,6 +132,8 @@ export default function MetricBarWithPreview({
               height: '100%',
               background: 'rgba(248, 113, 113, 0.9)',
               borderRight: '2px solid rgb(248, 113, 113)',
+              borderTopRightRadius: '4px',
+              borderBottomRightRadius: '4px',
               zIndex: 2
             }}
           ></div>
