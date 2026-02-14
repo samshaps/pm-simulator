@@ -93,15 +93,17 @@ export default function MetricBarWithPreview({
           <div className={styles.dangerZone}></div>
         )}
 
-        {/* Previous Value Bar (base) */}
+        {/* Base Bar - always show the max of current vs previous */}
         {showDeltaBar && (
           <div
             className={styles.currentBar}
-            style={{ width: `${Math.max(0, Math.min(100, previousValue))}%` }}
+            style={{
+              width: `${Math.max(0, Math.min(100, Math.max(currentValue, previousValue)))}%`
+            }}
           ></div>
         )}
 
-        {/* Delta Overlay - shows the change */}
+        {/* Delta Overlay - Green for increase */}
         {showDeltaBar && delta > 0 && (
           <div
             className={styles.deltaBar}
@@ -110,12 +112,14 @@ export default function MetricBarWithPreview({
               left: `${Math.max(0, Math.min(100, previousValue))}%`,
               width: `${Math.min(delta, 100 - previousValue)}%`,
               height: '100%',
-              background: 'rgba(74, 222, 128, 0.8)',
-              borderRight: '2px solid rgb(74, 222, 128)'
+              background: 'rgba(74, 222, 128, 0.9)',
+              borderRight: '2px solid rgb(74, 222, 128)',
+              zIndex: 2
             }}
           ></div>
         )}
 
+        {/* Delta Overlay - Red for decrease */}
         {showDeltaBar && delta < 0 && (
           <div
             className={styles.deltaBar}
@@ -124,8 +128,9 @@ export default function MetricBarWithPreview({
               left: `${Math.max(0, Math.min(100, currentValue))}%`,
               width: `${Math.min(Math.abs(delta), previousValue)}%`,
               height: '100%',
-              background: 'rgba(248, 113, 113, 0.8)',
-              borderLeft: '2px solid rgb(248, 113, 113)'
+              background: 'rgba(248, 113, 113, 0.9)',
+              borderRight: '2px solid rgb(248, 113, 113)',
+              zIndex: 2
             }}
           ></div>
         )}
@@ -138,8 +143,8 @@ export default function MetricBarWithPreview({
           ></div>
         )}
 
-        {/* Preview Overlay (cross-hatched) */}
-        {hasPreview && previewRange && (
+        {/* Preview Overlay (cross-hatched) - only show during animation, not when delta is final */}
+        {hasPreview && previewRange && !showDeltaBar && (
           <div
             className={`${styles.previewOverlay} ${
               isPositiveImpact ? styles.previewPositive : styles.previewNegative
