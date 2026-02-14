@@ -312,17 +312,24 @@ export default function SprintRetro() {
     };
   }, [animState.phase, retroData]);
 
-  // Start animation sequence after initial render
+  // Start animation sequence after initial render with 1 second delay
   useEffect(() => {
     if (!retroData || animState.phase !== 'initial') return;
 
-    // Initial delay before starting ticket reveals
+    console.log('[SprintRetro] Starting animation sequence in 1 second...', {
+      totalTickets,
+      totalNotes,
+      phase: animState.phase
+    });
+
+    // Initial delay of 1 second before starting ticket reveals
     const initialTimer = setTimeout(() => {
+      console.log('[SprintRetro] Beginning ticket reveals');
       setAnimState(prev => ({ ...prev, phase: 'revealing_tickets' }));
-    }, 500);
+    }, 1000);
 
     timerRefs.current.push(initialTimer);
-  }, [retroData, animState.phase]);
+  }, [retroData, animState.phase, totalTickets, totalNotes]);
 
   // Ticket reveal loop
   useEffect(() => {
@@ -355,14 +362,23 @@ export default function SprintRetro() {
   // Sticky note reveal loop
   useEffect(() => {
     if (animState.phase !== 'revealing_notes') return;
+
+    console.log('[SprintRetro] Sticky note phase:', {
+      revealedNotes: animState.revealedNotes,
+      totalNotes,
+      phase: animState.phase
+    });
+
     if (animState.revealedNotes >= totalNotes) {
       // All notes revealed, animation complete
+      console.log('[SprintRetro] All sticky notes revealed, animation complete');
       setAnimState(prev => ({ ...prev, phase: 'complete' }));
       sessionStorage.setItem('retroAnimationComplete', 'true');
       return;
     }
 
     const timer = setTimeout(() => {
+      console.log('[SprintRetro] Revealing sticky note', animState.revealedNotes + 1);
       setAnimState(prev => ({
         ...prev,
         revealedNotes: prev.revealedNotes + 1
@@ -610,6 +626,7 @@ export default function SprintRetro() {
                       previewMax={preview.max}
                       isPositiveImpact={preview.isPositive}
                       showDangerZone={metricKey.includes('sentiment')}
+                      delta={animState.phase === 'complete' ? delta : undefined}
                     />
                   );
                 })}

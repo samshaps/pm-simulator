@@ -12,6 +12,7 @@ interface MetricBarWithPreviewProps {
   previewConfidence?: number; // 0-1, affects width of cross-hatch
   isPositiveImpact?: boolean; // true = green tint, false = red tint
   showDangerZone?: boolean; // Show red region at 0-20
+  delta?: number; // The change value to display next to the metric (e.g., +5 or -3)
 }
 
 export default function MetricBarWithPreview({
@@ -22,7 +23,8 @@ export default function MetricBarWithPreview({
   previewMax,
   previewConfidence = 0.7,
   isPositiveImpact = true,
-  showDangerZone = true
+  showDangerZone = true,
+  delta
 }: MetricBarWithPreviewProps) {
   // Determine if we have a preview range
   const hasPreview = (previewMin !== undefined && previewMax !== undefined) ||
@@ -63,7 +65,22 @@ export default function MetricBarWithPreview({
     <div className={styles.metricBarContainer}>
       <div className={styles.metricHeader}>
         <span className={styles.metricName}>{name}</span>
-        <span className={styles.metricValue}>{Math.round(currentValue)}</span>
+        <span className={styles.metricValue}>
+          {Math.round(currentValue)}
+          {delta !== undefined && delta !== 0 && (
+            <span
+              className={styles.metricDelta}
+              style={{
+                color: delta > 0 ? 'var(--success)' : 'var(--error)',
+                marginLeft: '8px',
+                fontSize: '14px',
+                fontWeight: 500
+              }}
+            >
+              {delta > 0 ? '+' : ''}{Math.round(delta)}
+            </span>
+          )}
+        </span>
       </div>
 
       <div className={styles.barTrack}>
