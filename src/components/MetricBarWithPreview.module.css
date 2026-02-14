@@ -70,36 +70,36 @@
 
 .previewPositive {
   background:
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 3px,
-      rgba(74, 222, 128, 0.6) 3px,
-      rgba(74, 222, 128, 0.6) 6px
-    ),
     linear-gradient(
       90deg,
-      rgba(248, 113, 113, 0.3) 0%,
-      rgba(234, 179, 8, 0.3) 50%,
-      rgba(74, 222, 128, 0.3) 100%
+      rgba(248, 113, 113, 0.5) 0%,
+      rgba(234, 179, 8, 0.5) 50%,
+      rgba(74, 222, 128, 0.5) 100%
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.1) 3px,
+      transparent 3px,
+      transparent 6px
     );
-  border: 1px solid rgba(74, 222, 128, 0.8);
+  border: 1px solid rgba(150, 150, 150, 0.6);
 }
 
 .previewNegative {
   background:
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 3px,
-      rgba(248, 113, 113, 0.6) 3px,
-      rgba(248, 113, 113, 0.6) 6px
-    ),
     linear-gradient(
       90deg,
-      rgba(248, 113, 113, 0.3) 0%,
-      rgba(234, 179, 8, 0.3) 50%,
-      rgba(74, 222, 128, 0.3) 100%
+      rgba(248, 113, 113, 0.5) 0%,
+      rgba(234, 179, 8, 0.5) 50%,
+      rgba(74, 222, 128, 0.5) 100%
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.1) 3px,
+      transparent 3px,
+      transparent 6px
     );
-  border: 1px solid rgba(248, 113, 113, 0.8);
+  border: 1px solid rgba(150, 150, 150, 0.6);
 }
