@@ -133,6 +133,9 @@ export default function SprintRetro() {
   ];
 
   useEffect(() => {
+    // Clear animation completion flag on mount (fresh retro view)
+    sessionStorage.removeItem('retroAnimationComplete');
+
     // Fetch the current game state which includes the completed sprint's retro
     fetch('/api/sprint/active')
       .then(res => res.json())

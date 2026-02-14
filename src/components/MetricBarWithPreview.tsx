@@ -61,6 +61,10 @@ export default function MetricBarWithPreview({
 
   const previewRange = getPreviewRange();
 
+  // Calculate previous value if we have a delta (for visual change indication)
+  const previousValue = delta !== undefined ? currentValue - delta : currentValue;
+  const showDeltaBar = delta !== undefined && delta !== 0;
+
   return (
     <div className={styles.metricBarContainer}>
       <div className={styles.metricHeader}>
@@ -89,11 +93,50 @@ export default function MetricBarWithPreview({
           <div className={styles.dangerZone}></div>
         )}
 
-        {/* Current Value Bar */}
-        <div
-          className={styles.currentBar}
-          style={{ width: `${currentValue}%` }}
-        ></div>
+        {/* Previous Value Bar (base) */}
+        {showDeltaBar && (
+          <div
+            className={styles.currentBar}
+            style={{ width: `${Math.max(0, Math.min(100, previousValue))}%` }}
+          ></div>
+        )}
+
+        {/* Delta Overlay - shows the change */}
+        {showDeltaBar && delta > 0 && (
+          <div
+            className={styles.deltaBar}
+            style={{
+              position: 'absolute',
+              left: `${Math.max(0, Math.min(100, previousValue))}%`,
+              width: `${Math.min(delta, 100 - previousValue)}%`,
+              height: '100%',
+              background: 'rgba(74, 222, 128, 0.8)',
+              borderRight: '2px solid rgb(74, 222, 128)'
+            }}
+          ></div>
+        )}
+
+        {showDeltaBar && delta < 0 && (
+          <div
+            className={styles.deltaBar}
+            style={{
+              position: 'absolute',
+              left: `${Math.max(0, Math.min(100, currentValue))}%`,
+              width: `${Math.min(Math.abs(delta), previousValue)}%`,
+              height: '100%',
+              background: 'rgba(248, 113, 113, 0.8)',
+              borderLeft: '2px solid rgb(248, 113, 113)'
+            }}
+          ></div>
+        )}
+
+        {/* Current Value Bar (only shown when no delta) */}
+        {!showDeltaBar && (
+          <div
+            className={styles.currentBar}
+            style={{ width: `${currentValue}%` }}
+          ></div>
+        )}
 
         {/* Preview Overlay (cross-hatched) */}
         {hasPreview && previewRange && (
