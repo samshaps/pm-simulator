@@ -542,11 +542,17 @@ export default function SprintPlanning() {
       const calculatedMin = baseValue + combined[metricKey].min;
       const calculatedMax = baseValue + combined[metricKey].max;
 
-      // Cross-hatch should always start at or before current value and extend to max
-      // This ensures it overlays the purple bar instead of sitting next to it
+      // Cross-hatch should overlay the current purple bar
+      // Start from current value and extend to show potential range
+      // This creates a visual that says "you're here, could go from here to there"
+      const rangeMin = Math.min(calculatedMin, calculatedMax);
+      const rangeMax = Math.max(calculatedMin, calculatedMax);
+
       result[displayName] = {
-        min: Math.max(0, Math.min(100, Math.min(baseValue, calculatedMin))),
-        max: Math.max(0, Math.min(100, Math.max(baseValue, calculatedMax))),
+        // Start at current value OR the lowest possible outcome, whichever is lower
+        min: Math.max(0, Math.min(100, Math.min(baseValue, rangeMin))),
+        // Extend to the highest possible outcome
+        max: Math.max(0, Math.min(100, Math.max(baseValue, rangeMax))),
         isPositive: combined[metricKey].isPositive
       };
     });
