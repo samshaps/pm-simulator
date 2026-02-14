@@ -533,9 +533,15 @@ export default function SprintPlanning() {
     Object.keys(combined).forEach(metricKey => {
       const baseValue = baseMetrics[metricKey as keyof MetricsState] || 0;
       const displayName = metricKeyToDisplayName(metricKey);
+
+      const calculatedMin = baseValue + combined[metricKey].min;
+      const calculatedMax = baseValue + combined[metricKey].max;
+
+      // Cross-hatch should always start at or before current value and extend to max
+      // This ensures it overlays the purple bar instead of sitting next to it
       result[displayName] = {
-        min: Math.max(0, Math.min(100, baseValue + combined[metricKey].min)),
-        max: Math.max(0, Math.min(100, baseValue + combined[metricKey].max)),
+        min: Math.max(0, Math.min(100, Math.min(baseValue, calculatedMin))),
+        max: Math.max(0, Math.min(100, Math.max(baseValue, calculatedMax))),
         isPositive: combined[metricKey].isPositive
       };
     });
