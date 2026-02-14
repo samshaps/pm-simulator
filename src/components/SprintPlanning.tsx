@@ -425,40 +425,57 @@ export default function SprintPlanning() {
   };
 
   // Calculate metric preview for a single ticket
-  const calculateTicketPreview = (ticket: Ticket): Record<string, { value: number; isPositive: boolean }> => {
+  const calculateTicketPreview = (ticket: Ticket): Record<string, { min: number; max: number; isPositive: boolean }> => {
     if (!ticket.primary_impact) return {};
 
-    const previews: Record<string, { value: number; isPositive: boolean }> = {};
+    const previews: Record<string, { min: number; max: number; isPositive: boolean }> = {};
+
+    // Get success and failure ranges
     const successRange = ticket.primary_impact.success || [0, 0];
-    const avgImpact = (successRange[0] + successRange[1]) / 2;
+    const failureRange = ticket.primary_impact.hard_failure || ticket.primary_impact.soft_failure || [0, 0];
+
+    // Best case: success impact, worst case: failure impact
+    const bestCase = Math.max(successRange[0], successRange[1]);
+    const worstCase = Math.min(failureRange[0], failureRange[1]);
+
+    // Determine if net positive based on expected value (weighted by probability)
+    const avgImpact = (bestCase + worstCase) / 2;
+    const isPositive = avgImpact > 0;
 
     // Map to specific metrics based on category
     if (ticket.category === 'self_serve_feature') {
       previews.self_serve_growth = {
-        value: avgImpact,
-        isPositive: avgImpact > 0
+        min: worstCase,
+        max: bestCase,
+        isPositive
       };
       previews.team_sentiment = {
-        value: avgImpact * 0.3,
-        isPositive: avgImpact > 0
+        min: worstCase * 0.3,
+        max: bestCase * 0.3,
+        isPositive
       };
     } else if (ticket.category === 'enterprise_feature' || ticket.category === 'sales_request') {
       previews.enterprise_growth = {
-        value: avgImpact,
-        isPositive: avgImpact > 0
+        min: worstCase,
+        max: bestCase,
+        isPositive
       };
       previews.ceo_sentiment = {
-        value: avgImpact * 0.5,
-        isPositive: avgImpact > 0
+        min: worstCase * 0.5,
+        max: bestCase * 0.5,
+        isPositive
       };
     } else if (ticket.category === 'tech_debt_reduction' || ticket.category === 'infrastructure') {
+      // For tech debt, lower is better, so invert the ranges
       previews.tech_debt = {
-        value: -avgImpact,
-        isPositive: avgImpact > 0
+        min: -bestCase, // Best case reduces tech debt the most
+        max: -worstCase, // Worst case reduces tech debt the least
+        isPositive
       };
       previews.cto_sentiment = {
-        value: avgImpact,
-        isPositive: avgImpact > 0
+        min: worstCase,
+        max: bestCase,
+        isPositive
       };
     }
 
@@ -482,8 +499,8 @@ export default function SprintPlanning() {
   };
 
   // Combine committed and hover previews
-  const getCombinedPreviews = (): Record<string, { value: number; isPositive: boolean }> => {
-    const combined: Record<string, { value: number; isPositive: boolean }> = {};
+  const getCombinedPreviews = (): Record<string, { min: number; max: number; isPositive: boolean }> => {
+    const combined: Record<string, { min: number; max: number; isPositive: boolean }> = {};
 
     // Start with base metrics
     const baseMetrics = { ...metrics };
@@ -492,27 +509,30 @@ export default function SprintPlanning() {
     Object.values(committedPreviews).forEach(ticketPreviews => {
       Object.entries(ticketPreviews).forEach(([metricKey, preview]) => {
         if (!combined[metricKey]) {
-          combined[metricKey] = { value: 0, isPositive: preview.isPositive };
+          combined[metricKey] = { min: 0, max: 0, isPositive: preview.isPositive };
         }
-        combined[metricKey].value += preview.value;
+        combined[metricKey].min += preview.min;
+        combined[metricKey].max += preview.max;
       });
     });
 
     // Add hover preview on top
     Object.entries(metricPreviews).forEach(([metricKey, preview]) => {
       if (!combined[metricKey]) {
-        combined[metricKey] = { value: 0, isPositive: preview.isPositive };
+        combined[metricKey] = { min: 0, max: 0, isPositive: preview.isPositive };
       }
-      combined[metricKey].value += preview.value;
+      combined[metricKey].min += preview.min;
+      combined[metricKey].max += preview.max;
     });
 
     // Convert deltas to absolute values and map to display names
-    const result: Record<string, { value: number; isPositive: boolean }> = {};
+    const result: Record<string, { min: number; max: number; isPositive: boolean }> = {};
     Object.keys(combined).forEach(metricKey => {
       const baseValue = baseMetrics[metricKey as keyof MetricsState] || 0;
       const displayName = metricKeyToDisplayName(metricKey);
       result[displayName] = {
-        value: baseValue + combined[metricKey].value,
+        min: Math.max(0, Math.min(100, baseValue + combined[metricKey].min)),
+        max: Math.max(0, Math.min(100, baseValue + combined[metricKey].max)),
         isPositive: combined[metricKey].isPositive
       };
     });
@@ -1047,21 +1067,24 @@ export default function SprintPlanning() {
                     <MetricBarWithPreview
                       name="Team Sentiment"
                       currentValue={metrics.team_sentiment}
-                      previewValue={combinedPreviews['Team Sentiment']?.value}
+                      previewMin={combinedPreviews['Team Sentiment']?.min}
+                      previewMax={combinedPreviews['Team Sentiment']?.max}
                       isPositiveImpact={combinedPreviews['Team Sentiment']?.isPositive}
                       showDangerZone={true}
                     />
                     <MetricBarWithPreview
                       name="Self-Serve Growth"
                       currentValue={metrics.self_serve_growth}
-                      previewValue={combinedPreviews['Self-Serve Growth']?.value}
+                      previewMin={combinedPreviews['Self-Serve Growth']?.min}
+                      previewMax={combinedPreviews['Self-Serve Growth']?.max}
                       isPositiveImpact={combinedPreviews['Self-Serve Growth']?.isPositive}
                       showDangerZone={true}
                     />
                     <MetricBarWithPreview
                       name="Enterprise Growth"
                       currentValue={metrics.enterprise_growth}
-                      previewValue={combinedPreviews['Enterprise Growth']?.value}
+                      previewMin={combinedPreviews['Enterprise Growth']?.min}
+                      previewMax={combinedPreviews['Enterprise Growth']?.max}
                       isPositiveImpact={combinedPreviews['Enterprise Growth']?.isPositive}
                       showDangerZone={true}
                     />
@@ -1072,21 +1095,24 @@ export default function SprintPlanning() {
                         <MetricBarWithPreview
                           name="CTO Sentiment"
                           currentValue={metrics.cto_sentiment}
-                          previewValue={combinedPreviews['CTO Sentiment']?.value}
+                          previewMin={combinedPreviews['CTO Sentiment']?.min}
+                          previewMax={combinedPreviews['CTO Sentiment']?.max}
                           isPositiveImpact={combinedPreviews['CTO Sentiment']?.isPositive}
                           showDangerZone={true}
                         />
                         <MetricBarWithPreview
                           name="Tech Debt"
                           currentValue={metrics.tech_debt}
-                          previewValue={combinedPreviews['Tech Debt']?.value}
+                          previewMin={combinedPreviews['Tech Debt']?.min}
+                          previewMax={combinedPreviews['Tech Debt']?.max}
                           isPositiveImpact={combinedPreviews['Tech Debt']?.isPositive}
                           showDangerZone={true}
                         />
                         <MetricBarWithPreview
                           name="CEO Sentiment"
                           currentValue={metrics.ceo_sentiment}
-                          previewValue={combinedPreviews['CEO Sentiment']?.value}
+                          previewMin={combinedPreviews['CEO Sentiment']?.min}
+                          previewMax={combinedPreviews['CEO Sentiment']?.max}
                           isPositiveImpact={combinedPreviews['CEO Sentiment']?.isPositive}
                           showDangerZone={true}
                         />
