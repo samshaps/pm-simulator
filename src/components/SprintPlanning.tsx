@@ -674,10 +674,12 @@ export default function SprintPlanning() {
 
     // Calculate and lock in the preview for this ticket
     const ticketPreview = calculateTicketPreview(ticket);
-    setCommittedPreviews(prev => ({
-      ...prev,
-      [ticket.id]: ticketPreview
-    }));
+    console.log('🎫 Ticket added:', ticket.title, 'Preview:', ticketPreview);
+    setCommittedPreviews(prev => {
+      const updated = { ...prev, [ticket.id]: ticketPreview };
+      console.log('📦 Updated committedPreviews:', updated);
+      return updated;
+    });
   };
 
   const handleRemoveTicket = (ticketId: string) => {
