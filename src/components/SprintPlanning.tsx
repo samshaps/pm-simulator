@@ -548,13 +548,29 @@ export default function SprintPlanning() {
       const rangeMin = Math.min(calculatedMin, calculatedMax);
       const rangeMax = Math.max(calculatedMin, calculatedMax);
 
+      const finalMin = Math.max(0, Math.min(100, Math.min(baseValue, rangeMin)));
+      const finalMax = Math.max(0, Math.min(100, Math.max(baseValue, rangeMax)));
+
       result[displayName] = {
         // Start at current value OR the lowest possible outcome, whichever is lower
-        min: Math.max(0, Math.min(100, Math.min(baseValue, rangeMin))),
+        min: finalMin,
         // Extend to the highest possible outcome
-        max: Math.max(0, Math.min(100, Math.max(baseValue, rangeMax))),
+        max: finalMax,
         isPositive: combined[metricKey].isPositive
       };
+
+      // DEBUG: Log calculation for each metric
+      console.log(`📊 ${displayName}:`, {
+        baseValue,
+        combinedMin: combined[metricKey].min,
+        combinedMax: combined[metricKey].max,
+        calculatedMin,
+        calculatedMax,
+        rangeMin,
+        rangeMax,
+        finalMin,
+        finalMax
+      });
     });
 
     return result;
