@@ -187,8 +187,8 @@ export default function SprintPlanning() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [hoveredTicketId, setHoveredTicketId] = useState<string | null>(null);
-  const [metricPreviews, setMetricPreviews] = useState<Record<string, { value: number; isPositive: boolean }>>({});
-  const [committedPreviews, setCommittedPreviews] = useState<Record<string, Record<string, { value: number; isPositive: boolean }>>>({});
+  const [metricPreviews, setMetricPreviews] = useState<Record<string, { min: number; max: number; isPositive: boolean }>>({});
+  const [committedPreviews, setCommittedPreviews] = useState<Record<string, Record<string, { min: number; max: number; isPositive: boolean }>>>({});
 
   useEffect(() => {
     // Fetch active sprint data
