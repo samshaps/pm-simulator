@@ -40,7 +40,6 @@ const pickRandomMessages = (messages: string[], count: number) => {
 
 export default function Home() {
   const router = useRouter();
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('ok');
   const [hasSaveGame, setHasSaveGame] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [pastRuns, setPastRuns] = useState<PastRun[]>([]);
@@ -156,11 +155,11 @@ export default function Home() {
   const handleNewGame = async () => {
     setIsLoading(true);
     try {
-      const apiDifficulty = mapDifficultyToApi(selectedDifficulty);
+      // Default to normal difficulty (v2: no difficulty selector)
       const response = await fetch('/api/game/new', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ difficulty: apiDifficulty })
+        body: JSON.stringify({ difficulty: 'normal' })
       });
 
       if (response.ok) {
@@ -230,10 +229,7 @@ export default function Home() {
 
       {/* Tagline */}
       <div className={styles.tagline}>
-        The game where your performance review has a <em>casual relationship</em>
-        {' '}with your actual performance. Make decisions, manage stakeholders, and discover
-        that doing everything right is no guarantee of anything.
-        Will you cement your legacy or get deactivated on Slack?
+        Every decision shapes your destiny. Build the best product or get deactivated on Slack.
       </div>
 
       {/* Action Buttons */}
@@ -256,56 +252,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* Difficulty Selection */}
-      <div className={styles.difficultySection}>
-        <div className={styles.sectionLabel}>Choose your manager</div>
-
-        <div className={styles.difficultyCards}>
-          {/* Easy */}
-          <div
-            className={`${styles.diffCard} ${selectedDifficulty === 'good' ? styles.selected : ''}`}
-            onClick={() => setSelectedDifficulty('good')}
-          >
-            <div className={styles.diffCardTitle}>Good Manager</div>
-            <div className={styles.diffCardDifficulty}>Easy</div>
-            <div className={styles.diffCardDesc}>
-              A gentle introduction. Your manager actively sets you up for success,
-              shields you from politics, and only changes priorities when absolutely necessary.
-              You'll still lose. It'll just feel less personal.
-            </div>
-          </div>
-
-          {/* Normal */}
-          <div
-            className={`${styles.diffCard} ${selectedDifficulty === 'ok' ? styles.selected : ''}`}
-            onClick={() => setSelectedDifficulty('ok')}
-          >
-            <div className={styles.diffCardTitle}>OK Manager</div>
-            <div className={styles.diffCardDifficulty}>Normal</div>
-            <div className={styles.diffCardTag}>Recommended</div>
-            <div className={styles.diffCardDesc}>
-              The standard PM experience. Your manager keeps things steady,
-              mostly remembers your name, and forwards you calendar invites
-              without context. Priorities shift. Nobody explains why.
-            </div>
-          </div>
-
-          {/* Hard */}
-          <div
-            className={`${styles.diffCard} ${selectedDifficulty === 'bad' ? styles.selected : ''}`}
-            onClick={() => setSelectedDifficulty('bad')}
-          >
-            <div className={styles.diffCardTitle}>Bad Manager</div>
-            <div className={styles.diffCardDifficulty}>Hard</div>
-            <div className={styles.diffCardDesc}>
-              For seasoned PMs. Your manager is literally and figuratively out to lunch.
-              Priorities change based on LinkedIn posts. Tech debt starts high.
-              Your team is already tired. Good luck.
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Past Runs */}
       <div className={styles.pastRunsSection}>
         <div className={styles.pastRunsHeader}>
@@ -317,20 +263,20 @@ export default function Home() {
         <div className={styles.pastRunsTable}>
           <div className={`${styles.pastRunRow} ${styles.header}`}>
             <span>Date</span>
-            <span>Difficulty</span>
             <span>Final Rating</span>
-            <span></span>
           </div>
 
           {pastRuns.length > 0 ? (
             pastRuns.map((run, index) => (
-              <div key={index} className={styles.pastRunRow}>
+              <div
+                key={index}
+                className={styles.pastRunRow}
+                title={run.outcome}
+              >
                 <span className={styles.runDate}>{run.date}</span>
-                <span className={styles.runDifficulty}>{run.difficulty}</span>
                 <span className={`${styles.runRating} ${styles[`rating${run.rating.charAt(0).toUpperCase() + run.rating.slice(1).replace('-', '')}`]}`}>
                   {run.ratingText}
                 </span>
-                <span className={styles.runOutcome}>{run.outcome}</span>
               </div>
             ))
           ) : (
@@ -341,7 +287,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={styles.versionTag}>v1.0 — your decisions matter (loosely)</div>
+      <div className={styles.versionTag}>v2.0 — now with real-time feedback
 
       {/* Settings Icon */}
       <div className={styles.settingsIcon}>
