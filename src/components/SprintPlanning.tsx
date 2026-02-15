@@ -1124,14 +1124,22 @@ export default function SprintPlanning() {
 
                 return (
                   <>
-                    {/* Q1: Show only 3 metrics (Team Sentiment, Self-Serve Growth, Enterprise Growth) */}
-                    {/* Q2+: Show all 6 metrics */}
+                    {/* Q1: Show 4 metrics (Team Sentiment, CEO Sentiment, Self-Serve Growth, Enterprise Growth) */}
+                    {/* Q2+: Show all 6 metrics (add CTO Sentiment and Tech Debt) */}
                     <MetricBarWithPreview
                       name="Team Sentiment"
                       currentValue={metrics.team_sentiment}
                       previewMin={combinedPreviews['Team Sentiment']?.min}
                       previewMax={combinedPreviews['Team Sentiment']?.max}
                       isPositiveImpact={combinedPreviews['Team Sentiment']?.isPositive}
+                      showDangerZone={true}
+                    />
+                    <MetricBarWithPreview
+                      name="CEO Sentiment"
+                      currentValue={metrics.ceo_sentiment}
+                      previewMin={combinedPreviews['CEO Sentiment']?.min}
+                      previewMax={combinedPreviews['CEO Sentiment']?.max}
+                      isPositiveImpact={combinedPreviews['CEO Sentiment']?.isPositive}
                       showDangerZone={true}
                     />
                     <MetricBarWithPreview
@@ -1151,7 +1159,7 @@ export default function SprintPlanning() {
                       showDangerZone={true}
                     />
 
-                    {/* Show additional metrics in Q2+ */}
+                    {/* Show additional metrics in Q2+ (CTO Sentiment and Tech Debt) */}
                     {gameState.game.current_quarter >= 2 && (
                       <>
                         <MetricBarWithPreview
@@ -1168,14 +1176,6 @@ export default function SprintPlanning() {
                           previewMin={combinedPreviews['Tech Debt']?.min}
                           previewMax={combinedPreviews['Tech Debt']?.max}
                           isPositiveImpact={combinedPreviews['Tech Debt']?.isPositive}
-                          showDangerZone={true}
-                        />
-                        <MetricBarWithPreview
-                          name="CEO Sentiment"
-                          currentValue={metrics.ceo_sentiment}
-                          previewMin={combinedPreviews['CEO Sentiment']?.min}
-                          previewMax={combinedPreviews['CEO Sentiment']?.max}
-                          isPositiveImpact={combinedPreviews['CEO Sentiment']?.isPositive}
                           showDangerZone={true}
                         />
                       </>

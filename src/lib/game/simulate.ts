@@ -89,11 +89,76 @@ export function createRng(seed: number): Rng {
   };
 }
 
-export function computeEffectiveCapacity(metrics: MetricsState): number {
+/**
+ * Get the base capacity for a given quarter and sprint (before metric modifiers)
+ * Q1S1: 12, Q1S2: 15, Q1S3: 18, Q2+: 21
+ */
+export function getBaseCapacity(quarter: number, sprint: number): number {
+  if (quarter === 1) {
+    if (sprint === 1) return 12;
+    if (sprint === 2) return 15;
+    if (sprint === 3) return 18;
+  }
+  return 21; // Q2-Q4: full capacity
+}
+
+/**
+ * Get the target backlog size for a given quarter and sprint
+ * Q1S1: 6, Q1S2: 9, Q1S3: 12, Q2: 15, Q3-Q4: 18
+ */
+export function getBacklogSize(quarter: number, sprint: number): number {
+  if (quarter === 1) {
+    if (sprint === 1) return 6;
+    if (sprint === 2) return 9;
+    if (sprint === 3) return 12;
+  }
+  if (quarter === 2) return 15;
+  return 18; // Q3-Q4: maximum pressure
+}
+
+/**
+ * Get penalty scale for a given quarter and sprint
+ * Q1S1: 0.5 (reduced), Q1S2-S3: 1.0 (normal), Q2: 1.0, Q3: 1.3 (harsh), Q4: 1.5 (very harsh)
+ */
+export function getPenaltyScale(quarter: number, sprint: number): number {
+  if (quarter === 1 && sprint === 1) return 0.5; // Tutorial sprint: easier
+  if (quarter === 1) return 1.0; // Rest of Q1: normal
+  if (quarter === 2) return 1.0; // Q2: normal
+  if (quarter === 3) return 1.3; // Q3: harsh
+  return 1.5; // Q4: very harsh
+}
+
+/**
+ * Get list of visible metrics for a given quarter
+ * Q1: 4 metrics (Team, CEO, Self-Serve, Enterprise)
+ * Q2+: 6 metrics (add CTO, Tech Debt)
+ */
+export function getVisibleMetrics(quarter: number): MetricKey[] {
+  const baseMetrics: MetricKey[] = [
+    "team_sentiment",
+    "ceo_sentiment",
+    "self_serve_growth",
+    "enterprise_growth"
+  ];
+
+  if (quarter >= 2) {
+    return [...baseMetrics, "cto_sentiment", "tech_debt"];
+  }
+
+  return baseMetrics;
+}
+
+export function computeEffectiveCapacity(
+  metrics: MetricsState,
+  quarter?: number,
+  sprint?: number
+): number {
   const team = metrics.team_sentiment;
   const debt = metrics.tech_debt;
   const cto = metrics.cto_sentiment;
-  let capacity = 20;
+
+  // Start with base capacity from quarter/sprint, or default to 20
+  let capacity = quarter && sprint ? getBaseCapacity(quarter, sprint) : 20;
 
   if (team > 75) capacity += 4;
   else if (team >= 50) capacity += 1;

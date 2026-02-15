@@ -13,6 +13,8 @@ import {
   computeQuarterlyReview,
   computeYearEndReview,
   rollOutcome,
+  getBacklogSize,
+  getPenaltyScale,
   type CeoFocus,
   type ProductPulse,
   type QuarterlyReview,
@@ -391,7 +393,11 @@ export async function POST(request: Request) {
   );
   const effectiveCapacity =
     sprint.effective_capacity ??
-    computeEffectiveCapacity(game.metrics_state as MetricsState);
+    computeEffectiveCapacity(
+      game.metrics_state as MetricsState,
+      currentQuarter,
+      currentSprint
+    );
   const maxCapacity = Math.floor(effectiveCapacity * 1.25);
 
   if (totalEffort > maxCapacity) {
@@ -470,21 +476,26 @@ export async function POST(request: Request) {
     (ticket) => ticket.outcome === "catastrophe"
   );
 
+  // Get penalty scale for this quarter/sprint (reduced in Q1S1, harsh in Q3-Q4)
+  const penaltyScale = getPenaltyScale(currentQuarter, currentSprint);
+
   if (isOverbooked) {
-    const penalty = Math.min(
+    const basePenalty = Math.min(
       8,
       Math.max(2, Math.round(2 + 6 * overbookFraction * overbookFraction))
     );
+    const penalty = Math.round(basePenalty * penaltyScale);
     updatedMetrics.team_sentiment = clampMetric(
       updatedMetrics.team_sentiment - penalty
     );
     metricDeltas.team_sentiment = (metricDeltas.team_sentiment ?? 0) - penalty;
 
     if (failureRate > 0.5) {
-      const extraPenalty = Math.min(
+      const baseExtraPenalty = Math.min(
         5,
         Math.max(2, Math.round(2 + 3 * overbookFraction))
       );
+      const extraPenalty = Math.round(baseExtraPenalty * penaltyScale);
       updatedMetrics.team_sentiment = clampMetric(
         updatedMetrics.team_sentiment - extraPenalty
       );
@@ -527,14 +538,17 @@ export async function POST(request: Request) {
 
   if (failureRate >= 0.5) {
     // If significantly underbooked, reduce penalties (they planned well, just got unlucky)
-    const penaltyScale = isUnderbooked && underbookFraction > 0.1
+    const underbookAdjustment = isUnderbooked && underbookFraction > 0.1
       ? Math.max(0.5, 1 - underbookFraction)
       : 1.0;
 
-    applyMetricDelta("team_sentiment", Math.round(-4 * penaltyScale));
-    applyMetricDelta("ceo_sentiment", Math.round(-3 * penaltyScale));
-    applyMetricDelta("sales_sentiment", Math.round(-2 * penaltyScale));
-    applyMetricDelta("cto_sentiment", Math.round(-2 * penaltyScale));
+    // Combine underbook adjustment with quarter/sprint penalty scale
+    const combinedScale = underbookAdjustment * penaltyScale;
+
+    applyMetricDelta("team_sentiment", Math.round(-4 * combinedScale));
+    applyMetricDelta("ceo_sentiment", Math.round(-3 * combinedScale));
+    applyMetricDelta("sales_sentiment", Math.round(-2 * combinedScale));
+    applyMetricDelta("cto_sentiment", Math.round(-2 * combinedScale));
   } else if (clearPartialRate >= 0.75 && failureRate < 0.25) {
     applyMetricDelta("team_sentiment", 2);
     applyMetricDelta("ceo_sentiment", 2);
@@ -1140,11 +1154,12 @@ export async function POST(request: Request) {
     if (existing) {
       nextSprint = existing;
     } else {
+      const nextBacklogSize = getBacklogSize(nextQuarter, nextSprintNumber);
       let backlog = generateBacklog(
         ticketTemplates,
         updatedMetrics,
         rng,
-        rng.int(15, 18)
+        nextBacklogSize
       );
       const forcedTicketEntries = eventsLog.filter(
         (entry) =>
@@ -1238,7 +1253,7 @@ export async function POST(request: Request) {
       }
 
       const rawCapacity =
-        computeEffectiveCapacity(updatedMetrics) + capacityDelta;
+        computeEffectiveCapacity(updatedMetrics, nextQuarter, nextSprintNumber) + capacityDelta;
       const nextCapacity = Math.max(5, rawCapacity);
 
       // Death spiral check: if capacity is critically low, fire the PM immediately

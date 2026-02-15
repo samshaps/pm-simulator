@@ -615,24 +615,34 @@ export default function SprintRetro() {
             <>
               <div className={styles.sectionLabel} style={{ marginTop: '24px' }}>Performance</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {['team_sentiment', 'ceo_sentiment', 'self_serve_growth', 'enterprise_growth'].map(metricKey => {
-                  const currentValue = retroData.game.metrics_state?.[metricKey] ?? 50;
-                  const delta = retroData.retro.metric_deltas[metricKey] ?? 0;
-                  const preview = getMetricPreviewRange(metricKey, currentValue, delta);
+                {/* Q1: Show 4 metrics (Team, CEO, Self-Serve, Enterprise) */}
+                {/* Q2+: Show all 6 metrics (add CTO and Tech Debt) */}
+                {(() => {
+                  const baseMetrics = ['team_sentiment', 'ceo_sentiment', 'self_serve_growth', 'enterprise_growth'];
+                  const q2Metrics = ['cto_sentiment', 'tech_debt'];
+                  const visibleMetrics = retroData.game.current_quarter >= 2
+                    ? [...baseMetrics, ...q2Metrics]
+                    : baseMetrics;
 
-                  return (
-                    <MetricBarWithPreview
-                      key={metricKey}
-                      name={metricNameMap[metricKey] || metricKey}
-                      currentValue={currentValue}
-                      previewMin={preview.min}
-                      previewMax={preview.max}
-                      isPositiveImpact={preview.isPositive}
-                      showDangerZone={metricKey.includes('sentiment')}
-                      delta={animState.phase === 'complete' ? delta : undefined}
-                    />
-                  );
-                })}
+                  return visibleMetrics.map(metricKey => {
+                    const currentValue = retroData.game.metrics_state?.[metricKey] ?? 50;
+                    const delta = retroData.retro.metric_deltas[metricKey] ?? 0;
+                    const preview = getMetricPreviewRange(metricKey, currentValue, delta);
+
+                    return (
+                      <MetricBarWithPreview
+                        key={metricKey}
+                        name={metricNameMap[metricKey] || metricKey}
+                        currentValue={currentValue}
+                        previewMin={preview.min}
+                        previewMax={preview.max}
+                        isPositiveImpact={preview.isPositive}
+                        showDangerZone={metricKey.includes('sentiment') || metricKey === 'tech_debt'}
+                        delta={animState.phase === 'complete' ? delta : undefined}
+                      />
+                    );
+                  });
+                })()}
               </div>
             </>
           )}
