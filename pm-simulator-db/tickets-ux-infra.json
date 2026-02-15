@@ -3,7 +3,7 @@
     "id": "ux_001",
     "title": "Accessibility Audit Phase 1",
     "description": "WCAG 2.1 AA compliance review of core user flows — the audit nobody requested until legal did.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 3,
     "primary_metric": "nps",
     "primary_impact": {
@@ -41,7 +41,7 @@
     "id": "ux_002",
     "title": "Mobile Responsive Fixes",
     "description": "Fix layout breaks on viewports 375px and below, because it turns out people still use phones to do things.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "nps",
     "primary_impact": {
@@ -79,7 +79,7 @@
     "id": "ux_003",
     "title": "Loading State Clarity",
     "description": "Replace vague spinners with contextual loading messages and skeleton screens so users know the app is working, not frozen.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 3,
     "primary_metric": "nps",
     "primary_impact": {
@@ -117,7 +117,7 @@
     "id": "ux_004",
     "title": "Error Messages Rewrite",
     "description": "Replace cryptic error strings with messages that actually help users instead of scaring them.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "nps",
     "primary_impact": {
@@ -155,7 +155,7 @@
     "id": "ux_005",
     "title": "Color Contrast Audit",
     "description": "Design and implement a responsive, modular dashboard that works on every viewport and doesn't make designers cry.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 3,
     "primary_metric": "nps",
     "primary_impact": {
@@ -193,7 +193,7 @@
     "id": "ux_006",
     "title": "Keyboard Navigation Improvements",
     "description": "Implement proper tab order, focus indicators, and keyboard shortcuts so the product is usable without a mouse.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "nps",
     "primary_impact": {
@@ -231,7 +231,7 @@
     "id": "ux_007",
     "title": "Settings Page Redesign",
     "description": "Consolidate five different upload flows into one consistent drag-and-drop experience with progress indicators.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "nps",
     "primary_impact": {
@@ -269,7 +269,7 @@
     "id": "ux_008",
     "title": "Empty State Design System",
     "description": "Create consistent messaging and illustrations for blank pages, zero-result searches, and no-data scenarios.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 3,
     "primary_metric": "nps",
     "primary_impact": {
@@ -307,7 +307,7 @@
     "id": "ux_009",
     "title": "Onboarding Tooltip Pass",
     "description": "Audit and refresh contextual tooltips for first-time feature discovery — standardize tone, timing, and the art of not being annoying.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 3,
     "primary_metric": "nps",
     "primary_impact": {
@@ -345,7 +345,7 @@
     "id": "ux_010",
     "title": "Search UX Overhaul",
     "description": "Add autocomplete, result previews, filter chips, and fuzzy matching to search so it actually helps people find things.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "nps",
     "primary_impact": {
@@ -383,7 +383,7 @@
     "id": "ux_011",
     "title": "Form Validation Redesign",
     "description": "Move validation to real-time inline feedback instead of submit-time walls and add success states for completed fields.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "nps",
     "primary_impact": {
@@ -421,7 +421,7 @@
     "id": "ux_012",
     "title": "Dark Mode Implementation",
     "description": "Implement dark mode with system preference detection, user toggle, and WCAG-compliant colors in both themes.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "nps",
     "primary_impact": {
@@ -459,7 +459,7 @@
     "id": "ux_013",
     "title": "Notification Center Redesign",
     "description": "Consolidate notifications from multiple sources into a unified center and add filtering by type and priority.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "nps",
     "primary_impact": {
@@ -497,7 +497,7 @@
     "id": "ux_014",
     "title": "Page Transition Animations",
     "description": "Add smooth page transition animations that respect prefers-reduced-motion, because polish matters even if nobody can prove it in a metric.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 3,
     "primary_metric": "nps",
     "primary_impact": {
@@ -526,7 +526,7 @@
     "id": "ux_015",
     "title": "Data Table Redesign",
     "description": "Improve sortable columns, add column visibility toggle, implement sticky headers.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "nps",
     "primary_impact": {
@@ -564,7 +564,7 @@
     "id": "ux_016",
     "title": "Empty State Microcopy",
     "description": "Rewrite empty states with clear next steps and example data — tiny effort, much less confusion.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 2,
     "primary_metric": "nps",
     "primary_impact": {
@@ -602,7 +602,7 @@
     "id": "inf_001",
     "title": "CDN Migration Plan",
     "description": "Migrate static assets from self-hosted servers to a global CDN with proper cache headers and versioning.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -640,7 +640,7 @@
     "id": "inf_002",
     "title": "Auto-Scaling Configuration",
     "description": "Set up horizontal pod autoscaling based on CPU and memory thresholds, with burst limits and cooldown periods configured.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -678,7 +678,7 @@
     "id": "inf_003",
     "title": "Database Read Replicas",
     "description": "Deploy database read replicas for reporting and analytics queries so the primary stops sweating during dashboard refreshes.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -716,7 +716,7 @@
     "id": "inf_004",
     "title": "Disaster Recovery Testing",
     "description": "Run monthly disaster recovery drills simulating complete region failure — test restores, failover, and RTO/RPO metrics before you need them for real.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -754,7 +754,7 @@
     "id": "inf_005",
     "title": "Load Balancer Optimization",
     "description": "Tune load balancer connection limits, timeouts, and health checks, and implement connection draining for graceful shutdowns.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -792,7 +792,7 @@
     "id": "inf_006",
     "title": "Log Aggregation Pipeline",
     "description": "Centralize logs from all services into a structured logging platform so debugging doesn't require checking five different systems.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -830,7 +830,7 @@
     "id": "inf_007",
     "title": "Container Orchestration Migration",
     "description": "Migrate from manual container management to Kubernetes — stateful sets, config maps, persistent volumes, the whole party.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 7,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -868,7 +868,7 @@
     "id": "inf_008",
     "title": "Blue-Green Deployment Setup",
     "description": "Implement blue-green deployments for zero-downtime releases with automated traffic switching and rollback.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -906,7 +906,7 @@
     "id": "inf_009",
     "title": "Service Mesh Implementation",
     "description": "Deploy a service mesh for inter-service communication, circuit breaking, and observability — start with canary rollout to 20% of traffic.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -944,7 +944,7 @@
     "id": "inf_010",
     "title": "API Gateway Deployment",
     "description": "Deploy a centralized API gateway for routing, rate limiting, and authentication to replace the current chaos of direct service endpoints.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -982,7 +982,7 @@
     "id": "inf_011",
     "title": "Distributed Caching Layer",
     "description": "Deploy a Redis cluster for distributed caching with a cache invalidation strategy that someone has actually thought through.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1020,7 +1020,7 @@
     "id": "inf_012",
     "title": "Observability Platform Upgrade",
     "description": "Implement distributed tracing across all services and upgrade metrics platform with better cardinality handling.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1058,7 +1058,7 @@
     "id": "inf_013",
     "title": "Backup Automation Enhancement",
     "description": "Automate incremental backups with retention policies and test weekly restores to staging, because untested backups are just hope.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1096,7 +1096,7 @@
     "id": "inf_014",
     "title": "Performance Profiling Tools",
     "description": "Set up continuous CPU and memory profiling in production so performance issues are visible before customers report them.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1134,7 +1134,7 @@
     "id": "inf_015",
     "title": "Network Security Audit",
     "description": "Audit firewall rules, network segmentation, and ingress policies, then implement pod-to-pod network policies for the parts that are currently wide open.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1172,7 +1172,7 @@
     "id": "inf_016",
     "title": "Alert Deduping Rules",
     "description": "Add alert deduplication and noise-suppression rules for on-call — low effort, immediate sanity gains for the humans holding pagers.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 2,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1210,7 +1210,7 @@
     "id": "ux_017",
     "title": "Keyboard Navigation Overhaul",
     "description": "The product is basically unusable without a mouse — add keyboard shortcuts and tab navigation for power users and accessibility.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "nps",
     "primary_impact": {
@@ -1257,7 +1257,7 @@
     "id": "inf_017",
     "title": "Kubernetes Migration",
     "description": "Migrate from EC2 instances to Kubernetes for better resource utilization and auto-scaling — the infrastructure team has been asking for a year.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 9,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1304,7 +1304,7 @@
     "id": "ux_018",
     "title": "Design System Documentation",
     "description": "The design system exists but documentation is scattered across Figma, Notion, and one designer's head — centralize it before they quit.",
-    "category": "ux_improvement",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "team_sentiment",
     "primary_impact": {
@@ -1342,7 +1342,7 @@
     "id": "inf_018",
     "title": "Real-Time Monitoring Dashboard",
     "description": "Build a real-time ops dashboard showing system health, API latency, and error rates — currently we find out about outages from Twitter.",
-    "category": "infrastructure",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "cto_sentiment",
     "primary_impact": {

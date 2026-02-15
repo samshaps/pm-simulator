@@ -3,7 +3,7 @@
     "id": "ent_001",
     "title": "SSO Integration",
     "description": "Implement SAML/OIDC-based single sign-on for enterprise customers — sales has three deals pending on this, so no pressure.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -50,7 +50,7 @@
     "id": "ent_002",
     "title": "SCIM User Provisioning",
     "description": "Build a SCIM 2.0 endpoint for automated user provisioning and deprovisioning — three late-stage prospects are literally waiting.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -97,7 +97,7 @@
     "id": "ent_003",
     "title": "Role-Based Access Control",
     "description": "Design and implement granular role-based permissions (admin, viewer, editor, auditor, plus custom roles) so access control stops being a spreadsheet.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -144,7 +144,7 @@
     "id": "ent_004",
     "title": "Comprehensive Audit Logging",
     "description": "Implement detailed audit logs for all entity changes, with filtering, export, and tamper-proof storage.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -191,7 +191,7 @@
     "id": "ent_005",
     "title": "Custom Branding & White-Label",
     "description": "Allow enterprise customers to customize UI colors, logos, email templates, and domain branding so it looks like they built it themselves.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -238,7 +238,7 @@
     "id": "ent_006",
     "title": "Data Residency Compliance",
     "description": "Support data residency requirements so customer data stays within specific geographic regions (EU, US, APAC) — because sovereignty is not optional.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 8,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -285,7 +285,7 @@
     "id": "ent_007",
     "title": "Enterprise SLA Dashboard",
     "description": "Build a customer-facing dashboard showing uptime, incident response times, and SLA metrics in real-time — the transparency no one asked for until procurement did.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -332,7 +332,7 @@
     "id": "ent_008",
     "title": "Enterprise Admin Console",
     "description": "Build a dedicated admin portal for enterprise customers to manage users, audit logs, integrations, and security settings from one place instead of six.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -379,7 +379,7 @@
     "id": "ent_009",
     "title": "Bulk User Management",
     "description": "Enable bulk import and export of users, data, and configs via CSV and API so enterprise onboarding doesn't require a full-time coordinator.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -426,7 +426,7 @@
     "id": "ent_010",
     "title": "Custom API Rate Limits",
     "description": "Let enterprise customers request higher API rate limits with monitoring and alerts, because apparently the default limits are 'insulting.'",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -473,7 +473,7 @@
     "id": "ent_011",
     "title": "Dedicated Support Portal",
     "description": "Build a customer-facing portal where enterprise customers can submit, track, and escalate support tickets without emailing anyone.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -520,7 +520,7 @@
     "id": "ent_012",
     "title": "SOC 2 Compliance Mode",
     "description": "Implement compliance features for SOC 2 Type II attestation — audit trails, access controls, the works — because enterprise deals die in procurement.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 8,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -567,7 +567,7 @@
     "id": "ent_013",
     "title": "HIPAA Compliance Features",
     "description": "Build HIPAA-required features: PHI encryption, access logging, retention policies, and breach notification, because healthcare customers do not negotiate on compliance.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 8,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -614,7 +614,7 @@
     "id": "ent_014",
     "title": "Custom Reporting Engine",
     "description": "Build flexible reporting allowing enterprise customers to create custom dashboards and exports without engineering support.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -661,7 +661,7 @@
     "id": "ent_015",
     "title": "Advanced Permission Model",
     "description": "Implement end-to-end encryption for data at rest and in transit — because 'we take security seriously' should mean something.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -708,7 +708,7 @@
     "id": "ent_016",
     "title": "Multi-Tenancy Isolation",
     "description": "Isolate enterprise tenants with guaranteed data separation, separate rate limits, and independent compliance posture.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 8,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -755,7 +755,7 @@
     "id": "ent_017",
     "title": "Contract Management Integration",
     "description": "Support real-time streaming via webhooks and server-sent events so enterprise integrations can stop polling us every 30 seconds.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -802,7 +802,7 @@
     "id": "ent_018",
     "title": "Custom Data Retention",
     "description": "Let enterprise customers define custom data retention policies (delete or archive after N days) so their legal teams can sleep at night.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -849,7 +849,7 @@
     "id": "ent_019",
     "title": "Enterprise Onboarding Wizard",
     "description": "Build a guided, multi-step onboarding wizard for enterprise customers covering setup, provisioning, and integration config — handholding, but make it scalable.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -896,7 +896,7 @@
     "id": "ent_020",
     "title": "Sandbox Environments",
     "description": "Provide customers with isolated sandbox instances for testing and development before deploying to production.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -943,7 +943,7 @@
     "id": "ent_021",
     "title": "Approval Workflows",
     "description": "Implement configurable approval workflows for sensitive operations (data export, user access grants, contract changes).",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -990,7 +990,7 @@
     "id": "ent_022",
     "title": "Enterprise Support SLA Tiers",
     "description": "Define tiered support SLAs for enterprise customers (critical: 1hr, high: 4hr, normal: 24hr) so expectations are contractual instead of aspirational.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -1037,7 +1037,7 @@
     "id": "ent_023",
     "title": "Security Questionnaire Export",
     "description": "Generate a standard security questionnaire export (hosting, encryption, access controls) for procurement reviews.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 3,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -1084,7 +1084,7 @@
     "id": "ent_024",
     "title": "Advanced Audit Logging",
     "description": "Build comprehensive audit logging for all user actions with tamper-proof storage — enterprise compliance teams live for this stuff.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -1131,7 +1131,7 @@
     "id": "ent_025",
     "title": "Role-Based Access Control v2",
     "description": "Current RBAC is binary (admin or user) — enterprise customers need granular permissions with custom roles and inheritance.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 8,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -1178,7 +1178,7 @@
     "id": "ent_026",
     "title": "Multi-Region Data Residency",
     "description": "Enterprise customers in the EU and APAC need data stored in-region for compliance — AWS bills are about to get interesting.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 9,
     "primary_metric": "enterprise_growth",
     "primary_impact": {

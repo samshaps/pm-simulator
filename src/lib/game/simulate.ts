@@ -91,26 +91,26 @@ export function createRng(seed: number): Rng {
 
 /**
  * Get the base capacity for a given quarter and sprint (before metric modifiers)
- * Q1S1: 12, Q1S2: 15, Q1S3: 18, Q2+: 21
+ * Q1S1: 9, Q1S2: 12, Q1S3: 15, Q2+: 21
  */
 export function getBaseCapacity(quarter: number, sprint: number): number {
   if (quarter === 1) {
-    if (sprint === 1) return 12;
-    if (sprint === 2) return 15;
-    if (sprint === 3) return 18;
+    if (sprint === 1) return 9;
+    if (sprint === 2) return 12;
+    if (sprint === 3) return 15;
   }
   return 21; // Q2-Q4: full capacity
 }
 
 /**
  * Get the target backlog size for a given quarter and sprint
- * Q1S1: 6, Q1S2: 9, Q1S3: 12, Q2: 15, Q3-Q4: 18
+ * Q1S1: 3, Q1S2: 6, Q1S3: 9, Q2: 15, Q3-Q4: 18
  */
 export function getBacklogSize(quarter: number, sprint: number): number {
   if (quarter === 1) {
-    if (sprint === 1) return 6;
-    if (sprint === 2) return 9;
-    if (sprint === 3) return 12;
+    if (sprint === 1) return 3;
+    if (sprint === 2) return 6;
+    if (sprint === 3) return 9;
   }
   if (quarter === 2) return 15;
   return 18; // Q3-Q4: maximum pressure
@@ -130,22 +130,28 @@ export function getPenaltyScale(quarter: number, sprint: number): number {
 
 /**
  * Get list of visible metrics for a given quarter
- * Q1: 4 metrics (Team, CEO, Self-Serve, Enterprise)
- * Q2+: 6 metrics (add CTO, Tech Debt)
+ * Q1: 3 metrics (Team, Self-Serve, Enterprise)
+ * Q2+: 6 metrics (add CEO, CTO, Tech Debt)
  */
 export function getVisibleMetrics(quarter: number): MetricKey[] {
-  const baseMetrics: MetricKey[] = [
+  // Q1: Only 3 metrics (remove CEO sentiment)
+  if (quarter === 1) {
+    return [
+      "team_sentiment",
+      "self_serve_growth",
+      "enterprise_growth"
+    ];
+  }
+
+  // Q2+: All 6 metrics
+  return [
     "team_sentiment",
     "ceo_sentiment",
     "self_serve_growth",
-    "enterprise_growth"
+    "enterprise_growth",
+    "cto_sentiment",
+    "tech_debt"
   ];
-
-  if (quarter >= 2) {
-    return [...baseMetrics, "cto_sentiment", "tech_debt"];
-  }
-
-  return baseMetrics;
 }
 
 export function computeEffectiveCapacity(
@@ -196,17 +202,15 @@ export function selectCeoFocus(metrics: MetricsState, rng: Rng): CeoFocus {
 }
 
 export function focusToCategory(focus: CeoFocus): string {
-  if (focus === "enterprise") return "enterprise_feature";
-  if (focus === "tech_debt") return "tech_debt_reduction";
-  return "self_serve_feature";
+  if (focus === "enterprise") return "enterprise";
+  if (focus === "tech_debt") return "tech_debt";
+  return "self_serve";
 }
 
 export function isCeoAlignedCategory(
   focus: CeoFocus,
   category: string
 ): boolean {
-  if (focus === "enterprise" && category === "sales_request") return true;
-  if (focus === "tech_debt" && category === "infrastructure") return true;
   return category === focusToCategory(focus);
 }
 
@@ -492,10 +496,22 @@ export function generateBacklog(
   templates: TicketTemplate[],
   metrics: MetricsState,
   rng: Rng,
-  count: number
+  count: number,
+  quarter: number = 1
 ): TicketInstance[] {
+  // Filter categories for Q1: only growth-focused tickets (self-serve and enterprise)
+  const allowedQ1Categories = new Set([
+    "self_serve",
+    "enterprise"
+  ]);
+
+  // Apply Q1 filtering if in quarter 1
+  const filteredTemplates = quarter === 1
+    ? templates.filter(t => allowedQ1Categories.has(t.category))
+    : templates;
+
   const templatesByCategory = new Map<string, TicketTemplate[]>();
-  for (const template of templates) {
+  for (const template of filteredTemplates) {
     const list = templatesByCategory.get(template.category) ?? [];
     list.push(template);
     templatesByCategory.set(template.category, list);
@@ -511,32 +527,32 @@ export function generateBacklog(
 
   if (metrics.sales_sentiment < 45) {
     weights.set(
-      "sales_request",
-      (weights.get("sales_request") ?? 0) + 2
+      "enterprise",
+      (weights.get("enterprise") ?? 0) + 2
     );
   }
   if (metrics.tech_debt > 55) {
     weights.set(
-      "tech_debt_reduction",
-      (weights.get("tech_debt_reduction") ?? 0) + 2
+      "tech_debt",
+      (weights.get("tech_debt") ?? 0) + 2
     );
   }
   if (metrics.enterprise_growth < 45) {
     weights.set(
-      "enterprise_feature",
-      (weights.get("enterprise_feature") ?? 0) + 2
+      "enterprise",
+      (weights.get("enterprise") ?? 0) + 2
     );
   }
   if (metrics.self_serve_growth < 45) {
     weights.set(
-      "self_serve_feature",
-      (weights.get("self_serve_feature") ?? 0) + 2
+      "self_serve",
+      (weights.get("self_serve") ?? 0) + 2
     );
   }
   if (metrics.nps < 45) {
     weights.set(
-      "ux_improvement",
-      (weights.get("ux_improvement") ?? 0) + 1
+      "self_serve",
+      (weights.get("self_serve") ?? 0) + 1
     );
   }
 
@@ -555,19 +571,19 @@ export function generateBacklog(
 
   const guaranteeCategories: string[] = [];
   if (metrics.self_serve_growth < 45) {
-    guaranteeCategories.push("self_serve_feature");
+    guaranteeCategories.push("self_serve");
   }
   if (metrics.enterprise_growth < 45) {
-    guaranteeCategories.push("enterprise_feature");
+    guaranteeCategories.push("enterprise");
   }
   if (metrics.tech_debt > 55) {
-    guaranteeCategories.push("tech_debt_reduction");
+    guaranteeCategories.push("tech_debt");
   }
   if (metrics.sales_sentiment < 40) {
-    guaranteeCategories.push("sales_request");
+    guaranteeCategories.push("enterprise");
   }
   if (metrics.nps < 45) {
-    guaranteeCategories.push("ux_improvement");
+    guaranteeCategories.push("self_serve");
   }
 
   const pickUniqueFromCategory = (category: string) => {
@@ -783,13 +799,9 @@ export function rollOutcome(rng: Rng, context: OutcomeContext): Outcome {
 }
 
 const stakeholderByCategory: Record<string, MetricKey> = {
-  self_serve_feature: "ceo_sentiment",
-  enterprise_feature: "sales_sentiment",
-  tech_debt_reduction: "cto_sentiment",
-  ux_improvement: "team_sentiment",
-  infrastructure: "cto_sentiment",
-  monetization: "ceo_sentiment",
-  sales_request: "sales_sentiment",
+  self_serve: "ceo_sentiment",
+  enterprise: "sales_sentiment",
+  tech_debt: "cto_sentiment",
   moonshot: "ceo_sentiment"
 };
 

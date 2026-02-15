@@ -84,13 +84,9 @@ export default function TicketTile({
   // Map category to CSS class
   const getCategoryClass = (cat: string): string => {
     const categoryToClass: Record<string, string> = {
-      'self_serve_feature': 'catSelfServe',
-      'enterprise_feature': 'catEnterprise',
-      'sales_request': 'catSales',
-      'tech_debt_reduction': 'catTechDebt',
-      'ux_improvement': 'catUx',
-      'monetization': 'catMonetization',
-      'infrastructure': 'catInfra',
+      'self_serve': 'catSelfServe',
+      'enterprise': 'catEnterprise',
+      'tech_debt': 'catTechDebt',
       'moonshot': 'catMoonshot'
     };
     return categoryToClass[cat] || '';

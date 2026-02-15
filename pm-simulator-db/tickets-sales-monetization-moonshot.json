@@ -3,7 +3,7 @@
     "id": "sr_001",
     "title": "Custom Reporting for Acme",
     "description": "Acme's procurement team needs quarterly reports in XLSX format with their specific KPI layout.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -50,7 +50,7 @@
     "id": "sr_002",
     "title": "Demo Environment Isolation",
     "description": "Three enterprise prospects want to see 'clean' data\u2014not their competitors' workflows in the shared demo.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -97,7 +97,7 @@
     "id": "sr_003",
     "title": "Salesforce Integration",
     "description": "TechCorp's entire workflow lives in Salesforce and they need real-time sync or they won't move.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -144,7 +144,7 @@
     "id": "sr_004",
     "title": "CSV Export for Apex",
     "description": "Apex Finance needs CSV export for their legacy reporting tool, which nobody has touched since the Obama administration.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -191,7 +191,7 @@
     "id": "sr_005",
     "title": "Dedicated Success Portal",
     "description": "GlobalTech (800-seat enterprise) demands a private portal for onboarding assets, documentation, and training videos.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -238,7 +238,7 @@
     "id": "sr_006",
     "title": "Custom SLA Monitoring",
     "description": "BigBank's legal team will only sign if we provide real-time SLA alerts and breach reporting.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -285,7 +285,7 @@
     "id": "sr_007",
     "title": "White-Glove Onboarding Flow",
     "description": "Citadel Fund needs a bespoke, guided setup with pre-filled configurations and handoff to a dedicated success manager.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -332,7 +332,7 @@
     "id": "sr_008",
     "title": "Competitor Displacement Feature",
     "description": "Vertex has been using a competitor for two years and needs a migration tool that makes switching painless \u2014 or at least less painful than staying.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 8,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -379,7 +379,7 @@
     "id": "sr_009",
     "title": "Compliance Audit Export",
     "description": "Heritage Insurance needs SOC 2 audit trail exports in a specific format their auditors require.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -426,7 +426,7 @@
     "id": "sr_010",
     "title": "Data Migration Toolkit",
     "description": "Three pending deals (each $250k+) are all requesting data migration from legacy systems.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -473,7 +473,7 @@
     "id": "sr_011",
     "title": "Priority Support Tier",
     "description": "Meridian Health is a 1000-seat account and they want 2-hour response SLA and a dedicated support contact.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -520,7 +520,7 @@
     "id": "sr_012",
     "title": "Webhook Customization",
     "description": "Logistics Co needs custom webhook payloads and retry logic that doesn't exist in the product yet, and they're not subtle about it.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -567,7 +567,7 @@
     "id": "sr_013",
     "title": "Partnership API Access",
     "description": "DataFlow Partners wants raw API access to build their own integration layer on top of you.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -614,7 +614,7 @@
     "id": "sr_014",
     "title": "Renewal Automation Workflows",
     "description": "Synapse Corp wants automated renewal workflows so their procurement team stops losing track of contract dates in email threads.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -661,7 +661,7 @@
     "id": "sr_015",
     "title": "Account Hierarchy Modeling",
     "description": "Constellation Group operates 47 subsidiary companies and needs account hierarchy modeling that can handle the org chart from hell.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 8,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -708,7 +708,7 @@
     "id": "sr_016",
     "title": "Territory Mapping Module",
     "description": "Regional distributors need to map customer territories and prevent overlapping assignments.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 5,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -755,7 +755,7 @@
     "id": "sr_017",
     "title": "Champion Tracking System",
     "description": "Enterprise buyers want to track internal champions and stakeholders within their organization.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -802,7 +802,7 @@
     "id": "sr_018",
     "title": "Custom Billing Ledger",
     "description": "Zenith Financial Services needs a custom billing ledger that reconciles with their own accounting system.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 7,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -849,7 +849,7 @@
     "id": "sr_019",
     "title": "One-Page ROI Summary",
     "description": "Generate a one-page ROI summary PDF with customer metrics.",
-    "category": "sales_request",
+    "category": "enterprise",
     "effort": 3,
     "primary_metric": "sales_sentiment",
     "primary_impact": {
@@ -896,7 +896,7 @@
     "id": "mon_001",
     "title": "Usage-Based Pricing Model",
     "description": "Move from seat-based to usage-based pricing to capture value from power users and finance projects 23% ARR uplift.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 6,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -943,7 +943,7 @@
     "id": "mon_002",
     "title": "Seat-Based Licensing Tiers",
     "description": "Introduce per-seat pricing with feature differentiation: Enterprise gets everything, Pro gets most things, Basic gets the idea.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -981,7 +981,7 @@
     "id": "mon_003",
     "title": "Premium Feature Gating",
     "description": "Gate advanced features (workflows, integrations, reporting) behind a Premium tier and see who blinks first.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -1019,7 +1019,7 @@
     "id": "mon_004",
     "title": "In-App Upsell Prompts",
     "description": "Show contextual upsell prompts when users hit free-tier limits \u2014 estimated 8-12% conversion if the timing doesn't make them hate us.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -1057,7 +1057,7 @@
     "id": "mon_005",
     "title": "Annual Plan Discount Optimization",
     "description": "Test annual prepay discounts (5%, 10%, 15%, 20%) to drive upfront revenue and reduce churn.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -1095,7 +1095,7 @@
     "id": "mon_006",
     "title": "Premium Support Tier",
     "description": "Offer dedicated support, Slack integration, and priority queuing for $500/month add-on and targeting mid-market.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -1133,7 +1133,7 @@
     "id": "mon_007",
     "title": "Add-On Marketplace",
     "description": "Launch a partner add-on marketplace (integrations, templates, extensions) and revenue share 30/70 split.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 6,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -1171,7 +1171,7 @@
     "id": "mon_008",
     "title": "Consumption Metering System",
     "description": "Build consumption metering to track 10+ dimensions (API calls, storage, compute minutes, etc.) so billing reflects actual usage.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 7,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -1209,7 +1209,7 @@
     "id": "mon_009",
     "title": "Overage Charges Implementation",
     "description": "Add overage charges when users exceed plan limits (API calls, storage, users) and expects 8-12% of accounts will trigger overages.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -1247,7 +1247,7 @@
     "id": "mon_010",
     "title": "Enterprise Pricing Restructure",
     "description": "Move enterprise from per-seat to consumption-based pricing with negotiated minimums \u2014 simpler for sales, scarier for customers.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -1285,7 +1285,7 @@
     "id": "mon_011",
     "title": "Payment Method Expansion",
     "description": "Add wire transfers, ACH, invoice billing, and crypto payments so enterprise and international buyers stop bouncing at checkout.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -1323,7 +1323,7 @@
     "id": "mon_012",
     "title": "Dunning Flow Optimization",
     "description": "Improve failed payment recovery with smart retry logic, email campaigns, and alternative payment methods.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -1361,7 +1361,7 @@
     "id": "mon_013",
     "title": "Trial-to-Paid Conversion Optimization",
     "description": "Redesign the trial experience with better onboarding, feature highlights, and well-timed purchase prompts.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -1399,7 +1399,7 @@
     "id": "mon_014",
     "title": "Pricing Page Redesign",
     "description": "Redesign pricing page for clarity, add comparison tables, calculators, and social proof and current pricing page conversion is 12%.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -1437,7 +1437,7 @@
     "id": "mon_015",
     "title": "Annual Plan Nudge",
     "description": "Add an in-app and email nudge to upgrade to annual billing with a small discount and low effort, should lift cash flow.",
-    "category": "monetization",
+    "category": "self_serve",
     "effort": 3,
     "primary_metric": "self_serve_growth",
     "primary_impact": {

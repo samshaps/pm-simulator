@@ -87,20 +87,16 @@ interface GameState {
 }
 
 const categoryToClass: Record<string, string> = {
-  'self_serve_feature': 'catSelfServe',
-  'enterprise_feature': 'catEnterprise',
-  'sales_request': 'catSales',
-  'tech_debt_reduction': 'catTechDebt',
-  'ux_improvement': 'catUx',
-  'monetization': 'catMonetization',
-  'infrastructure': 'catInfra',
+  'self_serve': 'catSelfServe',
+  'enterprise': 'catEnterprise',
+  'tech_debt': 'catTechDebt',
   'moonshot': 'catMoonshot'
 };
 
 const ceoFocusToCategory: Record<string, string> = {
-  'self_serve': 'self_serve_feature',
-  'enterprise': 'enterprise_feature',
-  'tech_debt': 'tech_debt_reduction'
+  'self_serve': 'self_serve',
+  'enterprise': 'enterprise',
+  'tech_debt': 'tech_debt'
 };
 
 const loadingMessages = [
@@ -313,13 +309,7 @@ export default function SprintPlanning() {
 
   // Check if ticket is CEO-aligned
   const isTicketCEOAligned = (ticketCategory: string) => {
-    // Sales requests align with enterprise focus
-    if (gameState.quarter.ceo_focus === 'enterprise' && ticketCategory === 'sales_request') {
-      return true;
-    }
-    if (gameState.quarter.ceo_focus === 'tech_debt' && ticketCategory === 'infrastructure') {
-      return true;
-    }
+    // Direct match now that categories are consolidated
     return ticketCategory === ceoFocusCategory;
   };
 
@@ -455,7 +445,7 @@ export default function SprintPlanning() {
     const isPositive = expectedImpact > 0;
 
     // Map to specific metrics based on category
-    if (ticket.category === 'self_serve_feature') {
+    if (ticket.category === 'self_serve') {
       previews.self_serve_growth = {
         min: worstCase,
         max: bestCase,
@@ -466,7 +456,7 @@ export default function SprintPlanning() {
         max: bestCase * 0.3,
         isPositive: bestCase * 0.3 > Math.abs(worstCase * 0.5)
       };
-    } else if (ticket.category === 'enterprise_feature' || ticket.category === 'sales_request') {
+    } else if (ticket.category === 'enterprise') {
       previews.enterprise_growth = {
         min: worstCase,
         max: bestCase,
@@ -477,7 +467,7 @@ export default function SprintPlanning() {
         max: bestCase * 0.5,
         isPositive: bestCase * 0.5 > Math.abs(worstCase * 0.4)
       };
-    } else if (ticket.category === 'tech_debt_reduction' || ticket.category === 'infrastructure') {
+    } else if (ticket.category === 'tech_debt') {
       // For tech debt: success reduces it, failure increases it
       previews.tech_debt = {
         min: -bestCase, // Best case: tech debt goes down
@@ -1124,8 +1114,8 @@ export default function SprintPlanning() {
 
                 return (
                   <>
-                    {/* Q1: Show 4 metrics (Team Sentiment, CEO Sentiment, Self-Serve Growth, Enterprise Growth) */}
-                    {/* Q2+: Show all 6 metrics (add CTO Sentiment and Tech Debt) */}
+                    {/* Q1: Show only 3 metrics (Team Sentiment, Self-Serve Growth, Enterprise Growth) */}
+                    {/* Q2+: Show all 6 metrics (add CEO Sentiment, CTO Sentiment, Tech Debt) */}
                     <MetricBarWithPreview
                       name="Team Sentiment"
                       currentValue={metrics.team_sentiment}
@@ -1134,14 +1124,19 @@ export default function SprintPlanning() {
                       isPositiveImpact={combinedPreviews['Team Sentiment']?.isPositive}
                       showDangerZone={true}
                     />
-                    <MetricBarWithPreview
-                      name="CEO Sentiment"
-                      currentValue={metrics.ceo_sentiment}
-                      previewMin={combinedPreviews['CEO Sentiment']?.min}
-                      previewMax={combinedPreviews['CEO Sentiment']?.max}
-                      isPositiveImpact={combinedPreviews['CEO Sentiment']?.isPositive}
-                      showDangerZone={true}
-                    />
+
+                    {/* Only show CEO Sentiment from Q2+ (removed from Q1) */}
+                    {gameState.game.current_quarter >= 2 && (
+                      <MetricBarWithPreview
+                        name="CEO Sentiment"
+                        currentValue={metrics.ceo_sentiment}
+                        previewMin={combinedPreviews['CEO Sentiment']?.min}
+                        previewMax={combinedPreviews['CEO Sentiment']?.max}
+                        isPositiveImpact={combinedPreviews['CEO Sentiment']?.isPositive}
+                        showDangerZone={true}
+                      />
+                    )}
+
                     <MetricBarWithPreview
                       name="Self-Serve Growth"
                       currentValue={metrics.self_serve_growth}
@@ -1159,7 +1154,7 @@ export default function SprintPlanning() {
                       showDangerZone={true}
                     />
 
-                    {/* Show additional metrics in Q2+ (CTO Sentiment and Tech Debt) */}
+                    {/* Show additional metrics in Q2+ (CTO Sentiment, Tech Debt) */}
                     {gameState.game.current_quarter >= 2 && (
                       <>
                         <MetricBarWithPreview

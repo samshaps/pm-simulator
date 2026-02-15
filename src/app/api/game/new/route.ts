@@ -83,7 +83,13 @@ export async function POST(request: Request) {
   const rng = createRng(newGameRecord.rng_seed);
   const ceoFocus = selectCeoFocus(newGameRecord.metrics_state, rng);
   const backlogSize = getBacklogSize(newGameRecord.current_quarter, newGameRecord.current_sprint);
-  const backlog = generateBacklog(ticketTemplates, newGameRecord.metrics_state, rng, backlogSize);
+  const backlog = generateBacklog(
+    ticketTemplates,
+    newGameRecord.metrics_state,
+    rng,
+    backlogSize,
+    newGameRecord.current_quarter
+  );
   const effectiveCapacity = computeEffectiveCapacity(
     newGameRecord.metrics_state,
     newGameRecord.current_quarter,

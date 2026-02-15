@@ -80,24 +80,16 @@ const metricNameMap: Record<string, string> = {
 };
 
 const categoryNameMap: Record<string, string> = {
-  'self_serve_feature': 'Self-Serve Feature',
-  'enterprise_feature': 'Enterprise Feature',
-  'sales_request': 'Sales Request',
-  'tech_debt_reduction': 'Tech Debt Reduction',
-  'infrastructure': 'Infrastructure',
-  'ux_improvement': 'UX Improvement',
-  'monetization': 'Monetization',
+  'self_serve': 'Self-Serve',
+  'enterprise': 'Enterprise',
+  'tech_debt': 'Tech Debt',
   'moonshot': 'Moonshot'
 };
 
 const categoryColorMap: Record<string, string> = {
-  'self_serve_feature': 'var(--green)',
-  'enterprise_feature': 'var(--amber)',
-  'sales_request': 'var(--amber)',
-  'tech_debt_reduction': 'var(--purple-light)',
-  'infrastructure': 'var(--purple-light)',
-  'ux_improvement': 'var(--blue)',
-  'monetization': 'var(--green)',
+  'self_serve': 'var(--green)',
+  'enterprise': 'var(--amber)',
+  'tech_debt': 'var(--purple-light)',
   'moonshot': 'var(--red)'
 };
 
@@ -615,14 +607,14 @@ export default function SprintRetro() {
             <>
               <div className={styles.sectionLabel} style={{ marginTop: '24px' }}>Performance</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {/* Q1: Show 4 metrics (Team, CEO, Self-Serve, Enterprise) */}
-                {/* Q2+: Show all 6 metrics (add CTO and Tech Debt) */}
+                {/* Q1: Show only 3 metrics (Team, Self-Serve, Enterprise) */}
+                {/* Q2+: Show all 6 metrics (add CEO, CTO, Tech Debt) */}
                 {(() => {
-                  const baseMetrics = ['team_sentiment', 'ceo_sentiment', 'self_serve_growth', 'enterprise_growth'];
-                  const q2Metrics = ['cto_sentiment', 'tech_debt'];
+                  const q1Metrics = ['team_sentiment', 'self_serve_growth', 'enterprise_growth'];
+                  const q2AdditionalMetrics = ['ceo_sentiment', 'cto_sentiment', 'tech_debt'];
                   const visibleMetrics = retroData.game.current_quarter >= 2
-                    ? [...baseMetrics, ...q2Metrics]
-                    : baseMetrics;
+                    ? [...q1Metrics, ...q2AdditionalMetrics]
+                    : q1Metrics;
 
                   return visibleMetrics.map(metricKey => {
                     const currentValue = retroData.game.metrics_state?.[metricKey] ?? 50;

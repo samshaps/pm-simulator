@@ -3,7 +3,7 @@
     "id": "td_001",
     "title": "Legacy Auth Service Migration",
     "description": "The authentication microservice is running on deprecated OAuth 1.0 libraries and requires vendor-specific patches to stay functional.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -50,7 +50,7 @@
     "id": "td_002",
     "title": "Payment Module Refactor",
     "description": "The payment processing code is entangled across three services with no clear separation of concerns.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -97,7 +97,7 @@
     "id": "td_003",
     "title": "Database Connection Pooling",
     "description": "The application opens a new database connection per request instead of reusing a pool, causing connection exhaustion during traffic spikes.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 3,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -135,7 +135,7 @@
     "id": "td_004",
     "title": "Upgrade ORM Version",
     "description": "The ORM library is three major versions behind, which means every dependency scan looks like a crime scene.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -182,7 +182,7 @@
     "id": "td_005",
     "title": "Add Monitoring & Alerting",
     "description": "Critical services have no visibility into resource usage or error rates until customers complain.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -229,7 +229,7 @@
     "id": "td_006",
     "title": "Improve Test Coverage",
     "description": "Test coverage is 52%, which means half the codebase is untested and ready to surprise everyone in production.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -267,7 +267,7 @@
     "id": "td_007",
     "title": "CI/CD Pipeline Optimization",
     "description": "The deployment pipeline takes 35 minutes, of which 24 minutes is unnecessary.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -314,7 +314,7 @@
     "id": "td_008",
     "title": "Dependency Version Updates",
     "description": "The dependency tree has 47 packages with known security vulnerabilities — the scan report is longer than the README.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 3,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -361,7 +361,7 @@
     "id": "td_009",
     "title": "Remove Deprecated Endpoints",
     "description": "Six API endpoints were deprecated 18 months ago and are still in production, haunting the codebase like a to-do list from a previous life.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 3,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -399,7 +399,7 @@
     "id": "td_010",
     "title": "Consolidate Logging Infrastructure",
     "description": "Logs are written to five different services (file, syslog, application DB, third-party SaaS, and slack in one engineer's DM).",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -446,7 +446,7 @@
     "id": "td_011",
     "title": "Fix N+1 Query Problem",
     "description": "The report generation query runs a database hit for each row, creating exponential query volume.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -484,7 +484,7 @@
     "id": "td_012",
     "title": "Migrate to New CDN",
     "description": "The legacy CDN is being sunset and costs are tripling — migrate before the invoice arrives.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -531,7 +531,7 @@
     "id": "td_013",
     "title": "Containerize Remaining Services",
     "description": "Three services are still running on bare VMs using custom deploy scripts that nobody fully understands.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -578,7 +578,7 @@
     "id": "td_014",
     "title": "API Versioning Cleanup",
     "description": "The API has seven versions in production, four of which are deprecated but still maintained for backward compatibility.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -625,7 +625,7 @@
     "id": "td_015",
     "title": "Cache Invalidation Refactor",
     "description": "Build a centralized feature flag service with a UI for toggling, rollout, and targeting — because everyone having their own flag system is not a system.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -663,7 +663,7 @@
     "id": "td_016",
     "title": "Remove Dead Code",
     "description": "The codebase has 8,000 lines of unreachable code from old features.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 3,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -701,7 +701,7 @@
     "id": "td_017",
     "title": "Schema Migration Tooling",
     "description": "Database migrations are applied manually and tracked in a spreadsheet maintained by one person who is on vacation.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -748,7 +748,7 @@
     "id": "td_018",
     "title": "Rate Limiter Refactor",
     "description": "Rate limiting is implemented as random backoff in client code, which is ineffective.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -795,7 +795,7 @@
     "id": "td_019",
     "title": "Session Management Overhaul",
     "description": "Session tokens live in-memory and vanish on restart, so every deploy logs out every user — Tuesday mornings are fun.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 3,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -833,7 +833,7 @@
     "id": "td_020",
     "title": "Error Handling Standardization",
     "description": "Error handling is inconsistent across services: some return stack traces, some return codes, some return nothing and hope for the best.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -880,7 +880,7 @@
     "id": "td_021",
     "title": "Secrets Management Migration",
     "description": "Secrets are scattered across environment variables and config files with no centralized management, rotation, or audit trail.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -927,7 +927,7 @@
     "id": "td_022",
     "title": "Background Job Queue Upgrade",
     "description": "The job queue runs on an outdated library with no visibility into failure rates or retry logic.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -974,7 +974,7 @@
     "id": "td_023",
     "title": "Retire Dead Feature Flags",
     "description": "Clean up stale feature flags that have been 'temporary' for over a year — low effort, immediate cognitive relief.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 2,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1021,7 +1021,7 @@
     "id": "td_024",
     "title": "Frontend Build Pipeline Modernization",
     "description": "The frontend still uses Webpack 4 and builds take 12 minutes — switching to Vite would cut that to under a minute and the team would stop complaining.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 5,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1068,7 +1068,7 @@
     "id": "td_025",
     "title": "Consolidate Duplicate Libraries",
     "description": "The codebase imports three different date libraries, two HTTP clients, and four logging frameworks — pick one and delete the rest.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 4,
     "primary_metric": "tech_debt",
     "primary_impact": {
@@ -1115,7 +1115,7 @@
     "id": "td_026",
     "title": "Mobile Web Performance Audit",
     "description": "The mobile site loads 4MB of JavaScript and takes 11 seconds on a 3G connection — this is why bounce rate is 60%.",
-    "category": "tech_debt_reduction",
+    "category": "tech_debt",
     "effort": 6,
     "primary_metric": "tech_debt",
     "primary_impact": {

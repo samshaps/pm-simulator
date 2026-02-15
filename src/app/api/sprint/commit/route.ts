@@ -64,7 +64,7 @@ const pickHijackTickets = (
       source: "sales",
       sentiment: metrics.sales_sentiment,
       chance: 0.4,
-      category: "sales_request"
+      category: "enterprise"
     });
   }
   if (metrics.cto_sentiment < 25) {
@@ -72,7 +72,7 @@ const pickHijackTickets = (
       source: "cto",
       sentiment: metrics.cto_sentiment,
       chance: 0.5,
-      category: "tech_debt_reduction"
+      category: "tech_debt"
     });
   }
   if (metrics.ceo_sentiment < 30) {
@@ -561,14 +561,11 @@ export async function POST(request: Request) {
       return acc;
     }, {});
     const growthCount =
-      (counts["self_serve_feature"] ?? 0) +
-      (counts["enterprise_feature"] ?? 0) +
-      (counts["monetization"] ?? 0) +
-      (counts["sales_request"] ?? 0) +
+      (counts["self_serve"] ?? 0) +
+      (counts["enterprise"] ?? 0) +
       (counts["moonshot"] ?? 0);
     const enterpriseCount =
-      (counts["enterprise_feature"] ?? 0) +
-      (counts["sales_request"] ?? 0);
+      (counts["enterprise"] ?? 0);
 
     const growthRatio = growthCount / totalSelected;
     const enterpriseRatio = enterpriseCount / totalSelected;
@@ -602,16 +599,15 @@ export async function POST(request: Request) {
       const baseBonus = themeStrength >= 0.6 ? 2 : 1;
 
       // Apply bonuses to relevant metrics based on the theme category
-      if (thematicCategoryName === "tech_debt_reduction" || thematicCategoryName === "infrastructure") {
+      if (thematicCategoryName === "tech_debt") {
         applyMetricDelta("cto_sentiment", baseBonus);
         applyMetricDelta("tech_debt", -baseBonus);
-      } else if (thematicCategoryName === "enterprise_feature" || thematicCategoryName === "sales_request") {
+      } else if (thematicCategoryName === "enterprise") {
         applyMetricDelta("sales_sentiment", baseBonus);
         applyMetricDelta("enterprise_growth", baseBonus);
-      } else if (thematicCategoryName === "self_serve_feature") {
+      } else if (thematicCategoryName === "self_serve") {
         applyMetricDelta("ceo_sentiment", baseBonus);
         applyMetricDelta("self_serve_growth", baseBonus);
-      } else if (thematicCategoryName === "ux_improvement") {
         applyMetricDelta("nps", baseBonus);
         applyMetricDelta("team_sentiment", baseBonus);
       }
@@ -641,13 +637,10 @@ export async function POST(request: Request) {
   }
 
   const failureOutcomes = new Set(["soft_failure", "catastrophe"]);
-  const enterpriseCategories = new Set(["enterprise_feature", "sales_request"]);
-  const techDebtCategories = new Set(["tech_debt_reduction", "infrastructure"]);
-  const uxOrSelfServeCategories = new Set([
-    "ux_improvement",
-    "self_serve_feature"
-  ]);
-  const selfServeCategories = new Set(["self_serve_feature"]);
+  const enterpriseCategories = new Set(["enterprise"]);
+  const techDebtCategories = new Set(["tech_debt"]);
+  const uxOrSelfServeCategories = new Set(["self_serve"]);
+  const selfServeCategories = new Set(["self_serve"]);
 
   const hasShipped = (outcomes: TicketOutcome[], categories: Set<string>) =>
     outcomes.some(
@@ -855,12 +848,28 @@ export async function POST(request: Request) {
     .map((row) => row.payload as RetroTemplate)
     .filter((row) => row?.group === "sprint_retro_templates");
 
-  const template = chooseRetroTemplate(retroTemplates, {
-    successCount: successes,
-    total,
-    hasCatastrophe,
-    isOverbooked
-  });
+  // Check for Q1S1 or Q1S2 onboarding sprints
+  let archetypeFilter: string | null = null;
+  if (currentQuarter === 1 && currentSprint === 1) {
+    archetypeFilter = "onboarding_q1s1";
+  } else if (currentQuarter === 1 && currentSprint === 2) {
+    archetypeFilter = "onboarding_q1s2";
+  }
+
+  // Filter templates for onboarding if applicable
+  const candidateTemplates = archetypeFilter
+    ? retroTemplates.filter(t => t.archetype === archetypeFilter)
+    : retroTemplates;
+
+  const template = chooseRetroTemplate(
+    candidateTemplates.length > 0 ? candidateTemplates : retroTemplates,
+    {
+      successCount: successes,
+      total,
+      hasCatastrophe,
+      isOverbooked
+    }
+  );
 
   const bestTicket =
     ticketOutcomes.find((ticket) => ticket.outcome === "clear_success") ??
@@ -878,13 +887,9 @@ export async function POST(request: Request) {
     : null;
 
   const categoryDisplayNames: Record<string, string> = {
-    tech_debt_reduction: "tech debt reduction",
-    infrastructure: "infrastructure",
-    enterprise_feature: "enterprise features",
-    sales_request: "sales requests",
-    self_serve_feature: "self-serve features",
-    ux_improvement: "UX improvements",
-    monetization: "monetization",
+    tech_debt: "tech debt",
+    enterprise: "enterprise work",
+    self_serve: "self-serve features",
     moonshot: "moonshot projects"
   };
 
@@ -990,7 +995,7 @@ export async function POST(request: Request) {
       for (const outcome of outcomes) {
         if (outcome?.outcome === "catastrophe") catastropheCount += 1;
         if (
-          outcome?.category === "ux_improvement" &&
+          outcome?.category === "self_serve" &&
           successOutcomes.has(outcome?.outcome)
         ) {
           hasUxSuccess = true;
@@ -1032,6 +1037,12 @@ export async function POST(request: Request) {
       catastropheCount,
       { lowTeamSprints, alignmentRatio }
     );
+
+    // Append onboarding completion message for Q1
+    if (currentQuarter === 1) {
+      quarterlyReview.narrative += "\n\nYour 30/60/90 day onboarding period is complete. Training wheels are coming off — stakeholders have started to notice you, and the board expects more sophisticated execution. The foundation you've built this quarter determines your trajectory for the rest of the year.";
+    }
+
     quarterSummary = {
       quarter: currentQuarter,
       product_pulse: productPulse,
@@ -1159,7 +1170,8 @@ export async function POST(request: Request) {
         ticketTemplates,
         updatedMetrics,
         rng,
-        nextBacklogSize
+        nextBacklogSize,
+        nextQuarter
       );
       const forcedTicketEntries = eventsLog.filter(
         (entry) =>
@@ -1212,12 +1224,12 @@ export async function POST(request: Request) {
 
       if (hackathonEvent) {
         let selfServeTicket = backlog.find(
-          (ticket) => ticket.category === "self_serve_feature"
+          (ticket) => ticket.category === "self_serve"
         );
 
         if (!selfServeTicket) {
           const selfServePool = ticketTemplates.filter(
-            (ticket) => ticket.category === "self_serve_feature"
+            (ticket) => ticket.category === "self_serve"
           );
           if (selfServePool.length > 0) {
             selfServeTicket = rng.pick(selfServePool);

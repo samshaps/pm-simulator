@@ -3,7 +3,7 @@
     "id": "ss_001",
     "title": "Self-Serve Upgrade Flow",
     "description": "Let users upgrade their plan directly in the product, because making them email sales in 2026 is embarrassing.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -50,7 +50,7 @@
     "id": "ss_002",
     "title": "Freemium Tier Launch",
     "description": "Launch a free tier with limited features to expand top-of-funnel \u2014 because nothing says 'growth strategy' like giving the product away.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 8,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -97,7 +97,7 @@
     "id": "ss_003",
     "title": "In-App Activation Tutorial",
     "description": "Build guided tour that walks new users through core workflows without leaving the product.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -135,7 +135,7 @@
     "id": "ss_004",
     "title": "Usage Analytics Dashboard",
     "description": "Give users a self-service analytics dashboard showing how much they actually use the product, because making value visible is cheaper than explaining it.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 6,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -182,7 +182,7 @@
     "id": "ss_005",
     "title": "Notification Preference Center",
     "description": "Let users control what emails and in-app alerts they receive so they stop unsubscribing from everything out of spite.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -220,7 +220,7 @@
     "id": "ss_006",
     "title": "Mobile App Redesign",
     "description": "Modernize the mobile experience to match web capabilities and unlock the mobile-first segment that keeps showing up in the TAM slide.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 8,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -267,7 +267,7 @@
     "id": "ss_007",
     "title": "Knowledge Base Expansion",
     "description": "Build out self-serve documentation and how-to guides to deflect common support questions \u2014 low engineering effort, high content burden.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -305,7 +305,7 @@
     "id": "ss_008",
     "title": "Referral Program Launch",
     "description": "Let users earn credits for referring other users, because organic acquisition sounds better in a board deck than paid ads.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -343,7 +343,7 @@
     "id": "ss_009",
     "title": "Feature Gating by Tier",
     "description": "Gate advanced features behind higher-tier plans to encourage in-product upgrades and give the pricing page a reason to exist.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -390,7 +390,7 @@
     "id": "ss_010",
     "title": "User Segmentation Engine",
     "description": "Dynamically segment users by behavior to personalize their experience, because treating everyone the same stopped working in 2019.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 6,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -437,7 +437,7 @@
     "id": "ss_011",
     "title": "Developer API Documentation",
     "description": "Ship self-serve API docs and SDKs so developers can integrate without filing a support ticket and waiting three business days.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 6,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -475,7 +475,7 @@
     "id": "ss_012",
     "title": "Pricing Page Redesign",
     "description": "Simplify the pricing page so users can compare tiers without a spreadsheet \u2014 current conversion suggests the page is doing more harm than good.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -513,7 +513,7 @@
     "id": "ss_013",
     "title": "Community Forum",
     "description": "Ship a community forum so users can help each other instead of emailing us.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 6,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -560,7 +560,7 @@
     "id": "ss_014",
     "title": "Template Library",
     "description": "Curate templates for common use cases so new users can get value before they get confused.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -598,7 +598,7 @@
     "id": "ss_015",
     "title": "Search and Filter Overhaul",
     "description": "Overhaul search relevance and add faceted filtering so users can actually find what they need before giving up.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -636,7 +636,7 @@
     "id": "ss_016",
     "title": "Integrations Marketplace",
     "description": "Build a platform for third-party integrations so the product does more without us building every connector ourselves.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 7,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -683,7 +683,7 @@
     "id": "ss_017",
     "title": "Dark Mode Interface",
     "description": "Ship dark mode to satisfy power users and reduce the eye strain complaints that keep appearing in NPS verbatims.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 5,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -730,7 +730,7 @@
     "id": "ss_018",
     "title": "Localization and i18n",
     "description": "Add i18n support and localize the UI for non-English markets, because 'international expansion' requires more than a flag emoji.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 7,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -768,7 +768,7 @@
     "id": "ss_019",
     "title": "Smart Defaults for Setup",
     "description": "Implement smart defaults based on company size and industry to reduce initial configuration burden.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -806,7 +806,7 @@
     "id": "ss_020",
     "title": "Single Sign-On Integration",
     "description": "Support SSO (SAML, OAuth) for enterprise customers \u2014 it's table stakes, and every sales call without it ends the same way.",
-    "category": "enterprise_feature",
+    "category": "enterprise",
     "effort": 6,
     "primary_metric": "enterprise_growth",
     "primary_impact": {
@@ -853,7 +853,7 @@
     "id": "ss_021",
     "title": "In-App Feedback Widget",
     "description": "Add an in-app feedback widget so users can tell us what's broken without leaving the product or writing a tweet.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 4,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -891,7 +891,7 @@
     "id": "ss_022",
     "title": "A/B Testing Framework",
     "description": "Build A/B testing infrastructure so product decisions can cite data instead of the loudest person in the room.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 8,
     "primary_metric": "self_serve_growth",
     "primary_impact": {
@@ -929,7 +929,7 @@
     "id": "ss_023",
     "title": "Getting Started Checklist",
     "description": "Add a lightweight setup checklist that nudges new users through three key steps \u2014 low effort, should lift activation.",
-    "category": "self_serve_feature",
+    "category": "self_serve",
     "effort": 2,
     "primary_metric": "self_serve_growth",
     "primary_impact": {

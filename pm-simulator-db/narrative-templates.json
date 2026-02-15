@@ -21,6 +21,42 @@
       "template": "Every single ticket shipped. {best_ticket_title} was {best_ticket_outcome_summary}, setting a tone for the entire sprint. We hit all story points, maintained code quality gates, and nobody had to sacrifice sleep or standards. This is what sustainable delivery looks like on paper. The question now is whether we're being too conservative with our commitments or if we've finally figured out estimation."
     },
     {
+      "id": "retro_onboarding_q1s1_success",
+      "archetype": "onboarding_q1s1",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false
+      },
+      "template": "Sprint 1 complete. {tickets_shipped} of {tickets_committed} tickets shipped. {best_ticket_title} — {best_ticket_outcome_summary}. You're finding your rhythm, and stakeholders are starting to notice your work. Your responsibility will increase each sprint as the team learns to trust your judgment."
+    },
+    {
+      "id": "retro_onboarding_q1s1_mixed",
+      "archetype": "onboarding_q1s1",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": false
+      },
+      "template": "Sprint 1 in the books. {tickets_shipped} of {tickets_committed} delivered, though not all landed perfectly. {best_ticket_title} — {best_ticket_outcome_summary}. Early missteps are expected; what matters is building credibility sprint by sprint as responsibility increases."
+    },
+    {
+      "id": "retro_onboarding_q1s2_success",
+      "archetype": "onboarding_q1s2",
+      "conditions": {
+        "success_count": "most",
+        "has_catastrophe": false
+      },
+      "template": "Sprint 2 done. {tickets_shipped} of {tickets_committed} shipped successfully. {best_ticket_title} — {best_ticket_outcome_summary}. The team is learning to work with you, and your scope is expanding. Stakeholders are watching more closely now."
+    },
+    {
+      "id": "retro_onboarding_q1s2_mixed",
+      "archetype": "onboarding_q1s2",
+      "conditions": {
+        "success_count": "some",
+        "has_catastrophe": false
+      },
+      "template": "Sprint 2 wrapped with mixed results. {tickets_shipped} of {tickets_committed} made it out the door. {best_ticket_title} — {best_ticket_outcome_summary}. As your responsibility grows, so does the scrutiny. The next sprint will test whether you're ready for more."
+    },
+    {
       "id": "retro_mostly_good_01",
       "archetype": "mostly_good",
       "conditions": {

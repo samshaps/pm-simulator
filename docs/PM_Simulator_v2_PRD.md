@@ -115,7 +115,7 @@ PM Simulator v2 is a complete UX overhaul focused on **immediate feedback, visua
 
 #### Backlog Section
 - Grid of ticket tiles (3 per row)
-- Filter dropdown: "All Categories" | "Self-Serve" | "Enterprise" | "Tech Debt" | "UX/Infra" | etc.
+- Filter dropdown: "All Categories" | "Self-Serve" | "Enterprise" | "Tech Debt" | "Moonshot"
 - Sort dropdown: "Points (Low to High)" | "Points (High to Low)" | "Impact (High to Low)"
 - Caption: "Available work. Choose wisely. Or don't."
 
@@ -228,6 +228,7 @@ PM Simulator v2 is a complete UX overhaul focused on **immediate feedback, visua
   - "Team morale is improving!"
   - "Self-serve growth is accelerating!"
   - "The sales team is in revolt :( we'll have to do one of their tickets no matter what next sprint."
+- **Q1S1/S2:** Includes onboarding-specific messaging: "Your responsibility is increasing with each sprint..."
 - Appears empty on load, populates after all tickets resolve
 
 #### Word on the Street
@@ -247,46 +248,95 @@ PM Simulator v2 is a complete UX overhaul focused on **immediate feedback, visua
 ### Quarter 1 (Onboarding)
 
 #### Sprint 1 (Tutorial Sprint)
-- **Backlog:** 6 tickets only
-- **Capacity:** 12 points (reduced from 21)
-- **Visible Metrics:** 4 only (Team, CEO, Self-Serve, Enterprise)
-- **Penalties:** Reduced (losing is harder)
-- **Goal:** Teach mechanics without overwhelming
+- **Backlog:** 3 tickets only
+- **Capacity:** 9 points (reduced from 21)
+- **Visible Metrics:** 3 only (Team Sentiment, Self-Serve Growth, Enterprise Growth)
+- **Allowed Categories:** Self-Serve and Enterprise only (no tech debt, no moonshots)
+- **Penalties:** Reduced to 0.5x (losing is very hard)
+- **Goal:** Teach core mechanics (ticket selection, metric balance) without overwhelm
 
 #### Sprint 2
-- **Backlog:** 9 tickets
-- **Capacity:** 15 points
-- **Visible Metrics:** 4 (same as S1)
-- **Penalties:** Normal
+- **Backlog:** 6 tickets
+- **Capacity:** 12 points
+- **Visible Metrics:** 3 (same as S1)
+- **Allowed Categories:** Self-Serve and Enterprise only
+- **Penalties:** Normal (1.0x)
+- **Narrative:** Retro mentions "responsibility increasing"
 
 #### Sprint 3
-- **Backlog:** 12 tickets
-- **Capacity:** 18 points
-- **Visible Metrics:** 4 (same as S1-S2)
-- **Penalties:** Normal
+- **Backlog:** 9 tickets
+- **Capacity:** 15 points
+- **Visible Metrics:** 3 (same as S1-S2)
+- **Allowed Categories:** Self-Serve and Enterprise only
+- **Penalties:** Normal (1.0x)
+- **Narrative:** Final sprint before full complexity
 
-### Quarter 2
+### Quarter 2 (Full Ramp)
 - **Backlog:** 15 tickets per sprint
 - **Capacity:** 21 points (full capacity)
-- **Visible Metrics:** 6 (add CTO Sentiment, Tech Debt)
-- **Penalties:** Normal
+- **Visible Metrics:** 6 (add CEO Sentiment, CTO Sentiment, Tech Debt)
+- **Allowed Categories:** All 4 categories (add Tech Debt and Moonshot)
+- **Penalties:** Normal (1.0x)
 - **New mechanic:** More aggressive CEO focus shifts
+- **Transition:** Q1 quarterly review says "30/60/90d onboarding complete, training wheels off"
 
 ### Quarter 3
 - **Backlog:** 18 tickets per sprint
 - **Capacity:** 21 points (same)
 - **Visible Metrics:** 6 (same)
-- **Penalties:** Harsh
+- **Allowed Categories:** All 4
+- **Penalties:** Harsh (1.3x)
 - **New mechanic:** More debuffs triggered by poor performance
 
 ### Quarter 4
 - **Backlog:** 18 tickets per sprint
 - **Capacity:** 21 points (same)
 - **Visible Metrics:** 6 (same)
-- **Penalties:** Very harsh
+- **Allowed Categories:** All 4
+- **Penalties:** Very harsh (1.5x)
 - **New mechanic:** Death spiral risk increases
 
-**Key Insight:** Same capacity, more demands = increasing pressure
+**Key Insight:** Q1 is ultra-focused tutorial (growth only), Q2+ adds complexity (more categories, more metrics, same capacity) = increasing pressure
+
+---
+
+## Ticket Category System
+
+**The game uses 4 core ticket categories** to simplify strategic choices:
+
+### 1. Self-Serve
+**Impact:** Self-Serve Growth, Team Sentiment
+**Color:** Green
+**Examples:** Onboarding flows, in-app tutorials, viral features, monetization experiments
+**Strategic role:** Drive user acquisition and activation without sales involvement
+**Consolidates:** self_serve_feature, monetization, ux_improvement from original design
+
+### 2. Enterprise
+**Impact:** Enterprise Growth, Sales Sentiment
+**Color:** Amber
+**Examples:** SSO, admin panels, compliance features, sales-requested integrations
+**Strategic role:** Enable larger deals and keep sales team happy
+**Consolidates:** enterprise_feature, sales_request from original design
+
+### 3. Tech Debt
+**Impact:** Tech Debt (reduces it), CTO Sentiment
+**Color:** Purple
+**Examples:** Refactoring, test coverage, infrastructure upgrades, performance optimization
+**Strategic role:** Maintain system health and engineering morale
+**Consolidates:** tech_debt_reduction, infrastructure from original design
+
+### 4. Moonshot
+**Impact:** Variable (high risk/reward)
+**Color:** Red
+**Examples:** Platform pivots, new product lines, radical feature bets
+**Strategic role:** Swing for the fences when metrics allow or demand it
+**Unchanged from original design**
+
+**Why 4 categories?**
+- Clear strategic tradeoffs: growth (self-serve vs enterprise) vs. sustainability (tech debt) vs. big bets (moonshot)
+- Reduces cognitive load vs. 8 categories
+- Easier to balance and tune game mechanics
+- Matches the 4-metric mental model players develop in Q1
 
 ---
 
