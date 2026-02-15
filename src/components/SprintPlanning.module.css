@@ -457,9 +457,10 @@
 /* ── TICKET GRID (3 columns) ── */
 .ticketGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
+  min-width: 636px; /* 3 columns × 200px + 2 gaps × 12px */
 }
 
 .filterGroup,
