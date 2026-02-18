@@ -75,72 +75,45 @@
   gap: 8px;
 }
 
-.impactContainer {
+/* Signal Bars — Impact Indicator */
+.signalBars {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
 }
 
-.fireIcon {
-  position: relative;
-  font-size: 18px;
-  line-height: 1;
-  width: 1em;
-  height: 1em;
+.signalBar {
+  width: 4px;
+  border-radius: 1px;
+  transition: opacity 0.15s;
+}
+
+.signalBarActive {
+  background: var(--purple-light);
+  opacity: 1;
+}
+
+.signalBarDim {
+  background: var(--text-dim);
+  opacity: 0.2;
+}
+
+/* Effort Badge — number in a small pill */
+.effortBadge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  width: 24px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Create the variable fill effect using a gradient mask */
-.fireIcon::before {
-  content: '🔥';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(
-    to top,
-    rgba(255, 140, 0, 1) 0%,
-    rgba(255, 140, 0, 1) var(--fill-percentage, 100%),
-    rgba(128, 128, 128, 0.3) var(--fill-percentage, 100%),
-    rgba(128, 128, 128, 0.3) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: brightness(1.2) contrast(1.1);
-}
-
-/* Hide the original emoji, show only the masked version */
-.fireIcon {
-  color: transparent;
-}
-
-/* Effort Oval */
-.effortOval {
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
   flex-shrink: 0;
-}
-
-.ovalSmall {
-  width: 12px;
-  height: 12px;
-}
-
-.ovalMedium {
-  width: 16px;
-  height: 16px;
-}
-
-.ovalLarge {
-  width: 20px;
-  height: 20px;
 }
 
 /* Modifier Icon */

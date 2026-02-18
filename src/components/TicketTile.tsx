@@ -36,33 +36,25 @@ export default function TicketTile({
   onHover,
   onHoverEnd
 }: TicketTileProps) {
-  // Render fire icon with variable fill based on impact level
-  const renderImpactIndicator = () => {
-    // Calculate fill percentage: 1 = 33%, 2 = 66%, 3 = 100%
-    const fillPercentage = (impactLevel / 3) * 100;
-
-    return (
-      <div className={styles.impactContainer}>
+  // Render signal bars for impact level (1–3)
+  const renderImpactIndicator = () => (
+    <div className={styles.signalBars} title={`Impact: ${['Low', 'Medium', 'High'][impactLevel - 1] ?? 'Unknown'}`}>
+      {[1, 2, 3].map(bar => (
         <div
-          className={styles.fireIcon}
-          style={{ '--fill-percentage': `${fillPercentage}%` } as React.CSSProperties}
-        >
-          🔥
-        </div>
-      </div>
-    );
-  };
+          key={bar}
+          className={`${styles.signalBar} ${bar <= impactLevel ? styles.signalBarActive : styles.signalBarDim}`}
+          style={{ height: `${6 + bar * 4}px` }}
+        />
+      ))}
+    </div>
+  );
 
-  // Render effort oval (size based on points)
-  const renderEffortOval = () => {
-    let sizeClass = styles.ovalSmall;
-    if (effort >= 7) {
-      sizeClass = styles.ovalLarge;
-    } else if (effort >= 4) {
-      sizeClass = styles.ovalMedium;
-    }
-    return <div className={`${styles.effortOval} ${sizeClass}`}></div>;
-  };
+  // Render effort as a number badge
+  const renderEffortBadge = () => (
+    <div className={styles.effortBadge} title={`Effort: ${effort} points`}>
+      {effort}
+    </div>
+  );
 
   // Render modifier icon
   const renderModifier = () => {
@@ -115,7 +107,7 @@ export default function TicketTile({
 
       <div className={styles.iconRow}>
         {renderImpactIndicator()}
-        {renderEffortOval()}
+        {renderEffortBadge()}
         {renderModifier()}
       </div>
 
