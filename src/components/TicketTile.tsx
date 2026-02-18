@@ -71,12 +71,8 @@ export default function TicketTile({
     return null;
   };
 
-  // Format category for display
-  const formatCategory = (cat: string) => {
-    return cat.replace(/_/g, ' ').toUpperCase();
-  };
+  const formatCategory = (cat: string) => cat.replace(/_/g, ' ').toUpperCase();
 
-  // Map category to CSS class
   const getCategoryClass = (cat: string): string => {
     const categoryToClass: Record<string, string> = {
       'self_serve': 'catSelfServe',
@@ -103,10 +99,7 @@ export default function TicketTile({
       {showRemoveButton && onRemove && (
         <button
           className={styles.removeButton}
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove();
-          }}
+          onClick={(e) => { e.stopPropagation(); onRemove(); }}
           title={isMandatory ? "Mandatory - cannot remove" : "Remove from sprint"}
           disabled={isMandatory}
         >

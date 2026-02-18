@@ -20,15 +20,8 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.ticketTile.committed {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.ticketTile.committed:hover {
-  transform: none;
-  box-shadow: none;
-}
+.ticketTile.committed { opacity: 0.5; cursor: not-allowed; }
+.ticketTile.committed:hover { transform: none; box-shadow: none; }
 
 .ticketTile.mandatory {
   border-left: 3px solid var(--red);
@@ -38,36 +31,21 @@
 /* ── Remove button ── */
 .removeButton {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 18px;
-  height: 18px;
+  top: 6px; right: 6px;
+  width: 18px; height: 18px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border-subtle);
   border-radius: 3px;
   color: var(--text-dim);
   font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
-  line-height: 1;
-  padding: 0;
-  z-index: 10;
-  pointer-events: auto;
+  line-height: 1; padding: 0;
+  z-index: 10; pointer-events: auto;
 }
-
-.removeButton:hover:not(:disabled) {
-  background: var(--red-dim);
-  border-color: var(--red);
-  color: var(--red);
-}
-
-.removeButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
+.removeButton:hover:not(:disabled) { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+.removeButton:disabled { cursor: not-allowed; opacity: 0.5; }
 
 /* ── Left column: copy ── */
 .copy {
@@ -79,7 +57,7 @@
   min-width: 0;
 }
 
-/* ── Category pill — top, centered ── */
+/* ── Category pill — centered ── */
 .category {
   font-size: 10px;
   font-weight: 700;
@@ -94,7 +72,7 @@
   align-self: center;
 }
 
-/* ── Title — center ── */
+/* ── Title — centered ── */
 .title {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
@@ -107,7 +85,7 @@
   width: 100%;
 }
 
-/* ── Powerup row — bottom of copy, centered ── */
+/* ── Powerup row — bottom, centered ── */
 .powerupRow {
   width: 100%;
   display: flex;
@@ -125,24 +103,9 @@
   border: 1px solid;
   white-space: nowrap;
 }
-
-.powerupCeo {
-  color: var(--purple-light);
-  background: var(--purple-glow);
-  border-color: rgba(167, 139, 250, 0.3);
-}
-
-.powerupHackathon {
-  color: var(--amber);
-  background: var(--amber-dim);
-  border-color: rgba(251, 191, 36, 0.3);
-}
-
-.powerupMandatory {
-  color: var(--red);
-  background: var(--red-dim);
-  border-color: rgba(248, 113, 113, 0.3);
-}
+.powerupCeo    { color: var(--purple-light); background: var(--purple-glow);   border-color: rgba(167,139,250,0.3); }
+.powerupHackathon { color: var(--amber);     background: var(--amber-dim);     border-color: rgba(251,191,36,0.3); }
+.powerupMandatory { color: var(--red);       background: var(--red-dim);       border-color: rgba(248,113,113,0.3); }
 
 /* ── Right column: indicators ── */
 .indicators {
@@ -155,7 +118,7 @@
   gap: 8px;
 }
 
-/* ── Effort badge — large number, top of right column ── */
+/* ── Effort number — large ── */
 .effortBadge {
   font-family: 'JetBrains Mono', monospace;
   font-size: 20px;
@@ -164,66 +127,18 @@
   line-height: 1;
 }
 
-/* ── Signal bars — large, bottom of right column ── */
-.signalBars {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-}
+/* ── Signal bars — large ── */
+.signalBars { display: flex; align-items: flex-end; gap: 3px; }
+.signalBar  { width: 5px; border-radius: 2px; transition: opacity 0.15s; }
+.signalBarActive { background: var(--purple-light); opacity: 1; }
+.signalBarDim    { background: var(--text-dim); opacity: 0.2; }
 
-.signalBar {
-  width: 5px;
-  border-radius: 2px;
-  transition: opacity 0.15s;
-}
-
-.signalBarActive {
-  background: var(--purple-light);
-  opacity: 1;
-}
-
-.signalBarDim {
-  background: var(--text-dim);
-  opacity: 0.2;
-}
-
-/* ── Category color classes ── */
-.catSelfServe {
-  color: var(--green);
-  background: var(--green-dim);
-}
-
-.catEnterprise {
-  color: var(--blue);
-  background: var(--blue-dim);
-}
-
-.catTechDebt {
-  color: var(--amber);
-  background: var(--amber-dim);
-}
-
-.catUx {
-  color: var(--cyan);
-  background: var(--cyan-dim);
-}
-
-.catSales {
-  color: var(--orange);
-  background: var(--orange-dim);
-}
-
-.catMonetization {
-  color: var(--pink);
-  background: var(--pink-dim);
-}
-
-.catInfra {
-  color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.catMoonshot {
-  color: var(--purple-light);
-  background: var(--purple-glow);
-}
+/* ── Category colors ── */
+.catSelfServe  { color: var(--green);          background: var(--green-dim); }
+.catEnterprise { color: var(--blue);           background: var(--blue-dim); }
+.catTechDebt   { color: var(--amber);          background: var(--amber-dim); }
+.catUx         { color: var(--cyan);           background: var(--cyan-dim); }
+.catSales      { color: var(--orange);         background: var(--orange-dim); }
+.catMonetization{ color: var(--pink);          background: var(--pink-dim); }
+.catInfra      { color: var(--text-secondary); background: rgba(255,255,255,0.06); }
+.catMoonshot   { color: var(--purple-light);   background: var(--purple-glow); }
