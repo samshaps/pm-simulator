@@ -208,6 +208,7 @@ export default function Home() {
     loadingSequence[loadingIndex] || loadingMessages[0];
 
   return (
+    <div className={styles.page}>
     <div className={styles.container}>
       {isNavigating && (
         <div className={styles.loadingOverlay} aria-live="polite">
@@ -296,6 +297,7 @@ export default function Home() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
         </svg>
       </div>
+    </div>
     </div>
   );
 }
