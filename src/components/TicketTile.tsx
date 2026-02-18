@@ -36,36 +36,39 @@ export default function TicketTile({
   onHover,
   onHoverEnd
 }: TicketTileProps) {
-  // Render signal bars for impact level (1–3)
+
+  // Signal bars — impact indicator, large, right column bottom
   const renderImpactIndicator = () => (
     <div className={styles.signalBars} title={`Impact: ${['Low', 'Medium', 'High'][impactLevel - 1] ?? 'Unknown'}`}>
       {[1, 2, 3].map(bar => (
         <div
           key={bar}
           className={`${styles.signalBar} ${bar <= impactLevel ? styles.signalBarActive : styles.signalBarDim}`}
-          style={{ height: `${6 + bar * 4}px` }}
+          style={{ height: `${10 + bar * 6}px` }}
         />
       ))}
     </div>
   );
 
-  // Render effort as a number badge
+  // Effort number — large, right column top
   const renderEffortBadge = () => (
     <div className={styles.effortBadge} title={`Effort: ${effort} points`}>
       {effort}
     </div>
   );
 
-  // Render modifier icon
-  const renderModifier = () => {
+  // Powerup message — bottom of left column, centered, only if applicable
+  const renderPowerupMessage = () => {
+    if (isMandatory) {
+      return <span className={`${styles.powerupPill} ${styles.powerupMandatory}`}>🔒 Mandatory</span>;
+    }
     if (isCEOAligned) {
-      return <span className={styles.modifierIcon} title="CEO Focus - 2x impact">⚡</span>;
+      return <span className={`${styles.powerupPill} ${styles.powerupCeo}`}>⚡ CEO Focus</span>;
     }
     if (isHackathonBoosted) {
-      return <span className={styles.modifierIcon} title="Hackathon Boost">⚡</span>;
+      return <span className={`${styles.powerupPill} ${styles.powerupHackathon}`}>⚡ Hackathon</span>;
     }
-    // Return empty square for no modifier (for consistent spacing)
-    return <span className={styles.modifierIconEmpty}>⬜</span>;
+    return null;
   };
 
   // Format category for display
@@ -79,10 +82,16 @@ export default function TicketTile({
       'self_serve': 'catSelfServe',
       'enterprise': 'catEnterprise',
       'tech_debt': 'catTechDebt',
+      'ux_improvement': 'catUx',
+      'sales_request': 'catSales',
+      'monetization': 'catMonetization',
+      'infrastructure': 'catInfra',
       'moonshot': 'catMoonshot'
     };
     return categoryToClass[cat] || '';
   };
+
+  const powerup = renderPowerupMessage();
 
   return (
     <div
@@ -101,25 +110,24 @@ export default function TicketTile({
           title={isMandatory ? "Mandatory - cannot remove" : "Remove from sprint"}
           disabled={isMandatory}
         >
-          {isMandatory ? '🔒' : '×'}
+          ×
         </button>
       )}
 
-      <div className={styles.iconRow}>
-        {renderImpactIndicator()}
+      {/* Left: copy column */}
+      <div className={styles.copy}>
+        <div className={`${styles.category} ${styles[getCategoryClass(category)]}`}>
+          {formatCategory(category)}
+        </div>
+        <div className={styles.title}>{title}</div>
+        {powerup && <div className={styles.powerupRow}>{powerup}</div>}
+      </div>
+
+      {/* Right: indicators column */}
+      <div className={styles.indicators}>
         {renderEffortBadge()}
-        {renderModifier()}
+        {renderImpactIndicator()}
       </div>
-
-      <div className={`${styles.category} ${styles[getCategoryClass(category)]}`}>
-        {formatCategory(category)}
-      </div>
-
-      <div className={styles.title}>{title}</div>
-
-      {isMandatory && (
-        <div className={styles.mandatoryBadge}>MANDATORY</div>
-      )}
     </div>
   );
 }
