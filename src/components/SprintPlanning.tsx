@@ -191,6 +191,15 @@ export default function SprintPlanning() {
   const [showPowerupTip, setShowPowerupTip] = useState(false);
 
   useEffect(() => {
+    // Dev helper: ?reset_tour in URL forces the tour to show from the start
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('reset_tour')) {
+      sessionStorage.setItem('pm_sim_show_tour', 'true');
+      sessionStorage.removeItem('pm_sim_tour_step');
+      localStorage.removeItem('pm_sim_tour_complete');
+      // Strip the param so reloads don't re-trigger it
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
     // Fetch active sprint data
     fetch('/api/sprint/active')
       .then(res => res.json())
