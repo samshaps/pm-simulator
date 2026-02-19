@@ -629,7 +629,7 @@ export default function SprintRetro() {
                 {(() => {
                   const q1Metrics = ['team_sentiment', 'self_serve_growth', 'enterprise_growth'];
                   const q2AdditionalMetrics = ['ceo_sentiment', 'cto_sentiment', 'tech_debt'];
-                  const visibleMetrics = retroData.game.current_quarter >= 2
+                  const visibleMetrics = retroData.completedSprint.quarter >= 2
                     ? [...q1Metrics, ...q2AdditionalMetrics]
                     : q1Metrics;
 

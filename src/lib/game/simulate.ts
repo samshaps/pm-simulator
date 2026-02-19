@@ -506,9 +506,11 @@ export function generateBacklog(
   ]);
 
   // Apply Q1 filtering if in quarter 1
+  console.log('[generateBacklog] quarter:', quarter, 'templates:', templates.length);
   const filteredTemplates = quarter === 1
     ? templates.filter(t => allowedQ1Categories.has(t.category))
     : templates;
+  console.log('[generateBacklog] filteredTemplates:', filteredTemplates.length, 'categories:', [...new Set(filteredTemplates.map(t => t.category))]);
 
   const templatesByCategory = new Map<string, TicketTemplate[]>();
   for (const template of filteredTemplates) {
@@ -587,7 +589,7 @@ export function generateBacklog(
   }
 
   const pickUniqueFromCategory = (category: string) => {
-    const pool = templatesByCategory.get(category) ?? templates;
+    const pool = templatesByCategory.get(category) ?? filteredTemplates;
     if (pool.length === 0) return null;
     let candidate = rng.pick(pool);
     let guard = 0;
@@ -603,7 +605,12 @@ export function generateBacklog(
     return candidate;
   };
 
-  for (const category of guaranteeCategories) {
+  // In Q1, only guarantee categories that exist in the filtered template set
+  const activeGuaranteeCategories = quarter === 1
+    ? guaranteeCategories.filter(cat => allowedQ1Categories.has(cat))
+    : guaranteeCategories;
+
+  for (const category of activeGuaranteeCategories) {
     if (selected.length >= count) break;
     const candidate = pickUniqueFromCategory(category);
     if (!candidate) continue;
@@ -613,7 +620,7 @@ export function generateBacklog(
 
   // Helper to pick a ticket by size
   const pickBySize = (minEffort: number, maxEffort: number) => {
-    const pool = templates.filter(
+    const pool = filteredTemplates.filter(
       (t) => !usedIds.has(t.id) && t.effort >= minEffort && t.effort <= maxEffort
     );
     if (pool.length === 0) return null;

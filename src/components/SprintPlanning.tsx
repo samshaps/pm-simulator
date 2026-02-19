@@ -1237,6 +1237,7 @@ export default function SprintPlanning() {
             setCommittedPreviews({});
           }}>Reset Sprint</button>
           <button
+            data-tour-id="start-sprint"
             className={`${styles.btn} ${styles.btnPrimary}`}
             onClick={handleStartSprint}
             disabled={isCommitting || committedTickets.length === 0 || usedCapacity > stretchCapacity}

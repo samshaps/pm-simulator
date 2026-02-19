@@ -846,6 +846,21 @@ export async function POST(request: Request) {
     }
   }
 
+  // Q1S1 and Q1S2: inject a growing-team onboarding message into the retro events
+  if (currentQuarter === 1 && currentSprint === 1) {
+    triggeredEvents.push({
+      title: "Your Team is Growing 🚀",
+      description: "Great first sprint! You're earning trust fast. The company is expanding your team — expect more developers, more ownership areas, more ticket variety, and higher sprint capacity from here on.",
+      metric_effects: {}
+    });
+  } else if (currentQuarter === 1 && currentSprint === 2) {
+    triggeredEvents.push({
+      title: "Headcount Approved 🧑‍💻",
+      description: "Another strong sprint. Leadership noticed. Two more engineers are joining next week — sprint capacity is going up and you'll start seeing a broader range of work in the backlog.",
+      metric_effects: {}
+    });
+  }
+
   const { data: narrativeRows } = await supabase
     .from("narrative_templates")
     .select("payload");

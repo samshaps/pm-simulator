@@ -210,10 +210,6 @@ export default function OnboardingTour({
             })}
           </div>
 
-          <span className={styles.stepCounter}>
-            {displayStep} / {displayTotal}
-          </span>
-
           <div className={styles.buttons}>
             <button
               className={styles.btnBack}

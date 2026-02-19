@@ -25,10 +25,10 @@ export const SPRINT_PLANNING_STEPS: TourStep[] = [
     placement: 'bottom'
   },
   {
-    id: 'metrics',
-    title: 'Performance Metrics',
-    body: "These are your key health indicators. The shaded preview range shows the potential swing from the tickets you've committed.",
-    placement: 'left'
+    id: 'start-sprint',
+    title: 'Ready? Start the Sprint',
+    body: "Add tickets from the backlog on the left, then hit Start Sprint to lock in your commitment. Your picks here set the tone for the whole sprint.",
+    placement: 'top'
   }
 ];
 
