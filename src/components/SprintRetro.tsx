@@ -30,6 +30,24 @@ interface AnimationState {
   revealedNotes: number;
 }
 
+const STRETCH_TARGETS: Record<string, Record<string, number>> = {
+  easy: {
+    team_sentiment: 75, ceo_sentiment: 75, sales_sentiment: 75,
+    cto_sentiment: 75, self_serve_growth: 70, enterprise_growth: 70,
+    tech_debt: 25, nps: 70
+  },
+  normal: {
+    team_sentiment: 70, ceo_sentiment: 70, sales_sentiment: 70,
+    cto_sentiment: 70, self_serve_growth: 65, enterprise_growth: 65,
+    tech_debt: 30, nps: 65
+  },
+  hard: {
+    team_sentiment: 65, ceo_sentiment: 65, sales_sentiment: 65,
+    cto_sentiment: 65, self_serve_growth: 60, enterprise_growth: 60,
+    tech_debt: 35, nps: 60
+  }
+};
+
 interface RetroData {
   game: {
     id: string;
@@ -37,6 +55,7 @@ interface RetroData {
     current_quarter: number;
     current_sprint: number;
     metrics_state?: Record<string, number>;
+    metric_targets?: Record<string, number> | null;
   };
   completedSprint: {
     sprint_number: number;
@@ -633,10 +652,14 @@ export default function SprintRetro() {
                     ? [...q1Metrics, ...q2AdditionalMetrics]
                     : q1Metrics;
 
+                  const stretchTargets = STRETCH_TARGETS[retroData.game.difficulty] ?? STRETCH_TARGETS.normal;
+
                   return visibleMetrics.map(metricKey => {
                     const currentValue = retroData.game.metrics_state?.[metricKey] ?? 50;
                     const delta = retroData.retro.metric_deltas[metricKey] ?? 0;
                     const preview = getMetricPreviewRange(metricKey, currentValue, delta);
+                    const targetValue = retroData.game.metric_targets?.[metricKey] ?? undefined;
+                    const stretchTarget = stretchTargets[metricKey];
 
                     return (
                       <MetricBarWithPreview
@@ -648,6 +671,9 @@ export default function SprintRetro() {
                         isPositiveImpact={preview.isPositive}
                         showDangerZone={metricKey.includes('sentiment') || metricKey === 'tech_debt'}
                         delta={animState.phase === 'complete' ? delta : undefined}
+                        targetValue={targetValue}
+                        stretchTarget={stretchTarget}
+                        invertTarget={metricKey === 'tech_debt'}
                       />
                     );
                   });

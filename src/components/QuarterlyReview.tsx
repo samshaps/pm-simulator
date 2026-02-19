@@ -27,8 +27,16 @@ interface QuarterlyReviewData {
   game: {
     current_quarter: number;
     metrics_state: Record<string, number>;
+    difficulty?: string;
+    metric_targets?: Record<string, number> | null;
   };
 }
+
+const REVIEW_TARGETS: Record<string, Record<string, number>> = {
+  easy: { team_sentiment: 65, ceo_sentiment: 65, sales_sentiment: 60, cto_sentiment: 60, self_serve_growth: 60, enterprise_growth: 60, tech_debt: 35, nps: 60 },
+  normal: { team_sentiment: 60, ceo_sentiment: 60, sales_sentiment: 55, cto_sentiment: 55, self_serve_growth: 55, enterprise_growth: 55, tech_debt: 40, nps: 55 },
+  hard: { team_sentiment: 55, ceo_sentiment: 55, sales_sentiment: 50, cto_sentiment: 50, self_serve_growth: 50, enterprise_growth: 50, tech_debt: 45, nps: 50 }
+};
 
 export default function QuarterlyReview() {
   const router = useRouter();
@@ -141,14 +149,20 @@ export default function QuarterlyReview() {
   const narrative = review.narrative || "Quarter complete. Review your performance and prepare for what's next.";
 
   const metrics = reviewData.game?.metrics_state || {};
+  // Resolve targets: prefer stored metric_targets, fall back to difficulty table
+  const gameTargets: Record<string, number> =
+    (reviewData.game?.metric_targets as Record<string, number> | null) ??
+    REVIEW_TARGETS[reviewData.game?.difficulty ?? 'normal'] ??
+    REVIEW_TARGETS.normal;
+
   const finalMetrics = [
-    { name: 'Team Sentiment', value: Math.round(metrics.team_sentiment || 50), tier: metrics.team_sentiment >= 60 ? 'positive' : metrics.team_sentiment < 40 ? 'warning' : 'neutral' },
-    { name: 'CEO Sentiment', value: Math.round(metrics.ceo_sentiment || 50), tier: metrics.ceo_sentiment >= 60 ? 'positive' : metrics.ceo_sentiment < 40 ? 'warning' : 'neutral' },
-    { name: 'Sales Sentiment', value: Math.round(metrics.sales_sentiment || 50), tier: metrics.sales_sentiment >= 60 ? 'positive' : metrics.sales_sentiment < 40 ? 'warning' : 'neutral' },
-    { name: 'CTO Sentiment', value: Math.round(metrics.cto_sentiment || 50), tier: metrics.cto_sentiment >= 60 ? 'positive' : metrics.cto_sentiment < 40 ? 'warning' : 'neutral' },
-    { name: 'Self-Serve Growth', value: Math.round(metrics.self_serve_growth || 50), tier: metrics.self_serve_growth >= 60 ? 'positive' : metrics.self_serve_growth < 40 ? 'warning' : 'neutral' },
-    { name: 'Enterprise Growth', value: Math.round(metrics.enterprise_growth || 50), tier: metrics.enterprise_growth >= 60 ? 'positive' : metrics.enterprise_growth < 40 ? 'warning' : 'neutral' },
-    { name: 'Tech Debt', value: Math.round(metrics.tech_debt || 50), tier: metrics.tech_debt >= 60 ? 'warning' : metrics.tech_debt < 40 ? 'positive' : 'neutral' }
+    { name: 'Team Sentiment', key: 'team_sentiment', value: Math.round(metrics.team_sentiment || 50), tier: metrics.team_sentiment >= 60 ? 'positive' : metrics.team_sentiment < 40 ? 'warning' : 'neutral', targetValue: gameTargets.team_sentiment },
+    { name: 'CEO Sentiment', key: 'ceo_sentiment', value: Math.round(metrics.ceo_sentiment || 50), tier: metrics.ceo_sentiment >= 60 ? 'positive' : metrics.ceo_sentiment < 40 ? 'warning' : 'neutral', targetValue: gameTargets.ceo_sentiment },
+    { name: 'Sales Sentiment', key: 'sales_sentiment', value: Math.round(metrics.sales_sentiment || 50), tier: metrics.sales_sentiment >= 60 ? 'positive' : metrics.sales_sentiment < 40 ? 'warning' : 'neutral', targetValue: gameTargets.sales_sentiment },
+    { name: 'CTO Sentiment', key: 'cto_sentiment', value: Math.round(metrics.cto_sentiment || 50), tier: metrics.cto_sentiment >= 60 ? 'positive' : metrics.cto_sentiment < 40 ? 'warning' : 'neutral', targetValue: gameTargets.cto_sentiment },
+    { name: 'Self-Serve Growth', key: 'self_serve_growth', value: Math.round(metrics.self_serve_growth || 50), tier: metrics.self_serve_growth >= 60 ? 'positive' : metrics.self_serve_growth < 40 ? 'warning' : 'neutral', targetValue: gameTargets.self_serve_growth },
+    { name: 'Enterprise Growth', key: 'enterprise_growth', value: Math.round(metrics.enterprise_growth || 50), tier: metrics.enterprise_growth >= 60 ? 'positive' : metrics.enterprise_growth < 40 ? 'warning' : 'neutral', targetValue: gameTargets.enterprise_growth },
+    { name: 'Tech Debt', key: 'tech_debt', value: Math.round(metrics.tech_debt || 50), tier: metrics.tech_debt >= 60 ? 'warning' : metrics.tech_debt < 40 ? 'positive' : 'neutral', targetValue: gameTargets.tech_debt }
   ];
 
   const calibrationNarrative: Record<CalibrationOutcome, string> = {
@@ -240,6 +254,23 @@ export default function QuarterlyReview() {
                 <div className={styles.metricValue}>{metric.value}</div>
                 <div className={styles.metricBar}>
                   <div className={`${styles.metricBarFill} ${styles[metric.tier]}`} style={{ width: `${metric.value}%` }}></div>
+                  {metric.targetValue !== undefined && (
+                    <div
+                      title={`Target: ${metric.targetValue}`}
+                      style={{
+                        position: 'absolute',
+                        top: '-2px',
+                        bottom: '-2px',
+                        left: `${metric.targetValue}%`,
+                        width: '2px',
+                        background: 'rgba(234, 179, 8, 0.9)',
+                        transform: 'translateX(-50%)',
+                        zIndex: 4,
+                        pointerEvents: 'none',
+                        borderRadius: '1px'
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             ))}

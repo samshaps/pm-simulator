@@ -18,6 +18,7 @@ create table if not exists games (
   metrics_state jsonb not null,
   events_log jsonb not null default '[]'::jsonb,
   rng_seed int not null,
+  metric_targets jsonb default null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -65,3 +66,8 @@ create table if not exists narrative_templates (
 
 create index if not exists idx_sessions_active_game_id on sessions(active_game_id);
 create index if not exists idx_games_session_id on games(session_id);
+
+-- Migration: feature-onboarding-and-target-lines
+-- Run this against existing Supabase instances before deploying.
+-- Existing games will have metric_targets = NULL (target lines gracefully hidden).
+-- ALTER TABLE games ADD COLUMN IF NOT EXISTS metric_targets jsonb DEFAULT NULL;

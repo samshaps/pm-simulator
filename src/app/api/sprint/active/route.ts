@@ -26,7 +26,7 @@ export async function GET() {
 
   const { data: game } = await supabase
     .from("games")
-    .select("id, difficulty, current_quarter, current_sprint, metrics_state, events_log")
+    .select("id, difficulty, current_quarter, current_sprint, metrics_state, events_log, metric_targets")
     .eq("id", session.active_game_id)
     .maybeSingle();
 

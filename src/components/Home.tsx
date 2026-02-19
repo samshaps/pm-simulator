@@ -163,6 +163,18 @@ export default function Home() {
       });
 
       if (response.ok) {
+        const data = await response.json();
+
+        // Store onboarding data in sessionStorage for the onboarding screen
+        if (data.activeGame?.metrics_state && data.activeGame?.metric_targets) {
+          sessionStorage.setItem('pm_sim_onboarding_data', JSON.stringify({
+            metrics_state: data.activeGame.metrics_state,
+            metric_targets: data.activeGame.metric_targets,
+            difficulty: data.activeGame.difficulty ?? 'normal',
+            ceo_focus: data.ceoFocus ?? 'self_serve'
+          }));
+        }
+
         // Set onboarding tour flags for first-time players
         const isFirstTime = !hasSaveGame && pastRuns.length === 0;
         if (isFirstTime) {
@@ -182,7 +194,8 @@ export default function Home() {
 
         setTimeout(() => {
           window.clearInterval(interval);
-          router.replace('/sprint-planning');
+          // New games go through onboarding; Continue button bypasses it
+          router.replace('/onboarding');
         }, 2000);
       } else {
         console.error('Failed to create game');

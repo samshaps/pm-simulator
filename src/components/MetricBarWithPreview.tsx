@@ -13,6 +13,10 @@ interface MetricBarWithPreviewProps {
   isPositiveImpact?: boolean; // true = green tint, false = red tint
   showDangerZone?: boolean; // Show red region at 0-20
   delta?: number; // The change value to display next to the metric (e.g., +5 or -3)
+  targetValue?: number; // 0-100, renders as a vertical amber marker line
+  stretchTarget?: number; // 0-100, optional lighter second marker
+  invertTarget?: boolean; // true for tech_debt (lower is better)
+  showHeader?: boolean; // default true; set false to hide name/value header (e.g. when parent renders its own)
 }
 
 export default function MetricBarWithPreview({
@@ -24,7 +28,11 @@ export default function MetricBarWithPreview({
   previewConfidence = 0.7,
   isPositiveImpact = true,
   showDangerZone = true,
-  delta
+  delta,
+  targetValue,
+  stretchTarget,
+  invertTarget = false,
+  showHeader = true
 }: MetricBarWithPreviewProps) {
   // Determine if we have a preview range
   const hasPreview = (previewMin !== undefined && previewMax !== undefined) ||
@@ -67,25 +75,27 @@ export default function MetricBarWithPreview({
 
   return (
     <div className={styles.metricBarContainer}>
-      <div className={styles.metricHeader}>
-        <span className={styles.metricName}>{name}</span>
-        <span className={styles.metricValue}>
-          {Math.round(currentValue)}
-          {delta !== undefined && delta !== 0 && (
-            <span
-              className={styles.metricDelta}
-              style={{
-                color: delta > 0 ? '#4ade80' : '#f87171',
-                marginLeft: '8px',
-                fontSize: '14px',
-                fontWeight: 500
-              }}
-            >
-              {delta > 0 ? '+' : ''}{Math.round(delta)}
-            </span>
-          )}
-        </span>
-      </div>
+      {showHeader && (
+        <div className={styles.metricHeader}>
+          <span className={styles.metricName}>{name}</span>
+          <span className={styles.metricValue}>
+            {Math.round(currentValue)}
+            {delta !== undefined && delta !== 0 && (
+              <span
+                className={styles.metricDelta}
+                style={{
+                  color: delta > 0 ? '#4ade80' : '#f87171',
+                  marginLeft: '8px',
+                  fontSize: '14px',
+                  fontWeight: 500
+                }}
+              >
+                {delta > 0 ? '+' : ''}{Math.round(delta)}
+              </span>
+            )}
+          </span>
+        </div>
+      )}
 
       <div className={styles.barTrack}>
         {/* Danger Zone (0-20) */}
@@ -158,6 +168,26 @@ export default function MetricBarWithPreview({
               width: `${previewRange.width}%`
             }}
           ></div>
+        )}
+
+        {/* Target Line */}
+        {targetValue !== undefined && (
+          <div
+            className={styles.targetLine}
+            style={{ left: `${Math.max(0, Math.min(100, targetValue))}%` }}
+          >
+            <span className={styles.targetLabel}>
+              {invertTarget ? '↓' : '↑'}{targetValue}
+            </span>
+          </div>
+        )}
+
+        {/* Stretch Target Line (lighter dashed) */}
+        {stretchTarget !== undefined && (
+          <div
+            className={styles.stretchTargetLine}
+            style={{ left: `${Math.max(0, Math.min(100, stretchTarget))}%` }}
+          />
         )}
       </div>
     </div>

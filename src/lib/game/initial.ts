@@ -1,4 +1,4 @@
-import type { Difficulty, GameRecord, MetricsState } from "@/lib/types";
+import type { Difficulty, GameRecord, MetricTargets, MetricsState } from "@/lib/types";
 
 const BASE_METRICS: Record<Difficulty, MetricsState> = {
   easy: {
@@ -105,6 +105,78 @@ export function createInitialMetrics(difficulty: Difficulty): MetricsState {
   };
 }
 
+export function generateMetricTargets(difficulty: Difficulty): MetricTargets {
+  const targets: Record<Difficulty, MetricTargets> = {
+    easy: {
+      team_sentiment: 65,
+      ceo_sentiment: 65,
+      sales_sentiment: 60,
+      cto_sentiment: 60,
+      self_serve_growth: 60,
+      enterprise_growth: 60,
+      tech_debt: 35,
+      nps: 60
+    },
+    normal: {
+      team_sentiment: 60,
+      ceo_sentiment: 60,
+      sales_sentiment: 55,
+      cto_sentiment: 55,
+      self_serve_growth: 55,
+      enterprise_growth: 55,
+      tech_debt: 40,
+      nps: 55
+    },
+    hard: {
+      team_sentiment: 55,
+      ceo_sentiment: 55,
+      sales_sentiment: 50,
+      cto_sentiment: 50,
+      self_serve_growth: 50,
+      enterprise_growth: 50,
+      tech_debt: 45,
+      nps: 50
+    }
+  };
+  return targets[difficulty];
+}
+
+export function generateStretchTargets(difficulty: Difficulty): MetricTargets {
+  const targets: Record<Difficulty, MetricTargets> = {
+    easy: {
+      team_sentiment: 75,
+      ceo_sentiment: 75,
+      sales_sentiment: 75,
+      cto_sentiment: 75,
+      self_serve_growth: 70,
+      enterprise_growth: 70,
+      tech_debt: 25,
+      nps: 70
+    },
+    normal: {
+      team_sentiment: 70,
+      ceo_sentiment: 70,
+      sales_sentiment: 70,
+      cto_sentiment: 70,
+      self_serve_growth: 65,
+      enterprise_growth: 65,
+      tech_debt: 30,
+      nps: 65
+    },
+    hard: {
+      team_sentiment: 65,
+      ceo_sentiment: 65,
+      sales_sentiment: 65,
+      cto_sentiment: 65,
+      self_serve_growth: 60,
+      enterprise_growth: 60,
+      tech_debt: 35,
+      nps: 60
+    }
+  };
+  return targets[difficulty];
+}
+
 export function createNewGameRecord(
   sessionId: string,
   difficulty: Difficulty
@@ -117,6 +189,7 @@ export function createNewGameRecord(
     state: "in_progress",
     metrics_state: createInitialMetrics(difficulty),
     events_log: [],
-    rng_seed: Math.floor(Math.random() * 1_000_000)
+    rng_seed: Math.floor(Math.random() * 1_000_000),
+    metric_targets: generateMetricTargets(difficulty)
   };
 }

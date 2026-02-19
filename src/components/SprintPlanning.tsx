@@ -52,6 +52,17 @@ interface MetricsState {
   velocity: number;
 }
 
+interface MetricTargets {
+  team_sentiment: number;
+  ceo_sentiment: number;
+  sales_sentiment: number;
+  cto_sentiment: number;
+  self_serve_growth: number;
+  enterprise_growth: number;
+  tech_debt: number;
+  nps: number;
+}
+
 interface CapacityModifier {
   event_id: string;
   delta: number;
@@ -67,6 +78,7 @@ interface GameState {
     current_quarter: number;
     current_sprint: number;
     metrics_state: MetricsState;
+    metric_targets?: MetricTargets | null;
   };
   sprint: {
     id: string;
@@ -87,6 +99,24 @@ interface GameState {
   capacity_modifiers?: CapacityModifier[];
   total_capacity_delta?: number;
 }
+
+const STRETCH_TARGETS: Record<string, MetricTargets> = {
+  easy: {
+    team_sentiment: 75, ceo_sentiment: 75, sales_sentiment: 75,
+    cto_sentiment: 75, self_serve_growth: 70, enterprise_growth: 70,
+    tech_debt: 25, nps: 70
+  },
+  normal: {
+    team_sentiment: 70, ceo_sentiment: 70, sales_sentiment: 70,
+    cto_sentiment: 70, self_serve_growth: 65, enterprise_growth: 65,
+    tech_debt: 30, nps: 65
+  },
+  hard: {
+    team_sentiment: 65, ceo_sentiment: 65, sales_sentiment: 65,
+    cto_sentiment: 65, self_serve_growth: 60, enterprise_growth: 60,
+    tech_debt: 35, nps: 60
+  }
+};
 
 const categoryToClass: Record<string, string> = {
   'self_serve': 'catSelfServe',
@@ -1171,6 +1201,8 @@ export default function SprintPlanning() {
                       previewMax={combinedPreviews['Team Sentiment']?.max}
                       isPositiveImpact={combinedPreviews['Team Sentiment']?.isPositive}
                       showDangerZone={true}
+                      targetValue={gameState.game.metric_targets?.team_sentiment ?? undefined}
+                      stretchTarget={STRETCH_TARGETS[gameState.game.difficulty]?.team_sentiment}
                     />
 
                     {/* Only show CEO Sentiment from Q2+ (removed from Q1) */}
@@ -1182,6 +1214,8 @@ export default function SprintPlanning() {
                         previewMax={combinedPreviews['CEO Sentiment']?.max}
                         isPositiveImpact={combinedPreviews['CEO Sentiment']?.isPositive}
                         showDangerZone={true}
+                        targetValue={gameState.game.metric_targets?.ceo_sentiment ?? undefined}
+                        stretchTarget={STRETCH_TARGETS[gameState.game.difficulty]?.ceo_sentiment}
                       />
                     )}
 
@@ -1192,6 +1226,8 @@ export default function SprintPlanning() {
                       previewMax={combinedPreviews['Self-Serve Growth']?.max}
                       isPositiveImpact={combinedPreviews['Self-Serve Growth']?.isPositive}
                       showDangerZone={true}
+                      targetValue={gameState.game.metric_targets?.self_serve_growth ?? undefined}
+                      stretchTarget={STRETCH_TARGETS[gameState.game.difficulty]?.self_serve_growth}
                     />
                     <MetricBarWithPreview
                       name="Enterprise Growth"
@@ -1200,6 +1236,8 @@ export default function SprintPlanning() {
                       previewMax={combinedPreviews['Enterprise Growth']?.max}
                       isPositiveImpact={combinedPreviews['Enterprise Growth']?.isPositive}
                       showDangerZone={true}
+                      targetValue={gameState.game.metric_targets?.enterprise_growth ?? undefined}
+                      stretchTarget={STRETCH_TARGETS[gameState.game.difficulty]?.enterprise_growth}
                     />
 
                     {/* Show additional metrics in Q2+ (CTO Sentiment, Tech Debt) */}
@@ -1212,6 +1250,8 @@ export default function SprintPlanning() {
                           previewMax={combinedPreviews['CTO Sentiment']?.max}
                           isPositiveImpact={combinedPreviews['CTO Sentiment']?.isPositive}
                           showDangerZone={true}
+                          targetValue={gameState.game.metric_targets?.cto_sentiment ?? undefined}
+                          stretchTarget={STRETCH_TARGETS[gameState.game.difficulty]?.cto_sentiment}
                         />
                         <MetricBarWithPreview
                           name="Tech Debt"
@@ -1220,6 +1260,9 @@ export default function SprintPlanning() {
                           previewMax={combinedPreviews['Tech Debt']?.max}
                           isPositiveImpact={combinedPreviews['Tech Debt']?.isPositive}
                           showDangerZone={true}
+                          targetValue={gameState.game.metric_targets?.tech_debt ?? undefined}
+                          stretchTarget={STRETCH_TARGETS[gameState.game.difficulty]?.tech_debt}
+                          invertTarget={true}
                         />
                       </>
                     )}

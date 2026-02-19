@@ -328,7 +328,7 @@ export async function POST(request: Request) {
   const { data: game } = await supabase
     .from("games")
     .select(
-      "id, difficulty, current_quarter, current_sprint, metrics_state, rng_seed, events_log"
+      "id, difficulty, current_quarter, current_sprint, metrics_state, rng_seed, events_log, metric_targets"
     )
     .eq("id", session.active_game_id)
     .maybeSingle();

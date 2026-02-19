@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   const { data: game, error: gameError } = await supabase
     .from("games")
     .insert(newGameRecord)
-    .select("id, difficulty, current_quarter, current_sprint")
+    .select("id, difficulty, current_quarter, current_sprint, metrics_state, metric_targets")
     .single();
 
   if (gameError || !game) {

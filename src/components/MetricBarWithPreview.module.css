@@ -103,3 +103,50 @@
     );
   border: 1px solid rgba(150, 150, 150, 0.6);
 }
+
+/* Target Line (amber vertical marker) */
+.targetLine {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: rgba(234, 179, 8, 0.9);
+  z-index: 4;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.targetLabel {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: rgba(234, 179, 8, 1);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  background: rgba(10, 10, 20, 0.85);
+  padding: 2px 5px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.metricBarContainer:hover .targetLabel {
+  opacity: 1;
+}
+
+/* Stretch Target Line (lighter dashed) */
+.stretchTargetLine {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  background: rgba(234, 179, 8, 0.35);
+  border-left: 1px dashed rgba(234, 179, 8, 0.35);
+  z-index: 4;
+  pointer-events: none;
+  transform: translateX(-50%);
+}

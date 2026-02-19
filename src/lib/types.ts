@@ -12,6 +12,17 @@ export type MetricsState = {
   velocity: number;
 };
 
+export type MetricTargets = {
+  team_sentiment: number;
+  ceo_sentiment: number;
+  sales_sentiment: number;
+  cto_sentiment: number;
+  self_serve_growth: number;
+  enterprise_growth: number;
+  tech_debt: number;
+  nps: number;
+};
+
 export type GameRecord = {
   id: string;
   session_id: string;
@@ -22,4 +33,5 @@ export type GameRecord = {
   metrics_state: MetricsState;
   events_log: unknown[];
   rng_seed: number;
+  metric_targets: MetricTargets | null;
 };
