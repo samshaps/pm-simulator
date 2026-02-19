@@ -7,6 +7,8 @@ import TicketTile from './TicketTile';
 import CapacityBar from './CapacityBar';
 import MetricBarWithPreview from './MetricBarWithPreview';
 import ActiveModifiers from './ActiveModifiers';
+import OnboardingTour from './OnboardingTour';
+import { SPRINT_PLANNING_STEPS, POWERUP_TIP_STEP, TOTAL_TOUR_STEPS } from '@/lib/tourSteps';
 
 interface Ticket {
   id: string;
@@ -185,6 +187,8 @@ export default function SprintPlanning() {
   const [hoveredTicketId, setHoveredTicketId] = useState<string | null>(null);
   const [metricPreviews, setMetricPreviews] = useState<Record<string, { min: number; max: number; isPositive: boolean }>>({});
   const [committedPreviews, setCommittedPreviews] = useState<Record<string, Record<string, { min: number; max: number; isPositive: boolean }>>>({});
+  const [showTour, setShowTour] = useState(false);
+  const [showPowerupTip, setShowPowerupTip] = useState(false);
 
   useEffect(() => {
     // Fetch active sprint data
@@ -284,6 +288,42 @@ export default function SprintPlanning() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Determine tour visibility after game state loads
+  useEffect(() => {
+    if (!gameState) return;
+
+    const shouldShowTour =
+      sessionStorage.getItem('pm_sim_show_tour') === 'true' &&
+      sessionStorage.getItem('pm_sim_tour_step') !== 'planning_done' &&
+      localStorage.getItem('pm_sim_tour_complete') !== 'true';
+    setShowTour(shouldShowTour);
+
+    const shouldShowPowerupTip =
+      gameState.game.current_sprint === 2 &&
+      gameState.game.current_quarter === 1 &&
+      sessionStorage.getItem('pm_sim_show_powerup_tip') === 'true';
+    setShowPowerupTip(shouldShowPowerupTip);
+  }, [gameState]);
+
+  const handleTourComplete = () => {
+    // Planning steps done — preserve pm_sim_show_tour so retro can continue
+    sessionStorage.setItem('pm_sim_tour_step', 'planning_done');
+    setShowTour(false);
+  };
+
+  const handleTourDismiss = () => {
+    // User explicitly skipped — mark permanently complete
+    localStorage.setItem('pm_sim_tour_complete', 'true');
+    sessionStorage.removeItem('pm_sim_show_tour');
+    sessionStorage.removeItem('pm_sim_tour_step');
+    setShowTour(false);
+  };
+
+  const handlePowerupTipDone = () => {
+    sessionStorage.removeItem('pm_sim_show_powerup_tip');
+    setShowPowerupTip(false);
+  };
 
   if (isLoading || !gameState) {
     return null; // Don't show default loading - home page loading overlay handles it
@@ -431,12 +471,11 @@ export default function SprintPlanning() {
     // Calculate best case (clear success)
     const bestCase = Math.max(successRange[0], successRange[1]);
 
-    // Calculate worst case (catastrophe/failure)
+    // Calculate worst case (soft_failure only — catastrophe excluded as too unlikely)
     // Based on src/lib/game/simulate.ts failure logic:
     // - soft_failure: -6 to -2 on primary metric
-    // - catastrophe: -18 to -10 on primary metric
-    // We use -12 as a reasonable worst-case estimate (average of catastrophe range)
-    const worstCase = -12;
+    // We use -6 as the worst-case estimate (worst end of soft_failure range)
+    const worstCase = -6;
 
     // Determine if net positive based on expected weighted outcome
     // Assuming ~70% success, ~20% partial, ~10% failure probability
@@ -874,7 +913,7 @@ export default function SprintPlanning() {
         }
 
         return modifiers.length > 0 ? (
-          <div style={{ padding: '12px 24px 0' }}>
+          <div style={{ padding: '12px 24px 0' }} data-tour-id="active-modifiers">
             <ActiveModifiers modifiers={modifiers} />
           </div>
         ) : null;
@@ -890,7 +929,7 @@ export default function SprintPlanning() {
       {/* Main Content */}
       <div className={styles.mainContent}>
         {/* Left Panel: Backlog */}
-        <div className={styles.backlogPanel}>
+        <div className={styles.backlogPanel} data-tour-id="backlog">
           <div className={styles.panelHeader}>
             <span className={styles.panelTitle}>Backlog</span>
             <span className={styles.panelCount}>{backlogTickets.length} tickets</span>
@@ -1032,7 +1071,7 @@ export default function SprintPlanning() {
         {/* Right Panel: Sprint */}
         <div className={styles.sprintPanel}>
           {/* Capacity Section */}
-          <div className={styles.capacitySection}>
+          <div className={styles.capacitySection} data-tour-id="capacity-bar">
             <CapacityBar
               usedCapacity={usedCapacity}
               normalCapacity={sprintCapacity}
@@ -1043,7 +1082,7 @@ export default function SprintPlanning() {
           </div>
 
           {/* Committed Section */}
-          <div className={styles.committedSection}>
+          <div className={styles.committedSection} data-tour-id="committed">
             <div className={styles.committedHeader}>
               <span className={styles.committedTitle}>Committed</span>
               <span className={styles.committedCount}>
@@ -1084,7 +1123,7 @@ export default function SprintPlanning() {
           </div>
 
           {/* Performance Metrics Panel */}
-          <div className={styles.performancePanel}>
+          <div className={styles.performancePanel} data-tour-id="metrics">
             <div className={styles.performancePanelHeader}>
               <span className={styles.performancePanelTitle}>Performance</span>
             </div>
@@ -1210,6 +1249,28 @@ export default function SprintPlanning() {
           </button>
         </div>
       </div>
+
+      {/* Onboarding tour — sprint 1 planning steps */}
+      {showTour && (
+        <OnboardingTour
+          steps={SPRINT_PLANNING_STEPS}
+          stepOffset={0}
+          totalSteps={TOTAL_TOUR_STEPS}
+          onComplete={handleTourComplete}
+          onDismiss={handleTourDismiss}
+        />
+      )}
+
+      {/* Sprint 2 powerup tip */}
+      {showPowerupTip && (
+        <OnboardingTour
+          steps={[POWERUP_TIP_STEP]}
+          stepOffset={0}
+          totalSteps={1}
+          onComplete={handlePowerupTipDone}
+          onDismiss={handlePowerupTipDone}
+        />
+      )}
     </div>
   );
 }

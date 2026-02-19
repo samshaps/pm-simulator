@@ -163,6 +163,14 @@ export default function Home() {
       });
 
       if (response.ok) {
+        // Set onboarding tour flags for first-time players
+        const isFirstTime = !hasSaveGame && pastRuns.length === 0;
+        if (isFirstTime) {
+          sessionStorage.setItem('pm_sim_show_tour', 'true');
+          sessionStorage.setItem('pm_sim_show_powerup_tip', 'true');
+          sessionStorage.removeItem('pm_sim_tour_step');
+        }
+
         setIsNavigating(true);
         const sequence = pickRandomMessages(loadingMessages, 4);
         setLoadingSequence(sequence);

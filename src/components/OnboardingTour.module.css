@@ -1,0 +1,145 @@
+.panel {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.highlight {
+  position: fixed;
+  z-index: 10000;
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.7);
+  pointer-events: none;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 10001;
+  width: 300px;
+  background: #1a1a2e;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  color: #e8e8f0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.skipBtn {
+  background: none;
+  border: none;
+  color: rgba(168, 85, 247, 0.7);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 12px;
+  line-height: 1.3;
+}
+
+.skipBtn:hover {
+  color: rgba(168, 85, 247, 1);
+}
+
+.body {
+  font-size: 13px;
+  color: #b0b0c8;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.dotActive {
+  background: rgba(168, 85, 247, 0.9);
+  border-color: rgba(168, 85, 247, 0.9);
+}
+
+.dotComplete {
+  background: rgba(168, 85, 247, 0.4);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btnBack {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #b0b0c8;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btnBack:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+}
+
+.btnBack:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.btnNext {
+  background: rgba(168, 85, 247, 0.85);
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnNext:hover {
+  background: rgba(168, 85, 247, 1);
+}
+
+.stepCounter {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+}

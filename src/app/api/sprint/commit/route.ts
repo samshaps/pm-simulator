@@ -800,44 +800,50 @@ export async function POST(request: Request) {
     }
   };
 
-  let firedRandomEvent: EventPayload | null = null;
-  const shuffledRandomEvents = [...randomEvents].sort(() => rng.next() - 0.5);
-  for (const event of shuffledRandomEvents) {
-    const quarters = event.quarter_restriction;
-    if (Array.isArray(quarters) && !quarters.includes(currentQuarter)) {
-      continue;
+  // Suppress random and threshold events in Sprint 1 Q1 to reduce
+  // first-sprint cognitive load. CEO focus and all other mechanics still apply.
+  const isFirstSprint = currentQuarter === 1 && currentSprint === 1;
+
+  if (!isFirstSprint) {
+    let firedRandomEvent: EventPayload | null = null;
+    const shuffledRandomEvents = [...randomEvents].sort(() => rng.next() - 0.5);
+    for (const event of shuffledRandomEvents) {
+      const quarters = event.quarter_restriction;
+      if (Array.isArray(quarters) && !quarters.includes(currentQuarter)) {
+        continue;
+      }
+      if (
+        event.trigger_condition_override &&
+        !evaluateCondition(event.trigger_condition_override, updatedMetrics)
+      ) {
+        continue;
+      }
+      const chance =
+        typeof event.trigger_chance_per_sprint === "number"
+          ? event.trigger_chance_per_sprint
+          : 0;
+      if (rng.next() <= chance) {
+        firedRandomEvent = event;
+        break;
+      }
     }
-    if (
-      event.trigger_condition_override &&
-      !evaluateCondition(event.trigger_condition_override, updatedMetrics)
-    ) {
-      continue;
+
+    if (firedRandomEvent) {
+      await applyEventEffects(firedRandomEvent, "random_event");
     }
-    const chance =
-      typeof event.trigger_chance_per_sprint === "number"
-        ? event.trigger_chance_per_sprint
-        : 0;
-    if (rng.next() <= chance) {
-      firedRandomEvent = event;
+
+    const firedThresholdIds = new Set(
+      eventsLog
+        .filter((entry) => entry?.type === "threshold_event")
+        .map((entry) => entry?.event_id)
+    );
+    for (const event of thresholdEvents) {
+      if (firedThresholdIds.has(event.id)) continue;
+      if (!event.trigger_condition) continue;
+      if (!evaluateCondition(event.trigger_condition, updatedMetrics)) continue;
+      await applyEventEffects(event, "threshold_event");
       break;
     }
-  }
-
-  if (firedRandomEvent) {
-    await applyEventEffects(firedRandomEvent, "random_event");
-  }
-
-  const firedThresholdIds = new Set(
-    eventsLog
-      .filter((entry) => entry?.type === "threshold_event")
-      .map((entry) => entry?.event_id)
-  );
-  for (const event of thresholdEvents) {
-    if (firedThresholdIds.has(event.id)) continue;
-    if (!event.trigger_condition) continue;
-    if (!evaluateCondition(event.trigger_condition, updatedMetrics)) continue;
-    await applyEventEffects(event, "threshold_event");
-    break;
   }
 
   const { data: narrativeRows } = await supabase

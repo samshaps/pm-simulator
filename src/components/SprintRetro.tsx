@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './SprintRetro.module.css';
 import MetricBarWithPreview from './MetricBarWithPreview';
+import OnboardingTour from './OnboardingTour';
+import { SPRINT_RETRO_STEPS, SPRINT_PLANNING_STEPS, TOTAL_TOUR_STEPS } from '@/lib/tourSteps';
 
 interface MetricChange {
   name: string;
@@ -99,6 +101,7 @@ export default function SprintRetro() {
   const [isLoading, setIsLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [transitionMessage, setTransitionMessage] = useState('Syncing with stakeholders...');
+  const [showRetroTour, setShowRetroTour] = useState(false);
   const [animState, setAnimState] = useState<AnimationState>({
     phase: 'initial',
     revealedTickets: 0,
@@ -144,6 +147,13 @@ export default function SprintRetro() {
           }
           setRetroData(parsed);
           // Don't remove here - Sprint Planning will read and remove it
+
+          // Check if onboarding tour should continue here from planning page
+          const shouldShowRetroTour =
+            sessionStorage.getItem('pm_sim_show_tour') === 'true' &&
+            sessionStorage.getItem('pm_sim_tour_step') === 'planning_done' &&
+            localStorage.getItem('pm_sim_tour_complete') !== 'true';
+          setShowRetroTour(shouldShowRetroTour);
         }
         setIsLoading(false);
       })
@@ -408,6 +418,13 @@ export default function SprintRetro() {
     }
   };
 
+  const handleRetroTourComplete = () => {
+    localStorage.setItem('pm_sim_tour_complete', 'true');
+    sessionStorage.removeItem('pm_sim_show_tour');
+    sessionStorage.removeItem('pm_sim_tour_step');
+    setShowRetroTour(false);
+  };
+
   // Early return AFTER all hooks
   if (isLoading || !retroData) {
     return null; // Don't show default loading - SprintPlanning loading overlay handles it
@@ -487,7 +504,7 @@ export default function SprintRetro() {
       {/* Main Content */}
       <div className={styles.mainContent}>
         {/* Left Panel */}
-        <div className={styles.leftPanel}>
+        <div className={styles.leftPanel} data-tour-id="retro-events">
         <div className={styles.retroHeader}>
           <div className={styles.retroTitle}>Sprint Retrospective</div>
           <div className={styles.retroSubtitle}>What happened, and why it matters</div>
@@ -551,7 +568,7 @@ export default function SprintRetro() {
         {/* Right Panel */}
         <div className={styles.rightPanel}>
           <div className={styles.sectionLabel}>Ticket Outcomes</div>
-          <div className={styles.ticketOutcomes}>
+          <div className={styles.ticketOutcomes} data-tour-id="retro-outcomes">
             {Object.entries(ticketsByCategory).map(([category, tickets]) => (
               <div key={category} className={styles.categoryGroup}>
                 <div
@@ -606,7 +623,7 @@ export default function SprintRetro() {
           {retroData.game.metrics_state && (
             <>
               <div className={styles.sectionLabel} style={{ marginTop: '24px' }}>Performance</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} data-tour-id="retro-metrics">
                 {/* Q1: Show only 3 metrics (Team, Self-Serve, Enterprise) */}
                 {/* Q2+: Show all 6 metrics (add CEO, CTO, Tech Debt) */}
                 {(() => {
@@ -657,6 +674,17 @@ export default function SprintRetro() {
           </button>
         </div>
       </div>
+
+      {/* Onboarding tour — retro steps (continuation from sprint planning) */}
+      {showRetroTour && (
+        <OnboardingTour
+          steps={SPRINT_RETRO_STEPS}
+          stepOffset={SPRINT_PLANNING_STEPS.length}
+          totalSteps={TOTAL_TOUR_STEPS}
+          onComplete={handleRetroTourComplete}
+          onDismiss={handleRetroTourComplete}
+        />
+      )}
     </div>
   );
 }
