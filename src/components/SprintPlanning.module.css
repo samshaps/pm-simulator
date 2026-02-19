@@ -417,7 +417,7 @@
   padding: 20px 20px 20px 24px;
   overflow-y: auto;
   border-right: 1px solid var(--border-subtle);
-  min-width: 0; /* Allow flex/grid item to shrink below content size */
+  min-width: 340px;
 }
 
 .panelHeader {
